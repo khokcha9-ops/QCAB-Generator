@@ -149,6 +149,21 @@
     color:var(--ink-soft);
     margin:0 0 6px;
   }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink);
+    user-select: none;
+  }
+  .checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
   .field{ margin-bottom:18px; }
   textarea, input[type=text]{
     width:100%;
@@ -361,6 +376,11 @@
       <label for="q-year">Year (optional)</label>
       <input type="text" id="q-year" placeholder="e.g. 2024">
     </div>
+    <div class="field">
+      <label class="checkbox-label">
+        <input type="checkbox" id="include-index" checked> Include Index page in PDF
+      </label>
+    </div>
     <button class="btn-primary" id="add-btn">Add question</button>
   </section>
 
@@ -434,6 +454,7 @@
   const totalMarksEl = document.getElementById('total-marks');
   const totalPagesEl = document.getElementById('total-pages');
   const generateBtn = document.getElementById('generate-btn');
+  const includeIndexCheckbox = document.getElementById('include-index');
 
   marksButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -548,7 +569,7 @@
 
     function indexPage() {
       doc.setFont('times', 'normal');
-      doc.setFontSize(10.5);
+      doc.setFontSize(11);
       let y = 28;
       const left = 20, textCol = 33, maxW = PAGE_W - textCol - 20;
       questions.forEach((q, i) => {
@@ -557,7 +578,7 @@
         if (y + lines.length * 5 > BOTTOM) {
           doc.addPage();
           doc.setFont('times', 'normal');
-          doc.setFontSize(10.5);
+          doc.setFontSize(11);
           y = 28;
         }
         doc.text(String(i + 1) + '.', left, y);
@@ -570,15 +591,21 @@
     function firstPage(qNum, text, marks, year, code) {
       dividers();
       doc.setFont('times', 'normal');
+      
+      // Header details font
       doc.setFontSize(11);
       doc.text('Q. ' + qNum, 8, TOP + 5);
       const tag = year ? marks + ' M / ' + year : marks + ' M';
       doc.text(tag, RIGHT_DIV + PAD, TOP + 5);
 
+      // Question font size increased to 14pt
+      doc.setFontSize(14);
       const maxW = RIGHT_DIV - LEFT_DIV - 2 * PAD;
       const lines = doc.splitTextToSize(text, maxW);
-      let ty = TOP + 5;
-      lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 5; });
+      let ty = TOP + 6;
+      
+      // Increased line height step to 6.5mm to match 14pt font
+      lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 6.5; });
 
       doc.setFontSize(8);
       doc.text(code, 8, PAGE_H - 6);
@@ -595,7 +622,10 @@
       doc.text(code, 8, PAGE_H - 6);
     }
 
-    indexPage();
+    if (includeIndexCheckbox.checked) {
+      indexPage();
+    }
+
     questions.forEach((q, idx) => {
       const n = idx + 1;
       const code = 'Q' + String(n).padStart(2, '0');
