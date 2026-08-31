@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCAB Generator — Build your own Answer Booklet</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#F6F3EC;
+    --card:#FFFFFF;
+    --ink:#17213A;
+    --ink-soft:#4B5468;
+    --rule:#CBC3AF;
+    --rule-light:#E4DECD;
+    --accent:#8B1E3F;
+    --accent-dark:#6E1832;
+    --accent-soft:#F3E3E8;
+    --input-bg:#FEFDFB;
+    --tag-pages-bg:#EEF0EA;
+    --tag-pages-color:#3D4A34;
+    --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --paper:#12161F;
+    --card:#1A202C;
+    --ink:#E2E8F0;
+    --ink-soft:#94A3B8;
+    --rule:#334155;
+    --rule-light:#242D3C;
+    --accent:#E5484D;
+    --accent-dark:#FF6369;
+    --accent-soft:#3C1824;
+    --input-bg:#0F172A;
+    --tag-pages-bg:#1E293B;
+    --tag-pages-color:#CBD5E1;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* ---- header with margin-line motif ---- */
+  header{
+    position:relative;
+    padding:56px 24px 40px;
+    overflow:hidden;
+    border-bottom:1px solid var(--rule-light);
+  }
+  header::before, header::after{
+    content:"";
+    position:absolute;
+    top:0; bottom:0;
+    width:1px;
+    background:var(--rule);
+    opacity:.55;
+  }
+  header::before{ left:12%; }
+  header::after{ right:16%; }
+  .header-inner{
+    max-width:760px;
+    margin:0 auto;
+    position:relative;
+    text-align:center;
+  }
+  .theme-toggle{
+    position:absolute;
+    top:-30px;
+    right:0;
+    background:transparent;
+    border:1px solid var(--rule);
+    color:var(--ink);
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:all 0.2s ease;
+  }
+  .theme-toggle:hover{
+    background:var(--accent-soft);
+    border-color:var(--accent);
+  }
+  .eyebrow{
+    font-family:var(--sans);
+    font-size:13px;
+    letter-spacing:.02em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:var(--serif);
+    font-size:clamp(28px,4.5vw,42px);
+    line-height:1.15;
+    margin:0 0 14px;
+    font-weight:400;
+  }
+  header p{
+    font-size:16px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  main{
+    max-width:1040px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+    display:grid;
+    grid-template-columns:400px 1fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width:840px){
+    main{ grid-template-columns:1fr; }
+    .theme-toggle{ top:-40px; }
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule-light);
+    border-radius:6px;
+    padding:26px;
+  }
+  .card h2{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:20px;
+    margin:0 0 20px;
+  }
+
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin:0 0 6px;
+  }
+  .field{ margin-bottom:18px; }
+  textarea, input[type=text]{
+    width:100%;
+    font-family:var(--sans);
+    font-size:15px;
+    color:var(--ink);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:10px 12px;
+    background:var(--input-bg);
+    resize:vertical;
+  }
+  textarea{ min-height:88px; line-height:1.5; }
+  textarea:focus, input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+
+  .marks-row{ display:flex; gap:8px; }
+  .marks-btn{
+    flex:1;
+    padding:10px 0;
+    text-align:center;
+    border:1px solid var(--rule);
+    border-radius:4px;
+    background:var(--input-bg);
+    font-family:var(--sans);
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .marks-btn[aria-pressed="true"]{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .marks-hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  .btn-primary{
+    width:100%;
+    padding:12px 0;
+    background:var(--ink);
+    color:var(--card);
+    border:none;
+    border-radius:4px;
+    font-family:var(--sans);
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn-primary:hover{ opacity: 0.9; }
+  .btn-primary:disabled{ background:#B9B9B9; cursor:not-allowed; }
+
+  .btn-generate{
+    width:100%;
+    padding:15px 0;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    font-family:var(--sans);
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:18px;
+  }
+  .btn-generate:hover{ background:var(--accent-dark); }
+  .btn-generate:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  /* ---- question list ---- */
+  .list-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:18px;
+  }
+  .list-header h2{ margin:0; }
+  .count-tag{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  .empty-state{
+    border:1px dashed var(--rule);
+    border-radius:6px;
+    padding:36px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14.5px;
+    line-height:1.6;
+  }
+
+  ol.q-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .q-item{
+    display:grid;
+    grid-template-columns:28px 1fr auto;
+    gap:12px;
+    align-items:start;
+    padding:14px 0;
+    border-bottom:1px solid var(--rule-light);
+  }
+  .q-item:last-child{ border-bottom:none; }
+  .q-num{
+    font-family:var(--serif);
+    font-size:16px;
+    color:var(--ink-soft);
+  }
+  .q-text{
+    font-size:14.5px;
+    line-height:1.5;
+    color:var(--ink);
+    word-break:break-word;
+  }
+  .q-meta{
+    margin-top:6px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .tag{
+    font-size:12px;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:99px;
+    background:var(--accent-soft);
+    color:var(--accent);
+  }
+  .tag.pages{
+    background:var(--tag-pages-bg);
+    color:var(--tag-pages-color);
+  }
+  .q-actions{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .icon-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-size:15px;
+    color:var(--ink-soft);
+    padding:2px 6px;
+    border-radius:4px;
+    line-height:1;
+  }
+  .icon-btn:hover{ background:var(--rule-light); }
+  .icon-btn.danger:hover{ background:var(--accent-soft); color:var(--accent); }
+
+  .summary-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid var(--rule-light);
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .summary-bar strong{ color:var(--ink); }
+
+  footer{
+    text-align:center;
+    padding:28px 24px 50px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+      <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
+    </button>
+    <p class="eyebrow">Question-cum-Answer Booklet</p>
+    <h1>Build your own QCAB, page by page</h1>
+    <p></p>
+  </div>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="add-heading">
+    <h2 id="add-heading">Add a question</h2>
+    <div class="field">
+      <label for="q-text">Question</label>
+      <textarea id="q-text" placeholder="Paste or type the question here"></textarea>
+    </div>
+    <div class="field">
+      <label>Marks</label>
+      <div class="marks-row" role="group" aria-label="Marks">
+        <button type="button" class="marks-btn" data-marks="10" aria-pressed="false">10</button>
+        <button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15</button>
+        <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20</button>
+      </div>
+      <p class="marks-hint" id="marks-hint">10 → 2 pages · 15 → 3 pages · 20 → 4 pages</p>
+    </div>
+    <div class="field">
+      <label for="q-year">Year (optional)</label>
+      <input type="text" id="q-year" placeholder="e.g. 2024">
+    </div>
+    <button class="btn-primary" id="add-btn">Add question</button>
+  </section>
+
+  <section class="card" aria-labelledby="list-heading">
+    <div class="list-header">
+      <h2 id="list-heading">Your booklet</h2>
+      <span class="count-tag" id="count-tag">0 questions</span>
+    </div>
+
+    <div id="empty-state" class="empty-state">
+      No questions yet — add your first one on the left, and it'll show up here.
+    </div>
+
+    <ol class="q-list" id="q-list"></ol>
+
+    <div class="summary-bar" id="summary-bar" style="display:none;">
+      <span>Total marks: <strong id="total-marks">0</strong></span>
+      <span>Answer pages: <strong id="total-pages">0</strong></span>
+    </div>
+
+    <button class="btn-generate" id="generate-btn" disabled>Generate &amp; download PDF</button>
+  </section>
+</main>
+
+<footer>
+  Project by Biswajit Nahak
+</footer>
+
+<script>
+(function(){
+  /* ---------------- Theme Toggle Logic ---------------- */
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const themeText = document.getElementById('theme-text');
+  
+  const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeIcon.textContent = '☀️';
+    themeText.textContent = 'Light Mode';
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeIcon.textContent = '🌙';
+      themeText.textContent = 'Dark Mode';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      themeIcon.textContent = '☀️';
+      themeText.textContent = 'Light Mode';
+    }
+  });
+
+  /* ---------------- Main App Logic ---------------- */
+  const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
+  let questions = [];
+  let selectedMarks = null;
+
+  const qText = document.getElementById('q-text');
+  const qYear = document.getElementById('q-year');
+  const addBtn = document.getElementById('add-btn');
+  const marksButtons = document.querySelectorAll('.marks-btn');
+  const qList = document.getElementById('q-list');
+  const emptyState = document.getElementById('empty-state');
+  const countTag = document.getElementById('count-tag');
+  const summaryBar = document.getElementById('summary-bar');
+  const totalMarksEl = document.getElementById('total-marks');
+  const totalPagesEl = document.getElementById('total-pages');
+  const generateBtn = document.getElementById('generate-btn');
+
+  marksButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedMarks = parseInt(btn.dataset.marks, 10);
+      marksButtons.forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+    });
+  });
+
+  addBtn.addEventListener('click', () => {
+    const text = qText.value.trim();
+    if (!text) { qText.focus(); return; }
+    if (!selectedMarks) { document.getElementById('marks-hint').style.color = 'var(--accent)'; return; }
+    questions.push({ question: text, marks: selectedMarks, year: qYear.value.trim() });
+    qText.value = '';
+    qYear.value = '';
+    selectedMarks = null;
+    marksButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+    document.getElementById('marks-hint').style.color = '';
+    render();
+  });
+
+  function moveItem(index, dir) {
+    const newIndex = index + dir;
+    if (newIndex < 0 || newIndex >= questions.length) return;
+    const tmp = questions[index];
+    questions[index] = questions[newIndex];
+    questions[newIndex] = tmp;
+    render();
+  }
+
+  function removeItem(index) {
+    questions.splice(index, 1);
+    render();
+  }
+
+  function render() {
+    qList.innerHTML = '';
+    if (questions.length === 0) {
+      emptyState.style.display = 'block';
+      summaryBar.style.display = 'none';
+      generateBtn.disabled = true;
+      countTag.textContent = '0 questions';
+      return;
+    }
+    emptyState.style.display = 'none';
+    summaryBar.style.display = 'flex';
+    generateBtn.disabled = false;
+    countTag.textContent = questions.length + (questions.length === 1 ? ' question' : ' questions');
+
+    let totalMarks = 0, totalPages = 0;
+    questions.forEach((q, i) => {
+      totalMarks += q.marks;
+      totalPages += MARK_RULES[q.marks];
+
+      const li = document.createElement('li');
+      li.className = 'q-item';
+      li.innerHTML = `
+        <div class="q-num">${i + 1}.</div>
+        <div>
+          <div class="q-text">${escapeHtml(q.question)}</div>
+          <div class="q-meta">
+            <span class="tag">${q.marks} M${q.year ? ' / ' + escapeHtml(q.year) : ''}</span>
+            <span class="tag pages">${MARK_RULES[q.marks]} pages</span>
+          </div>
+        </div>
+        <div class="q-actions">
+          <button class="icon-btn" title="Move up" data-action="up" data-i="${i}">&#8593;</button>
+          <button class="icon-btn" title="Move down" data-action="down" data-i="${i}">&#8595;</button>
+          <button class="icon-btn danger" title="Remove" data-action="remove" data-i="${i}">&#10005;</button>
+        </div>
+      `;
+      qList.appendChild(li);
+    });
+
+    totalMarksEl.textContent = totalMarks;
+    totalPagesEl.textContent = totalPages;
+
+    qList.querySelectorAll('.icon-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.i, 10);
+        const action = btn.dataset.action;
+        if (action === 'up') moveItem(i, -1);
+        else if (action === 'down') moveItem(i, 1);
+        else if (action === 'remove') removeItem(i);
+      });
+    });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  /* ---------------- PDF generation (mirrors the real QCAB layout) ---------------- */
+
+  generateBtn.addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const PAGE_W = 210, PAGE_H = 297;
+    const TOP = 15, BOTTOM = PAGE_H - 13;
+    const LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
+    const PAD = 3;
+
+    function dividers() {
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM);
+      doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM);
+    }
+
+    function indexPage() {
+      doc.setFont('times', 'normal');
+      doc.setFontSize(10.5);
+      let y = 28;
+      const left = 20, textCol = 33, maxW = PAGE_W - textCol - 20;
+      questions.forEach((q, i) => {
+        const tag = q.year ? ` [${q.marks} M / ${q.year}]` : ` [${q.marks} M]`;
+        const lines = doc.splitTextToSize(q.question + tag, maxW);
+        if (y + lines.length * 5 > BOTTOM) {
+          doc.addPage();
+          doc.setFont('times', 'normal');
+          doc.setFontSize(10.5);
+          y = 28;
+        }
+        doc.text(String(i + 1) + '.', left, y);
+        lines.forEach(line => { doc.text(line, textCol, y); y += 5; });
+        y += 4;
+      });
+      doc.addPage();
+    }
+
+    function firstPage(qNum, text, marks, year, code) {
+      dividers();
+      doc.setFont('times', 'normal');
+      doc.setFontSize(11);
+      doc.text('Q. ' + qNum, 8, TOP + 5);
+      const tag = year ? marks + ' M / ' + year : marks + ' M';
+      doc.text(tag, RIGHT_DIV + PAD, TOP + 5);
+
+      const maxW = RIGHT_DIV - LEFT_DIV - 2 * PAD;
+      const lines = doc.splitTextToSize(text, maxW);
+      let ty = TOP + 5;
+      lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 5; });
+
+      doc.setFontSize(8);
+      doc.text(code, 8, PAGE_H - 6);
+    }
+
+    function contPage(code) {
+      dividers();
+      doc.setFont('times', 'normal');
+      doc.setFontSize(9);
+      const note = ['Candidates must', 'not write on this', 'margin'];
+      let ry = TOP + 4;
+      note.forEach(line => { doc.text(line, RIGHT_DIV + PAD, ry); ry += 4; });
+      doc.setFontSize(8);
+      doc.text(code, 8, PAGE_H - 6);
+    }
+
+    indexPage();
+    questions.forEach((q, idx) => {
+      const n = idx + 1;
+      const code = 'Q' + String(n).padStart(2, '0');
+      const pages = MARK_RULES[q.marks];
+      firstPage(n, q.question, q.marks, q.year, code);
+      for (let p = 1; p < pages; p++) {
+        doc.addPage();
+        contPage(code);
+      }
+      if (idx < questions.length - 1) doc.addPage();
+    });
+
+    doc.save('qcab.pdf');
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
