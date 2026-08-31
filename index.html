@@ -592,19 +592,19 @@
       dividers();
       doc.setFont('times', 'normal');
       
-      // Header details font
-      doc.setFontSize(11);
-      doc.text('Q. ' + qNum, 8, TOP + 5);
-      const tag = year ? marks + ' M / ' + year : marks + ' M';
-      doc.text(tag, RIGHT_DIV + PAD, TOP + 5);
-
-      // Question font size increased to 14pt
+      // Question number placed strictly inside the left margin area
       doc.setFontSize(14);
+      doc.text('Q.' + qNum, 8, TOP + 6);
+
+      // Construct question text with marks and year appended directly inline
+      const tag = year ? ` [${marks} M / ${year}]` : ` [${marks} M]`;
+      const fullQuestionText = text + tag;
+
       const maxW = RIGHT_DIV - LEFT_DIV - 2 * PAD;
-      const lines = doc.splitTextToSize(text, maxW);
+      const lines = doc.splitTextToSize(fullQuestionText, maxW);
       let ty = TOP + 6;
       
-      // Increased line height step to 6.5mm to match 14pt font
+      // Line spacing adjusted to 6.5mm for 14pt text
       lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 6.5; });
 
       doc.setFontSize(8);
