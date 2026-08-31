@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QCAB Generator — Build your own Answer Booklet</title>
+<title>QCAB Generator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root{
@@ -24,18 +24,18 @@
   }
 
   [data-theme="dark"] {
-    --paper:#12161F;
-    --card:#1A202C;
-    --ink:#E2E8F0;
+    --paper:#0F172A;
+    --card:#1E293B;
+    --ink:#F8FAFC;
     --ink-soft:#94A3B8;
     --rule:#334155;
-    --rule-light:#242D3C;
+    --rule-light:#1E293B;
     --accent:#E5484D;
     --accent-dark:#FF6369;
     --accent-soft:#3C1824;
     --input-bg:#0F172A;
-    --tag-pages-bg:#1E293B;
-    --tag-pages-color:#CBD5E1;
+    --tag-pages-bg:#334155;
+    --tag-pages-color:#F1F5F9;
   }
 
   *{box-sizing:border-box;}
@@ -50,31 +50,20 @@
 
   header{
     position:relative;
-    padding:40px 24px 30px;
-    overflow:hidden;
+    padding:30px 24px 20px;
     border-bottom:1px solid var(--rule-light);
   }
-  header::before, header::after{
-    content:"";
-    position:absolute;
-    top:0; bottom:0;
-    width:1px;
-    background:var(--rule);
-    opacity:.55;
-  }
-  header::before{ left:12%; }
-  header::after{ right:16%; }
   .header-inner{
-    max-width:760px;
+    max-width:1100px;
     margin:0 auto;
     position:relative;
     text-align:center;
   }
   .theme-toggle{
     position:absolute;
-    top:-20px;
+    top:0;
     right:0;
-    background:transparent;
+    background:var(--card);
     border:1px solid var(--rule);
     color:var(--ink);
     padding:6px 12px;
@@ -85,376 +74,142 @@
     display:flex;
     align-items:center;
     gap:6px;
-    transition:all 0.2s ease;
   }
-  .theme-toggle:hover{
-    background:var(--accent-soft);
-    border-color:var(--accent);
-  }
-  .eyebrow{
-    font-family:var(--sans);
-    font-size:13px;
-    letter-spacing:.02em;
-    color:var(--accent);
-    font-weight:600;
-    margin:0 0 8px;
-  }
-  h1{
-    font-family:var(--serif);
-    font-size:clamp(26px,4vw,38px);
-    line-height:1.15;
-    margin:0 0 10px;
-    font-weight:400;
-  }
+  .theme-toggle:hover{ background:var(--accent-soft); border-color:var(--accent); }
+  .eyebrow{ font-size:13px; letter-spacing:.02em; color:var(--accent); font-weight:600; margin:0 0 4px; }
+  h1{ font-family:var(--serif); font-size:clamp(24px,3.5vw,34px); margin:0 0 6px; font-weight:400; }
 
-  /* ---- Folder Navigation Bar ---- */
-  .folder-bar-wrap {
-    max-width: 1040px;
-    margin: 20px auto 0;
-    padding: 0 24px;
-  }
-  .breadcrumbs {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .crumb {
-    cursor: pointer;
-    color: var(--accent);
-  }
+  .folder-bar-wrap { max-width: 1100px; margin: 16px auto 0; padding: 0 24px; }
+  .breadcrumbs { font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin-bottom: 8px; display: flex; gap: 6px; }
+  .crumb { cursor: pointer; color: var(--accent); }
   .crumb:hover { text-decoration: underline; }
-  .crumb-sep { color: var(--rule); }
-
-  .folder-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--rule-light);
-  }
-  .folder-tab {
-    background: var(--card);
-    border: 1px solid var(--rule);
-    color: var(--ink-soft);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-  }
-  .folder-tab:hover {
-    border-color: var(--accent);
-  }
-  .btn-new-folder {
-    background: transparent;
-    border: 1px dashed var(--rule);
-    color: var(--ink);
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .btn-new-folder:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  .folder-bar { display: flex; align-items: center; gap: 10px; overflow-x: auto; padding-bottom: 8px; border-bottom: 1px solid var(--rule-light); }
+  .folder-tab { background: var(--card); border: 1px solid var(--rule); color: var(--ink-soft); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .btn-new-folder { background: transparent; border: 1px dashed var(--rule); color: var(--ink); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
   main{
-    max-width:1040px;
+    max-width:1100px;
     margin:0 auto;
-    padding:24px 24px 80px;
+    padding:20px 24px 60px;
     display:grid;
-    grid-template-columns:400px 1fr;
-    gap:28px;
+    grid-template-columns:420px 1fr;
+    gap:24px;
     align-items:start;
   }
-  @media (max-width:840px){
-    main{ grid-template-columns:1fr; }
-    .theme-toggle{ top:-30px; }
-  }
+  @media (max-width:900px){ main{ grid-template-columns:1fr; } .theme-toggle{ position:static; margin:0 auto 10px; } }
 
-  .card{
-    background:var(--card);
-    border:1px solid var(--rule-light);
-    border-radius:6px;
-    padding:26px;
-  }
-  .card-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .card h2{
-    font-family:var(--serif);
-    font-weight:400;
-    font-size:20px;
-    margin:0;
-  }
+  .card{ background:var(--card); border:1px solid var(--rule-light); border-radius:6px; padding:20px; margin-bottom: 20px;}
+  .card h2{ font-family:var(--serif); font-weight:400; font-size:19px; margin:0 0 14px; }
 
-  label{
-    display:block;
-    font-size:13px;
-    font-weight:600;
-    color:var(--ink-soft);
-    margin:0 0 6px;
-  }
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--ink);
-    user-select: none;
-  }
-  .checkbox-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: var(--accent);
-  }
-  .field{ margin-bottom:18px; }
-  textarea, input[type=text]{
+  label{ display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin:0 0 4px; }
+  .field{ margin-bottom:14px; }
+  textarea, input[type=text], select{
     width:100%;
     font-family:var(--sans);
-    font-size:15px;
+    font-size:14px;
     color:var(--ink);
     border:1px solid var(--rule);
     border-radius:4px;
-    padding:10px 12px;
+    padding:8px 10px;
     background:var(--input-bg);
-    resize:vertical;
   }
-  textarea{ min-height:88px; line-height:1.5; }
-  textarea:focus, input:focus{
-    outline:none;
-    border-color:var(--accent);
-    box-shadow:0 0 0 3px var(--accent-soft);
+  textarea{ min-height:80px; resize:vertical; }
+
+  .mode-switch {
+    display: flex;
+    gap: 12px;
+    background: var(--paper);
+    padding: 6px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    border: 1px solid var(--rule-light);
+  }
+  .mode-switch label {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    margin: 0;
+    cursor: pointer;
+    padding: 6px 0;
+    border-radius: 4px;
+  }
+  .mode-switch input[type="radio"] { display: none; }
+  .mode-switch input[type="radio"]:checked + span {
+    font-weight: 700;
+    color: var(--accent);
   }
 
-  .marks-row{ display:flex; gap:8px; }
+  .marks-row{ display:flex; gap:6px; }
   .marks-btn{
     flex:1;
-    padding:10px 0;
+    padding:8px 0;
     text-align:center;
     border:1px solid var(--rule);
     border-radius:4px;
     background:var(--input-bg);
-    font-family:var(--sans);
-    font-size:14px;
-    font-weight:600;
-    color:var(--ink-soft);
-    cursor:pointer;
-  }
-  .marks-btn[aria-pressed="true"]{
-    background:var(--accent);
-    border-color:var(--accent);
-    color:#fff;
-  }
-  .marks-hint{
-    font-size:12px;
-    color:var(--ink-soft);
-    margin-top:6px;
-  }
-
-  .btn-primary{
-    width:100%;
-    padding:12px 0;
-    background:var(--ink);
-    color:var(--card);
-    border:none;
-    border-radius:4px;
-    font-family:var(--sans);
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-  }
-  .btn-primary:hover{ opacity: 0.9; }
-
-  .btn-cancel{
-    width:100%;
-    padding:8px 0;
-    background:transparent;
-    color:var(--ink-soft);
-    border:1px solid var(--rule);
-    border-radius:4px;
-    font-family:var(--sans);
     font-size:13px;
     font-weight:600;
+    color:var(--ink-soft);
     cursor:pointer;
-    margin-top:8px;
   }
+  .marks-btn[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
-  .btn-generate{
-    width:100%;
-    padding:15px 0;
-    background:var(--accent);
-    color:#fff;
-    border:none;
-    border-radius:4px;
-    font-family:var(--sans);
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-    margin-top:18px;
-  }
+  .btn-primary{ width:100%; padding:10px 0; background:var(--ink); color:var(--card); border:none; border-radius:4px; font-weight:600; cursor:pointer; }
+  .btn-primary:hover{ opacity: 0.9; }
+  .btn-cancel{ width:100%; padding:6px 0; background:transparent; color:var(--ink-soft); border:1px solid var(--rule); border-radius:4px; font-size:12px; cursor:pointer; margin-top:6px; }
+
+  .btn-generate{ width:100%; padding:13px 0; background:var(--accent); color:#fff; border:none; border-radius:4px; font-size:15px; font-weight:700; cursor:pointer; margin-top:16px; }
   .btn-generate:hover{ background:var(--accent-dark); }
   .btn-generate:disabled{ opacity:0.5; cursor:not-allowed; }
 
-  .btn-secondary-sm {
+  .btn-secondary-sm, .btn-danger-sm {
     background: transparent;
     border: 1px solid var(--rule);
     color: var(--ink-soft);
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
     cursor: pointer;
   }
-  .btn-secondary-sm:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .btn-danger-sm {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .btn-danger-sm:hover {
-    background: var(--accent-soft);
-  }
+  .btn-secondary-sm:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger-sm { border-color: var(--accent); color: var(--accent); }
+  .btn-danger-sm:hover { background: var(--accent-soft); }
 
-  .count-tag{
-    font-size:13px;
-    color:var(--ink-soft);
-  }
-
-  .empty-state{
-    border:1px dashed var(--rule);
-    border-radius:6px;
-    padding:36px 20px;
-    text-align:center;
-    color:var(--ink-soft);
-    font-size:14.5px;
-    line-height:1.6;
-  }
-
-  ol.q-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-  }
+  .q-list{ list-style:none; margin:0; padding:0; }
   .q-item{
     display:grid;
     grid-template-columns:24px 24px 1fr auto;
-    gap:10px;
+    gap:8px;
     align-items:start;
-    padding:14px 0;
+    padding:12px 0;
     border-bottom:1px solid var(--rule-light);
   }
   .q-item:last-child{ border-bottom:none; }
-  .q-select-chk {
-    margin-top: 4px;
-    cursor: pointer;
-    accent-color: var(--accent);
-  }
-  .q-num{
-    font-family:var(--serif);
-    font-size:16px;
-    color:var(--ink-soft);
-  }
-  .q-text{
-    font-size:14.5px;
-    line-height:1.5;
-    color:var(--ink);
-    word-break:break-word;
-  }
-  .q-meta{
-    margin-top:6px;
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-  }
-  .tag{
-    font-size:12px;
-    font-weight:600;
-    padding:2px 8px;
-    border-radius:99px;
-    background:var(--accent-soft);
-    color:var(--accent);
-  }
-  .tag.pages{
-    background:var(--tag-pages-bg);
-    color:var(--tag-pages-color);
-  }
-  .q-actions{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-  }
-  .icon-btn{
-    background:none;
-    border:none;
-    cursor:pointer;
-    font-size:14px;
-    color:var(--ink-soft);
-    padding:2px 6px;
-    border-radius:4px;
-    line-height:1;
-  }
+  .q-num{ font-family:var(--serif); font-size:15px; color:var(--ink-soft); }
+  .q-text{ font-size:14px; line-height:1.45; color:var(--ink); word-break:break-word; }
+  .q-meta{ margin-top:4px; display:flex; gap:6px; flex-wrap:wrap; }
+  .tag{ font-size:11px; font-weight:600; padding:2px 7px; border-radius:99px; background:var(--accent-soft); color:var(--accent); }
+  .tag.pages{ background:var(--tag-pages-bg); color:var(--tag-pages-color); }
+  .tag.paper{ background:var(--rule); color:var(--ink); }
+
+  .q-actions{ display:flex; flex-direction:column; gap:2px; }
+  .icon-btn{ background:none; border:none; cursor:pointer; font-size:13px; color:var(--ink-soft); padding:2px 4px; border-radius:3px; }
   .icon-btn:hover{ background:var(--rule-light); }
   .icon-btn.danger:hover{ background:var(--accent-soft); color:var(--accent); }
 
-  .summary-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:22px;
-    padding-top:18px;
-    border-top:1px solid var(--rule-light);
-    font-size:14px;
-    color:var(--ink-soft);
-  }
-  .summary-bar strong{ color:var(--ink); }
-
-  footer{
-    text-align:center;
-    padding:28px 24px 50px;
-    font-size:13px;
-    color:var(--ink-soft);
-  }
+  .summary-bar{ display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:14px; border-top:1px solid var(--rule-light); font-size:13.5px; color:var(--ink-soft); }
+  .filter-box { background: var(--paper); padding: 12px; border-radius: 6px; border: 1px solid var(--rule-light); margin-bottom: 16px; }
+  .bank-item { border: 1px solid var(--rule-light); border-radius: 6px; padding: 12px; margin-bottom: 10px; background: var(--card); }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-      <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
-    </button>
+    <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span></button>
     <p class="eyebrow">Question-cum-Answer Booklet</p>
-    <h1>Build your own QCAB, page by page</h1>
+    <h1>UPSC &amp; OPSC Question Bank Generator</h1>
   </div>
 </header>
 
@@ -464,130 +219,273 @@
 </div>
 
 <main>
-  <section class="card" aria-labelledby="add-heading">
-    <h2 id="add-heading">Add a question</h2>
-    <div class="field" style="margin-top: 16px;">
-      <label for="q-text">Question</label>
-      <textarea id="q-text" placeholder="Paste or type the question here"></textarea>
-    </div>
-    <div class="field">
-      <label>Marks</label>
-      <div class="marks-row" role="group" aria-label="Marks">
-        <button type="button" class="marks-btn" data-marks="10" aria-pressed="false">10</button>
-        <button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15</button>
-        <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20</button>
+  <!-- LEFT PANEL: Add Custom Question / Preset Manager -->
+  <section>
+    <div class="card">
+      <h2 id="add-heading">Add Custom Question</h2>
+      
+      <div class="field">
+        <label for="q-paper">Paper</label>
+        <select id="q-paper">
+          <option value="GS1">GS Paper 1</option>
+          <option value="GS2">GS Paper 2</option>
+          <option value="GS3">GS Paper 3</option>
+          <option value="GS4">GS Paper 4</option>
+          <option value="OPT1">Anthropology Optional Paper 1</option>
+          <option value="OPT2">Anthropology Optional Paper 2</option>
+        </select>
       </div>
-      <p class="marks-hint" id="marks-hint">10 → 2 pages · 15 → 3 pages · 20 → 4 pages</p>
+
+      <div class="field">
+        <label for="q-topic">Subtopic</label>
+        <select id="q-topic">
+          <!-- Dynamically populated based on Paper -->
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="q-text">Question Text</label>
+        <textarea id="q-text" placeholder="Paste or type question here..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Marks</label>
+        <div class="marks-row">
+          <button type="button" class="marks-btn" data-marks="10">10 M</button>
+          <button type="button" class="marks-btn" data-marks="15">15 M</button>
+          <button type="button" class="marks-btn" data-marks="20">20 M</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="q-year">Year (optional)</label>
+        <input type="text" id="q-year" placeholder="e.g. 2025">
+      </div>
+
+      <div class="field">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <input type="checkbox" id="include-index" checked> Include Index page in PDF
+        </label>
+      </div>
+
+      <button class="btn-primary" id="add-btn">Add to Active Folder</button>
+      <button class="btn-secondary-sm" id="add-preset-btn" style="width:100%; margin-top:8px;">Save as Preset Bank Question</button>
+      <button class="btn-cancel" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
     </div>
-    <div class="field">
-      <label for="q-year">Year (optional)</label>
-      <input type="text" id="q-year" placeholder="e.g. 2024">
-    </div>
-    <div class="field">
-      <label class="checkbox-label">
-        <input type="checkbox" id="include-index" checked> Include Index page in PDF
-      </label>
-    </div>
-    <button class="btn-primary" id="add-btn">Add question</button>
-    <button class="btn-cancel" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
   </section>
 
-  <section class="card" aria-labelledby="list-heading">
-    <div class="card-header-flex">
+  <!-- RIGHT PANEL: Question Bank Search & Active Folder Booklet -->
+  <section>
+    <!-- Preset Question Bank Search/Filter Panel -->
+    <div class="card">
+      <h2>Browse Preset Question Bank</h2>
+      <div class="mode-switch">
+        <label>
+          <input type="radio" name="bankMode" value="year" checked id="mode-year">
+          <span>Filter by Year</span>
+        </label>
+        <label>
+          <input type="radio" name="bankMode" value="topic" id="mode-topic">
+          <span>Filter by Subtopic</span>
+        </label>
+      </div>
+
+      <div class="filter-box">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <select id="filter-paper" style="flex:1;">
+            <option value="ALL">-- Select Paper --</option>
+            <option value="GS1">GS Paper 1</option>
+            <option value="GS2">GS Paper 2</option>
+            <option value="GS3">GS Paper 3</option>
+            <option value="GS4">GS Paper 4</option>
+            <option value="OPT1">Anthropology Optional Paper 1</option>
+            <option value="OPT2">Anthropology Optional Paper 2</option>
+          </select>
+
+          <select id="filter-year" style="flex:1;">
+            <option value="ALL">-- Select Year --</option>
+          </select>
+
+          <select id="filter-topic" style="flex:1; display:none;">
+            <option value="ALL">-- Select Subtopic --</option>
+          </select>
+
+          <button class="btn-primary" id="search-bank-btn" style="width:auto; padding:8px 16px;">Search Questions</button>
+        </div>
+      </div>
+
+      <div id="bank-results-container">
+        <!-- Results load ONLY when requested -->
+        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select filters above and click "Search Questions" to browse preset questions.</p>
+      </div>
+    </div>
+
+    <!-- Active Booklet Questions -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">Active Folder Questions</h2>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-secondary-sm" id="rename-folder-btn">Rename Folder</button>
+          <button class="btn-danger-sm" id="delete-folder-btn">Delete Folder</button>
+          <button class="btn-secondary-sm" id="clear-q-btn">Clear All</button>
+        </div>
+      </div>
+
       <div>
-        <h2 id="list-heading">Your booklet</h2>
-        <span class="count-tag" id="count-tag">0 questions</span>
+        <span style="font-size:12px; color:var(--ink-soft);" id="count-tag">0 questions</span>
       </div>
-      <div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button class="btn-secondary-sm" id="rename-folder-btn">Rename Folder</button>
-        <button class="btn-danger-sm" id="delete-folder-btn">Delete Folder</button>
-        <button class="btn-danger-sm" id="delete-selected-btn" style="display:none;">Delete Selected</button>
-        <button class="btn-secondary-sm" id="clear-q-btn">Clear All Questions</button>
+
+      <div id="empty-state" style="text-align:center; color:var(--ink-soft); padding:30px; border:1px dashed var(--rule); margin-top:10px;">
+        No questions added to this booklet yet. Add from the preset bank above or create custom questions on the left!
       </div>
+
+      <ol class="q-list" id="q-list"></ol>
+
+      <div class="summary-bar" id="summary-bar" style="display:none;">
+        <span>Total marks: <strong id="total-marks">0</strong></span>
+        <span>Answer pages: <strong id="total-pages">0</strong></span>
+      </div>
+
+      <button class="btn-generate" id="generate-btn" disabled>Generate &amp; Download PDF Booklet</button>
     </div>
-
-    <div id="empty-state" class="empty-state">
-      No questions in this folder — add your first one on the left, or create a subfolder above.
-    </div>
-
-    <ol class="q-list" id="q-list"></ol>
-
-    <div class="summary-bar" id="summary-bar" style="display:none;">
-      <span>Total marks: <strong id="total-marks">0</strong></span>
-      <span>Answer pages: <strong id="total-pages">0</strong></span>
-    </div>
-
-    <button class="btn-generate" id="generate-btn" disabled>Generate &amp; download PDF</button>
   </section>
 </main>
 
-<footer>
-  Project by Biswajit Nahak
-</footer>
+<footer>Project by Biswajit Nahak</footer>
 
 <script>
 (function(){
-  /* ---------------- Theme Toggle Logic ---------------- */
+  /* ------------ Theme Toggle Logic ------------ */
   const themeToggle = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
   const themeText = document.getElementById('theme-text');
-  
-  const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  if (savedTheme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    themeIcon.textContent = '☀️';
-    themeText.textContent = 'Light Mode';
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '☀️'; themeText.textContent = 'Light Mode';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      themeIcon.textContent = '🌙'; themeText.textContent = 'Dark Mode';
+    }
   }
+
+  const savedTheme = localStorage.getItem('qcab_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
 
   themeToggle.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('theme', 'light');
-      themeIcon.textContent = '🌙';
-      themeText.textContent = 'Dark Mode';
-    } else {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-      themeIcon.textContent = '☀️';
-      themeText.textContent = 'Light Mode';
-    }
+    const nextTheme = isDark ? 'light' : 'dark';
+    localStorage.setItem('qcab_theme', nextTheme);
+    applyTheme(nextTheme);
   });
 
-  /* ---------------- Nested Folder Data Model ---------------- */
-  const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
-
-  const defaultRoot = {
-    id: 'root',
-    name: 'General Booklet',
-    parentId: null,
-    subfolders: [],
-    questions: []
+  /* ------------ Syllabus Structure ------------ */
+  const SYLLABUS = {
+    GS1: ['Art & Culture', 'Modern History', 'Post Independence', 'World History', 'Physical Geography', 'Human Geography', 'Society'],
+    GS2: ['Polity', 'Governance', 'Social Justice', 'International Relations'],
+    GS3: ['Economy', 'Agriculture', 'Internal Security', 'Environment & Disaster Management', 'Science & Tech'],
+    GS4: ['Ethics Theory', 'Case Studies'],
+    OPT1: [
+      '1.1 Meaning, Scope & Development of Anthropology',
+      '1.2 Relationships with Other Disciplines',
+      '1.3 Main Branches of Anthropology (Scope & Relevance)',
+      '1.4 Human Evolution & Emergence of Man (Factors & Theories)',
+      '1.5 Characteristics of Primates & Evolutionary Trends',
+      '1.6 Phylogenetic Status & Distribution of Fossils (Australopithecus to Cro-Magnon)',
+      '1.7 Biological Basis of Life (Cell, DNA, Mutation, Chromosomes)',
+      '1.8 Prehistoric Archaeology & Prehistoric Cultures (Paleolithic to Iron Age)',
+      '2.1 Nature of Culture & Ethnocentrism vs Cultural Relativism',
+      '2.2 Nature of Society, Social Institutions & Stratification',
+      '2.3 Marriage (Types, Laws, Regulations & Payments)',
+      '2.4 Family (Types, Functions & Contemporary Changes)',
+      '2.5 Kinship (Descent, Alliance, Terminology & Groups)',
+      '3.0 Economic Organization & Economic Anthropology',
+      '4.0 Political Organization & Social Control',
+      '5.0 Religion, Magic & Science',
+      '6.0 (a) Classical Evolutionism (Tylor, Morgan, Frazer)',
+      '6.0 (b) Historical Particularism (Boas) & Diffusionism',
+      '6.0 (c) Functionalism (Malinowski) & Structural-Functionalism (Radcliffe-Brown)',
+      '6.0 (d) Structuralism (Levi-Strauss, E. Leach)',
+      '6.0 (e) Culture & Personality (Benedict, Mead, Linton, Kardiner, Cora-du-Bois)',
+      '6.0 (f) Neo-Evolutionism (Childe, White, Steward, Sahlins, Service)',
+      '6.0 (g) Cultural Materialism (Harris)',
+      '6.0 (h) Symbolic & Interpretive Theories (Turner, Schneider, Geertz)',
+      '6.0 (i) Cognitive Theories (Tyler, Conklin)',
+      '6.0 (j) Post-Modernism in Anthropology',
+      '7.0 Culture, Language & Communication',
+      '8.0 Research Methods in Anthropology',
+      '9.1 Human Genetics Methods & Applications',
+      '9.2 Mendelian Genetics in Man',
+      '9.3 Genetic Polymorphism, Selection & Hardy-Weinberg Law',
+      '9.4 Chromosomes & Chromosomal Aberrations',
+      '9.5 Race & Racism',
+      '9.6 Age, Sex & Population Variation as Genetic Marker',
+      '9.7 Ecological Anthropology & Bio-cultural Adaptations',
+      '9.8 Epidemiological Anthropology',
+      '10.0 Concept of Human Growth & Development',
+      '11.1 Bioevents to Fertility & Demographic Patterns',
+      '11.2 Demographic Theories',
+      '11.3 Biological & Socio-ecological Factors in Demography',
+      '12.0 Applications of Anthropology'
+    ],
+    OPT2: [
+      '1.1 Evolution of Indian Culture & Civilization (Prehistoric to Harappan)',
+      '1.2 Palaeo-Anthropological Evidences from India (Siwaliks & Narmada)',
+      '1.3 Ethno-archaeology in India',
+      '2.0 Demographic Profile of India (Ethnic & Linguistic Elements)',
+      '3.1 Traditional Indian Social System (Varnashram, Purushartha, Karma)',
+      '3.2 Caste System in India, Jajmani & Tribe-Caste Continuum',
+      '3.3 Sacred Complex & Nature-Man-Spirit Complex',
+      '3.4 Impact of Buddhism, Jainism, Islam & Christianity on Indian Society',
+      '4.0 Emergence, Growth & Development of Anthropology in India',
+      '5.1 Indian Village & Social Structure',
+      '5.2 Linguistic & Religious Minorities',
+      '5.3 Processes of Socio-Cultural Change (Sanskritization, Westernization, etc.)',
+      '6.1 Tribal Situation in India (Variability & Distribution)',
+      '6.2 Problems of Tribal Communities',
+      '6.3 Developmental Projects, Displacement & Forest Policies',
+      '7.1 Exploitation, Deprivation & Constitutional Safeguards for SC/ST',
+      '7.2 Social Change & Contemporary Tribal Societies',
+      '7.3 Ethnicity, Tribal Unrest & Regionalism',
+      '8.1 Impact of World Religions on Tribal Societies',
+      '8.2 Tribe & Nation State (Comparative Study)',
+      '9.1 History of Tribal Administration, PTGs/PVTGs & Development',
+      '9.2 Role of Anthropology in Tribal & Rural Development',
+      '9.3 Anthropology in Understanding Regionalism, Communalism & Movements'
+    ]
   };
 
+  /* ------------ Question Bank Storage ------------ */
+  let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
+
+  function savePresets() {
+    localStorage.setItem('qcab_preset_bank', JSON.stringify(presetBank));
+  }
+
+  /* ------------ Core Folder State Management ------------ */
+  const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
+  const defaultRoot = { id: 'root', name: 'General Booklet', parentId: null, subfolders: [], questions: [] };
   let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: defaultRoot };
   let activeFolderId = localStorage.getItem('qcab_active_nested_folder') || 'root';
-
   if (!folderMap[activeFolderId]) activeFolderId = 'root';
-
-  let editingIndex = null; // Track which question is currently being edited
+  let editingIndex = null;
 
   function saveState() {
     localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
     localStorage.setItem('qcab_active_nested_folder', activeFolderId);
   }
+  function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
 
-  function getActiveFolder() {
-    return folderMap[activeFolderId] || folderMap['root'];
-  }
-
-  /* ---------------- DOM Elements ---------------- */
+  /* ------------ Elements ------------ */
   const breadcrumbs = document.getElementById('breadcrumbs');
   const folderBar = document.getElementById('folder-bar');
-  const addHeading = document.getElementById('add-heading');
+  const qPaper = document.getElementById('q-paper');
+  const qTopic = document.getElementById('q-topic');
   const qText = document.getElementById('q-text');
   const qYear = document.getElementById('q-year');
   const addBtn = document.getElementById('add-btn');
+  const addPresetBtn = document.getElementById('add-preset-btn');
   const cancelEditBtn = document.getElementById('cancel-edit-btn');
   const marksButtons = document.querySelectorAll('.marks-btn');
   const qList = document.getElementById('q-list');
@@ -597,13 +495,18 @@
   const totalMarksEl = document.getElementById('total-marks');
   const totalPagesEl = document.getElementById('total-pages');
   const generateBtn = document.getElementById('generate-btn');
-  const includeIndexCheckbox = document.getElementById('include-index');
-  const renameFolderBtn = document.getElementById('rename-folder-btn');
-  const deleteFolderBtn = document.getElementById('delete-folder-btn');
-  const deleteSelectedBtn = document.getElementById('delete-selected-btn');
-  const clearQBtn = document.getElementById('clear-q-btn');
 
-  let selectedMarks = null;
+  // Filter Elements
+  const modeYearRadio = document.getElementById('mode-year');
+  const modeTopicRadio = document.getElementById('mode-topic');
+  const filterPaper = document.getElementById('filter-paper');
+  const filterYear = document.getElementById('filter-year');
+  const filterTopic = document.getElementById('filter-topic');
+  const searchBankBtn = document.getElementById('search-bank-btn');
+  const bankResultsContainer = document.getElementById('bank-results-container');
+
+  let selectedMarks = 10;
+  marksButtons[0].setAttribute('aria-pressed', 'true');
 
   marksButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -612,33 +515,120 @@
     });
   });
 
-  /* ---------------- Breadcrumbs & Navigation ---------------- */
+  /* ------------ Populate Form Subtopics ------------ */
+  function populateFormSubtopics() {
+    qTopic.innerHTML = '';
+    const paper = qPaper.value;
+    const list = SYLLABUS[paper] || [];
+    list.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      qTopic.appendChild(opt);
+    });
+  }
+  qPaper.addEventListener('change', populateFormSubtopics);
+
+  /* ------------ Search & Filter Preset Bank ------------ */
+  function updateFilterMode() {
+    if (modeYearRadio.checked) {
+      filterYear.style.display = 'inline-block';
+      filterTopic.style.display = 'none';
+    } else {
+      filterYear.style.display = 'none';
+      filterTopic.style.display = 'inline-block';
+      populateFilterTopics();
+    }
+  }
+
+  function populateFilterTopics() {
+    filterTopic.innerHTML = '<option value="ALL">-- All Subtopics --</option>';
+    const paper = filterPaper.value;
+    let list = [];
+    if (paper === 'ALL') {
+      Object.values(SYLLABUS).forEach(arr => list.push(...arr));
+      list = [...new Set(list)];
+    } else {
+      list = SYLLABUS[paper] || [];
+    }
+    list.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      filterTopic.appendChild(opt);
+    });
+  }
+
+  function populateFilterYears() {
+    filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
+    const years = [...new Set(presetBank.map(q => q.year).filter(Boolean))].sort().reverse();
+    years.forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = y;
+      filterYear.appendChild(opt);
+    });
+  }
+
+  filterPaper.addEventListener('change', () => { populateFilterTopics(); });
+  modeYearRadio.addEventListener('change', updateFilterMode);
+  modeTopicRadio.addEventListener('change', updateFilterMode);
+  searchBankBtn.addEventListener('click', renderBankResults);
+
+  function renderBankResults() {
+    bankResultsContainer.innerHTML = '';
+    const selectedP = filterPaper.value;
+    const selectedY = filterYear.value;
+    const selectedT = filterTopic.value;
+    const isYearMode = modeYearRadio.checked;
+
+    const filtered = presetBank.filter(q => {
+      if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
+      if (isYearMode) {
+        if (selectedY !== 'ALL' && q.year !== selectedY) return false;
+      } else {
+        if (selectedT !== 'ALL' && q.topic !== selectedT) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No preset questions found matching your filter selection.</p>';
+      return;
+    }
+
+    filtered.forEach(q => {
+      const div = document.createElement('div');
+      div.className = 'bank-item';
+      div.innerHTML = `
+        <div style="font-size:13.5px; font-weight:600; margin-bottom:6px;">${escapeHtml(q.question)}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="tag paper">${q.paper}</span>
+            <span class="tag">${escapeHtml(q.topic)}</span>
+            <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
+          </div>
+          <button class="btn-secondary-sm" data-id="${q.id}">+ Add to Booklet</button>
+        </div>
+      `;
+      div.querySelector('button').addEventListener('click', () => {
+        getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
+        saveState();
+        renderQuestions();
+      });
+      bankResultsContainer.appendChild(div);
+    });
+  }
+
+  /* ------------ Navigation & Folders ------------ */
   function renderBreadcrumbs() {
     breadcrumbs.innerHTML = '';
     const path = [];
     let curr = getActiveFolder();
-
-    while (curr) {
-      path.unshift(curr);
-      curr = curr.parentId ? folderMap[curr.parentId] : null;
-    }
-
+    while (curr) { path.unshift(curr); curr = curr.parentId ? folderMap[curr.parentId] : null; }
     path.forEach((f, idx) => {
-      if (idx > 0) {
-        const sep = document.createElement('span');
-        sep.className = 'crumb-sep';
-        sep.textContent = '/';
-        breadcrumbs.appendChild(sep);
-      }
+      if (idx > 0) breadcrumbs.appendChild(document.createTextNode(' / '));
       const crumb = document.createElement('span');
       crumb.className = 'crumb';
       crumb.textContent = f.name;
-      crumb.addEventListener('click', () => {
-        resetForm();
-        activeFolderId = f.id;
-        saveState();
-        renderAll();
-      });
+      crumb.addEventListener('click', () => { activeFolderId = f.id; saveState(); renderAll(); });
       breadcrumbs.appendChild(crumb);
     });
   }
@@ -646,38 +636,24 @@
   function renderFolders() {
     folderBar.innerHTML = '';
     const current = getActiveFolder();
-
     current.subfolders.forEach(subId => {
       const sub = folderMap[subId];
       if (!sub) return;
       const tab = document.createElement('button');
       tab.className = 'folder-tab';
       tab.innerHTML = `📁 ${escapeHtml(sub.name)}`;
-      tab.addEventListener('click', () => {
-        resetForm();
-        activeFolderId = sub.id;
-        saveState();
-        renderAll();
-      });
+      tab.addEventListener('click', () => { activeFolderId = sub.id; saveState(); renderAll(); });
       folderBar.appendChild(tab);
     });
-
     const newBtn = document.createElement('button');
     newBtn.className = 'btn-new-folder';
-    newBtn.innerHTML = '+ New Subfolder';
+    newBtn.textContent = '+ New Folder';
     newBtn.addEventListener('click', () => {
       const name = prompt(`Create subfolder under "${current.name}":`);
       if (name && name.trim()) {
         const newId = 'folder_' + Date.now();
-        folderMap[newId] = {
-          id: newId,
-          name: name.trim(),
-          parentId: current.id,
-          subfolders: [],
-          questions: []
-        };
+        folderMap[newId] = { id: newId, name: name.trim(), parentId: current.id, subfolders: [], questions: [] };
         current.subfolders.push(newId);
-        resetForm();
         activeFolderId = newId;
         saveState();
         renderAll();
@@ -686,196 +662,86 @@
     folderBar.appendChild(newBtn);
   }
 
-  /* ---------------- Folder Management ---------------- */
-  renameFolderBtn.addEventListener('click', () => {
-    const current = getActiveFolder();
-    const newName = prompt('Rename folder:', current.name);
-    if (newName && newName.trim()) {
-      current.name = newName.trim();
-      saveState();
-      renderAll();
-    }
-  });
-
-  function deleteSubfoldersRecursively(folderId) {
-    const target = folderMap[folderId];
-    if (!target) return;
-    target.subfolders.forEach(childId => {
-      deleteSubfoldersRecursively(childId);
-    });
-    delete folderMap[folderId];
-  }
-
-  deleteFolderBtn.addEventListener('click', () => {
-    const current = getActiveFolder();
-    if (current.id === 'root') {
-      alert('The root folder "General Booklet" cannot be deleted.');
-      return;
-    }
-
-    if (confirm(`Are you sure you want to delete "${current.name}" and all its subfolders/questions?`)) {
-      const parent = folderMap[current.parentId];
-      if (parent) {
-        parent.subfolders = parent.subfolders.filter(id => id !== current.id);
-      }
-      deleteSubfoldersRecursively(current.id);
-      resetForm();
-      activeFolderId = parent ? parent.id : 'root';
-      saveState();
-      renderAll();
-    }
-  });
-
-  /* ---------------- Clearing & Deleting Questions ---------------- */
-  clearQBtn.addEventListener('click', () => {
-    const current = getActiveFolder();
-    if (current.questions.length === 0) return;
-    if (confirm(`Are you sure you want to clear ALL questions in "${current.name}"?`)) {
-      current.questions = [];
-      resetForm();
-      saveState();
-      renderQuestions();
-    }
-  });
-
-  deleteSelectedBtn.addEventListener('click', () => {
-    const checkboxes = qList.querySelectorAll('.q-select-chk:checked');
-    if (checkboxes.length === 0) return;
-    if (confirm(`Delete ${checkboxes.length} selected question(s)?`)) {
-      const indexesToRemove = Array.from(checkboxes).map(cb => parseInt(cb.dataset.i, 10));
-      const current = getActiveFolder();
-      current.questions = current.questions.filter((_, idx) => !indexesToRemove.includes(idx));
-      resetForm();
-      saveState();
-      renderQuestions();
-    }
-  });
-
-  function updateDeleteSelectedVisibility() {
-    const selectedCount = qList.querySelectorAll('.q-select-chk:checked').length;
-    deleteSelectedBtn.style.display = selectedCount > 0 ? 'inline-block' : 'none';
-  }
-
-  /* ---------------- Add & Edit Question Logic ---------------- */
+  /* ------------ Add & Edit Question Logic ------------ */
   function resetForm() {
     editingIndex = null;
-    qText.value = '';
-    qYear.value = '';
-    selectedMarks = null;
-    marksButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
-    addHeading.textContent = 'Add a question';
-    addBtn.textContent = 'Add question';
+    qText.value = ''; qYear.value = '';
+    document.getElementById('add-heading').textContent = 'Add Custom Question';
+    addBtn.textContent = 'Add to Active Folder';
     cancelEditBtn.style.display = 'none';
-    document.getElementById('marks-hint').style.color = '';
   }
-
   cancelEditBtn.addEventListener('click', resetForm);
 
   addBtn.addEventListener('click', () => {
     const text = qText.value.trim();
     if (!text) { qText.focus(); return; }
-    if (!selectedMarks) { document.getElementById('marks-hint').style.color = 'var(--accent)'; return; }
+
+    const item = {
+      question: text,
+      marks: selectedMarks,
+      year: qYear.value.trim(),
+      paper: qPaper.value,
+      topic: qTopic.value
+    };
 
     const currentFolder = getActiveFolder();
-
     if (editingIndex !== null) {
-      // Update existing question
-      currentFolder.questions[editingIndex] = {
-        question: text,
-        marks: selectedMarks,
-        year: qYear.value.trim()
-      };
+      currentFolder.questions[editingIndex] = item;
     } else {
-      // Add new question
-      currentFolder.questions.push({
-        question: text,
-        marks: selectedMarks,
-        year: qYear.value.trim()
-      });
+      currentFolder.questions.push(item);
     }
-
     resetForm();
     saveState();
     renderQuestions();
   });
 
-  function startEditItem(index) {
-    const q = getActiveFolder().questions[index];
-    if (!q) return;
-
-    editingIndex = index;
-    qText.value = q.question;
-    qYear.value = q.year || '';
-    selectedMarks = q.marks;
-
-    marksButtons.forEach(b => {
-      b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false');
-    });
-
-    addHeading.textContent = 'Edit question #' + (index + 1);
-    addBtn.textContent = 'Update question';
-    cancelEditBtn.style.display = 'block';
-    qText.focus();
-  }
-
-  function moveItem(index, dir) {
-    const questions = getActiveFolder().questions;
-    const newIndex = index + dir;
-    if (newIndex < 0 || newIndex >= questions.length) return;
-    const tmp = questions[index];
-    questions[index] = questions[newIndex];
-    questions[newIndex] = tmp;
+  /* ------------ Save as Preset Bank Question ------------ */
+  addPresetBtn.addEventListener('click', () => {
+    const text = qText.value.trim();
+    if (!text) { qText.focus(); return; }
+    const newPreset = {
+      id: 'p_' + Date.now(),
+      paper: qPaper.value,
+      topic: qTopic.value,
+      year: qYear.value.trim() || '2025',
+      marks: selectedMarks,
+      question: text
+    };
+    presetBank.push(newPreset);
+    savePresets();
+    populateFilterYears();
+    alert('Question added to Preset Bank!');
     resetForm();
-    saveState();
-    renderQuestions();
-  }
+  });
 
-  function removeItem(index) {
-    const questions = getActiveFolder().questions;
-    questions.splice(index, 1);
-    resetForm();
-    saveState();
-    renderQuestions();
-  }
-
+  /* ------------ Render Active Folder Questions ------------ */
   function renderQuestions() {
     const questions = getActiveFolder().questions;
     qList.innerHTML = '';
-    updateDeleteSelectedVisibility();
-    
     if (questions.length === 0) {
-      emptyState.style.display = 'block';
-      summaryBar.style.display = 'none';
-      generateBtn.disabled = true;
-      countTag.textContent = '0 questions';
-      return;
+      emptyState.style.display = 'block'; summaryBar.style.display = 'none'; generateBtn.disabled = true; countTag.textContent = '0 questions'; return;
     }
-    emptyState.style.display = 'none';
-    summaryBar.style.display = 'flex';
-    generateBtn.disabled = false;
-    countTag.textContent = questions.length + (questions.length === 1 ? ' question' : ' questions');
+    emptyState.style.display = 'none'; summaryBar.style.display = 'flex'; generateBtn.disabled = false; countTag.textContent = questions.length + ' question(s)';
 
     let totalMarks = 0, totalPages = 0;
     questions.forEach((q, i) => {
-      totalMarks += q.marks;
-      totalPages += MARK_RULES[q.marks];
-
+      totalMarks += q.marks; totalPages += MARK_RULES[q.marks];
       const li = document.createElement('li');
       li.className = 'q-item';
       li.innerHTML = `
-        <input type="checkbox" class="q-select-chk" data-i="${i}" title="Select for deletion">
+        <div style="width:16px;"></div>
         <div class="q-num">${i + 1}.</div>
         <div>
           <div class="q-text">${escapeHtml(q.question)}</div>
           <div class="q-meta">
-            <span class="tag">${q.marks} M${q.year ? ' / ' + escapeHtml(q.year) : ''}</span>
+            ${q.paper ? `<span class="tag paper">${q.paper}</span>` : ''}
+            ${q.topic ? `<span class="tag">${escapeHtml(q.topic)}</span>` : ''}
+            <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
             <span class="tag pages">${MARK_RULES[q.marks]} pages</span>
           </div>
         </div>
         <div class="q-actions">
-          <button class="icon-btn" title="Edit question" data-action="edit" data-i="${i}">✏️</button>
-          <button class="icon-btn" title="Move up" data-action="up" data-i="${i}">&#8593;</button>
-          <button class="icon-btn" title="Move down" data-action="down" data-i="${i}">&#8595;</button>
+          <button class="icon-btn" title="Edit" data-action="edit" data-i="${i}">✏️</button>
           <button class="icon-btn danger" title="Remove" data-action="remove" data-i="${i}">&#10005;</button>
         </div>
       `;
@@ -885,129 +751,113 @@
     totalMarksEl.textContent = totalMarks;
     totalPagesEl.textContent = totalPages;
 
-    qList.querySelectorAll('.q-select-chk').forEach(chk => {
-      chk.addEventListener('change', updateDeleteSelectedVisibility);
-    });
-
     qList.querySelectorAll('.icon-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const i = parseInt(btn.dataset.i, 10);
-        const action = btn.dataset.action;
-        if (action === 'edit') startEditItem(i);
-        else if (action === 'up') moveItem(i, -1);
-        else if (action === 'down') moveItem(i, 1);
-        else if (action === 'remove') removeItem(i);
+        if (btn.dataset.action === 'edit') {
+          const q = questions[i];
+          editingIndex = i;
+          qText.value = q.question;
+          qYear.value = q.year || '';
+          qPaper.value = q.paper || 'GS1';
+          populateFormSubtopics();
+          qTopic.value = q.topic || '';
+          selectedMarks = q.marks;
+          marksButtons.forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false'));
+          document.getElementById('add-heading').textContent = 'Edit Question #' + (i + 1);
+          addBtn.textContent = 'Update Question';
+          cancelEditBtn.style.display = 'block';
+        } else if (btn.dataset.action === 'remove') {
+          questions.splice(i, 1);
+          saveState();
+          renderQuestions();
+        }
       });
     });
   }
 
-  function renderAll() {
-    renderBreadcrumbs();
-    renderFolders();
-    renderQuestions();
-  }
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  /* ---------------- PDF Generation Logic ---------------- */
+  /* ------------ PDF Generation ------------ */
   generateBtn.addEventListener('click', () => {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
-
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28, PAD = 3;
 
-    const PAGE_W = 210, PAGE_H = 297;
-    const TOP = 15, BOTTOM = PAGE_H - 13;
-    const LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
-    const PAD = 3;
+    function dividers() { doc.setDrawColor(0); doc.setLineWidth(0.3); doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM); doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM); }
 
-    function dividers() {
-      doc.setDrawColor(0, 0, 0);
-      doc.setLineWidth(0.3);
-      doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM);
-      doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM);
-    }
-
-    function indexPage() {
-      doc.setFont('times', 'normal');
-      doc.setFontSize(11);
-      let y = 28;
-      const left = 20, textCol = 33, maxW = PAGE_W - textCol - 20;
+    if (document.getElementById('include-index').checked) {
+      doc.setFont('times', 'normal'); doc.setFontSize(11); let y = 28;
       questions.forEach((q, i) => {
-        const tag = q.year ? ` [${q.marks} M / ${q.year}]` : ` [${q.marks} M]`;
-        const lines = doc.splitTextToSize(q.question + tag, maxW);
-        if (y + lines.length * 5 > BOTTOM) {
-          doc.addPage();
-          doc.setFont('times', 'normal');
-          doc.setFontSize(11);
-          y = 28;
-        }
-        doc.text(String(i + 1) + '.', left, y);
-        lines.forEach(line => { doc.text(line, textCol, y); y += 5; });
+        const lines = doc.splitTextToSize(`${i + 1}. ${q.question} [${q.marks} M / ${q.year || ''}]`, PAGE_W - 50);
+        lines.forEach(line => { doc.text(line, 25, y); y += 5; });
         y += 4;
       });
       doc.addPage();
     }
 
-    function firstPage(qNum, text, marks, year, code) {
-      dividers();
-      doc.setFont('times', 'normal');
-      
-      doc.setFontSize(14);
-      doc.text('Q.' + qNum, 8, TOP + 6);
-
-      const tag = year ? ` [${marks} M / ${year}]` : ` [${marks} M]`;
-      const fullQuestionText = text + tag;
-
-      const maxW = RIGHT_DIV - LEFT_DIV - 2 * PAD;
-      const lines = doc.splitTextToSize(fullQuestionText, maxW);
-      let ty = TOP + 6;
-      
-      lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 6.5; });
-
-      doc.setFontSize(8);
-      doc.text(code, 8, PAGE_H - 6);
-    }
-
-    function contPage(code) {
-      dividers();
-      doc.setFont('times', 'normal');
-      doc.setFontSize(9);
-      const note = ['Candidates must', 'not write on this', 'margin'];
-      let ry = TOP + 4;
-      note.forEach(line => { doc.text(line, RIGHT_DIV + PAD, ry); ry += 4; });
-      doc.setFontSize(8);
-      doc.text(code, 8, PAGE_H - 6);
-    }
-
-    if (includeIndexCheckbox.checked) {
-      indexPage();
-    }
-
     questions.forEach((q, idx) => {
-      const n = idx + 1;
-      const code = 'Q' + String(n).padStart(2, '0');
-      const pages = MARK_RULES[q.marks];
-      firstPage(n, q.question, q.marks, q.year, code);
-      for (let p = 1; p < pages; p++) {
+      dividers();
+      doc.setFont('times', 'normal'); doc.setFontSize(13);
+      doc.text('Q.' + (idx + 1), 8, TOP + 6);
+      const lines = doc.splitTextToSize(`${q.question} [${q.marks} M${q.year ? ' / ' + q.year : ''}]`, RIGHT_DIV - LEFT_DIV - 6);
+      let ty = TOP + 6;
+      lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 6; });
+
+      for (let p = 1; p < MARK_RULES[q.marks]; p++) {
         doc.addPage();
-        contPage(code);
+        dividers();
       }
       if (idx < questions.length - 1) doc.addPage();
     });
 
-    const filename = getActiveFolder().name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_qcab.pdf';
-    doc.save(filename);
+    doc.save(`${getActiveFolder().name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_qcab.pdf`);
   });
+
+  /* ------------ Folder Controls ------------ */
+  document.getElementById('rename-folder-btn').addEventListener('click', () => {
+    const current = getActiveFolder();
+    const newName = prompt('Rename folder:', current.name);
+    if (newName && newName.trim()) {
+      current.name = newName.trim();
+      saveState();
+      renderAll();
+    }
+  });
+
+  document.getElementById('delete-folder-btn').addEventListener('click', () => {
+    const current = getActiveFolder();
+    if (current.id === 'root') { alert('Cannot delete root folder.'); return; }
+    if (confirm(`Delete folder "${current.name}"?`)) {
+      delete folderMap[current.id];
+      activeFolderId = 'root';
+      saveState();
+      renderAll();
+    }
+  });
+
+  document.getElementById('clear-q-btn').addEventListener('click', () => {
+    if (confirm('Clear all questions in this booklet?')) {
+      getActiveFolder().questions = [];
+      saveState();
+      renderQuestions();
+    }
+  });
+
+  function renderAll() {
+    renderBreadcrumbs();
+    renderFolders();
+    populateFormSubtopics();
+    populateFilterTopics();
+    populateFilterYears();
+    updateFilterMode();
+    renderQuestions();
+  }
+
+  function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
   renderAll();
 })();
 </script>
-
 </body>
 </html>
