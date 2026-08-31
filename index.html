@@ -48,10 +48,9 @@
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  /* ---- header with margin-line motif ---- */
   header{
     position:relative;
-    padding:56px 24px 40px;
+    padding:40px 24px 30px;
     overflow:hidden;
     border-bottom:1px solid var(--rule-light);
   }
@@ -73,7 +72,7 @@
   }
   .theme-toggle{
     position:absolute;
-    top:-30px;
+    top:-20px;
     right:0;
     background:transparent;
     border:1px solid var(--rule);
@@ -98,27 +97,85 @@
     letter-spacing:.02em;
     color:var(--accent);
     font-weight:600;
-    margin:0 0 10px;
+    margin:0 0 8px;
   }
   h1{
     font-family:var(--serif);
-    font-size:clamp(28px,4.5vw,42px);
+    font-size:clamp(26px,4vw,38px);
     line-height:1.15;
-    margin:0 0 14px;
+    margin:0 0 10px;
     font-weight:400;
   }
-  header p{
-    font-size:16px;
-    color:var(--ink-soft);
-    line-height:1.55;
-    max-width:520px;
-    margin:0 auto;
+
+  /* ---- Folder Navigation Bar ---- */
+  .folder-bar-wrap {
+    max-width: 1040px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+  }
+  .breadcrumbs {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .crumb {
+    cursor: pointer;
+    color: var(--accent);
+  }
+  .crumb:hover { text-decoration: underline; }
+  .crumb-sep { color: var(--rule); }
+
+  .folder-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule-light);
+  }
+  .folder-tab {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .folder-tab:hover {
+    border-color: var(--accent);
+  }
+  .btn-new-folder {
+    background: transparent;
+    border: 1px dashed var(--rule);
+    color: var(--ink);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-new-folder:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   main{
     max-width:1040px;
     margin:0 auto;
-    padding:40px 24px 80px;
+    padding:24px 24px 80px;
     display:grid;
     grid-template-columns:400px 1fr;
     gap:28px;
@@ -126,7 +183,7 @@
   }
   @media (max-width:840px){
     main{ grid-template-columns:1fr; }
-    .theme-toggle{ top:-40px; }
+    .theme-toggle{ top:-30px; }
   }
 
   .card{
@@ -135,11 +192,19 @@
     border-radius:6px;
     padding:26px;
   }
+  .card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
   .card h2{
     font-family:var(--serif);
     font-weight:400;
     font-size:20px;
-    margin:0 0 20px;
+    margin:0;
   }
 
   label{
@@ -221,7 +286,6 @@
     cursor:pointer;
   }
   .btn-primary:hover{ opacity: 0.9; }
-  .btn-primary:disabled{ background:#B9B9B9; cursor:not-allowed; }
 
   .btn-generate{
     width:100%;
@@ -239,14 +303,34 @@
   .btn-generate:hover{ background:var(--accent-dark); }
   .btn-generate:disabled{ opacity:0.5; cursor:not-allowed; }
 
-  /* ---- question list ---- */
-  .list-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    margin-bottom:18px;
+  .btn-secondary-sm {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
   }
-  .list-header h2{ margin:0; }
+  .btn-secondary-sm:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-danger-sm {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-danger-sm:hover {
+    background: var(--accent-soft);
+  }
+
   .count-tag{
     font-size:13px;
     color:var(--ink-soft);
@@ -352,14 +436,18 @@
     </button>
     <p class="eyebrow">Question-cum-Answer Booklet</p>
     <h1>Build your own QCAB, page by page</h1>
-    <p></p>
   </div>
 </header>
+
+<div class="folder-bar-wrap">
+  <div class="breadcrumbs" id="breadcrumbs"></div>
+  <div class="folder-bar" id="folder-bar"></div>
+</div>
 
 <main>
   <section class="card" aria-labelledby="add-heading">
     <h2 id="add-heading">Add a question</h2>
-    <div class="field">
+    <div class="field" style="margin-top: 16px;">
       <label for="q-text">Question</label>
       <textarea id="q-text" placeholder="Paste or type the question here"></textarea>
     </div>
@@ -385,13 +473,20 @@
   </section>
 
   <section class="card" aria-labelledby="list-heading">
-    <div class="list-header">
-      <h2 id="list-heading">Your booklet</h2>
-      <span class="count-tag" id="count-tag">0 questions</span>
+    <div class="card-header-flex">
+      <div>
+        <h2 id="list-heading">Your booklet</h2>
+        <span class="count-tag" id="count-tag">0 questions</span>
+      </div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button class="btn-secondary-sm" id="rename-folder-btn">Rename Folder</button>
+        <button class="btn-danger-sm" id="delete-folder-btn">Delete Folder</button>
+        <button class="btn-secondary-sm" id="clear-q-btn">Clear Questions</button>
+      </div>
     </div>
 
     <div id="empty-state" class="empty-state">
-      No questions yet — add your first one on the left, and it'll show up here.
+      No questions in this folder — add your first one on the left, or create a subfolder above.
     </div>
 
     <ol class="q-list" id="q-list"></ol>
@@ -438,11 +533,34 @@
     }
   });
 
-  /* ---------------- Main App Logic ---------------- */
+  /* ---------------- Nested Folder Data Model ---------------- */
   const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
-  let questions = [];
-  let selectedMarks = null;
 
+  const defaultRoot = {
+    id: 'root',
+    name: 'General Booklet',
+    parentId: null,
+    subfolders: [],
+    questions: []
+  };
+
+  let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: defaultRoot };
+  let activeFolderId = localStorage.getItem('qcab_active_nested_folder') || 'root';
+
+  if (!folderMap[activeFolderId]) activeFolderId = 'root';
+
+  function saveState() {
+    localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
+    localStorage.setItem('qcab_active_nested_folder', activeFolderId);
+  }
+
+  function getActiveFolder() {
+    return folderMap[activeFolderId] || folderMap['root'];
+  }
+
+  /* ---------------- DOM Elements ---------------- */
+  const breadcrumbs = document.getElementById('breadcrumbs');
+  const folderBar = document.getElementById('folder-bar');
   const qText = document.getElementById('q-text');
   const qYear = document.getElementById('q-year');
   const addBtn = document.getElementById('add-btn');
@@ -455,6 +573,11 @@
   const totalPagesEl = document.getElementById('total-pages');
   const generateBtn = document.getElementById('generate-btn');
   const includeIndexCheckbox = document.getElementById('include-index');
+  const renameFolderBtn = document.getElementById('rename-folder-btn');
+  const deleteFolderBtn = document.getElementById('delete-folder-btn');
+  const clearQBtn = document.getElementById('clear-q-btn');
+
+  let selectedMarks = null;
 
   marksButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -463,35 +586,170 @@
     });
   });
 
+  /* ---------------- Breadcrumbs & Navigation ---------------- */
+  function renderBreadcrumbs() {
+    breadcrumbs.innerHTML = '';
+    const path = [];
+    let curr = getActiveFolder();
+
+    while (curr) {
+      path.unshift(curr);
+      curr = curr.parentId ? folderMap[curr.parentId] : null;
+    }
+
+    path.forEach((f, idx) => {
+      if (idx > 0) {
+        const sep = document.createElement('span');
+        sep.className = 'crumb-sep';
+        sep.textContent = '/';
+        breadcrumbs.appendChild(sep);
+      }
+      const crumb = document.createElement('span');
+      crumb.className = 'crumb';
+      crumb.textContent = f.name;
+      crumb.addEventListener('click', () => {
+        activeFolderId = f.id;
+        saveState();
+        renderAll();
+      });
+      breadcrumbs.appendChild(crumb);
+    });
+  }
+
+  function renderFolders() {
+    folderBar.innerHTML = '';
+    const current = getActiveFolder();
+
+    // Render Subfolders of active folder
+    current.subfolders.forEach(subId => {
+      const sub = folderMap[subId];
+      if (!sub) return;
+      const tab = document.createElement('button');
+      tab.className = 'folder-tab';
+      tab.innerHTML = `📁 ${escapeHtml(sub.name)}`;
+      tab.addEventListener('click', () => {
+        activeFolderId = sub.id;
+        saveState();
+        renderAll();
+      });
+      folderBar.appendChild(tab);
+    });
+
+    // Button to add new subfolder
+    const newBtn = document.createElement('button');
+    newBtn.className = 'btn-new-folder';
+    newBtn.innerHTML = '+ New Subfolder';
+    newBtn.addEventListener('click', () => {
+      const name = prompt(`Create subfolder under "${current.name}":`);
+      if (name && name.trim()) {
+        const newId = 'folder_' + Date.now();
+        folderMap[newId] = {
+          id: newId,
+          name: name.trim(),
+          parentId: current.id,
+          subfolders: [],
+          questions: []
+        };
+        current.subfolders.push(newId);
+        activeFolderId = newId;
+        saveState();
+        renderAll();
+      }
+    });
+    folderBar.appendChild(newBtn);
+  }
+
+  /* ---------------- Folder Management (Rename & Delete) ---------------- */
+  renameFolderBtn.addEventListener('click', () => {
+    const current = getActiveFolder();
+    const newName = prompt('Rename folder:', current.name);
+    if (newName && newName.trim()) {
+      current.name = newName.trim();
+      saveState();
+      renderAll();
+    }
+  });
+
+  // Recursively delete subfolders and clean data
+  function deleteSubfoldersRecursively(folderId) {
+    const target = folderMap[folderId];
+    if (!target) return;
+    target.subfolders.forEach(childId => {
+      deleteSubfoldersRecursively(childId);
+    });
+    delete folderMap[folderId];
+  }
+
+  deleteFolderBtn.addEventListener('click', () => {
+    const current = getActiveFolder();
+    if (current.id === 'root') {
+      alert('The root folder "General Booklet" cannot be deleted.');
+      return;
+    }
+
+    if (confirm(`Are you sure you want to delete "${current.name}" and all its subfolders/questions?`)) {
+      const parent = folderMap[current.parentId];
+      if (parent) {
+        parent.subfolders = parent.subfolders.filter(id => id !== current.id);
+      }
+      deleteSubfoldersRecursively(current.id);
+      activeFolderId = parent ? parent.id : 'root';
+      saveState();
+      renderAll();
+    }
+  });
+
+  clearQBtn.addEventListener('click', () => {
+    const current = getActiveFolder();
+    if (current.questions.length === 0) return;
+    if (confirm(`Are you sure you want to clear all questions in "${current.name}"?`)) {
+      current.questions = [];
+      saveState();
+      renderQuestions();
+    }
+  });
+
+  /* ---------------- Question Actions ---------------- */
   addBtn.addEventListener('click', () => {
     const text = qText.value.trim();
     if (!text) { qText.focus(); return; }
     if (!selectedMarks) { document.getElementById('marks-hint').style.color = 'var(--accent)'; return; }
-    questions.push({ question: text, marks: selectedMarks, year: qYear.value.trim() });
+
+    const currentFolder = getActiveFolder();
+    currentFolder.questions.push({ question: text, marks: selectedMarks, year: qYear.value.trim() });
+    
     qText.value = '';
     qYear.value = '';
     selectedMarks = null;
     marksButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
     document.getElementById('marks-hint').style.color = '';
-    render();
+
+    saveState();
+    renderQuestions();
   });
 
   function moveItem(index, dir) {
+    const questions = getActiveFolder().questions;
     const newIndex = index + dir;
     if (newIndex < 0 || newIndex >= questions.length) return;
     const tmp = questions[index];
     questions[index] = questions[newIndex];
     questions[newIndex] = tmp;
-    render();
+    saveState();
+    renderQuestions();
   }
 
   function removeItem(index) {
+    const questions = getActiveFolder().questions;
     questions.splice(index, 1);
-    render();
+    saveState();
+    renderQuestions();
   }
 
-  function render() {
+  function renderQuestions() {
+    const questions = getActiveFolder().questions;
     qList.innerHTML = '';
+    
     if (questions.length === 0) {
       emptyState.style.display = 'block';
       summaryBar.style.display = 'none';
@@ -543,15 +801,23 @@
     });
   }
 
+  function renderAll() {
+    renderBreadcrumbs();
+    renderFolders();
+    renderQuestions();
+  }
+
   function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
   }
 
-  /* ---------------- PDF generation (mirrors the real QCAB layout) ---------------- */
-
+  /* ---------------- PDF Generation Logic ---------------- */
   generateBtn.addEventListener('click', () => {
+    const questions = getActiveFolder().questions;
+    if (questions.length === 0) return;
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
@@ -592,11 +858,9 @@
       dividers();
       doc.setFont('times', 'normal');
       
-      // Question number placed strictly inside the left margin area
       doc.setFontSize(14);
       doc.text('Q.' + qNum, 8, TOP + 6);
 
-      // Construct question text with marks and year appended directly inline
       const tag = year ? ` [${marks} M / ${year}]` : ` [${marks} M]`;
       const fullQuestionText = text + tag;
 
@@ -604,7 +868,6 @@
       const lines = doc.splitTextToSize(fullQuestionText, maxW);
       let ty = TOP + 6;
       
-      // Line spacing adjusted to 6.5mm for 14pt text
       lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 6.5; });
 
       doc.setFontSize(8);
@@ -638,10 +901,11 @@
       if (idx < questions.length - 1) doc.addPage();
     });
 
-    doc.save('qcab.pdf');
+    const filename = getActiveFolder().name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_qcab.pdf';
+    doc.save(filename);
   });
 
-  render();
+  renderAll();
 })();
 </script>
 
