@@ -287,6 +287,20 @@
   }
   .btn-primary:hover{ opacity: 0.9; }
 
+  .btn-cancel{
+    width:100%;
+    padding:8px 0;
+    background:transparent;
+    color:var(--ink-soft);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    font-family:var(--sans);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:8px;
+  }
+
   .btn-generate{
     width:100%;
     padding:15px 0;
@@ -353,13 +367,18 @@
   }
   .q-item{
     display:grid;
-    grid-template-columns:28px 1fr auto;
-    gap:12px;
+    grid-template-columns:24px 24px 1fr auto;
+    gap:10px;
     align-items:start;
     padding:14px 0;
     border-bottom:1px solid var(--rule-light);
   }
   .q-item:last-child{ border-bottom:none; }
+  .q-select-chk {
+    margin-top: 4px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
   .q-num{
     font-family:var(--serif);
     font-size:16px;
@@ -398,7 +417,7 @@
     background:none;
     border:none;
     cursor:pointer;
-    font-size:15px;
+    font-size:14px;
     color:var(--ink-soft);
     padding:2px 6px;
     border-radius:4px;
@@ -470,6 +489,7 @@
       </label>
     </div>
     <button class="btn-primary" id="add-btn">Add question</button>
+    <button class="btn-cancel" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
   </section>
 
   <section class="card" aria-labelledby="list-heading">
@@ -481,7 +501,8 @@
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
         <button class="btn-secondary-sm" id="rename-folder-btn">Rename Folder</button>
         <button class="btn-danger-sm" id="delete-folder-btn">Delete Folder</button>
-        <button class="btn-secondary-sm" id="clear-q-btn">Clear Questions</button>
+        <button class="btn-danger-sm" id="delete-selected-btn" style="display:none;">Delete Selected</button>
+        <button class="btn-secondary-sm" id="clear-q-btn">Clear All Questions</button>
       </div>
     </div>
 
@@ -549,6 +570,8 @@
 
   if (!folderMap[activeFolderId]) activeFolderId = 'root';
 
+  let editingIndex = null; // Track which question is currently being edited
+
   function saveState() {
     localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
     localStorage.setItem('qcab_active_nested_folder', activeFolderId);
@@ -561,9 +584,11 @@
   /* ---------------- DOM Elements ---------------- */
   const breadcrumbs = document.getElementById('breadcrumbs');
   const folderBar = document.getElementById('folder-bar');
+  const addHeading = document.getElementById('add-heading');
   const qText = document.getElementById('q-text');
   const qYear = document.getElementById('q-year');
   const addBtn = document.getElementById('add-btn');
+  const cancelEditBtn = document.getElementById('cancel-edit-btn');
   const marksButtons = document.querySelectorAll('.marks-btn');
   const qList = document.getElementById('q-list');
   const emptyState = document.getElementById('empty-state');
@@ -575,6 +600,7 @@
   const includeIndexCheckbox = document.getElementById('include-index');
   const renameFolderBtn = document.getElementById('rename-folder-btn');
   const deleteFolderBtn = document.getElementById('delete-folder-btn');
+  const deleteSelectedBtn = document.getElementById('delete-selected-btn');
   const clearQBtn = document.getElementById('clear-q-btn');
 
   let selectedMarks = null;
@@ -608,6 +634,7 @@
       crumb.className = 'crumb';
       crumb.textContent = f.name;
       crumb.addEventListener('click', () => {
+        resetForm();
         activeFolderId = f.id;
         saveState();
         renderAll();
@@ -620,7 +647,6 @@
     folderBar.innerHTML = '';
     const current = getActiveFolder();
 
-    // Render Subfolders of active folder
     current.subfolders.forEach(subId => {
       const sub = folderMap[subId];
       if (!sub) return;
@@ -628,6 +654,7 @@
       tab.className = 'folder-tab';
       tab.innerHTML = `📁 ${escapeHtml(sub.name)}`;
       tab.addEventListener('click', () => {
+        resetForm();
         activeFolderId = sub.id;
         saveState();
         renderAll();
@@ -635,7 +662,6 @@
       folderBar.appendChild(tab);
     });
 
-    // Button to add new subfolder
     const newBtn = document.createElement('button');
     newBtn.className = 'btn-new-folder';
     newBtn.innerHTML = '+ New Subfolder';
@@ -651,6 +677,7 @@
           questions: []
         };
         current.subfolders.push(newId);
+        resetForm();
         activeFolderId = newId;
         saveState();
         renderAll();
@@ -659,7 +686,7 @@
     folderBar.appendChild(newBtn);
   }
 
-  /* ---------------- Folder Management (Rename & Delete) ---------------- */
+  /* ---------------- Folder Management ---------------- */
   renameFolderBtn.addEventListener('click', () => {
     const current = getActiveFolder();
     const newName = prompt('Rename folder:', current.name);
@@ -670,7 +697,6 @@
     }
   });
 
-  // Recursively delete subfolders and clean data
   function deleteSubfoldersRecursively(folderId) {
     const target = folderMap[folderId];
     if (!target) return;
@@ -693,40 +719,104 @@
         parent.subfolders = parent.subfolders.filter(id => id !== current.id);
       }
       deleteSubfoldersRecursively(current.id);
+      resetForm();
       activeFolderId = parent ? parent.id : 'root';
       saveState();
       renderAll();
     }
   });
 
+  /* ---------------- Clearing & Deleting Questions ---------------- */
   clearQBtn.addEventListener('click', () => {
     const current = getActiveFolder();
     if (current.questions.length === 0) return;
-    if (confirm(`Are you sure you want to clear all questions in "${current.name}"?`)) {
+    if (confirm(`Are you sure you want to clear ALL questions in "${current.name}"?`)) {
       current.questions = [];
+      resetForm();
       saveState();
       renderQuestions();
     }
   });
 
-  /* ---------------- Question Actions ---------------- */
+  deleteSelectedBtn.addEventListener('click', () => {
+    const checkboxes = qList.querySelectorAll('.q-select-chk:checked');
+    if (checkboxes.length === 0) return;
+    if (confirm(`Delete ${checkboxes.length} selected question(s)?`)) {
+      const indexesToRemove = Array.from(checkboxes).map(cb => parseInt(cb.dataset.i, 10));
+      const current = getActiveFolder();
+      current.questions = current.questions.filter((_, idx) => !indexesToRemove.includes(idx));
+      resetForm();
+      saveState();
+      renderQuestions();
+    }
+  });
+
+  function updateDeleteSelectedVisibility() {
+    const selectedCount = qList.querySelectorAll('.q-select-chk:checked').length;
+    deleteSelectedBtn.style.display = selectedCount > 0 ? 'inline-block' : 'none';
+  }
+
+  /* ---------------- Add & Edit Question Logic ---------------- */
+  function resetForm() {
+    editingIndex = null;
+    qText.value = '';
+    qYear.value = '';
+    selectedMarks = null;
+    marksButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+    addHeading.textContent = 'Add a question';
+    addBtn.textContent = 'Add question';
+    cancelEditBtn.style.display = 'none';
+    document.getElementById('marks-hint').style.color = '';
+  }
+
+  cancelEditBtn.addEventListener('click', resetForm);
+
   addBtn.addEventListener('click', () => {
     const text = qText.value.trim();
     if (!text) { qText.focus(); return; }
     if (!selectedMarks) { document.getElementById('marks-hint').style.color = 'var(--accent)'; return; }
 
     const currentFolder = getActiveFolder();
-    currentFolder.questions.push({ question: text, marks: selectedMarks, year: qYear.value.trim() });
-    
-    qText.value = '';
-    qYear.value = '';
-    selectedMarks = null;
-    marksButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
-    document.getElementById('marks-hint').style.color = '';
 
+    if (editingIndex !== null) {
+      // Update existing question
+      currentFolder.questions[editingIndex] = {
+        question: text,
+        marks: selectedMarks,
+        year: qYear.value.trim()
+      };
+    } else {
+      // Add new question
+      currentFolder.questions.push({
+        question: text,
+        marks: selectedMarks,
+        year: qYear.value.trim()
+      });
+    }
+
+    resetForm();
     saveState();
     renderQuestions();
   });
+
+  function startEditItem(index) {
+    const q = getActiveFolder().questions[index];
+    if (!q) return;
+
+    editingIndex = index;
+    qText.value = q.question;
+    qYear.value = q.year || '';
+    selectedMarks = q.marks;
+
+    marksButtons.forEach(b => {
+      b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false');
+    });
+
+    addHeading.textContent = 'Edit question #' + (index + 1);
+    addBtn.textContent = 'Update question';
+    cancelEditBtn.style.display = 'block';
+    qText.focus();
+  }
 
   function moveItem(index, dir) {
     const questions = getActiveFolder().questions;
@@ -735,6 +825,7 @@
     const tmp = questions[index];
     questions[index] = questions[newIndex];
     questions[newIndex] = tmp;
+    resetForm();
     saveState();
     renderQuestions();
   }
@@ -742,6 +833,7 @@
   function removeItem(index) {
     const questions = getActiveFolder().questions;
     questions.splice(index, 1);
+    resetForm();
     saveState();
     renderQuestions();
   }
@@ -749,6 +841,7 @@
   function renderQuestions() {
     const questions = getActiveFolder().questions;
     qList.innerHTML = '';
+    updateDeleteSelectedVisibility();
     
     if (questions.length === 0) {
       emptyState.style.display = 'block';
@@ -770,6 +863,7 @@
       const li = document.createElement('li');
       li.className = 'q-item';
       li.innerHTML = `
+        <input type="checkbox" class="q-select-chk" data-i="${i}" title="Select for deletion">
         <div class="q-num">${i + 1}.</div>
         <div>
           <div class="q-text">${escapeHtml(q.question)}</div>
@@ -779,6 +873,7 @@
           </div>
         </div>
         <div class="q-actions">
+          <button class="icon-btn" title="Edit question" data-action="edit" data-i="${i}">✏️</button>
           <button class="icon-btn" title="Move up" data-action="up" data-i="${i}">&#8593;</button>
           <button class="icon-btn" title="Move down" data-action="down" data-i="${i}">&#8595;</button>
           <button class="icon-btn danger" title="Remove" data-action="remove" data-i="${i}">&#10005;</button>
@@ -790,11 +885,16 @@
     totalMarksEl.textContent = totalMarks;
     totalPagesEl.textContent = totalPages;
 
+    qList.querySelectorAll('.q-select-chk').forEach(chk => {
+      chk.addEventListener('change', updateDeleteSelectedVisibility);
+    });
+
     qList.querySelectorAll('.icon-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const i = parseInt(btn.dataset.i, 10);
         const action = btn.dataset.action;
-        if (action === 'up') moveItem(i, -1);
+        if (action === 'edit') startEditItem(i);
+        else if (action === 'up') moveItem(i, -1);
         else if (action === 'down') moveItem(i, 1);
         else if (action === 'remove') removeItem(i);
       });
