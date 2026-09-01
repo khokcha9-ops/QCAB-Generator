@@ -33,6 +33,39 @@
   }
 
   /* ==========================================
+     1b. PYQ BANK TOGGLE (HIDE/SHOW)
+     ========================================== */
+  const toggleBankBtn = document.getElementById('toggle-bank-btn');
+  const toggleBankIcon = document.getElementById('toggle-bank-icon');
+  const toggleBankText = document.getElementById('toggle-bank-text');
+  const bankBody = document.getElementById('pyq-bank-body');
+
+  function setBankCollapsed(collapsed) {
+    if (!bankBody) return;
+
+    if (collapsed) {
+      bankBody.classList.add('collapsed');
+    } else {
+      bankBody.classList.remove('collapsed');
+    }
+
+    if (toggleBankIcon) toggleBankIcon.textContent = collapsed ? '▸' : '▾';
+    if (toggleBankText) toggleBankText.textContent = collapsed ? 'Show Bank' : 'Hide Bank';
+  }
+
+  // Restore saved preference on load
+  const bankCollapsedSaved = localStorage.getItem('qcab_bank_collapsed') === '1';
+  setBankCollapsed(bankCollapsedSaved);
+
+  if (toggleBankBtn) {
+    toggleBankBtn.addEventListener('click', () => {
+      const willCollapse = !bankBody.classList.contains('collapsed');
+      setBankCollapsed(willCollapse);
+      localStorage.setItem('qcab_bank_collapsed', willCollapse ? '1' : '0');
+    });
+  }
+
+  /* ==========================================
      2. SYLLABUS MAPPING & PAPER CODES
      ========================================== */
   const SYLLABUS = {
@@ -115,7 +148,7 @@
   let fuseInstance = null;
   const fuseOptions = {
     includeScore: true,
-    threshold: 0.4, // Optimal typo tolerance balance
+    threshold: 0.4,
     keys: ['question', 'topic', 'paper', 'year']
   };
 
@@ -206,37 +239,6 @@
       updateBankStatus();
     }
   }
-  
-  /* Update the section 1b in your script */
-const toggleBankBtn = document.getElementById('toggle-bank-btn');
-const toggleBankIcon = document.getElementById('toggle-bank-icon');
-const toggleBankText = document.getElementById('toggle-bank-text');
-const bankBody = document.getElementById('pyq-bank-body');
-
-function setBankCollapsed(collapsed) {
-  if (!bankBody) return;
-  
-  if (collapsed) {
-    bankBody.classList.add('collapsed');
-  } else {
-    bankBody.classList.remove('collapsed');
-  }
-
-  if (toggleBankIcon) toggleBankIcon.textContent = collapsed ? '▸' : '▾';
-  if (toggleBankText) toggleBankText.textContent = collapsed ? 'Show Bank' : 'Hide Bank';
-}
-
-// Restore saved preference on load
-const bankCollapsedSaved = localStorage.getItem('qcab_bank_collapsed') === '1';
-setBankCollapsed(bankCollapsedSaved);
-
-if (toggleBankBtn) {
-  toggleBankBtn.addEventListener('click', () => {
-    const willCollapse = !bankBody.classList.contains('collapsed');
-    setBankCollapsed(willCollapse);
-    localStorage.setItem('qcab_bank_collapsed', willCollapse ? '1' : '0');
-  });
-}
 
   /* ==========================================
      4. FOLDER & BOOKLET STATE
@@ -383,8 +385,16 @@ if (toggleBankBtn) {
     });
   if (filterYear) filterYear.addEventListener('change', renderBankResults);
   if (filterTopic) filterTopic.addEventListener('change', renderBankResults);
-  if (modeYearRadio) modeYearRadio.addEventListener('change', () => { updateFilterMode(); renderBankResults(); });
-  if (modeTopicRadio) modeTopicRadio.addEventListener('change', () => { updateFilterMode(); renderBankResults(); });
+  if (modeYearRadio)
+    modeYearRadio.addEventListener('change', () => {
+      updateFilterMode();
+      renderBankResults();
+    });
+  if (modeTopicRadio)
+    modeTopicRadio.addEventListener('change', () => {
+      updateFilterMode();
+      renderBankResults();
+    });
 
   if (searchInput) searchInput.addEventListener('input', renderBankResults);
   if (searchBankBtn) searchBankBtn.addEventListener('click', renderBankResults);
@@ -392,9 +402,7 @@ if (toggleBankBtn) {
   if (clearResultsBtn) {
     clearResultsBtn.addEventListener('click', () => {
       if (searchInput) searchInput.value = '';
-      if (bankResultsContainer)
-        bankResultsContainer.innerHTML =
-          '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Search results cleared.</p>';
+      renderBankResults();
     });
   }
 
@@ -406,7 +414,7 @@ if (toggleBankBtn) {
         updateBankStatus();
         if (bankResultsContainer)
           bankResultsContainer.innerHTML =
-            '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Reloading questions...</p>';
+            '<p style="font-size:12px; color:var(--ink-soft); font-style:italic; margin:5px 0;">Reloading questions...</p>';
         await loadRepositoryJSON();
       }
     });
@@ -426,10 +434,8 @@ if (toggleBankBtn) {
 
     let candidateQuestions = [];
 
-    // Ensure Fuse index is active
     if (!fuseInstance) initFuseIndex();
 
-    // Perform Fuzzy Search if search input has text; otherwise take all questions
     if (query && fuseInstance) {
       const fuseResults = fuseInstance.search(query);
       candidateQuestions = fuseResults.map((res) => res.item);
@@ -437,7 +443,6 @@ if (toggleBankBtn) {
       candidateQuestions = presetBank;
     }
 
-    // Apply Dropdown Filters
     let filtered = candidateQuestions.filter((q) => {
       const normQPaper = normalizePaperCode(q.paper);
       const normSelectedP = normalizePaperCode(selectedP);
@@ -458,7 +463,7 @@ if (toggleBankBtn) {
 
     if (filtered.length === 0) {
       bankResultsContainer.innerHTML =
-        '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching this selection.</p>';
+        '<p style="font-size:12px; color:var(--ink-soft); font-style:italic; margin:5px 0;">No questions found matching this selection.</p>';
       return;
     }
 
@@ -871,24 +876,6 @@ if (toggleBankBtn) {
   /* ==========================================
      9. INITIALIZATION ON PAGE LOAD
      ========================================== */
-  /* Add/Update this in your <style> tag */
-
-/* Completely hide the bank body when collapsed */
-#pyq-bank-body.collapsed {
-  display: none !important;
-}
-
-/* Ensure cards auto-adjust height when children are hidden */
-.card {
-  height: auto;
-  min-height: 0;
-  transition: all 0.2s ease-in-out;
-}
-
-/* Ensure the PYQ Bank card header margins adjust when body is hidden */
-#pyq-bank:has(#pyq-bank-body.collapsed) .card-header {
-  margin-bottom: 0;
-}
   initFuseIndex();
   populateFormSubtopics();
   populateFilterYears();
@@ -897,6 +884,3 @@ if (toggleBankBtn) {
   renderAll();
   loadRepositoryJSON();
 })();
-// Note: this file is not loaded by index.html (no <script src="script.js">
-// tag) — the live AI-answer logic lives in index.html's inline script,
-// which calls a Cloudflare Worker proxy. See /worker/worker.js.
