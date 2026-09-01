@@ -308,7 +308,7 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
         <h2 style="margin:0;">Browse Preset Question Bank</h2>
         <div style="display:flex; gap:6px;">
-          <button class="btn-danger-sm" id="clear-bank-btn" title="Clear stored JSON questions">Reset Bank</button>
+          <button class="btn-danger-sm" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
         </div>
       </div>
       
@@ -362,7 +362,7 @@
 
 <script>
 (function(){
-  /* ------------ Theme Toggle Logic ------------ */
+  /* ------------ Theme Toggle ------------ */
   const themeToggle = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
   const themeText = document.getElementById('theme-text');
@@ -397,7 +397,7 @@
     OPT2: ['Anthropology Paper 2 Topics']
   };
 
-  /* ------------ Bank Storage & Automated JSON Fetching ------------ */
+  /* ------------ Preset Bank Data ------------ */
   let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
 
   function savePresets() {
@@ -459,7 +459,7 @@
     return formattedCount;
   }
 
-  /* ------------ Automatic Fetch ------------ */
+  /* ------------ JSON Fetch ------------ */
   async function loadRepositoryJSON() {
     try {
       const response = await fetch('./gs1_pyq.json');
@@ -468,22 +468,24 @@
       const importedArray = Array.isArray(data) ? data : (data.questions || data.bank || []);
       processIncomingArray(importedArray);
     } catch (err) {
-      console.warn('Fetch check complete. Using stored local bank data.');
+      console.warn('Fetch fallback: using local browser cache');
       updateBankStatus();
     }
   }
 
+  /* RESET BANK FIX: Clears state then triggers re-fetch */
   const clearBankBtn = document.getElementById('clear-bank-btn');
-  clearBankBtn.addEventListener('click', () => {
-    if (confirm('Clear stored questions?')) {
+  clearBankBtn.addEventListener('click', async () => {
+    if (confirm('Reset and reload default questions from file?')) {
       presetBank = [];
-      savePresets();
-      populateFilterYears();
-      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Bank cleared.</p>';
+      localStorage.removeItem('qcab_preset_bank');
+      updateBankStatus();
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Reloading questions...</p>';
+      await loadRepositoryJSON();
     }
   });
 
-  /* ------------ State ------------ */
+  /* ------------ Folder & Questions State ------------ */
   const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
   const defaultRoot = { id: 'root', name: 'General Booklet', parentId: null, subfolders: [], questions: [] };
   let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: defaultRoot };
@@ -497,7 +499,7 @@
   }
   function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
 
-  /* ------------ DOM Elements ------------ */
+  /* ------------ DOM Bindings ------------ */
   const breadcrumbs = document.getElementById('breadcrumbs');
   const folderBar = document.getElementById('folder-bar');
   const qPaper = document.getElementById('q-paper');
@@ -660,7 +662,6 @@
     });
   }
 
-  /* ------------ Folder & Item Editing ------------ */
   renameFolderBtn.addEventListener('click', () => {
     const current = getActiveFolder();
     if (current.id === 'root') { alert('Cannot rename root folder.'); return; }
@@ -835,6 +836,7 @@
     renderQuestions();
   }
 
+  /* ------------ Clean PDF Generator ------------ */
   function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
@@ -855,7 +857,7 @@
       
       let y = 45;
       doc.setFont('helvetica', 'bold');
-      doc.text('Q#', 28, y); doc.text('Question & Syllabus Mapping', 40, y); doc.text('Marks', 170, y);
+      doc.text('Q#', 28, y); doc.text('Question', 40, y); doc.text('Marks', 170, y);
       y += 4; doc.line(28, y, 180, y); y += 6;
       doc.setFont('helvetica', 'normal');
 
@@ -870,6 +872,7 @@
       doc.addPage(); currentPg++;
     }
 
+    /* Clean PDF header: Question text, Marks, Year ONLY */
     questions.forEach((q, idx) => {
       const pageCount = MARK_RULES[q.marks] || 2;
       for (let p = 1; p <= pageCount; p++) {
@@ -880,9 +883,13 @@
           doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
           const lines = doc.splitTextToSize(q.question, 138);
           doc.text(lines, 38, 22);
+          
           let boxY = 22 + (lines.length * 5) + 2;
           doc.setFont('helvetica', 'italic'); doc.setFontSize(9);
-          doc.text(`[ ${q.paper || ''} • ${q.topic || ''} • ${q.marks} Marks ]`, 38, boxY);
+          
+          const metaText = q.year ? `[ ${q.marks} Marks / ${q.year} ]` : `[ ${q.marks} Marks ]`;
+          doc.text(metaText, 38, boxY);
+          
           doc.line(28, boxY + 3, RIGHT_DIV - 3, boxY + 3);
         }
         
