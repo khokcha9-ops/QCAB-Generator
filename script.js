@@ -206,6 +206,24 @@
       updateBankStatus();
     }
   }
+  
+  /* ==========================================
+     PYQ BANK COLLAPSE TOGGLE
+     ========================================== */
+  window.togglePYQBank = function() {
+    const bankContent = document.getElementById('pyqBankContent');
+    const toggleButton = document.getElementById('pyqToggleButton');
+    
+    if (!bankContent || !toggleButton) return;
+
+    if (bankContent.classList.contains('hidden')) {
+      bankContent.classList.remove('hidden');
+      toggleButton.textContent = 'Hide Bank';
+    } else {
+      bankContent.classList.add('hidden');
+      toggleButton.textContent = 'Show Bank';
+    }
+  };
 
   /* ==========================================
      4. FOLDER & BOOKLET STATE
