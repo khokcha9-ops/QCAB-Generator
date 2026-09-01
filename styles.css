@@ -286,3 +286,19 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
 }
+/* Hide PYQ Bank content when collapsed */
+#pyq-bank-body.collapsed {
+  display: none !important;
+}
+
+/* Allow cards to dynamically shrink when empty or collapsed */
+.card {
+  height: auto;
+  min-height: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Remove bottom margin on card header when body is hidden */
+#pyq-bank:has(#pyq-bank-body.collapsed) .card-header {
+  margin-bottom: 0;
+}
