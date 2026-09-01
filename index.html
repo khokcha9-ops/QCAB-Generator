@@ -859,5 +859,41 @@
   renderAll();
 })();
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var container = document.getElementById('questions-container');
+    if (!container) return;
+
+    fetch('gs1.json')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        container.innerHTML = '';
+        data.forEach(function(q, index) {
+          var card = document.createElement('div');
+          card.className = 'qcab-card'; // Uses your site's card style if you have one
+          
+          var syllabus = q.Syllabus || q.subject || 'GS 1';
+          var year = q.Year ? q.Year : '';
+          var marks = q.Marks ? ' • ' + q.Marks + ' Marks' : '';
+          var question = q.Question || q.question || '';
+          var answer = (q.Answer || q.answer) ? (q.Answer || q.answer) : '<em>Model answer coming soon.</em>';
+
+          card.innerHTML = 
+            '<div class="qcab-header">' +
+              '<span class="qcab-tag">' + syllabus + '</span>' +
+              '<span class="qcab-meta">' + year + marks + '</span>' +
+            '</div>' +
+            '<p class="qcab-question"><strong>Q' + (index + 1) + '.</strong> ' + question + '</p>' +
+            '<button onclick="this.nextElementSibling.style.display = (this.nextElementSibling.style.display === \'block\' ? \'none\' : \'block\')">View Model Answer</button>' +
+            '<div style="display:none; margin-top:10px; padding:10px; border-top:1px dashed #666;">' + answer + '</div>';
+
+          container.appendChild(card);
+        });
+      })
+      .catch(function(err) {
+        console.error("Error loading gs1.json", err);
+      });
+  });
+</script>  
 </body>
 </html>
