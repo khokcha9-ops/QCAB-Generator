@@ -108,3 +108,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Call your existing search/display function here to populate results on screen:
   // displayQuestions(allQuestions); 
 });
+// Add this inside your script tag right before updateBankStatus();
+async function fetchPresetQuestions() {
+  try {
+    // Replace with your actual path or GitHub raw link
+    const response = await fetch('gs1.json'); 
+    if (!response.ok) return;
+    const data = await response.json();
+    const importedArray = Array.isArray(data) ? data : (data.questions || []);
+    
+    // Clear and load fresh JSON from repository
+    presetBank = importedArray.map(q => ({
+      id: q.id || 'imp_' + Math.random().toString(36).substr(2, 9),
+      paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
+      topic: q.topic || q.subtopic || q.category || 'General',
+      year: String(q.year || q.exam_year || '2026'),
+      marks: parseInt(q.marks || q.mark || 10, 10),
+      question: q.question || q.text || q.q_text || ''
+    }));
+
+    savePresets();
+    populateFilterYears();
+    populateFilterTopics();
+  } catch (err) {
+    console.log("Auto-fetch fallback to localStorage", err);
+  }
+}
+
+// Call auto-fetch on load
+fetchPresetQuestions();
