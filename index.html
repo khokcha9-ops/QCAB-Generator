@@ -1705,59 +1705,6 @@
     renderAll();
     loadRepositoryJSON();
   })();
-  <script type="importmap">
-  {
-    "imports": {
-      "@google/genai": "https://esm.run/@google/genai"
-    }
-  }
-</script>
-
-<script type="module">
-  import { GoogleGenAI } from "@google/genai";
-
-  window.fetchAIAnswer = async function(buttonElement) {
-    // Find the question text relative to the clicked button
-    const card = buttonElement.closest('.bank-actions').parentElement;
-    const questionEl = card.querySelector('.question-text, p'); 
-    const questionText = questionEl ? questionEl.innerText : "Explain this question.";
-
-    // Locate or create the answer display box
-    let container = card.querySelector('.ai-answer-container');
-    if (!container) {
-      container = document.createElement('div');
-      container.className = 'ai-answer-container';
-      container.style.cssText = "margin-top: 12px; padding: 12px; background: #f8f9fa; border-left: 3px solid #1a73e8; font-size: 14px; line-height: 1.5; white-space: pre-wrap;";
-      card.appendChild(container);
-    }
-
-    container.style.display = 'block';
-    container.innerHTML = "<em>✨ Synthesizing model answer with Gemini...</em>";
-
-    try {
-      // Initialize Gemini SDK with your hardcoded API key here:
-      const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6Jm5RrKTFx9INEwt402BL_bKCXa4-WAmDncmOhcRsQkhQ", dangerouslyAllowBrowser: true });
-
-      const promptText = `Act as an expert civil services mentor. Provide a structured, high-scoring model answer for this Mains question. Include:
-      - Introduction
-      - Body Paragraphs (with multi-dimensional headings)
-      - Way Forward / Conclusion
-      
-      Question: "${questionText}"`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: promptText,
-      });
-
-      container.innerHTML = "<strong>Model Answer:</strong><br><br>" + response.text;
-
-    } catch (error) {
-      console.error(error);
-      container.innerHTML = "❌ Error generating answer. Please check your API key or network connection.";
-    }
-  };
-</script>
 </script>
 </body>
 </html>
