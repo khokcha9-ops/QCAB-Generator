@@ -1301,9 +1301,14 @@
               <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
             </div>
             <div class="bank-actions">
-              <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-              <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
-            </div>
+    <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
+    <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
+    <button class="btn-action-sm btn-ai-answer" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
+</div>
+<div class="ai-answer-container" style="display: none; margin-top: 10px; padding: 12px; background: #f8f9fa; border-left: 3px solid #1a73e8; font-size: 14px; line-height: 1.5;">
+  <div class="ai-loading" style="color: #666; font-style: italic;">Synthesizing model answer...</div>
+  <div class="ai-content" style="white-space: pre-wrap;"></div>
+</div>
           </div>
         `;
 
