@@ -848,19 +848,6 @@
   renderAll();
   loadRepositoryJSON();
 })();
-import { GoogleGenAI } from "https://esm.run/@google/genai";
-
-// Initialize the SDK
-const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6INjKAI38cA_eLdu2WpwNqltgiehRngdBqL-ZtCHybiFg" });
-
-// Attach it to window so your HTML onclick attribute can find it
-window.fetchAIAnswer = async function(buttonElement) {
-    try {
-        // Find the question text container relative to the button clicked
-        const questionCard = buttonElement.closest('.rounded-xl, div'); // adjust selector based on your HTML
-        // Add your generation logic here using `ai.models.generateContent(...)`
-        
-    } catch (error) {
-        console.error("AI generation failed:", error);
-    }
-};
+// Note: this file is not loaded by index.html (no <script src="script.js">
+// tag) — the live AI-answer logic lives in index.html's inline script,
+// which calls a Cloudflare Worker proxy. See /worker/worker.js.
