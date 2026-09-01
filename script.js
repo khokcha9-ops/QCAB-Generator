@@ -1,72 +1,53 @@
-// This line tells JavaScript to wait until the HTML page is fully loaded
-document.addEventListener("DOMContentLoaded", () => {
+// Array of preset files you want to load automatically
+const PRESET_FILES = [
+  './presets/gs1.json'
+  // Add others here later, e.g., './presets/gs2.json'
+];
 
-  // 1. Find the container div on your page
-  const container = document.getElementById('questions-container');
+// Key used in LocalStorage
+const STORAGE_KEY = 'question_bank_data';
 
-  // 2. Fetch the gs1.json file
-  fetch('gs1.json')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Could not find gs1.json file");
-      }
-      return response.json();
-    })
-    .then(data => {
-      // 3. Render questions if found
-      renderQuestions(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      if (container) {
-        container.innerHTML = '<p style="color: red;">Failed to load gs1.json. Make sure the file name is exact.</p>';
-      }
-    });
-
-});
-
-// Function to display questions
-function renderQuestions(questions) {
-  const container = document.getElementById('questions-container');
-  if (!container) return;
-  
-  container.innerHTML = '';
-
-  questions.forEach((q, index) => {
-    const card = document.createElement('div');
-    card.className = 'question-card';
-
-    const answerText = q.Answer || q.answer 
-      ? (q.Answer || q.answer) 
-      : '<em>Model answer coming soon.</em>';
-
-    card.innerHTML = `
-      <div class="card-meta">
-        <span class="badge">${q.Syllabus || q.subject || 'GS 1'}</span>
-        <span class="details">${q.Year ? q.Year : ''} ${q.Marks ? '• ' + q.Marks + ' Marks' : ''}</span>
-      </div>
-      <p class="question-text"><strong>Q${index + 1}.</strong> ${q.Question || q.question}</p>
-      
-      <button class="toggle-btn" onclick="toggleAnswer(this)">View Model Answer</button>
-      
-      <div class="answer-content">
-        <h4>Model Answer / Structural Outline:</h4>
-        <div>${answerText}</div>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-// Function to show/hide answer
-function toggleAnswer(button) {
-  const answer = button.nextElementSibling;
-  if (answer.style.display === 'block') {
-    answer.style.display = 'none';
-    button.textContent = 'View Model Answer';
-  } else {
-    answer.style.display = 'block';
-    button.textContent = 'Hide Model Answer';
+// 1. Function to fetch JSON safely
+async function fetchPresetData(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.warn(`Could not load preset from ${url}:`, err);
+    return [];
   }
 }
+
+// 2. Auto-load presets on page startup
+async function initQuestionBank() {
+  let existingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+  // Fetch all listed preset files in parallel
+  const presetResults = await Promise.all(PRESET_FILES.map(fetchPresetData));
+  const allPresets = presetResults.flat();
+
+  // Combine local data with presets (avoiding duplicates if questions have unique IDs)
+  const existingIds = new Set(existingData.map(q => q.id));
+  const newPresets = allPresets.filter(q => q.id && !existingIds.has(q.id));
+
+  if (newPresets.length > 0) {
+    existingData = [...existingData, ...newPresets];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(existingData));
+  }
+
+  // Update UI stats & render
+  updateBankUI(existingData);
+}
+
+// 3. UI Helper to show question count and render search results
+function updateBankUI(questions) {
+  const countElement = document.getElementById('bank-count');
+  if (countElement) {
+    countElement.textContent = `Current Bank Size: ${questions.length} question(s) stored in browser memory.`;
+  }
+  // Trigger your existing display/rendering function here
+}
+
+// Run initialization automatically when DOM is ready
+document.addEventListener('DOMContentLoaded', initQuestionBank);
