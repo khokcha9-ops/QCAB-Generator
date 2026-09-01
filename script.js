@@ -652,3 +652,30 @@ let filtered = presetBank.filter(q => {
   
   return true;
 });
+
+// Replace the mapping block inside loadRepositoryJSON with this:
+incomingQuestions.forEach(q => {
+  // Extract number from "10 M", "5 M", or 10
+  const cleanMarks = typeof q.marks === 'string' 
+    ? parseInt(q.marks.replace(/[^0-9]/g, ''), 10) || 10 
+    : parseInt(q.marks || 10, 10);
+
+  const item = {
+    id: q.id || 'q_' + Math.random().toString(36).substr(2, 9),
+    paper: normalizePaperCode(q.paper),
+    // FALLBACK: Check q.subtopic first, then q.topic
+    topic: q.subtopic || q.topic || 'General',
+    year: String(q.year || '2025').trim(),
+    marks: cleanMarks,
+    question: (q.question || '').trim()
+  };
+
+  // Prevent duplicate additions
+  const exists = presetBank.some(existing => 
+    existing.question.trim().toLowerCase() === item.question.toLowerCase()
+  );
+
+  if (item.question && !exists) {
+    presetBank.push(item);
+  }
+});
