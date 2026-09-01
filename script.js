@@ -40,3 +40,15 @@ async function loadRepositoryJSON() {
 
 // Run auto-loader when DOM is ready
 document.addEventListener('DOMContentLoaded', loadRepositoryJSON);
+
+function normalizePaperCode(paperVal) {
+  if (!paperVal) return 'GS1';
+  const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
+  if (str.includes('GS1') || str.includes('PAPER1')) return 'GS1';
+  if (str.includes('GS2') || str.includes('PAPER2')) return 'GS2'; // Ensures GS2 is recognized
+  if (str.includes('GS3') || str.includes('PAPER3')) return 'GS3';
+  if (str.includes('GS4') || str.includes('PAPER4')) return 'GS4';
+  if (str.includes('OPT1')) return 'OPT1';
+  if (str.includes('OPT2')) return 'OPT2';
+  return 'GS1';
+}
