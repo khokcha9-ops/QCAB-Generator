@@ -851,7 +851,7 @@
 import { GoogleGenAI } from "https://esm.run/@google/genai";
 
 // Initialize the SDK
-const ai = new GoogleGenAI({ apiKey: "YOUR_API_KEY" });
+const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6INjKAI38cA_eLdu2WpwNqltgiehRngdBqL-ZtCHybiFg" });
 
 // Attach it to window so your HTML onclick attribute can find it
 window.fetchAIAnswer = async function(buttonElement) {
