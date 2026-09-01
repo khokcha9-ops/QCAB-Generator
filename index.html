@@ -733,56 +733,63 @@
                 <h2 class="card-title">PYQ Bank</h2>
                 <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
               </div>
-              <button class="btn btn-danger" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
-            </div>
-
-            <div class="mode-switch">
-              <label>
-                <input type="radio" name="bankMode" value="year" checked id="mode-year">
-                <span>Filter by Year</span>
-              </label>
-              <label>
-                <input type="radio" name="bankMode" value="topic" id="mode-topic">
-                <span>Filter by Subtopic</span>
-              </label>
-            </div>
-
-            <div class="search-main">
-              <span class="search-icon">⌕</span>
-              <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
-            </div>
-
-            <div class="filter-box">
-              <div class="filters">
-                <select id="filter-paper">
-                  <option value="ALL">All Papers</option>
-                  <option value="GS1">GS Paper 1</option>
-                  <option value="GS2">GS Paper 2</option>
-                  <option value="GS3">GS Paper 3</option>
-                  <option value="GS4">GS Paper 4</option>
-                  <option value="OPT1">Anthropology Optional Paper 1</option>
-                  <option value="OPT2">Anthropology Optional Paper 2</option>
-                </select>
-
-                <select id="filter-topic">
-                  <option value="ALL">All Subtopics</option>
-                </select>
-
-                <select id="filter-year">
-                  <option value="ALL">All Years</option>
-                </select>
-
-                <button class="btn btn-primary" id="search-bank-btn">Search</button>
-                <button class="btn" id="clear-results-btn">Clear</button>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" id="toggle-bank-btn" title="Collapse to scroll the page more easily">
+                  <span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span>
+                </button>
+                <button class="btn btn-danger" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
               </div>
             </div>
 
-            <div id="bank-status-text">Loading question bank...</div>
+            <div id="pyq-bank-body">
+              <div class="mode-switch">
+                <label>
+                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
+                  <span>Filter by Year</span>
+                </label>
+                <label>
+                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
+                  <span>Filter by Subtopic</span>
+                </label>
+              </div>
 
-            <div id="bank-results-container">
-              <p style="font-size:12px;color:var(--muted);font-style:italic;">
-                Loading repository questions...
-              </p>
+              <div class="search-main">
+                <span class="search-icon">⌕</span>
+                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
+              </div>
+
+              <div class="filter-box">
+                <div class="filters">
+                  <select id="filter-paper">
+                    <option value="ALL">All Papers</option>
+                    <option value="GS1">GS Paper 1</option>
+                    <option value="GS2">GS Paper 2</option>
+                    <option value="GS3">GS Paper 3</option>
+                    <option value="GS4">GS Paper 4</option>
+                    <option value="OPT1">Anthropology Optional Paper 1</option>
+                    <option value="OPT2">Anthropology Optional Paper 2</option>
+                  </select>
+
+                  <select id="filter-topic">
+                    <option value="ALL">All Subtopics</option>
+                  </select>
+
+                  <select id="filter-year">
+                    <option value="ALL">All Years</option>
+                  </select>
+
+                  <button class="btn btn-primary" id="search-bank-btn">Search</button>
+                  <button class="btn" id="clear-results-btn">Clear</button>
+                </div>
+              </div>
+
+              <div id="bank-status-text">Loading question bank...</div>
+
+              <div id="bank-results-container">
+                <p style="font-size:12px;color:var(--muted);font-style:italic;">
+                  Loading repository questions...
+                </p>
+              </div>
             </div>
           </div>
 
@@ -895,6 +902,21 @@
       }
     }
 
+    // Gradients (body background, buttons, badges) can't be smoothly
+    // interpolated by CSS transitions, so they visibly snap when the
+    // theme flips. To hide that, briefly fade the page out, swap the
+    // theme while it's faded, then fade back in — this reads as one
+    // smooth crossfade instead of a jump.
+    function switchThemeSmoothly(nextTheme) {
+      document.documentElement.classList.add('theme-switching');
+      window.setTimeout(() => {
+        applyTheme(nextTheme);
+        window.setTimeout(() => {
+          document.documentElement.classList.remove('theme-switching');
+        }, 20);
+      }, 160);
+    }
+
     const savedTheme =
       localStorage.getItem('qcab_theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -905,7 +927,31 @@
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         const nextTheme = isDark ? 'light' : 'dark';
         localStorage.setItem('qcab_theme', nextTheme);
-        applyTheme(nextTheme);
+        switchThemeSmoothly(nextTheme);
+      });
+    }
+
+    /* 1b. PYQ BANK COLLAPSE TOGGLE */
+    const toggleBankBtn = document.getElementById('toggle-bank-btn');
+    const toggleBankIcon = document.getElementById('toggle-bank-icon');
+    const toggleBankText = document.getElementById('toggle-bank-text');
+    const bankBody = document.getElementById('pyq-bank-body');
+
+    function setBankCollapsed(collapsed) {
+      if (!bankBody) return;
+      bankBody.classList.toggle('collapsed', collapsed);
+      if (toggleBankIcon) toggleBankIcon.textContent = collapsed ? '▸' : '▾';
+      if (toggleBankText) toggleBankText.textContent = collapsed ? 'Show Bank' : 'Hide Bank';
+    }
+
+    const bankCollapsedSaved = localStorage.getItem('qcab_bank_collapsed') === '1';
+    setBankCollapsed(bankCollapsedSaved);
+
+    if (toggleBankBtn) {
+      toggleBankBtn.addEventListener('click', () => {
+        const willCollapse = !bankBody.classList.contains('collapsed');
+        setBankCollapsed(willCollapse);
+        localStorage.setItem('qcab_bank_collapsed', willCollapse ? '1' : '0');
       });
     }
 
