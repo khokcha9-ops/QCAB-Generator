@@ -1701,22 +1701,14 @@
   })();
 </script>
 
-<!-- Google Gen AI SDK Import Map -->
-<script type="importmap">
-  {
-    "imports": {
-      "@google/genai": "https://esm.run/@google/genai"
-    }
-  }
-</script>
-
 <!-- AI Generation Logic -->
-<script type="module">
-  import { GoogleGenAI } from "@google/genai";
+<!-- No API key here. Questions are sent to a Cloudflare Worker proxy,
+     which holds the Gemini key server-side (see /worker/worker.js). -->
+<script>
+  // Replace with your deployed worker URL after running `wrangler deploy`.
+  const AI_PROXY_URL = "https://qcab-ai-proxy.YOUR-SUBDOMAIN.workers.dev";
 
   window.fetchAIAnswer = async function(buttonElement) {
-    const apiKey = "AQ.Ab8RN6INjKAl38cA_eLdu2WpwNqltgiehRngdBqL-ZtCHybiFg";
-
     const card = buttonElement.closest('.bank-item');
     const questionEl = card ? card.querySelector('.bank-question') : null;
     const questionText = questionEl ? questionEl.innerText : "Explain this question.";
@@ -1730,22 +1722,20 @@
     if (contentDiv) contentDiv.innerHTML = '';
 
     try {
-      const ai = new GoogleGenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
-
-      const promptText = `Act as an expert UPSC/OPSC civil services mentor. Provide a rigorous, high-scoring structured model answer for this Mains question. Include:
-      - Introduction
-      - Body Paragraphs (with multi-dimensional headings e.g. Social, Economic, Governance, Administrative)
-      - Way Forward / Conclusion
-      
-      Question: "${questionText}"`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: promptText,
+      const res = await fetch(AI_PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: questionText }),
       });
 
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || `Request failed (${res.status})`);
+      }
+
       if (loadingDiv) loadingDiv.style.display = 'none';
-      if (contentDiv) contentDiv.innerHTML = response.text;
+      if (contentDiv) contentDiv.innerHTML = data.text || "No answer returned.";
 
     } catch (error) {
       console.error(error);
