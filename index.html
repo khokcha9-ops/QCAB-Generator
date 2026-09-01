@@ -221,9 +221,8 @@
 </div>
 
 <main>
-  <!-- LEFT PANEL: Add Custom Question & Active Booklet Generator -->
+  <!-- LEFT PANEL -->
   <section>
-    <!-- Card 1: Add Custom Question -->
     <div class="card">
       <h2 id="add-heading">Add Custom Question</h2>
       
@@ -241,9 +240,7 @@
 
       <div class="field">
         <label for="q-topic">Subtopic</label>
-        <select id="q-topic">
-          <!-- Dynamically populated based on Paper -->
-        </select>
+        <select id="q-topic"></select>
       </div>
 
       <div class="field">
@@ -276,14 +273,13 @@
       <button class="btn-cancel" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
     </div>
 
-    <!-- Card 2: Active Booklet Questions & PDF Generation -->
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <h2 style="margin:0;">Active Folder Questions</h2>
         <div style="display:flex; gap:6px;">
           <button class="btn-secondary-sm" id="rename-folder-btn">Rename</button>
           <button class="btn-danger-sm" id="delete-folder-btn">Delete</button>
-          <button class="btn-secondary-sm" id="clear-q-btn">Clear</button>
+          <button class="btn-secondary-sm" id="clear-q-btn">Clear Folder</button>
         </div>
       </div>
 
@@ -292,7 +288,7 @@
       </div>
 
       <div id="empty-state" style="text-align:center; color:var(--ink-soft); padding:20px; border:1px dashed var(--rule); margin-top:10px;">
-        No questions added to this booklet yet. Select questions from the right panel!
+        No questions added to this booklet yet.
       </div>
 
       <ol class="q-list" id="q-list"></ol>
@@ -306,10 +302,19 @@
     </div>
   </section>
 
-  <!-- RIGHT PANEL: Question Bank Search -->
+  <!-- RIGHT PANEL: Question Bank Search & File Import -->
   <section>
     <div class="card">
-      <h2>Browse Preset Question Bank</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <h2 style="margin:0;">Browse Preset Question Bank</h2>
+        <div style="display:flex; gap:6px;">
+          <label class="btn-secondary-sm" style="cursor:pointer; display:inline-block;">
+            📥 Import JSON File
+            <input type="file" id="json-file-input" accept=".json" style="display:none;">
+          </label>
+          <button class="btn-danger-sm" id="clear-bank-btn" title="Clear stored JSON questions">Reset Bank</button>
+        </div>
+      </div>
       
       <div class="mode-switch">
         <label>
@@ -324,8 +329,7 @@
 
       <div class="filter-box">
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-          <!-- Select Paper -->
-          <select id="filter-paper" style="flex:1; min-width: 140px;">
+          <select id="filter-paper" style="flex:1; min-width: 130px;">
             <option value="ALL">-- All Papers --</option>
             <option value="GS1">GS Paper 1</option>
             <option value="GS2">GS Paper 2</option>
@@ -335,22 +339,22 @@
             <option value="OPT2">Anthropology Optional Paper 2</option>
           </select>
 
-          <!-- Dynamic Year Select -->
-          <select id="filter-year" style="flex:1; min-width: 120px;">
+          <select id="filter-year" style="flex:1; min-width: 110px;">
             <option value="ALL">-- All Years --</option>
           </select>
 
-          <!-- Dynamic Topic Select -->
-          <select id="filter-topic" style="flex:1; min-width: 140px; display:none;">
+          <select id="filter-topic" style="flex:1; min-width: 130px; display:none;">
             <option value="ALL">-- All Subtopics --</option>
           </select>
 
-          <button class="btn-primary" id="search-bank-btn" style="width:auto; padding:8px 16px;">Search Questions</button>
+          <button class="btn-primary" id="search-bank-btn" style="width:auto; padding:8px 14px;">Search</button>
+          <button class="btn-secondary-sm" id="clear-results-btn" style="padding:8px 12px; height:37px;">Clear Results</button>
         </div>
       </div>
 
+      <div id="bank-status-text" style="font-size:12px; color:var(--ink-soft); margin-bottom:8px;"></div>
       <div id="bank-results-container">
-        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select options above and click "Search Questions" to load results.</p>
+        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select options above and click "Search" or upload a JSON file to populate questions.</p>
       </div>
     </div>
   </section>
@@ -387,88 +391,41 @@
     applyTheme(nextTheme);
   });
 
-  /* ------------ Syllabus Structure ------------ */
+  /* ------------ Syllabus Mapping ------------ */
   const SYLLABUS = {
     GS1: ['Art & Culture', 'Modern History', 'Post Independence', 'World History', 'Physical Geography', 'Human Geography', 'Society'],
     GS2: ['Polity', 'Governance', 'Social Justice', 'International Relations'],
     GS3: ['Economy', 'Agriculture', 'Internal Security', 'Environment & Disaster Management', 'Science & Tech'],
     GS4: ['Ethics Theory', 'Case Studies'],
-    OPT1: [
-      '1.1 Meaning, Scope & Development of Anthropology',
-      '1.2 Relationships with Other Disciplines',
-      '1.3 Main Branches of Anthropology (Scope & Relevance)',
-      '1.4 Human Evolution & Emergence of Man (Factors & Theories)',
-      '1.5 Characteristics of Primates & Evolutionary Trends',
-      '1.6 Phylogenetic Status & Distribution of Fossils (Australopithecus to Cro-Magnon)',
-      '1.7 Biological Basis of Life (Cell, DNA, Mutation, Chromosomes)',
-      '1.8 Prehistoric Archaeology & Prehistoric Cultures (Paleolithic to Iron Age)',
-      '2.1 Nature of Culture & Ethnocentrism vs Cultural Relativism',
-      '2.2 Nature of Society, Social Institutions & Stratification',
-      '2.3 Marriage (Types, Laws, Regulations & Payments)',
-      '2.4 Family (Types, Functions & Contemporary Changes)',
-      '2.5 Kinship (Descent, Alliance, Terminology & Groups)',
-      '3.0 Economic Organization & Economic Anthropology',
-      '4.0 Political Organization & Social Control',
-      '5.0 Religion, Magic & Science',
-      '6.0 (a) Classical Evolutionism (Tylor, Morgan, Frazer)',
-      '6.0 (b) Historical Particularism (Boas) & Diffusionism',
-      '6.0 (c) Functionalism (Malinowski) & Structural-Functionalism (Radcliffe-Brown)',
-      '6.0 (d) Structuralism (Levi-Strauss, E. Leach)',
-      '6.0 (e) Culture & Personality (Benedict, Mead, Linton, Kardiner, Cora-du-Bois)',
-      '6.0 (f) Neo-Evolutionism (Childe, White, Steward, Sahlins, Service)',
-      '6.0 (g) Cultural Materialism (Harris)',
-      '6.0 (h) Symbolic & Interpretive Theories (Turner, Schneider, Geertz)',
-      '6.0 (i) Cognitive Theories (Tyler, Conklin)',
-      '6.0 (j) Post-Modernism in Anthropology',
-      '7.0 Culture, Language & Communication',
-      '8.0 Research Methods in Anthropology',
-      '9.1 Human Genetics Methods & Applications',
-      '9.2 Mendelian Genetics in Man',
-      '9.3 Genetic Polymorphism, Selection & Hardy-Weinberg Law',
-      '9.4 Chromosomes & Chromosomal Aberrations',
-      '9.5 Race & Racism',
-      '9.6 Age, Sex & Population Variation as Genetic Marker',
-      '9.7 Ecological Anthropology & Bio-cultural Adaptations',
-      '9.8 Epidemiological Anthropology',
-      '10.0 Concept of Human Growth & Development',
-      '11.1 Bioevents to Fertility & Demographic Patterns',
-      '11.2 Demographic Theories',
-      '11.3 Biological & Socio-ecological Factors in Demography',
-      '12.0 Applications of Anthropology'
-    ],
-    OPT2: [
-      '1.1 Evolution of Indian Culture & Civilization (Prehistoric to Harappan)',
-      '1.2 Palaeo-Anthropological Evidences from India (Siwaliks & Narmada)',
-      '1.3 Ethno-archaeology in India',
-      '2.0 Demographic Profile of India (Ethnic & Linguistic Elements)',
-      '3.1 Traditional Indian Social System (Varnashram, Purushartha, Karma)',
-      '3.2 Caste System in India, Jajmani & Tribe-Caste Continuum',
-      '3.3 Sacred Complex & Nature-Man-Spirit Complex',
-      '3.4 Impact of Buddhism, Jainism, Islam & Christianity on Indian Society',
-      '4.0 Emergence, Growth & Development of Anthropology in India',
-      '5.1 Indian Village & Social Structure',
-      '5.2 Linguistic & Religious Minorities',
-      '5.3 Processes of Socio-Cultural Change (Sanskritization, Westernization, etc.)',
-      '6.1 Tribal Situation in India (Variability & Distribution)',
-      '6.2 Problems of Tribal Communities',
-      '6.3 Developmental Projects, Displacement & Forest Policies',
-      '7.1 Exploitation, Deprivation & Constitutional Safeguards for SC/ST',
-      '7.2 Social Change & Contemporary Tribal Societies',
-      '7.3 Ethnicity, Tribal Unrest & Regionalism',
-      '8.1 Impact of World Religions on Tribal Societies',
-      '8.2 Tribe & Nation State (Comparative Study)',
-      '9.1 History of Tribal Administration, PTGs/PVTGs & Development',
-      '9.2 Role of Anthropology in Tribal & Rural Development',
-      '9.3 Anthropology in Understanding Regionalism, Communalism & Movements'
-    ]
+    OPT1: ['Anthropology Paper 1 Topics'],
+    OPT2: ['Anthropology Paper 2 Topics']
   };
 
-  /* ------------ Question Bank Storage ------------ */
-  // Loads exclusively from user local storage
+  /* ------------ Bank Storage & Import ------------ */
   let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
 
   function savePresets() {
     localStorage.setItem('qcab_preset_bank', JSON.stringify(presetBank));
+    updateBankStatus();
+  }
+
+  function updateBankStatus() {
+    const statusEl = document.getElementById('bank-status-text');
+    if (statusEl) {
+      statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) stored in browser memory.`;
+    }
+  }
+
+  function normalizePaperCode(paperVal) {
+    if (!paperVal) return '';
+    const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
+    if (str.includes('GS1') || str.includes('GSPAPER1') || str.includes('PAPER1')) return 'GS1';
+    if (str.includes('GS2') || str.includes('GSPAPER2') || str.includes('PAPER2')) return 'GS2';
+    if (str.includes('GS3') || str.includes('GSPAPER3') || str.includes('PAPER3')) return 'GS3';
+    if (str.includes('GS4') || str.includes('GSPAPER4') || str.includes('PAPER4')) return 'GS4';
+    if (str.includes('OPT1') || str.includes('OPTIONAL1')) return 'OPT1';
+    if (str.includes('OPT2') || str.includes('OPTIONAL2')) return 'OPT2';
+    return paperVal;
   }
 
   function escapeHtml(str) {
@@ -478,7 +435,61 @@
     });
   }
 
-  /* ------------ Core Folder State Management ------------ */
+  /* ------------ JSON File Upload Listener ------------ */
+  const jsonFileInput = document.getElementById('json-file-input');
+  jsonFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const data = JSON.parse(evt.target.result);
+        const importedArray = Array.isArray(data) ? data : (data.questions || data.bank || []);
+
+        if (importedArray.length === 0) {
+          alert('No valid array of questions found in the JSON file.');
+          return;
+        }
+
+        let formattedCount = 0;
+        importedArray.forEach(q => {
+          const item = {
+            id: q.id || 'imp_' + Math.random().toString(36).substr(2, 9),
+            paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
+            topic: q.topic || q.subtopic || q.category || 'General',
+            year: String(q.year || q.exam_year || '2026'),
+            marks: parseInt(q.marks || q.mark || 10, 10),
+            question: q.question || q.text || q.q_text || ''
+          };
+          if (item.question.trim()) {
+            presetBank.push(item);
+            formattedCount++;
+          }
+        });
+
+        savePresets();
+        populateFilterYears();
+        alert(`Successfully imported ${formattedCount} question(s) from ${file.name}!`);
+        renderBankResults();
+      } catch (err) {
+        alert('Failed to parse JSON file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  const clearBankBtn = document.getElementById('clear-bank-btn');
+  clearBankBtn.addEventListener('click', () => {
+    if (confirm('Clear all stored JSON questions from browser memory?')) {
+      presetBank = [];
+      savePresets();
+      populateFilterYears();
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Bank cleared. Import a new JSON file to populate.</p>';
+    }
+  });
+
+  /* ------------ State ------------ */
   const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
   const defaultRoot = { id: 'root', name: 'General Booklet', parentId: null, subfolders: [], questions: [] };
   let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: defaultRoot };
@@ -492,7 +503,7 @@
   }
   function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
 
-  /* ------------ Elements ------------ */
+  /* ------------ DOM Elements ------------ */
   const breadcrumbs = document.getElementById('breadcrumbs');
   const folderBar = document.getElementById('folder-bar');
   const qPaper = document.getElementById('q-paper');
@@ -511,18 +522,17 @@
   const totalPagesEl = document.getElementById('total-pages');
   const generateBtn = document.getElementById('generate-btn');
 
-  // Folder Action Buttons
   const renameFolderBtn = document.getElementById('rename-folder-btn');
   const deleteFolderBtn = document.getElementById('delete-folder-btn');
   const clearQBtn = document.getElementById('clear-q-btn');
 
-  // Filter Elements
   const modeYearRadio = document.getElementById('mode-year');
   const modeTopicRadio = document.getElementById('mode-topic');
   const filterPaper = document.getElementById('filter-paper');
   const filterYear = document.getElementById('filter-year');
   const filterTopic = document.getElementById('filter-topic');
   const searchBankBtn = document.getElementById('search-bank-btn');
+  const clearResultsBtn = document.getElementById('clear-results-btn');
   const bankResultsContainer = document.getElementById('bank-results-container');
 
   let selectedMarks = 10;
@@ -535,11 +545,10 @@
     });
   });
 
-  /* ------------ Populate Form Subtopics ------------ */
   function populateFormSubtopics() {
     qTopic.innerHTML = '';
     const paper = qPaper.value;
-    const list = SYLLABUS[paper] || [];
+    const list = SYLLABUS[paper] || ['General'];
     list.forEach(t => {
       const opt = document.createElement('option');
       opt.value = t; opt.textContent = t;
@@ -548,32 +557,21 @@
   }
   qPaper.addEventListener('change', populateFormSubtopics);
 
-  /* ------------ Dynamic Year Range Generation ------------ */
   function populateFilterYears() {
     filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
-    
-    // Extract unique years dynamically from user's actual preset bank
     const yearsInBank = [...new Set(presetBank.map(q => String(q.year)).filter(y => y && y !== 'undefined'))];
-    
-    // Fallback standard years if none present
     if (yearsInBank.length === 0) {
-      const currentYear = new Date().getFullYear();
-      for (let yr = currentYear; yr >= 2013; yr--) {
-        yearsInBank.push(yr.toString());
-      }
+      yearsInBank.push('2026', '2025', '2024', '2023', '2022', '2021', '2020');
     } else {
       yearsInBank.sort((a,b) => b - a);
     }
-
     yearsInBank.forEach(yr => {
       const opt = document.createElement('option');
-      opt.value = yr;
-      opt.textContent = yr;
+      opt.value = yr; opt.textContent = yr;
       filterYear.appendChild(opt);
     });
   }
 
-  /* ------------ Search & Filter Preset Bank ------------ */
   function updateFilterMode() {
     if (modeYearRadio.checked) {
       filterYear.style.display = 'inline-block';
@@ -602,13 +600,13 @@
     });
   }
 
-  filterPaper.addEventListener('change', () => { 
-    populateFilterYears();
-    populateFilterTopics(); 
-  });
+  filterPaper.addEventListener('change', () => { populateFilterYears(); populateFilterTopics(); });
   modeYearRadio.addEventListener('change', updateFilterMode);
   modeTopicRadio.addEventListener('change', updateFilterMode);
   searchBankBtn.addEventListener('click', renderBankResults);
+  clearResultsBtn.addEventListener('click', () => {
+    bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Search results cleared.</p>';
+  });
 
   function renderBankResults() {
     bankResultsContainer.innerHTML = '';
@@ -618,7 +616,8 @@
     const isYearMode = modeYearRadio.checked;
 
     let filtered = presetBank.filter(q => {
-      if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
+      const normQPaper = normalizePaperCode(q.paper);
+      if (selectedP !== 'ALL' && normQPaper !== normalizePaperCode(selectedP)) return false;
       if (isYearMode) {
         if (selectedY !== 'ALL' && String(q.year) !== String(selectedY)) return false;
       } else {
@@ -628,7 +627,7 @@
     });
 
     if (filtered.length === 0) {
-      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found in your bank matching this selection. Try selecting "-- All Papers --" or "-- All Years --".</p>';
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching this selection. Try selecting "-- All Papers --" or "-- All Years --". If you uploaded a JSON file, ensure it contains valid GS1 tags.</p>';
       return;
     }
 
@@ -640,12 +639,12 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <span class="tag paper">${q.paper || 'GS1'}</span>
-            <span class="tag">${escapeHtml(q.topic)}</span>
+            <span class="tag">${escapeHtml(q.topic || 'General')}</span>
             <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
           </div>
           <div style="display:flex; gap:6px;">
-            <button class="btn-secondary-sm btn-add-item">+ Add to Active Booklet</button>
-            <button class="btn-action-sm btn-direct-pdf">⚡ Direct to Booklet &amp; PDF</button>
+            <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
+            <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
           </div>
         </div>
       `;
@@ -667,16 +666,12 @@
     });
   }
 
-  /* ------------ Folder Actions ------------ */
+  /* ------------ Folder & Item Editing ------------ */
   renameFolderBtn.addEventListener('click', () => {
     const current = getActiveFolder();
     if (current.id === 'root') { alert('Cannot rename root folder.'); return; }
     const newName = prompt('Rename folder:', current.name);
-    if (newName && newName.trim()) {
-      current.name = newName.trim();
-      saveState();
-      renderAll();
-    }
+    if (newName && newName.trim()) { current.name = newName.trim(); saveState(); renderAll(); }
   });
 
   deleteFolderBtn.addEventListener('click', () => {
@@ -695,14 +690,13 @@
   });
 
   clearQBtn.addEventListener('click', () => {
-    if (confirm('Clear all questions from current folder?')) {
+    if (confirm('Clear all questions from active folder?')) {
       getActiveFolder().questions = [];
       saveState();
       renderQuestions();
     }
   });
 
-  /* ------------ Navigation & Folders ------------ */
   function renderBreadcrumbs() {
     breadcrumbs.innerHTML = '';
     const path = [];
@@ -747,7 +741,6 @@
     folderBar.appendChild(newBtn);
   }
 
-  /* ------------ Add & Edit Question Logic ------------ */
   function resetForm() {
     editingIndex = null;
     qText.value = ''; qYear.value = '';
@@ -761,46 +754,27 @@
     const text = qText.value.trim();
     if (!text) { qText.focus(); return; }
 
-    const item = {
-      question: text,
-      marks: selectedMarks,
-      year: qYear.value.trim(),
-      paper: qPaper.value,
-      topic: qTopic.value
-    };
-
+    const item = { question: text, marks: selectedMarks, year: qYear.value.trim(), paper: qPaper.value, topic: qTopic.value };
     const currentFolder = getActiveFolder();
-    if (editingIndex !== null) {
-      currentFolder.questions[editingIndex] = item;
-    } else {
-      currentFolder.questions.push(item);
-    }
+    if (editingIndex !== null) currentFolder.questions[editingIndex] = item;
+    else currentFolder.questions.push(item);
     resetForm();
     saveState();
     renderQuestions();
   });
 
-  /* ------------ Save as Preset Bank Question ------------ */
   addPresetBtn.addEventListener('click', () => {
     const text = qText.value.trim();
     if (!text) { qText.focus(); return; }
-    const newPreset = {
-      id: 'p_' + Date.now(),
-      paper: qPaper.value,
-      topic: qTopic.value,
-      year: qYear.value.trim() || '2025',
-      marks: selectedMarks,
-      question: text
-    };
+    const newPreset = { id: 'p_' + Date.now(), paper: qPaper.value, topic: qTopic.value, year: qYear.value.trim() || '2026', marks: selectedMarks, question: text };
     presetBank.push(newPreset);
     savePresets();
     populateFilterYears();
-    alert('Question added to Preset Bank!');
+    alert('Question saved to Preset Bank!');
     resetForm();
     renderBankResults();
   });
 
-  /* ------------ Render Active Folder Questions ------------ */
   function renderQuestions() {
     const questions = getActiveFolder().questions;
     qList.innerHTML = '';
@@ -867,7 +841,6 @@
     renderQuestions();
   }
 
-  /* ------------ PDF Generation ------------ */
   function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
@@ -922,10 +895,7 @@
         doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
         doc.text(`Page ${currentPg}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
 
-        if (!(idx === questions.length - 1 && p === pageCount)) {
-          doc.addPage();
-          currentPg++;
-        }
+        if (!(idx === questions.length - 1 && p === pageCount)) { doc.addPage(); currentPg++; }
       }
     });
 
@@ -934,12 +904,11 @@
 
   generateBtn.addEventListener('click', generatePDF);
 
-  /* ------------ Initializations ------------ */
   populateFormSubtopics();
   populateFilterYears();
   populateFilterTopics();
+  updateBankStatus();
   renderAll();
-  renderBankResults();
 
 })();
 </script>
