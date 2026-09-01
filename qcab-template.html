@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UPSC QCAB Print Template</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Times New Roman', serif;
+      background: #f0f0f0;
+    }
+
+    .qcab-page {
+      width: 210mm;
+      height: 297mm;
+      background: #ffffff;
+      margin: 10mm auto;
+      position: relative;
+      box-sizing: border-box;
+      padding: 20mm 25mm 20mm 25mm;
+      page-break-after: always;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    /* UPSC Write-Friendly Watermark */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 110pt;
+      font-weight: 900;
+      color: rgba(0, 0, 0, 0.035); /* Extremely low opacity for easy writing */
+      letter-spacing: 12px;
+      user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 1;
+    }
+
+    /* UPSC Margins */
+    .margin-left {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 20mm;
+      border-left: 1px solid #fca5a5;
+      z-index: 2;
+    }
+
+    .margin-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 20mm;
+      border-right: 1px solid #fca5a5;
+      z-index: 2;
+    }
+
+    /* Content Styling */
+    .question-header {
+      position: relative;
+      z-index: 3;
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+    }
+
+    .q-number { font-weight: bold; font-size: 14pt; }
+    .q-text { font-size: 12pt; line-height: 1.4; margin-top: 5px; }
+    .q-marks { float: right; font-weight: bold; font-size: 12pt; }
+
+    .margin-notice {
+      position: absolute;
+      left: 2mm;
+      top: 50%;
+      transform: rotate(-90deg);
+      font-size: 8pt;
+      color: #999;
+      white-space: nowrap;
+    }
+
+    @media print {
+      body { background: none; }
+      .qcab-page {
+        margin: 0;
+        box-shadow: none;
+        width: 210mm;
+        height: 297mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page 1 (Question + Lines) -->
+  <div class="qcab-page">
+    <div class="watermark">UPSC</div>
+    <div class="margin-left"></div>
+    <div class="margin-right"></div>
+    <div class="margin-notice">Do not write anything in this margin</div>
+
+    <div class="question-header">
+      <span class="q-marks">10 Marks / 150 Words</span>
+      <span class="q-number">Q1.</span>
+      <div class="q-text">
+        "Simultaneous election to the Lok Sabha and the State Assemblies will limit the amount of time and money spent in electioneering, but it will reduce the government's accountability to the people." Discuss.
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 2 (Continuation Page) -->
+  <div class="qcab-page">
+    <div class="watermark">UPSC</div>
+    <div class="margin-left"></div>
+    <div class="margin-right"></div>
+    <div class="margin-notice">Do not write anything in this margin</div>
+  </div>
+
+</body>
+</html>
