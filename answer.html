@@ -295,36 +295,33 @@
     }
 
     async function fetchAnswer() {
-      try {
-        const res = await fetch(AI_PROXY_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: questionText })
-        });
+  try {
+    const res = await fetch(AI_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: questionText })
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data?.error || `Request failed (${res.status})`);
-        }
-
-        statusEl.style.display = 'none';
-        contentEl.innerHTML = window.marked ? marked.parse(data.text || 'No response text.') : data.text;
-        printBtn.style.display = 'inline-block';
-
-      } catch (err) {
-  console.error(err);
-  if (err.message.includes('Quota exceeded')) {
-    statusEl.style.display = 'block';
-    statusEl.innerHTML = `<span class="spinner"></span> Rate limit reached. Auto-retrying in 12 seconds...`;
-    setTimeout(() => {
-      fetchAnswer();
-    }, 12000); // Retries after 12 seconds
-  } else {
-    statusEl.style.display = 'none';
-    contentEl.innerHTML = `<div class="error-box">❌ Error generating answer: ${err.message}</div>`;
-  }
+    if (!res.ok) {
+      throw new Error(data.error || `Server error (${res.status})`);
     }
+
+    statusEl.style.display = 'none';
+    
+    // Safely parse text returned from worker
+    const answerMarkdown = data.text || data.candidates?.[0]?.content?.parts?.[0]?.text || 'No answer text returned.';
+    
+    contentEl.innerHTML = window.marked ? marked.parse(answerMarkdown) : answerMarkdown;
+    printBtn.style.display = 'inline-block';
+
+  } catch (err) {
+    console.error(err);
+    statusEl.style.display = 'none';
+    contentEl.innerHTML = `<div class="error-box">❌ ${err.message}</div>`;
+  }
+}
   </script>
 </body>
 </html>
