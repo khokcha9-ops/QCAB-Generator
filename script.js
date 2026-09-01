@@ -848,3 +848,19 @@
   renderAll();
   loadRepositoryJSON();
 })();
+import { GoogleGenAI } from "https://esm.run/@google/genai";
+
+// Initialize the SDK
+const ai = new GoogleGenAI({ apiKey: "YOUR_API_KEY" });
+
+// Attach it to window so your HTML onclick attribute can find it
+window.fetchAIAnswer = async function(buttonElement) {
+    try {
+        // Find the question text container relative to the button clicked
+        const questionCard = buttonElement.closest('.rounded-xl, div'); // adjust selector based on your HTML
+        // Add your generation logic here using `ai.models.generateContent(...)`
+        
+    } catch (error) {
+        console.error("AI generation failed:", error);
+    }
+};
