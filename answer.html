@@ -1,18 +1,3 @@
-// Example from your main page when a user clicks "Generate Answer":
-const url = `answer.html?q=${encodeURIComponent(item.question)}&y=${item.year}&m=${item.marks}`;
-window.open(url, '_blank');
-// Replace the hardcoded loadAnswer(...) at the bottom of answer.html with this:
-const params = new URLSearchParams(window.location.search);
-
-const payload = {
-  question: params.get('q') || '',
-  year: params.get('y') || '2026',
-  marks: params.get('m') || '10 M'
-};
-
-if (payload.question) {
-  loadAnswer(payload);
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
