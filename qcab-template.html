@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UPSC Question-Cum-Answer Booklet (QCAB)</title>
   <style>
     @page {
@@ -9,13 +10,15 @@
       margin: 0;
     }
 
-    * { box-sizing: border-box; }
+    * { 
+      box-sizing: border-box; 
+    }
 
     body {
       margin: 0;
       padding: 0;
       font-family: 'Times New Roman', Times, serif;
-      background: #e2e8f0;
+      background: #475569;
     }
 
     /* Print Navigation Bar */
@@ -29,16 +32,23 @@
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
     .print-btn {
       background: #e11d48;
       color: #fff;
       border: none;
-      padding: 8px 18px;
+      padding: 10px 20px;
       border-radius: 6px;
       font-weight: 700;
       cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .print-btn:hover {
+      background: #be123c;
     }
 
     /* Page Canvas */
@@ -48,21 +58,22 @@
       background: #ffffff;
       margin: 10mm auto;
       position: relative;
-      padding: 20mm 25mm;
+      padding: 20mm 25mm 15mm 25mm;
       page-break-after: always;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      break-after: page;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       overflow: hidden;
     }
 
-    /* Light, Write-Friendly UPSC Watermark */
+    /* UPSC Watermark */
     .watermark {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-30deg);
-      font-size: 110pt;
+      font-size: 100pt;
       font-weight: 900;
-      color: rgba(0, 0, 0, 0.035); /* Extremely low opacity so pen writing stays visible */
+      color: rgba(0, 0, 0, 0.03);
       letter-spacing: 12px;
       user-select: none;
       pointer-events: none;
@@ -70,7 +81,7 @@
       z-index: 1;
     }
 
-    /* UPSC Margins */
+    /* UPSC Side Margins */
     .margin-left {
       position: absolute;
       top: 0;
@@ -89,28 +100,85 @@
       z-index: 2;
     }
 
-    .margin-notice {
+    .margin-notice-left {
       position: absolute;
       left: 2mm;
       top: 50%;
-      transform: rotate(-90deg);
-      font-size: 8pt;
-      color: #94a3b8;
+      transform: rotate(-90deg) translateX(50%);
+      transform-origin: left center;
+      font-size: 7.5pt;
+      color: #ef4444;
       white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    /* Question Box Header */
+    .margin-notice-right {
+      position: absolute;
+      right: 2mm;
+      top: 50%;
+      transform: rotate(90deg) translateX(-50%);
+      transform-origin: right center;
+      font-size: 7.5pt;
+      color: #ef4444;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Question Header Box */
     .question-header {
       position: relative;
       z-index: 3;
-      border-bottom: 1.5px solid #000;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
+      border: 1.5px solid #000;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      background: #fafafa;
     }
 
-    .q-marks { float: right; font-weight: bold; font-size: 11pt; }
-    .q-number { font-weight: bold; font-size: 13pt; }
-    .q-text { font-size: 12pt; line-height: 1.45; margin-top: 6px; }
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 10.5pt;
+    }
+
+    .q-text {
+      font-size: 11.5pt;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+
+    /* Page Footer */
+    .page-footer {
+      position: absolute;
+      bottom: 10mm;
+      left: 25mm;
+      right: 25mm;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      color: #64748b;
+      border-top: 0.5px dashed #cbd5e1;
+      padding-top: 4px;
+      z-index: 3;
+    }
+
+    /* Rule Lines Pattern (Optional Practice Sheet effect) */
+    .ruled-lines {
+      position: absolute;
+      top: 20mm;
+      bottom: 15mm;
+      left: 25mm;
+      right: 25mm;
+      background-image: linear-gradient(to bottom, transparent 27px, #e2e8f0 28px);
+      background-size: 100% 28px;
+      z-index: 0;
+      pointer-events: none;
+    }
 
     @media print {
       .no-print-bar { display: none !important; }
@@ -120,6 +188,8 @@
         box-shadow: none !important;
         width: 210mm !important;
         height: 297mm !important;
+        page-break-after: always !important;
+        break-after: page !important;
       }
     }
   </style>
@@ -127,58 +197,77 @@
 <body>
 
   <div class="no-print-bar">
-    <span>📄 UPSC Question-Cum-Answer Booklet Preview</span>
-    <button class="print-btn" onclick="window.print()">🖨️ Print Booklet / Save PDF</button>
+    <span>📄 <strong>UPSC Question-Cum-Answer Booklet (QCAB)</strong></span>
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
   </div>
 
   <div id="booklet-pages-container"></div>
 
   <script>
-    const sampleQuestions = [
-      { id: 1, paper: 'gs1', year: 2023, marks: '10 M / 150 Words', text: 'Explain the role of geographical factors in the development of ancient river valley civilizations in India.' },
-      { id: 2, paper: 'gs2', year: 2023, marks: '15 M / 250 Words', text: "'Simultaneous election to the Lok Sabha and State Assemblies will limit time and money spent in electioneering but reduce accountability.' Discuss." },
-      { id: 3, paper: 'gs3', year: 2022, marks: '15 M / 250 Words', text: 'What are the key challenges in adopting renewable energy technologies in rural India? Suggest remedial steps.' },
-      { id: 4, paper: 'gs4', year: 2023, marks: '10 M / 150 Words', text: 'Differentiate between "Ethics" and "Morality". How do personal values influence public decision making?' },
-      { id: 5, paper: 'essay', year: 2022, marks: '125 M / 1000 Words', text: 'Forests are the best case studies for economic development.' }
-    ];
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Fetch dynamic selection from localStorage or fallback to defaults
+      let selectedQuestions = JSON.parse(localStorage.getItem('qcab_selected_data'));
+      
+      // Fallback if accessed directly without stored selection
+      if (!selectedQuestions || selectedQuestions.length === 0) {
+        selectedQuestions = [
+          { id: 1, paper: 'GS1', year: 2023, marks: 10, wordLimit: 150, text: 'Explain the role of geographical factors in the development of ancient river valley civilizations in India.' },
+          { id: 2, paper: 'GS2', year: 2023, marks: 15, wordLimit: 250, text: '"Simultaneous election to the Lok Sabha and State Assemblies will limit time and money spent in electioneering but reduce accountability." Discuss.' }
+        ];
+      }
 
-    const selectedIds = JSON.parse(localStorage.getItem('qcab_selected')) || [];
-    const container = document.getElementById('booklet-pages-container');
+      const container = document.getElementById('booklet-pages-container');
+      container.innerHTML = '';
 
-    if (selectedIds.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:50px;">No questions selected. Go back to Dashboard to select questions.</p>';
-    } else {
-      selectedIds.forEach((id, index) => {
-        const q = sampleQuestions.find(item => item.id === id);
-        if (!q) return;
+      selectedQuestions.forEach((q, qIdx) => {
+        // Determine total pages allowed based on marks/word limit
+        let totalPages = 2; // Default for 10-marker (150 words)
+        if (q.marks > 10 || q.wordLimit > 150) {
+          totalPages = 3;   // 15-marker (250 words)
+        }
+        if (q.marks >= 100 || q.wordLimit >= 800) {
+          totalPages = 10;  // Essay Papers
+        }
 
-        // Page 1: Question Header + Writing Space
-        container.innerHTML += `
-          <div class="qcab-page">
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          const pageDiv = document.createElement('div');
+          pageDiv.className = 'qcab-page';
+
+          // Inner Page Structure
+          let pageHTML = `
             <div class="watermark">UPSC</div>
             <div class="margin-left"></div>
             <div class="margin-right"></div>
-            <div class="margin-notice">Do not write anything in this margin</div>
+            <div class="margin-notice-left">Do not write anything in this margin</div>
+            <div class="margin-notice-right">Do not write anything in this margin</div>
+          `;
 
-            <div class="question-header">
-              <span class="q-marks">${q.marks}</span>
-              <span class="q-number">Q${index + 1}.</span>
-              <div class="q-text">${q.text}</div>
+          // Header rendered only on Page 1 of each question
+          if (pageNum === 1) {
+            pageHTML += `
+              <div class="question-header">
+                <div class="q-meta">
+                  <span>Q${qIdx + 1}. (${q.paper || 'GS'} ${q.year || ''})</span>
+                  <span>${q.marks ? q.marks + ' Marks' : ''} / ${q.wordLimit ? q.wordLimit + ' Words' : ''}</span>
+                </div>
+                <div class="q-text">${q.text || q.question}</div>
+              </div>
+            `;
+          }
+
+          // Footer info
+          pageHTML += `
+            <div class="page-footer">
+              <span>Q${qIdx + 1} - Page ${pageNum} of ${totalPages}</span>
+              <span>QCAB Practice Booklet</span>
             </div>
-          </div>
-        `;
+          `;
 
-        // Page 2: Continuation Blank Page
-        container.innerHTML += `
-          <div class="qcab-page">
-            <div class="watermark">UPSC</div>
-            <div class="margin-left"></div>
-            <div class="margin-right"></div>
-            <div class="margin-notice">Do not write anything in this margin</div>
-          </div>
-        `;
+          pageDiv.innerHTML = pageHTML;
+          container.appendChild(pageDiv);
+        }
       });
-    }
+    });
   </script>
 </body>
 </html>
