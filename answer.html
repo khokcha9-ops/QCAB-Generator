@@ -7,6 +7,67 @@
 <!-- Markdown Parser -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
 <style>
+  /* --- ENHANCED TYPOGRAPHY & READABILITY --- */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 19px; /* Increased base body font size (up from default ~16px) */
+  line-height: 1.85; /* Generous spacing between lines */
+  padding-bottom: 60px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header h1 {
+  font-size: 26px; /* Larger title font */
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Headings inside the Answer Card */
+#content h1 { font-size: 26px; margin-top: 36px; margin-bottom: 14px; }
+#content h2 { font-size: 23px; margin-top: 32px; margin-bottom: 12px; }
+#content h3 { font-size: 21px; margin-top: 28px; margin-bottom: 10px; }
+#content h4 { font-size: 19px; margin-top: 24px; margin-bottom: 8px; }
+
+#content h1, #content h2, #content h3, #content h4 {
+  color: var(--heading-color);
+  font-weight: 800;
+  border-bottom: 2px solid var(--heading-border);
+  padding-bottom: 8px;
+}
+
+/* Paragraphs, Bullet Points, & Tables */
+#content p {
+  font-size: 19px;
+  margin-bottom: 18px;
+  color: var(--text-main);
+}
+
+#content ul, #content ol {
+  font-size: 19px;
+  padding-left: 28px;
+  margin: 14px 0;
+}
+
+#content li {
+  margin-bottom: 10px; /* More spacing between bullet points */
+}
+
+#content table {
+  font-size: 18px;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+#content th, #content td {
+  padding: 12px 16px; /* Spacier table cells */
+  border: 1px solid var(--surface-border);
+}
   /* Custom Multi-Color Tagging System */
 
 /* 1. Key terms (Standard Bold) - Dark Wine / Crimson */
