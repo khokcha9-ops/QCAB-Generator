@@ -302,16 +302,13 @@
     </div>
   </section>
 
-  <!-- RIGHT PANEL: Question Bank Search & File Import -->
+  <!-- RIGHT PANEL: Question Bank Search -->
   <section>
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
         <h2 style="margin:0;">Browse Preset Question Bank</h2>
         <div style="display:flex; gap:6px;">
-          <label class="btn-secondary-sm" style="cursor:pointer; display:inline-block;">
-            📥 Import JSON File
-            <input type="file" id="json-file-input" accept=".json" style="display:none;">
-          </label>
+          <button class="btn-secondary-sm" id="reload-bank-btn">🔄 Reload Repository Bank</button>
           <button class="btn-danger-sm" id="clear-bank-btn" title="Clear stored JSON questions">Reset Bank</button>
         </div>
       </div>
@@ -352,9 +349,9 @@
         </div>
       </div>
 
-      <div id="bank-status-text" style="font-size:12px; color:var(--ink-soft); margin-bottom:8px;"></div>
+      <div id="bank-status-text" style="font-size:12px; color:var(--ink-soft); margin-bottom:8px;">Loading question bank...</div>
       <div id="bank-results-container">
-        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select options above and click "Search" or upload a JSON file to populate questions.</p>
+        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select options above and click "Search" to view repository questions.</p>
       </div>
     </div>
   </section>
@@ -401,7 +398,7 @@
     OPT2: ['Anthropology Paper 2 Topics']
   };
 
-  /* ------------ Bank Storage & Import ------------ */
+  /* ------------ Bank Storage & Automated JSON Fetching ------------ */
   let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
 
   function savePresets() {
@@ -412,7 +409,7 @@
   function updateBankStatus() {
     const statusEl = document.getElementById('bank-status-text');
     if (statusEl) {
-      statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) stored in browser memory.`;
+      statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) available in bank.`;
     }
   }
 
@@ -435,58 +432,70 @@
     });
   }
 
-  /* ------------ JSON File Upload Listener ------------ */
-  const jsonFileInput = document.getElementById('json-file-input');
-  jsonFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      try {
-        const data = JSON.parse(evt.target.result);
-        const importedArray = Array.isArray(data) ? data : (data.questions || data.bank || []);
-
-        if (importedArray.length === 0) {
-          alert('No valid array of questions found in the JSON file.');
-          return;
-        }
-
-        let formattedCount = 0;
-        importedArray.forEach(q => {
-          const item = {
-            id: q.id || 'imp_' + Math.random().toString(36).substr(2, 9),
-            paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
-            topic: q.topic || q.subtopic || q.category || 'General',
-            year: String(q.year || q.exam_year || '2026'),
-            marks: parseInt(q.marks || q.mark || 10, 10),
-            question: q.question || q.text || q.q_text || ''
-          };
-          if (item.question.trim()) {
-            presetBank.push(item);
-            formattedCount++;
-          }
-        });
-
-        savePresets();
-        populateFilterYears();
-        alert(`Successfully imported ${formattedCount} question(s) from ${file.name}!`);
-        renderBankResults();
-      } catch (err) {
-        alert('Failed to parse JSON file: ' + err.message);
+  /* ------------ Automatic JSON Fetch from Repository ------------ */
+  async function loadRepositoryJSON() {
+    const statusEl = document.getElementById('bank-status-text');
+    if (statusEl) statusEl.textContent = 'Fetching gs1_pyq.json from repository...';
+    try {
+      const response = await fetch('./gs1_pyq.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
-    reader.readAsText(file);
-  });
+      const data = await response.json();
+      const importedArray = Array.isArray(data) ? data : (data.questions || data.bank || []);
+
+      if (importedArray.length === 0) {
+        if (statusEl) statusEl.textContent = 'No questions found in gs1_pyq.json';
+        return;
+      }
+
+      // Sync fetched repository items without duplicating
+      importedArray.forEach(q => {
+        const item = {
+          id: q.id || 'repo_' + Math.random().toString(36).substr(2, 9),
+          paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
+          topic: q.topic || q.subtopic || q.category || 'General',
+          year: String(q.year || q.exam_year || '2026'),
+          marks: parseInt(q.marks || q.mark || 10, 10),
+          question: q.question || q.text || q.q_text || ''
+        };
+        
+        const exists = presetBank.some(existing => 
+          existing.question.trim().toLowerCase() === item.question.trim().toLowerCase() &&
+          String(existing.year) === String(item.year)
+        );
+
+        if (item.question.trim() && !exists) {
+          presetBank.push(item);
+        }
+      });
+
+      savePresets();
+      populateFilterYears();
+      renderBankResults();
+    } catch (err) {
+      console.warn('Could not auto-load gs1_pyq.json:', err);
+      if (presetBank.length === 0) {
+        if (statusEl) statusEl.textContent = 'Note: Ensure gs1_pyq.json is located in the same repository root directory.';
+      } else {
+        updateBankStatus();
+      }
+    }
+  }
 
   const clearBankBtn = document.getElementById('clear-bank-btn');
   clearBankBtn.addEventListener('click', () => {
-    if (confirm('Clear all stored JSON questions from browser memory?')) {
+    if (confirm('Clear all stored questions from memory?')) {
       presetBank = [];
       savePresets();
       populateFilterYears();
-      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Bank cleared. Import a new JSON file to populate.</p>';
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Bank cleared.</p>';
     }
+  });
+
+  const reloadBankBtn = document.getElementById('reload-bank-btn');
+  reloadBankBtn.addEventListener('click', () => {
+    loadRepositoryJSON();
   });
 
   /* ------------ State ------------ */
@@ -561,7 +570,7 @@
     filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
     const yearsInBank = [...new Set(presetBank.map(q => String(q.year)).filter(y => y && y !== 'undefined'))];
     if (yearsInBank.length === 0) {
-      yearsInBank.push('2026', '2025', '2024', '2023', '2022', '2021', '2020');
+      yearsInBank.push('2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013');
     } else {
       yearsInBank.sort((a,b) => b - a);
     }
@@ -627,7 +636,7 @@
     });
 
     if (filtered.length === 0) {
-      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching this selection. Try selecting "-- All Papers --" or "-- All Years --". If you uploaded a JSON file, ensure it contains valid GS1 tags.</p>';
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching this selection.</p>';
       return;
     }
 
@@ -907,8 +916,8 @@
   populateFormSubtopics();
   populateFilterYears();
   populateFilterTopics();
-  updateBankStatus();
   renderAll();
+  loadRepositoryJSON();
 
 })();
 </script>
