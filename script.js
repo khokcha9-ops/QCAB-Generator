@@ -54,6 +54,15 @@
     return 'GS1';
   }
 
+  function getPaperTagClass(paper) {
+    const norm = normalizePaperCode(paper);
+    if (norm === 'GS1') return 'tag-paper-gs1';
+    if (norm === 'GS2') return 'tag-paper-gs2';
+    if (norm === 'GS3') return 'tag-paper-gs3';
+    if (norm === 'GS4') return 'tag-paper-gs4';
+    return 'tag-paper-opt';
+  }
+
   function escapeHtml(str) {
     if(!str) return '';
     return String(str).replace(/[&<>"']/g, function(m) {
@@ -79,7 +88,6 @@
     }
   }
 
-  // Safe fetch handler for separate files
   async function fetchJSONFile(url) {
     try {
       const response = await fetch(url);
@@ -92,7 +100,6 @@
     }
   }
 
-  // Load both gs1_pyq.json and gs2_pyq.json safely without wiping user edits
   async function loadRepositoryJSON() {
     try {
       const [gs1Data, gs2Data] = await Promise.all([
@@ -104,7 +111,6 @@
       let formattedCount = 0;
 
       incomingQuestions.forEach(q => {
-        // Safe numeric marks parser handling "10 M", "5 M", or 10
         const cleanMarks = typeof q.marks === 'string' 
           ? parseInt(q.marks.replace(/[^0-9]/g, ''), 10) || 10 
           : parseInt(q.marks || 10, 10);
@@ -112,7 +118,6 @@
         const item = {
           id: q.id || 'q_' + Math.random().toString(36).substr(2, 9),
           paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
-          // Checks subtopic first (used in your JSON), then falls back to topic
           topic: q.subtopic || q.topic || q.category || 'General',
           year: String(q.year || q.exam_year || '2025').trim(),
           marks: cleanMarks,
@@ -135,90 +140,7 @@
       
       populateFilterYears();
       populateFilterTopics();
-      // 1. Get the search input element from DOM (place with your other DOM variables at top)
-const searchInput = document.getElementById('search-input');
-
-// 2. The complete renderBankResults function
-function renderBankResults() {
-  bankResultsContainer.innerHTML = '';
-  const selectedP = filterPaper.value;
-  const selectedY = filterYear.value;
-  const selectedT = filterTopic.value;
-  const isYearMode = modeYearRadio.checked;
-
-  // Read current search query
-  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
-  // Filter preset bank using both dropdowns and search input
-  let filtered = presetBank.filter(q => {
-    const normQPaper = normalizePaperCode(q.paper);
-
-    // Keyword matching for question text, topic, or year
-    const matchesQuery = !query || 
-      q.question.toLowerCase().includes(query) || 
-      (q.topic && q.topic.toLowerCase().includes(query)) ||
-      (q.year && String(q.year).includes(query));
-
-    if (!matchesQuery) return false;
-    if (selectedP !== 'ALL' && normQPaper !== normalizePaperCode(selectedP)) return false;
-    if (selectedY !== 'ALL' && String(q.year) !== String(selectedY)) return false;
-    if (!isYearMode && selectedT !== 'ALL' && q.topic !== selectedT) return false;
-
-    return true;
-  });
-
-  if (filtered.length === 0) {
-    bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching this selection.</p>';
-    return;
-  }
-
-  // Render matching cards
-  filtered.forEach(q => {
-    const div = document.createElement('div');
-    div.className = 'bank-item';
-    div.innerHTML = `
-      <div style="font-size:13.5px; font-weight:600; margin-bottom:6px;">${escapeHtml(q.question)}</div>
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <span class="tag paper">${q.paper || 'GS1'}</span>
-          <span class="tag">${escapeHtml(q.topic || 'General')}</span>
-          <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
-        </div>
-        <div style="display:flex; gap:6px;">
-          <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-          <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
-        </div>
-      </div>
-    `;
-
-    div.querySelector('.btn-add-item').addEventListener('click', () => {
-      getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
-      saveState();
-      renderQuestions();
-    });
-
-    div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
-      getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
-      saveState();
-      renderQuestions();
-      generatePDF();
-    });
-
-    bankResultsContainer.appendChild(div);
-  });
-}
-
-// 3. Attach event listeners (place below renderBankResults)
-searchBankBtn.addEventListener('click', renderBankResults);
-
-if (searchInput) {
-  searchInput.addEventListener('input', renderBankResults);
-}
-
-clearResultsBtn.addEventListener('click', () => {
-  if (searchInput) searchInput.value = '';
-  bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Search results cleared.</p>';
-});
+      renderBankResults();
     } catch (err) {
       console.warn('Repository load error:', err);
       updateBankStatus();
@@ -267,6 +189,7 @@ clearResultsBtn.addEventListener('click', () => {
   const clearQBtn = document.getElementById('clear-q-btn');
   const clearBankBtn = document.getElementById('clear-bank-btn');
 
+  const searchInput = document.getElementById('search-input');
   const modeYearRadio = document.getElementById('mode-year');
   const modeTopicRadio = document.getElementById('mode-topic');
   const filterPaper = document.getElementById('filter-paper');
@@ -351,10 +274,16 @@ clearResultsBtn.addEventListener('click', () => {
   if(filterPaper) filterPaper.addEventListener('change', () => { populateFilterYears(); populateFilterTopics(); });
   if(modeYearRadio) modeYearRadio.addEventListener('change', updateFilterMode);
   if(modeTopicRadio) modeTopicRadio.addEventListener('change', updateFilterMode);
+  
+  if(searchInput) searchInput.addEventListener('input', renderBankResults);
   if(searchBankBtn) searchBankBtn.addEventListener('click', renderBankResults);
-  if(clearResultsBtn) clearResultsBtn.addEventListener('click', () => {
-    if(bankResultsContainer) bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Search results cleared.</p>';
-  });
+  
+  if(clearResultsBtn) {
+    clearResultsBtn.addEventListener('click', () => {
+      if(searchInput) searchInput.value = '';
+      if(bankResultsContainer) bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Search results cleared.</p>';
+    });
+  }
 
   if(clearBankBtn) {
     clearBankBtn.addEventListener('click', async () => {
@@ -369,7 +298,7 @@ clearResultsBtn.addEventListener('click', () => {
   }
 
   /* ==========================================
-     6. RENDER SEARCH RESULTS (FLEXIBLE MATCHING)
+     6. RENDER SEARCH RESULTS (KEYWORD & FILTERS)
      ========================================== */
   function renderBankResults() {
     if(!bankResultsContainer) return;
@@ -378,18 +307,23 @@ clearResultsBtn.addEventListener('click', () => {
     const selectedY = filterYear ? filterYear.value : 'ALL';
     const selectedT = filterTopic ? filterTopic.value : 'ALL';
     const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
     let filtered = presetBank.filter(q => {
       const normQPaper = normalizePaperCode(q.paper);
       const normSelectedP = normalizePaperCode(selectedP);
 
-      // 1. Match Paper Code
+      // Search bar keyword match
+      const matchesQuery = !query || 
+        (q.question && q.question.toLowerCase().includes(query)) || 
+        (q.topic && q.topic.toLowerCase().includes(query)) ||
+        (q.paper && q.paper.toLowerCase().includes(query)) ||
+        (q.year && String(q.year).includes(query));
+
+      if (!matchesQuery) return false;
       if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
-
-      // 2. Match Year
       if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
-
-      // 3. Match Topic (Flexible / Includes Check)
+      
       if (!isYearMode && selectedT !== 'ALL') {
         const qTopicClean = String(q.topic || '').trim().toLowerCase();
         const selectedTClean = String(selectedT).trim().toLowerCase();
@@ -408,12 +342,14 @@ clearResultsBtn.addEventListener('click', () => {
     filtered.forEach(q => {
       const div = document.createElement('div');
       div.className = 'bank-item';
+      const paperClass = getPaperTagClass(q.paper);
+      
       div.innerHTML = `
         <div style="font-size:13.5px; font-weight:600; margin-bottom:6px;">${escapeHtml(q.question)}</div>
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <span class="tag paper">${q.paper || 'GS1'}</span>
-            <span class="tag">${escapeHtml(q.topic || 'General')}</span>
+            <span class="tag ${paperClass}">${q.paper || 'GS1'}</span>
+            <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
             <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
           </div>
           <div style="display:flex; gap:6px;">
@@ -587,13 +523,15 @@ clearResultsBtn.addEventListener('click', () => {
       totalMarks += q.marks; totalPages += MARK_RULES[q.marks] || 2;
       const li = document.createElement('li');
       li.className = 'q-item';
+      const paperClass = getPaperTagClass(q.paper);
+
       li.innerHTML = `
         <div class="q-num">${i + 1}.</div>
         <div>
           <div class="q-text">${escapeHtml(q.question)}</div>
           <div class="q-meta">
-            ${q.paper ? `<span class="tag paper">${q.paper}</span>` : ''}
-            ${q.topic ? `<span class="tag">${escapeHtml(q.topic)}</span>` : ''}
+            ${q.paper ? `<span class="tag ${paperClass}">${q.paper}</span>` : ''}
+            ${q.topic ? `<span class="tag tag-topic">${escapeHtml(q.topic)}</span>` : ''}
             <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
             <span class="tag pages">${MARK_RULES[q.marks] || 2} pages</span>
           </div>
