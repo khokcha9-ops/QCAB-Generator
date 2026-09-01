@@ -226,3 +226,45 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
 }
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #0f172a;
+  color: #f8fafc;
+  line-height: 1.6;
+}
+
+/* High-visibility prominent question font */
+.question-container, .question, h2 {
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.card, .container, .quiz-box {
+  background: #1e293b;
+  padding: 2.5rem;
+  border-radius: 20px;
+  border: 1px solid #334155;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  max-width: 680px;
+  margin: 2rem auto;
+}
+
+button, .option-btn {
+  font-size: 1.05rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #475569;
+  background-color: #334155;
+  color: #f1f5f9;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+button:hover, .option-btn:hover {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
