@@ -1718,51 +1718,54 @@
 <script type="module">
   import { GoogleGenAI } from "@google/genai";
 
+<script type="module">
+  import { GoogleGenAI } from "@google/genai";
+
   window.fetchAIAnswer = async function(buttonElement) {
-  // Hardcoded API key
-  const apiKey = "AQ.Ab8RN6INjKAl38cA_eLdu2WpwNqltgiehRngdBqL-ZtCHybiFg";
+    // Hardcoded API key
+    const apiKey = "AQ.Ab8RN6INjKAl38cA_eLdu2WpwNqltgiehRngdBqL-ZtCHybiFg";
 
-  // 1. Locate the question container and extract text dynamically
-  const card = buttonElement.closest('.bank-item');
-  const questionEl = card ? card.querySelector('.bank-question') : null;
-  const questionText = questionEl ? questionEl.innerText : "Explain this question.";
+    // 1. Locate the question container and extract text dynamically
+    const card = buttonElement.closest('.bank-item');
+    const questionEl = card ? card.querySelector('.bank-question') : null;
+    const questionText = questionEl ? questionEl.innerText : "Explain this question.";
 
-  // 2. Locate the response container inside the card
-  const container = card.querySelector('.ai-answer-container');
-  const loadingDiv = container.querySelector('.ai-loading');
-  const contentDiv = container.querySelector('.ai-content');
+    // 2. Locate the response container inside the card
+    const container = card.querySelector('.ai-answer-container');
+    const loadingDiv = container.querySelector('.ai-loading');
+    const contentDiv = container.querySelector('.ai-content');
 
-  if (container) container.style.display = 'block';
-  if (loadingDiv) loadingDiv.style.display = 'block';
-  if (contentDiv) contentDiv.innerHTML = '';
+    if (container) container.style.display = 'block';
+    if (loadingDiv) loadingDiv.style.display = 'block';
+    if (contentDiv) contentDiv.innerHTML = '';
 
-  try {
-    // 3. Initialize Gemini SDK using the browser instance
-    const { GoogleGenAI } = await import("@google/genai");
-    const ai = new GoogleGenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
+    try {
+      // 3. Initialize Gemini SDK
+      const ai = new GoogleGenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
-    const promptText = `Act as an expert UPSC/OPSC civil services mentor. Provide a rigorous, high-scoring structured model answer for this Mains question. Include:
-    - Introduction
-    - Body Paragraphs (with multi-dimensional headings e.g. Social, Economic, Governance, Administrative)
-    - Way Forward / Conclusion
-    
-    Question: "${questionText}"`;
+      const promptText = `Act as an expert UPSC/OPSC civil services mentor. Provide a rigorous, high-scoring structured model answer for this Mains question. Include:
+      - Introduction
+      - Body Paragraphs (with multi-dimensional headings e.g. Social, Economic, Governance, Administrative)
+      - Way Forward / Conclusion
+      
+      Question: "${questionText}"`;
 
-    // 4. Generate content via Gemini 2.5 Flash
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: promptText,
-    });
+      // 4. Generate content via Gemini 2.5 Flash
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: promptText,
+      });
 
-    if (loadingDiv) loadingDiv.style.display = 'none';
-    if (contentDiv) contentDiv.innerHTML = response.text;
+      if (loadingDiv) loadingDiv.style.display = 'none';
+      if (contentDiv) contentDiv.innerHTML = response.text;
 
-  } catch (error) {
-    console.error(error);
-    if (loadingDiv) loadingDiv.style.display = 'none';
-    if (contentDiv) contentDiv.innerHTML = "❌ Error generating model answer. Please check your console.";
-  }
-};
+    } catch (error) {
+      console.error(error);
+      if (loadingDiv) loadingDiv.style.display = 'none';
+      if (contentDiv) contentDiv.innerHTML = "❌ Error generating model answer. Please check your console.";
+    }
+  };
+  
 </script>
 </body>
 </html>
