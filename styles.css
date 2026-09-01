@@ -56,11 +56,12 @@
    ========================================== */
 body {
   margin: 0;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', "Inter", system-ui, -apple-system, sans-serif;
   background-color: var(--bg-main);
   background-image: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text-main);
+  line-height: 1.6;
   transition: background-color 0.4s ease, color 0.4s ease;
   min-height: 100vh;
 }
@@ -107,7 +108,7 @@ body::after {
 }
 
 /* ==========================================
-   4. GLASS CARDS & HERO BANNER
+   4. GLASS CARDS, HERO & QUIZ CONTAINERS
    ========================================== */
 .hero-banner {
   border-radius: 20px;
@@ -163,14 +164,26 @@ body::after {
   -webkit-text-fill-color: transparent;
 }
 
-/* Form & Content Containers */
-.card-panel {
+/* Form & Content Containers / Modernized Quiz Card Layout */
+.card-panel, .card, .container, .quiz-box {
   background: var(--surface-card);
   backdrop-filter: var(--backdrop-blur);
   -webkit-backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--surface-border);
-  border-radius: 16px;
+  border-radius: 20px;
+  padding: 2.5rem;
   box-shadow: var(--card-shadow);
+  max-width: 680px;
+  margin: 2rem auto;
+}
+
+/* High-visibility prominent question font */
+.question-container, .question, h2 {
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
 }
 
 /* ==========================================
@@ -194,22 +207,23 @@ body::after {
   box-shadow: 0 6px 20px rgba(136, 19, 55, 0.35);
 }
 
-.btn-secondary {
-  background: var(--surface-glow);
-  color: var(--text-main);
+.btn-secondary, button, .option-btn {
+  font-size: 1.05rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
   border: 1px solid var(--surface-border);
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-weight: 600;
+  background-color: var(--surface-glow);
+  color: var(--text-main);
   backdrop-filter: var(--backdrop-blur);
   -webkit-backdrop-filter: var(--backdrop-blur);
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover, button:hover, .option-btn:hover {
   border-color: var(--accent-primary);
   color: var(--accent-primary);
+  transform: translateY(-1px);
 }
 
 input, select, textarea {
@@ -225,46 +239,4 @@ input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
-}
-body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #0f172a;
-  color: #f8fafc;
-  line-height: 1.6;
-}
-
-/* High-visibility prominent question font */
-.question-container, .question, h2 {
-  font-size: 1.65rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.01em;
-}
-
-.card, .container, .quiz-box {
-  background: #1e293b;
-  padding: 2.5rem;
-  border-radius: 20px;
-  border: 1px solid #334155;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-  max-width: 680px;
-  margin: 2rem auto;
-}
-
-button, .option-btn {
-  font-size: 1.05rem;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #475569;
-  background-color: #334155;
-  color: #f1f5f9;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-button:hover, .option-btn:hover {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-  color: #ffffff;
 }
