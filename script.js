@@ -858,6 +858,24 @@
   /* ==========================================
      9. INITIALIZATION ON PAGE LOAD
      ========================================== */
+  /* Add/Update this in your <style> tag */
+
+/* Completely hide the bank body when collapsed */
+#pyq-bank-body.collapsed {
+  display: none !important;
+}
+
+/* Ensure cards auto-adjust height when children are hidden */
+.card {
+  height: auto;
+  min-height: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Ensure the PYQ Bank card header margins adjust when body is hidden */
+#pyq-bank:has(#pyq-bank-body.collapsed) .card-header {
+  margin-bottom: 0;
+}
   initFuseIndex();
   populateFormSubtopics();
   populateFilterYears();
