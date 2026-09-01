@@ -207,23 +207,36 @@
     }
   }
   
-  /* ==========================================
-     PYQ BANK COLLAPSE TOGGLE
-     ========================================== */
-  window.togglePYQBank = function() {
-    const bankContent = document.getElementById('pyqBankContent');
-    const toggleButton = document.getElementById('pyqToggleButton');
-    
-    if (!bankContent || !toggleButton) return;
+  /* Update the section 1b in your script */
+const toggleBankBtn = document.getElementById('toggle-bank-btn');
+const toggleBankIcon = document.getElementById('toggle-bank-icon');
+const toggleBankText = document.getElementById('toggle-bank-text');
+const bankBody = document.getElementById('pyq-bank-body');
 
-    if (bankContent.classList.contains('hidden')) {
-      bankContent.classList.remove('hidden');
-      toggleButton.textContent = 'Hide Bank';
-    } else {
-      bankContent.classList.add('hidden');
-      toggleButton.textContent = 'Show Bank';
-    }
-  };
+function setBankCollapsed(collapsed) {
+  if (!bankBody) return;
+  
+  if (collapsed) {
+    bankBody.classList.add('collapsed');
+  } else {
+    bankBody.classList.remove('collapsed');
+  }
+
+  if (toggleBankIcon) toggleBankIcon.textContent = collapsed ? '▸' : '▾';
+  if (toggleBankText) toggleBankText.textContent = collapsed ? 'Show Bank' : 'Hide Bank';
+}
+
+// Restore saved preference on load
+const bankCollapsedSaved = localStorage.getItem('qcab_bank_collapsed') === '1';
+setBankCollapsed(bankCollapsedSaved);
+
+if (toggleBankBtn) {
+  toggleBankBtn.addEventListener('click', () => {
+    const willCollapse = !bankBody.classList.contains('collapsed');
+    setBankCollapsed(willCollapse);
+    localStorage.setItem('qcab_bank_collapsed', willCollapse ? '1' : '0');
+  });
+}
 
   /* ==========================================
      4. FOLDER & BOOKLET STATE
