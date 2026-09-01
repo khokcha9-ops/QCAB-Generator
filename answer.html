@@ -313,10 +313,17 @@
         printBtn.style.display = 'inline-block';
 
       } catch (err) {
-        console.error(err);
-        statusEl.style.display = 'none';
-        contentEl.innerHTML = `<div class="error-box">❌ Error generating answer: ${err.message}</div>`;
-      }
+  console.error(err);
+  if (err.message.includes('Quota exceeded')) {
+    statusEl.style.display = 'block';
+    statusEl.innerHTML = `<span class="spinner"></span> Rate limit reached. Auto-retrying in 12 seconds...`;
+    setTimeout(() => {
+      fetchAnswer();
+    }, 12000); // Retries after 12 seconds
+  } else {
+    statusEl.style.display = 'none';
+    contentEl.innerHTML = `<div class="error-box">❌ Error generating answer: ${err.message}</div>`;
+  }
     }
   </script>
 </body>
