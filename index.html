@@ -10,14 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
-  <head>
-  ...
-  <style>
-    #pyq-bank.is-hidden {
-      display: none !important;
-    }
-  </style>
-</head>
   :root{
     --bg:#f5f7fb;
     --surface:#ffffff;
@@ -735,17 +727,6 @@
             </div>
           </div>
 
-          <!-- PASTE TOGGLE BUTTON HERE -->
-          <div class="pyq-toggle-bar" style="margin-bottom: 12px; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn btn-secondary" id="toggle-pyq-btn" onclick="togglePyqBank()">
-              <span id="pyq-toggle-icon">▼</span> <span id="pyq-toggle-text">Hide PYQ Bank</span>
-            </button>
-          </div>
-
-          <!-- EXISTING PYQ BANK CARD -->
-          <div class="card" id="pyq-bank">
-            <div class="card-header">
-              ...
           <div class="card" id="pyq-bank">
             <div class="card-header">
               <div>
@@ -854,26 +835,7 @@
     </main>
   </div>
 </div>
-<script>
-  // Add function here:
-  function togglePyqBank() {
-    const pyqBank = document.getElementById('pyq-bank');
-    const toggleBtnText = document.getElementById('pyq-toggle-text');
-    const toggleBtnIcon = document.getElementById('pyq-toggle-icon');
 
-    if (pyqBank.classList.contains('is-hidden')) {
-      pyqBank.classList.remove('is-hidden');
-      toggleBtnText.textContent = 'Hide PYQ Bank';
-      toggleBtnIcon.textContent = '▼';
-    } else {
-      pyqBank.classList.add('is-hidden');
-      toggleBtnText.textContent = 'Show PYQ Bank';
-      toggleBtnIcon.textContent = '▲';
-    }
-  }
-
-  // ... rest of your existing script code ...
-</script>
 <script>
   /* Navigation & Dashboard Synchronization Logic */
   document.querySelectorAll('[data-scroll]').forEach(btn => {
