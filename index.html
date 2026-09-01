@@ -456,8 +456,17 @@
     ]
   };
 
+  /* ------------ GS 1 Preset Questions ------------ */
+  const DEFAULT_PRESETS = [
+    // Include full JSON data here (from Step 2 below)
+  ];
+
   /* ------------ Question Bank Storage ------------ */
-  let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
+  // Load custom questions saved by user in local storage
+  let customPresets = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
+  
+  // Combine built-in presets with custom saved questions
+  let presetBank = [...DEFAULT_PRESETS, ...customPresets];
 
   function savePresets() {
     localStorage.setItem('qcab_preset_bank', JSON.stringify(presetBank));
