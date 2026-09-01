@@ -7,6 +7,61 @@
 <!-- Markdown Parser -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
 <style>
+  /* Custom Multi-Color Tagging System */
+
+/* 1. Key terms (Standard Bold) - Dark Wine / Crimson */
+#content strong {
+  color: #9f1239;
+  font-weight: 700;
+}
+
+/* 2. Examples & Thinkers - Emerald Green */
+#content .eg, #content em {
+  color: #047857;
+  font-style: normal;
+  font-weight: 600;
+  background: #ecfdf5;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* 3. Dates, Articles, & Timeline metadata - Royal Blue */
+#content .tag-meta {
+  color: #1d4ed8;
+  font-weight: 600;
+  background: #eff6ff;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* 4. Highlighted Core Takeaways - Soft Amber Highlight */
+#content mark.highlight {
+  background: #fef08a;
+  color: #854d0e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* --- Dark Mode Palette Adjustments --- */
+[data-theme="dark"] #content strong {
+  color: #fb7185; /* Soft Coral Pink */
+}
+
+[data-theme="dark"] #content .eg, [data-theme="dark"] #content em {
+  color: #34d399; /* Bright Mint Green */
+  background: #064e3b;
+}
+
+[data-theme="dark"] #content .tag-meta {
+  color: #60a5fa; /* Soft Light Blue */
+  background: #1e3a8a;
+}
+
+[data-theme="dark"] #content mark.highlight {
+  background: #713f12;
+  color: #fef08a;
+}
   :root {
     /* Light Theme Palette */
     --accent-primary: #881337;
