@@ -2,34 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>UPSC QCAB Print Template</title>
+  <title>UPSC Question-Cum-Answer Booklet (QCAB)</title>
   <style>
     @page {
       size: A4;
       margin: 0;
     }
 
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Times New Roman', serif;
-      background: #f0f0f0;
+      font-family: 'Times New Roman', Times, serif;
+      background: #e2e8f0;
     }
 
+    /* Print Navigation Bar */
+    .no-print-bar {
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .print-btn {
+      background: #e11d48;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Page Canvas */
     .qcab-page {
       width: 210mm;
       height: 297mm;
       background: #ffffff;
       margin: 10mm auto;
       position: relative;
-      box-sizing: border-box;
-      padding: 20mm 25mm 20mm 25mm;
+      padding: 20mm 25mm;
       page-break-after: always;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       overflow: hidden;
     }
 
-    /* UPSC Write-Friendly Watermark */
+    /* Light, Write-Friendly UPSC Watermark */
     .watermark {
       position: absolute;
       top: 50%;
@@ -37,7 +62,7 @@
       transform: translate(-50%, -50%) rotate(-30deg);
       font-size: 110pt;
       font-weight: 900;
-      color: rgba(0, 0, 0, 0.035); /* Extremely low opacity for easy writing */
+      color: rgba(0, 0, 0, 0.035); /* Extremely low opacity so pen writing stays visible */
       letter-spacing: 12px;
       user-select: none;
       pointer-events: none;
@@ -50,7 +75,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 20mm;
+      left: 22mm;
       border-left: 1px solid #fca5a5;
       z-index: 2;
     }
@@ -59,23 +84,10 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      right: 20mm;
+      right: 22mm;
       border-right: 1px solid #fca5a5;
       z-index: 2;
     }
-
-    /* Content Styling */
-    .question-header {
-      position: relative;
-      z-index: 3;
-      border-bottom: 1.5px solid #000;
-      padding-bottom: 8px;
-      margin-bottom: 15px;
-    }
-
-    .q-number { font-weight: bold; font-size: 14pt; }
-    .q-text { font-size: 12pt; line-height: 1.4; margin-top: 5px; }
-    .q-marks { float: right; font-weight: bold; font-size: 12pt; }
 
     .margin-notice {
       position: absolute;
@@ -83,46 +95,90 @@
       top: 50%;
       transform: rotate(-90deg);
       font-size: 8pt;
-      color: #999;
+      color: #94a3b8;
       white-space: nowrap;
     }
 
+    /* Question Box Header */
+    .question-header {
+      position: relative;
+      z-index: 3;
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .q-marks { float: right; font-weight: bold; font-size: 11pt; }
+    .q-number { font-weight: bold; font-size: 13pt; }
+    .q-text { font-size: 12pt; line-height: 1.45; margin-top: 6px; }
+
     @media print {
-      body { background: none; }
+      .no-print-bar { display: none !important; }
+      body { background: none !important; }
       .qcab-page {
-        margin: 0;
-        box-shadow: none;
-        width: 210mm;
-        height: 297mm;
+        margin: 0 !important;
+        box-shadow: none !important;
+        width: 210mm !important;
+        height: 297mm !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Page 1 (Question + Lines) -->
-  <div class="qcab-page">
-    <div class="watermark">UPSC</div>
-    <div class="margin-left"></div>
-    <div class="margin-right"></div>
-    <div class="margin-notice">Do not write anything in this margin</div>
-
-    <div class="question-header">
-      <span class="q-marks">10 Marks / 150 Words</span>
-      <span class="q-number">Q1.</span>
-      <div class="q-text">
-        "Simultaneous election to the Lok Sabha and the State Assemblies will limit the amount of time and money spent in electioneering, but it will reduce the government's accountability to the people." Discuss.
-      </div>
-    </div>
+  <div class="no-print-bar">
+    <span>📄 UPSC Question-Cum-Answer Booklet Preview</span>
+    <button class="print-btn" onclick="window.print()">🖨️ Print Booklet / Save PDF</button>
   </div>
 
-  <!-- Page 2 (Continuation Page) -->
-  <div class="qcab-page">
-    <div class="watermark">UPSC</div>
-    <div class="margin-left"></div>
-    <div class="margin-right"></div>
-    <div class="margin-notice">Do not write anything in this margin</div>
-  </div>
+  <div id="booklet-pages-container"></div>
 
+  <script>
+    const sampleQuestions = [
+      { id: 1, paper: 'gs1', year: 2023, marks: '10 M / 150 Words', text: 'Explain the role of geographical factors in the development of ancient river valley civilizations in India.' },
+      { id: 2, paper: 'gs2', year: 2023, marks: '15 M / 250 Words', text: "'Simultaneous election to the Lok Sabha and State Assemblies will limit time and money spent in electioneering but reduce accountability.' Discuss." },
+      { id: 3, paper: 'gs3', year: 2022, marks: '15 M / 250 Words', text: 'What are the key challenges in adopting renewable energy technologies in rural India? Suggest remedial steps.' },
+      { id: 4, paper: 'gs4', year: 2023, marks: '10 M / 150 Words', text: 'Differentiate between "Ethics" and "Morality". How do personal values influence public decision making?' },
+      { id: 5, paper: 'essay', year: 2022, marks: '125 M / 1000 Words', text: 'Forests are the best case studies for economic development.' }
+    ];
+
+    const selectedIds = JSON.parse(localStorage.getItem('qcab_selected')) || [];
+    const container = document.getElementById('booklet-pages-container');
+
+    if (selectedIds.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding:50px;">No questions selected. Go back to Dashboard to select questions.</p>';
+    } else {
+      selectedIds.forEach((id, index) => {
+        const q = sampleQuestions.find(item => item.id === id);
+        if (!q) return;
+
+        // Page 1: Question Header + Writing Space
+        container.innerHTML += `
+          <div class="qcab-page">
+            <div class="watermark">UPSC</div>
+            <div class="margin-left"></div>
+            <div class="margin-right"></div>
+            <div class="margin-notice">Do not write anything in this margin</div>
+
+            <div class="question-header">
+              <span class="q-marks">${q.marks}</span>
+              <span class="q-number">Q${index + 1}.</span>
+              <div class="q-text">${q.text}</div>
+            </div>
+          </div>
+        `;
+
+        // Page 2: Continuation Blank Page
+        container.innerHTML += `
+          <div class="qcab-page">
+            <div class="watermark">UPSC</div>
+            <div class="margin-left"></div>
+            <div class="margin-right"></div>
+            <div class="margin-notice">Do not write anything in this margin</div>
+          </div>
+        `;
+      });
+    }
+  </script>
 </body>
 </html>
