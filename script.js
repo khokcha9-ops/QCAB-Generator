@@ -134,24 +134,32 @@ async function fetchPresetQuestions() {
     console.log("Auto-fetch fallback to localStorage", err);
   }
   async function loadRepositoryJSON() {
+  const fetchSafe = async (url) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : (data.questions || data.bank || []);
+    } catch (e) {
+      console.warn(`Optional file not found or skipped: ${url}`);
+      return [];
+    }
+  };
+
   try {
-    // Fetch both GS1 and GS2 files
+    // Fetches multiple files safely so one missing file won't block the rest
     const [res1, res2] = await Promise.all([
-      fetch('./gs1_pyq.json').then(res => res.ok ? res.json() : []),
-      fetch('./gs2_pyq.json').then(res => res.ok ? res.json() : [])
+      fetchSafe('./gs1_pyq.json'),
+      fetchSafe('./gs2_pyq.json')
     ]);
 
-    const combinedArray = [
-      ...(Array.isArray(res1) ? res1 : (res1.questions || [])),
-      ...(Array.isArray(res2) ? res2 : (res2.questions || []))
-    ];
+    const combinedArray = [...res1, ...res2];
 
     processIncomingArray(combinedArray);
   } catch (err) {
-    console.warn('Fetch fallback: using local browser cache');
+    console.warn('Fetch failed: check local server or file paths');
     updateBankStatus();
   }
-}
 }
 
 // Call auto-fetch on load
