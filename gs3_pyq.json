@@ -2142,5 +2142,166 @@
     "question": "What is the present world scenario of intellectual property rights with respect to life materials? Although, India is second in the world to file patents, still only a few have been commercialized. Explain the reasons behind this less commercialization.",
     "marks": "10 M",
     "year": "2024"
+  },
+  {
+    "id": "gs3-2026-001",
+    "paper": "GS Paper 3",
+    "subtopic": "Economy",
+    "question": "What do you mean by Digital Rupee? In this context, explain the working and progress of India’s Central Bank Digital Currency (CBDC).",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-002",
+    "paper": "GS Paper 3",
+    "subtopic": "Economy",
+    "question": "Examine the view that financial inclusion is an integral part of social and economic inclusion in a country like India. Also throw light on the usefulness of the R.B.I.’s Financial Inclusion Index.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-003",
+    "paper": "GS Paper 3",
+    "subtopic": "Agriculture",
+    "question": "Describe the various Technology Missions initiated in Indian agriculture and examine their role in food security.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-004",
+    "paper": "GS Paper 3",
+    "subtopic": "Agriculture",
+    "question": "Explain the factors responsible for inefficiency of agri-produce marketing. How e-commerce helps to reduce inefficiency of agri-produce marketing? Explain.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-005",
+    "paper": "GS Paper 3",
+    "subtopic": "Agriculture",
+    "question": "Explain by giving two examples, how biotechnology has helped the Indian farmers in processing their perishable crops.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-006",
+    "paper": "GS Paper 3",
+    "subtopic": "Science & Technology",
+    "question": "Distinguish between a Fast Breeder Reactor (FBR) and a thermal nuclear reactor. In the context of first indigenously developed prototype FBR at Kalpakkam, explain the term ‘criticality’. What are its implications for clean energy future of our country?",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-007",
+    "paper": "GS Paper 3",
+    "subtopic": "Disaster Management",
+    "question": "Discuss how the contradiction between ‘rapid infrastructure development’ and ‘disaster-risk reduction’ in ecologically-sensitive areas of India can be managed, with suitable examples.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-008",
+    "paper": "GS Paper 3",
+    "subtopic": "Environment",
+    "question": "Discuss the aim and goals of Kunming-Montreal global biodiversity framework. Mention India’s commitments and initiatives to achieve the goals and targets of this framework giving suitable examples.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-009",
+    "paper": "GS Paper 3",
+    "subtopic": "Internal Security",
+    "question": "Explain how fake news and disinformation pose threat to Internal Security and Public Order in Indian context? In this regard, discuss salient features of amendments in respect of Information Technology (Intermediatory Guidelines and Digital Media Ethics Code) Rules 2021.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-010",
+    "paper": "GS Paper 3",
+    "subtopic": "Internal Security",
+    "question": "Ladakh is strategically located between China and Pakistan. As a measure to win hearts and minds of locals, discuss the Border Area Development Programmes (BADP) by the Central Government and civic actions by the Army. Also discuss demand of promulgation of provision of the Sixth Schedule of constitution for Ladakh.",
+    "marks": "10 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-011",
+    "paper": "GS Paper 3",
+    "subtopic": "Energy",
+    "question": "Explain the key challenges for India’s energy security. What measures do you suggest for ensuring energy security along with economic growth and sustainability?",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-012",
+    "paper": "GS Paper 3",
+    "subtopic": "Economy",
+    "question": "How are startups in India promoting entrepreneurship, innovation and employment? Discuss the global and domestic challenges in their working and suggest suitable measures to overcome these challenges.",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-013",
+    "paper": "GS Paper 3",
+    "subtopic": "Agriculture",
+    "question": "How Indian agriculture has been transformed from food scarcity to food surplus level? Explain the various government policies implemented for diversification of Indian agriculture.",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-014",
+    "paper": "GS Paper 3",
+    "subtopic": "Agriculture",
+    "question": "Discuss the different types of subsidies and supports provided by the Government of India to agricultural sector. Examine the related issues pertaining to Agreement on Agriculture of World Trade Organisation (WTO).",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-015",
+    "paper": "GS Paper 3",
+    "subtopic": "Science & Technology",
+    "question": "Mention salient features of ‘Mission Drishti’. Discuss the imaging techniques used in the satellite launched on 3rd May 2026. Why it is being considered world’s first satellite of its kind?",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-016",
+    "paper": "GS Paper 3",
+    "subtopic": "Science & Technology",
+    "question": "What is agentic Artificial Intelligence (AI)? Explain its working. Describe its applications with suitable examples. Discuss the advantages, risks and challenges associated with agentic AI systems.",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-017",
+    "paper": "GS Paper 3",
+    "subtopic": "Environment",
+    "question": "What are the challenges to solid waste management in India? Discuss the governmental policy framework on solid waste management. Discuss the success/failure causes of Delhi and Indore cities highlighting the salient feature of their solid waste management initiatives.",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-018",
+    "paper": "GS Paper 3",
+    "subtopic": "Disaster Management",
+    "question": "“Community participation is the cornerstone of effective disaster management”. Analyse this statement with suitable examples from India. Also discuss the challenges to community participation and measures to strengthen it.",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-019",
+    "paper": "GS Paper 3",
+    "subtopic": "Internal Security",
+    "question": "Separatist movements have been one of the major factors contributing to militancy and instability in Jammu & Kashmir (J&K). Bring out actions taken by the Government to bring J & K to national mainstream. Discuss pre and post abrogation status of Articles 370 and 35A. Also bring out positive impacts of abrogation of both these Articles in mainstreaming the state.",
+    "marks": "15 M",
+    "year": "2026"
+  },
+  {
+    "id": "gs3-2026-020",
+    "paper": "GS Paper 3",
+    "subtopic": "Internal Security",
+    "question": "Discuss counterfeit currency and money laundering as major sources of terror funding in India. State the actions being taken at International level to check these menaces. Highlight the role of Financial Action Task Force (FATF) and methods of compliance by its member states in preventing terror funding.",
+    "marks": "15 M",
+    "year": "2026"
   }
+]
 ]
