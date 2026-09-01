@@ -1,8 +1,8 @@
 /* ==========================================
-   1. COLOR DESIGN SYSTEM & GRADIENT PATTERNS
+   1. DESIGN SYSTEM & GRADIENT PATTERNS
    ========================================== */
 :root {
-  /* Light Mode Palette */
+  /* Light Mode Palette & Ambient Gradients */
   --bg-main: #f8fafc;
   --bg-gradient: 
     radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
@@ -18,7 +18,6 @@
   --text-muted: #64748b;
 
   --accent-primary: #881337;
-  --accent-primary-hover: #701a2e;
   --accent-gradient: linear-gradient(135deg, #881337 0%, #be123c 50%, #e11d48 100%);
   --accent-gradient-hover: linear-gradient(135deg, #701a2e 0%, #9f1239 100%);
 
@@ -32,8 +31,8 @@
 [data-theme="dark"] {
   --bg-main: #090d16;
   --bg-gradient: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(225, 29, 72, 0.15) 0px, transparent 45%),
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(225, 29, 72, 0.18) 0px, transparent 45%),
     radial-gradient(at 50% 50%, rgba(56, 189, 248, 0.08) 0px, transparent 60%),
     radial-gradient(at 0% 100%, rgba(168, 85, 247, 0.12) 0px, transparent 50%);
 
@@ -45,7 +44,6 @@
   --text-muted: #94a3b8;
 
   --accent-primary: #fb7185;
-  --accent-primary-hover: #f43f5e;
   --accent-gradient: linear-gradient(135deg, #be123c 0%, #fb7185 100%);
   --accent-gradient-hover: linear-gradient(135deg, #e11d48 0%, #fda4af 100%);
 
@@ -54,7 +52,7 @@
 }
 
 /* ==========================================
-   2. GLOBAL CANVAS & BACKGROUND
+   2. CANVAS & OVERLAY TEXTURE
    ========================================== */
 body {
   margin: 0;
@@ -62,36 +60,35 @@ body {
   background-color: var(--bg-main);
   background-image: var(--bg-gradient);
   background-attachment: fixed;
-  background-size: 100% 100%;
   color: var(--text-main);
   transition: background-color 0.4s ease, color 0.4s ease;
   min-height: 100vh;
 }
 
-/* Noise overlay for premium analog texture */
+/* Fine grain texture overlay */
 body::after {
   content: "";
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 999;
 }
 
 /* ==========================================
-   3. MODERN SIDEBAR & NAVIGATION
+   3. SIDEBAR & NAVIGATION STYLES
    ========================================== */
 .sidebar {
   background: var(--surface-card);
   backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border-right: 1px solid var(--surface-border);
-  transition: all 0.3s ease;
 }
 
 .nav-item {
   border-radius: 12px;
   color: var(--text-muted);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s ease;
   font-weight: 500;
   padding: 10px 14px;
 }
@@ -113,17 +110,15 @@ body::after {
    4. GLASS CARDS & HERO BANNER
    ========================================== */
 .hero-banner {
-  position: relative;
   border-radius: 20px;
-  padding: 2.5rem;
+  padding: 2rem;
   background: var(--surface-card);
   backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--surface-border);
   box-shadow: var(--card-shadow);
-  overflow: hidden;
 }
 
-/* Subtle gradient underline glow for main heading */
 .hero-title {
   font-size: 2.25rem;
   font-weight: 800;
@@ -133,16 +128,17 @@ body::after {
   -webkit-text-fill-color: transparent;
 }
 
-/* Stat Cards with Gradient Tops */
+/* Stat Cards */
 .stat-card {
   position: relative;
   background: var(--surface-card);
   backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--surface-border);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   box-shadow: var(--card-shadow);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
 
@@ -152,7 +148,6 @@ body::after {
   top: 0; left: 0; right: 0;
   height: 3px;
   background: var(--accent-gradient);
-  opacity: 0.8;
 }
 
 .stat-card:hover {
@@ -168,8 +163,18 @@ body::after {
   -webkit-text-fill-color: transparent;
 }
 
+/* Form & Content Containers */
+.card-panel {
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+
 /* ==========================================
-   5. BUTTONS, INPUTS & CONTROLS
+   5. BUTTONS & INPUT CONTROLS
    ========================================== */
 .btn-primary {
   background: var(--accent-gradient);
@@ -178,7 +183,6 @@ body::after {
   border-radius: 10px;
   padding: 10px 20px;
   font-weight: 600;
-  letter-spacing: 0.01em;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(136, 19, 55, 0.25);
   transition: all 0.25s ease;
@@ -198,16 +202,16 @@ body::after {
   padding: 10px 18px;
   font-weight: 600;
   backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .btn-secondary:hover {
   border-color: var(--accent-primary);
   color: var(--accent-primary);
-  background: rgba(255, 255, 255, 0.1);
 }
 
-/* Inputs & Form Controls */
 input, select, textarea {
   background: var(--surface-card);
   border: 1px solid var(--surface-border);
@@ -215,7 +219,6 @@ input, select, textarea {
   border-radius: 10px;
   padding: 10px 14px;
   transition: all 0.2s ease;
-  backdrop-filter: var(--backdrop-blur);
 }
 
 input:focus, select:focus, textarea:focus {
