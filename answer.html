@@ -1,227 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Model Answer View</title>
-  <!-- Markdown Parser for Rendering Structured Tables and Sections -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  
-  <style>
-    :root {
-      --bg-color: #f8fafc;
-      --card-border: #e2e8f0;
-      --text-main: #1e293b;
-    }
+<meta charset="UTF-8">
+<title>AI Model Answer - QCAB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Markdown Parser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+<style>
+  :root {
+    --accent-primary: #881337;
+    --accent-gradient: linear-gradient(135deg, #881337 0%, #be123c 50%, #e11d48 100%);
+    --bg-main: #f8fafc;
+    --surface-card: #ffffff;
+    --surface-border: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.7;
+    padding-bottom: 60px;
+  }
+  header {
+    background: var(--accent-gradient);
+    color: #fff;
+    padding: 32px 20px 40px;
+  }
+  header .eyebrow {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 700;
+    max-width: 900px;
+  }
+  .meta-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .card {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: -24px;
+    box-shadow: 0 12px 30px -14px rgba(0,0,0,0.12);
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 30px 0;
+  }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 3px solid #e2e8f0;
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      margin: 0;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Metadata Header Section */
-    .meta-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      font-weight: 700;
-      font-size: 0.85rem;
-      padding: 6px 14px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .badge-year { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-    .badge-marks { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-    .badge-words { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-
-    .question-header {
-      font-size: 1.25rem;
-      font-weight: 700;
-      line-height: 1.5;
-      color: #0f172a;
-      padding-bottom: 20px;
-      border-bottom: 2px dashed #e2e8f0;
-      margin-bottom: 25px;
-    }
-
-    /* Multi-Color Section Cards */
-    .answer-content section {
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border-left: 6px solid;
-    }
-
-    /* 5 Dynamic Color Palette Rotation */
-    .color-0 { background: #f0fdf4; border-color: #16a34a; } /* Emerald */
-    .color-0 h2 { color: #15803d; }
-
-    .color-1 { background: #eef2ff; border-color: #4f46e5; } /* Indigo */
-    .color-1 h2 { color: #4338ca; }
-
-    .color-2 { background: #fffbebfb; border-color: #d97706; } /* Amber */
-    .color-2 h2 { color: #b45309; }
-
-    .color-3 { background: #fef2f2; border-color: #dc2626; } /* Crimson */
-    .color-3 h2 { color: #b91c1c; }
-
-    .color-4 { background: #f0fdfa; border-color: #0d9488; } /* Teal */
-    .color-4 h2 { color: #0f766e; }
-
-    .answer-content h2 {
-      margin-top: 0;
-      font-size: 1.15rem;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      padding-bottom: 6px;
-    }
-
-    .answer-content p, .answer-content li {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #334155;
-    }
-
-    /* Page & PDF Friendly Table Formatting */
-    table {
-      width: 100% !important;
-      max-width: 100% !important;
-      border-collapse: collapse;
-      margin: 15px 0;
-      background: #ffffff;
-      font-size: 0.95rem;
-      page-break-inside: avoid; /* PDF/Print friendly: stops awkward row splits */
-    }
-
-    th, td {
-      border: 1px solid #cbd5e1;
-      padding: 10px 12px;
-      text-align: left;
-      word-break: break-word; /* Prevents overflow off page */
-    }
-
-    th {
-      background-color: #f1f5f9;
-      color: #0f172a;
-      font-weight: 600;
-    }
-
-    /* Strict PDF / Print Styles */
-    @media print {
-      body {
-        background: #ffffff;
-        padding: 0;
-      }
-      .container {
-        box-shadow: none;
-        max-width: 100%;
-        padding: 0;
-      }
-      .answer-content section {
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-      table {
-        page-break-inside: auto;
-      }
-      tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-      }
-    }
-  </style>
+  #content h1, #content h2, #content h3, #content h4 {
+    color: var(--accent-primary);
+    font-weight: 800;
+    margin-top: 28px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #fce7ec;
+    padding-bottom: 6px;
+  }
+  #content strong { color: var(--accent-primary); }
+  #content ul, #content ol { padding-left: 22px; margin: 10px 0; }
+  #content blockquote {
+    border-left: 4px solid var(--accent-primary);
+    background: #fdf2f4;
+    margin: 14px 0;
+    padding: 10px 16px;
+    border-radius: 0 8px 8px 0;
+  }
+  #content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+  }
+  #content th, #content td {
+    border: 1px solid var(--surface-border);
+    padding: 8px 12px;
+  }
+  #content th { background: #fdf2f4; color: var(--accent-primary); }
+  .error-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 16px 20px;
+    border-radius: 10px;
+  }
+  .print-btn {
+    display: inline-block;
+    margin-top: 26px;
+    background: var(--accent-gradient);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  @media print {
+    header, .print-btn { display: none; }
+    .card { box-shadow: none; margin-top: 0; border: none; }
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
-  <!-- Metadata Header -->
-  <div class="meta-bar">
-    <span class="badge badge-year" id="displayYear">Year: --</span>
-    <span class="badge badge-marks" id="displayMarks">Marks: --</span>
-    <span class="badge badge-words" id="displayWordCount">Word Count: 0</span>
+  <header>
+    <div class="eyebrow">✨ AI Model Answer</div>
+    <h1 id="q-title">Loading Question...</h1>
+    <div id="q-meta" class="meta-tag" style="display:none;"></div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <div id="status" class="status">
+        <span class="spinner"></span> Synthesizing model answer via Gemini...
+      </div>
+      <div id="content"></div>
+      <button id="print-btn" class="print-btn" style="display:none;" onclick="window.print()">🖨 Print / Save as PDF</button>
+    </div>
   </div>
 
-  <!-- Question Title -->
-  <div class="question-header" id="displayQuestion">Loading Question...</div>
+  <script>
+    const AI_PROXY_URL = "https://qcabproxy.khokcha9.workers.dev/";
 
-  <!-- Answer Content -->
-  <div class="answer-content" id="displayAnswer">Generating model answer...</div>
-</div>
+    // 1. Parse Query Parameters from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const questionText = urlParams.get('q');
+    const yearText = urlParams.get('y');
+    const marksText = urlParams.get('m');
 
-<script>
-  function renderMultiColorAnswer(rawText) {
-    const container = document.getElementById("displayAnswer");
-    container.innerHTML = "";
+    const titleEl = document.getElementById('q-title');
+    const metaEl = document.getElementById('q-meta');
+    const statusEl = document.getElementById('status');
+    const contentEl = document.getElementById('content');
+    const printBtn = document.getElementById('print-btn');
 
-    // Split generated Markdown text by headers (##)
-    const sections = rawText.split(/(?=\n##\s)/g);
-    
-    sections.forEach((sectionText, index) => {
-      if (!sectionText.trim()) return;
-
-      const secElement = document.createElement("section");
+    if (!questionText) {
+      statusEl.style.display = 'none';
+      contentEl.innerHTML = `<div class="error-box">❌ No question provided in the URL.</div>`;
+    } else {
+      titleEl.textContent = questionText;
       
-      // Rotate between 5 distinct color schemes (color-0 to color-4)
-      const colorIndex = index % 5;
-      secElement.className = `color-${colorIndex}`;
-
-      // Parse markdown to HTML (handles tables, lists, and bold text)
-      secElement.innerHTML = marked.parse(sectionText.trim());
-      container.appendChild(secElement);
-    });
-  }
-
-  // Sample Execution
-  async function loadAnswer(payload) {
-    document.getElementById("displayYear").textContent = `Year: ${payload.year}`;
-    document.getElementById("displayMarks").textContent = `Marks: ${payload.marks}`;
-    document.getElementById("displayQuestion").textContent = payload.question;
-
-    try {
-      const WORKER_URL = "https://qcab-ai-proxy.YOUR-SUBDOMAIN.workers.dev";
-      
-      const res = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-      
-      if(data.text) {
-        document.getElementById("displayWordCount").textContent = `Word Count: ${data.wordCount} words`;
-        renderMultiColorAnswer(data.text);
-      } else {
-        document.getElementById("displayAnswer").textContent = "Error: " + (data.error || "Failed to generate answer.");
+      if (marksText || yearText) {
+        metaEl.style.display = 'inline-block';
+        metaEl.textContent = `${marksText ? marksText : ''} ${yearText ? '/ ' + yearText : ''}`.trim();
       }
-    } catch (e) {
-      document.getElementById("displayAnswer").textContent = "Error connecting to worker proxy.";
+
+      // 2. Fetch Model Answer from Worker Proxy
+      fetchAnswer();
     }
-  }
 
-  // Example Invocation with full details:
-  loadAnswer({
-    question: "What do you mean by Digital Rupee? In this context, explain the working and progress of India’s Central Bank Digital Currency (CBDC).",
-    year: "2026",
-    marks: "10 M"
-  });
-</script>
+    async function fetchAnswer() {
+      try {
+        const res = await fetch(AI_PROXY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: questionText })
+        });
 
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data?.error || `Request failed (${res.status})`);
+        }
+
+        statusEl.style.display = 'none';
+        contentEl.innerHTML = window.marked ? marked.parse(data.text || 'No response text.') : data.text;
+        printBtn.style.display = 'inline-block';
+
+      } catch (err) {
+        console.error(err);
+        statusEl.style.display = 'none';
+        contentEl.innerHTML = `<div class="error-box">❌ Error generating answer: ${err.message}</div>`;
+      }
+    }
+  </script>
 </body>
 </html>
