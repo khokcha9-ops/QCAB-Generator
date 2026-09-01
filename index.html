@@ -162,17 +162,19 @@
   .btn-generate:hover{ background:var(--accent-dark); }
   .btn-generate:disabled{ opacity:0.5; cursor:not-allowed; }
 
-  .btn-secondary-sm, .btn-danger-sm {
+  .btn-secondary-sm, .btn-action-sm, .btn-danger-sm {
     background: transparent;
     border: 1px solid var(--rule);
     color: var(--ink-soft);
-    padding: 4px 8px;
+    padding: 5px 9px;
     border-radius: 4px;
     font-size: 11.5px;
     font-weight: 600;
     cursor: pointer;
   }
   .btn-secondary-sm:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-action-sm { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-action-sm:hover { background: var(--accent-dark); }
   .btn-danger-sm { border-color: var(--accent); color: var(--accent); }
   .btn-danger-sm:hover { background: var(--accent-soft); }
 
@@ -274,7 +276,7 @@
       <button class="btn-cancel" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
     </div>
 
-    <!-- Card 2: Active Booklet Questions & PDF Generation (Positioned Below Add Form) -->
+    <!-- Card 2: Active Booklet Questions & PDF Generation -->
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <h2 style="margin:0;">Active Folder Questions</h2>
@@ -341,12 +343,6 @@
           <!-- Dynamic Topic Select -->
           <select id="filter-topic" style="flex:1; min-width: 140px; display:none;">
             <option value="ALL">-- All Subtopics --</option>
-          </select>
-
-          <!-- Sort Order Select -->
-          <select id="filter-sort" style="flex:0.8; min-width: 110px;">
-            <option value="DESC">Newest First</option>
-            <option value="ASC">Oldest First</option>
           </select>
 
           <button class="btn-primary" id="search-bank-btn" style="width:auto; padding:8px 16px;">Search Questions</button>
@@ -525,7 +521,6 @@
   const filterPaper = document.getElementById('filter-paper');
   const filterYear = document.getElementById('filter-year');
   const filterTopic = document.getElementById('filter-topic');
-  const filterSort = document.getElementById('filter-sort');
   const searchBankBtn = document.getElementById('search-bank-btn');
   const bankResultsContainer = document.getElementById('bank-results-container');
 
@@ -558,7 +553,6 @@
     const selectedP = filterPaper.value;
     const isOptional = selectedP === 'OPT1' || selectedP === 'OPT2';
 
-    // Start year: 2000 for Anthropology Optional, 2013 for General Studies
     const startYear = isOptional ? 2000 : 2013;
     const currentYear = new Date().getFullYear();
 
@@ -612,7 +606,6 @@
     const selectedP = filterPaper.value;
     const selectedY = filterYear.value;
     const selectedT = filterTopic.value;
-    const sortOrder = filterSort.value;
     const isYearMode = modeYearRadio.checked;
 
     let filtered = presetBank.filter(q => {
@@ -625,13 +618,6 @@
       return true;
     });
 
-    // Sort Questions Chronologically
-    filtered.sort((a, b) => {
-      const yrA = parseInt(a.year || 0, 10);
-      const yrB = parseInt(b.year || 0, 10);
-      return sortOrder === 'ASC' ? yrA - yrB : yrB - yrA;
-    });
-
     if (filtered.length === 0) {
       bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No preset questions found matching your filter selection.</p>';
       return;
@@ -642,20 +628,34 @@
       div.className = 'bank-item';
       div.innerHTML = `
         <div style="font-size:13.5px; font-weight:600; margin-bottom:6px;">${escapeHtml(q.question)}</div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <span class="tag paper">${q.paper}</span>
             <span class="tag">${escapeHtml(q.topic)}</span>
             <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
           </div>
-          <button class="btn-secondary-sm">+ Add to Booklet</button>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-secondary-sm btn-add-item">+ Add to Active Booklet</button>
+            <button class="btn-action-sm btn-direct-pdf">⚡ Direct to Booklet &amp; PDF</button>
+          </div>
         </div>
       `;
-      div.querySelector('button').addEventListener('click', () => {
+
+      // Option 1: Add to active folder list
+      div.querySelector('.btn-add-item').addEventListener('click', () => {
         getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
         saveState();
         renderQuestions();
       });
+
+      // Option 2: Direct to booklet & generate PDF immediately
+      div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
+        getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
+        saveState();
+        renderQuestions();
+        generatePDF();
+      });
+
       bankResultsContainer.appendChild(div);
     });
   }
@@ -860,7 +860,7 @@
   }
 
   /* ------------ PDF Generation ------------ */
-  generateBtn.addEventListener('click', () => {
+  function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
     const { jsPDF } = window.jspdf;
@@ -924,7 +924,9 @@
     });
 
     doc.save(`${getActiveFolder().name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qcab.pdf`);
-  });
+  }
+
+  generateBtn.addEventListener('click', generatePDF);
 
   /* ------------ Initializations ------------ */
   populateFormSubtopics();
