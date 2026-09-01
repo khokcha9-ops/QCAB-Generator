@@ -308,7 +308,6 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
         <h2 style="margin:0;">Browse Preset Question Bank</h2>
         <div style="display:flex; gap:6px;">
-          <button class="btn-secondary-sm" id="reload-bank-btn">🔄 Reload Repository Bank</button>
           <button class="btn-danger-sm" id="clear-bank-btn" title="Clear stored JSON questions">Reset Bank</button>
         </div>
       </div>
@@ -409,12 +408,12 @@
   function updateBankStatus() {
     const statusEl = document.getElementById('bank-status-text');
     if (statusEl) {
-      statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) available in bank.`;
+      statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) loaded.`;
     }
   }
 
   function normalizePaperCode(paperVal) {
-    if (!paperVal) return '';
+    if (!paperVal) return 'GS1';
     const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
     if (str.includes('GS1') || str.includes('GSPAPER1') || str.includes('PAPER1')) return 'GS1';
     if (str.includes('GS2') || str.includes('GSPAPER2') || str.includes('PAPER2')) return 'GS2';
@@ -422,7 +421,7 @@
     if (str.includes('GS4') || str.includes('GSPAPER4') || str.includes('PAPER4')) return 'GS4';
     if (str.includes('OPT1') || str.includes('OPTIONAL1')) return 'OPT1';
     if (str.includes('OPT2') || str.includes('OPTIONAL2')) return 'OPT2';
-    return paperVal;
+    return 'GS1';
   }
 
   function escapeHtml(str) {
@@ -432,69 +431,56 @@
     });
   }
 
-  /* ------------ Automatic JSON Fetch from Repository ------------ */
+  function processIncomingArray(importedArray) {
+    let formattedCount = 0;
+    importedArray.forEach(q => {
+      const item = {
+        id: q.id || 'q_' + Math.random().toString(36).substr(2, 9),
+        paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
+        topic: q.topic || q.subtopic || q.category || 'General',
+        year: String(q.year || q.exam_year || '2025'),
+        marks: parseInt(q.marks || q.mark || 10, 10),
+        question: q.question || q.text || q.q_text || q.title || ''
+      };
+
+      const exists = presetBank.some(existing => 
+        existing.question.trim().toLowerCase() === item.question.trim().toLowerCase()
+      );
+
+      if (item.question.trim() && !exists) {
+        presetBank.push(item);
+        formattedCount++;
+      }
+    });
+
+    savePresets();
+    populateFilterYears();
+    renderBankResults();
+    return formattedCount;
+  }
+
+  /* ------------ Automatic Fetch ------------ */
   async function loadRepositoryJSON() {
-    const statusEl = document.getElementById('bank-status-text');
-    if (statusEl) statusEl.textContent = 'Fetching gs1_pyq.json from repository...';
     try {
       const response = await fetch('./gs1_pyq.json');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error('HTTP ' + response.status);
       const data = await response.json();
       const importedArray = Array.isArray(data) ? data : (data.questions || data.bank || []);
-
-      if (importedArray.length === 0) {
-        if (statusEl) statusEl.textContent = 'No questions found in gs1_pyq.json';
-        return;
-      }
-
-      // Sync fetched repository items without duplicating
-      importedArray.forEach(q => {
-        const item = {
-          id: q.id || 'repo_' + Math.random().toString(36).substr(2, 9),
-          paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
-          topic: q.topic || q.subtopic || q.category || 'General',
-          year: String(q.year || q.exam_year || '2026'),
-          marks: parseInt(q.marks || q.mark || 10, 10),
-          question: q.question || q.text || q.q_text || ''
-        };
-        
-        const exists = presetBank.some(existing => 
-          existing.question.trim().toLowerCase() === item.question.trim().toLowerCase() &&
-          String(existing.year) === String(item.year)
-        );
-
-        if (item.question.trim() && !exists) {
-          presetBank.push(item);
-        }
-      });
-
-      savePresets();
-      populateFilterYears();
-      renderBankResults();
+      processIncomingArray(importedArray);
     } catch (err) {
-    console.warn('Could not auto-load gs1_pyq.json:', err);
-    if (presetBank.length > 0) {
-        updateBankStatus();
-    }
-}
+      console.warn('Fetch check complete. Using stored local bank data.');
+      updateBankStatus();
     }
   }
 
   const clearBankBtn = document.getElementById('clear-bank-btn');
   clearBankBtn.addEventListener('click', () => {
-    if (confirm('Clear all stored questions from memory?')) {
+    if (confirm('Clear stored questions?')) {
       presetBank = [];
       savePresets();
       populateFilterYears();
       bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Bank cleared.</p>';
     }
-  });
-
-  const reloadBankBtn = document.getElementById('reload-bank-btn');
-  reloadBankBtn.addEventListener('click', () => {
-    loadRepositoryJSON();
   });
 
   /* ------------ State ------------ */
@@ -569,7 +555,7 @@
     filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
     const yearsInBank = [...new Set(presetBank.map(q => String(q.year)).filter(y => y && y !== 'undefined'))];
     if (yearsInBank.length === 0) {
-      yearsInBank.push('2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013');
+      yearsInBank.push('2025', '2024', '2023', '2022', '2021', '2020');
     } else {
       yearsInBank.sort((a,b) => b - a);
     }
@@ -774,7 +760,7 @@
   addPresetBtn.addEventListener('click', () => {
     const text = qText.value.trim();
     if (!text) { qText.focus(); return; }
-    const newPreset = { id: 'p_' + Date.now(), paper: qPaper.value, topic: qTopic.value, year: qYear.value.trim() || '2026', marks: selectedMarks, question: text };
+    const newPreset = { id: 'p_' + Date.now(), paper: qPaper.value, topic: qTopic.value, year: qYear.value.trim() || '2025', marks: selectedMarks, question: text };
     presetBank.push(newPreset);
     savePresets();
     populateFilterYears();
