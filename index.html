@@ -304,34 +304,17 @@
 
   <!-- RIGHT PANEL: Question Bank Search & File Import -->
   <section>
-    <!-- Browse Preset Question Bank Panel -->
-<div class="preset-card">
-  <div class="preset-header" style="display: flex; justify-content: space-between; align-items: center;">
-    <h2>Browse Preset Question Bank</h2>
-    <button id="reset-bank-btn" class="btn-danger">Reset Bank</button>
-  </div>
-
-  <!-- Filters Row -->
-  <div class="filter-controls">
-    <select id="filter-paper">
-      <option value="">-- All Papers --</option>
-      <option value="GS Paper 1">GS Paper 1</option>
-    </select>
-    
-    <select id="filter-year">
-      <option value="">-- All Years --</option>
-      <option value="2023">2023</option>
-      <option value="2022">2022</option>
-    </select>
-
-    <button id="search-btn" class="btn-primary">Search</button>
-    <button id="clear-btn" class="btn-secondary">Clear Results</button>
-  </div>
-
-  <!-- Dynamic Status Message -->
-  <p class="bank-status-text">Loading preset questions...</p>
-  <p class="sub-text">Select options above and click "Search" to filter questions.</p>
-</div>
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <h2 style="margin:0;">Browse Preset Question Bank</h2>
+        <div style="display:flex; gap:6px;">
+          <label class="btn-secondary-sm" style="cursor:pointer; display:inline-block;">
+            📥 Import JSON File
+            <input type="file" id="json-file-input" accept=".json" style="display:none;">
+          </label>
+          <button class="btn-danger-sm" id="clear-bank-btn" title="Clear stored JSON questions">Reset Bank</button>
+        </div>
+      </div>
       
       <div class="mode-switch">
         <label>
