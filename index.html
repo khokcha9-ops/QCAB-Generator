@@ -558,7 +558,7 @@
     filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
     const yearsInBank = [...new Set(presetBank.map(q => String(q.year)).filter(y => y && y !== 'undefined'))];
     if (yearsInBank.length === 0) {
-      yearsInBank.push('2025', '2024', '2023', '2022', '2021', '2020');
+      yearsInBank.push('2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015', '2014', '2013');
     } else {
       yearsInBank.sort((a,b) => b - a);
     }
