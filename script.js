@@ -114,3 +114,29 @@ async function loadRepositoryJSON() {
     if (typeof updateBankStatus === 'function') updateBankStatus();
   }
 }
+// Robust paper code normalization to ensure GS2 is captured correctly
+function normalizePaperCode(paperVal) {
+  if (!paperVal) return 'GS1';
+  const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
+  if (str.includes('GS2') || str.includes('PAPER2') || str.includes('GOVERNANCE') || str.includes('POLITY')) return 'GS2';
+  if (str.includes('GS3') || str.includes('PAPER3')) return 'GS3';
+  if (str.includes('GS4') || str.includes('PAPER4')) return 'GS4';
+  if (str.includes('OPT')) return 'OPT1';
+  return 'GS1'; // defaults or GS1 fallback
+}
+
+// Inside your filter execution code:
+let filtered = presetBank.filter(q => {
+  const normQPaper = normalizePaperCode(q.paper);
+  const selectedPNormalized = normalizePaperCode(selectedP);
+  
+  if (selectedP !== 'ALL' && normQPaper !== selectedPNormalized) return false;
+  if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
+  
+  if (!isYearMode && selectedT !== 'ALL') {
+    const qTopicClean = String(q.topic || '').trim().toLowerCase();
+    const selectedTClean = String(selectedT).trim().toLowerCase();
+    if (!qTopicClean.includes(selectedTClean)) return false;
+  }
+  return true;
+});
