@@ -10,6 +10,58 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
+  /* --- MAIN SITE READABILITY ENHANCEMENTS --- */
+
+/* 1. Sidebar Navigation */
+.sidebar, .nav-item, .sidebar a {
+  font-size: 16px !important; /* Larger menu links */
+  font-weight: 600;
+}
+
+/* 2. Question Text (The Core Content) */
+.bank-question, .question-text, .card-title {
+  font-size: 19px !important; /* Increased question text size */
+  line-height: 1.6 !important; /* Generous spacing for multi-line questions */
+  font-weight: 700 !important;
+  color: #0f172a !important; /* High contrast dark text */
+  margin-bottom: 12px !important;
+}
+
+/* Dark mode adjustment for question text */
+[data-theme="dark"] .bank-question, 
+[data-theme="dark"] .question-text {
+  color: #f8fafc !important;
+}
+
+/* 3. Question Cards & Padding */
+.bank-item, .question-card {
+  padding: 22px 26px !important; /* More breathing room inside cards */
+  margin-bottom: 18px !important;
+}
+
+/* 4. Badges & Tags (GS1, Subject, Marks/Year) */
+.tag, .badge, .meta-tag {
+  font-size: 13px !important; /* Larger tag text */
+  padding: 5px 12px !important;
+  font-weight: 600 !important;
+}
+
+/* 5. Buttons (+ Add to Booklet, Direct to PDF, AI Answer) */
+.btn, .action-btn, button {
+  font-size: 14px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+}
+
+/* 6. Right Sidebar (My QCAB Panel) */
+.qcab-panel, .panel-title {
+  font-size: 18px !important;
+}
+
+.empty-state-text, .qcab-panel p {
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+}
   :root{
     --bg:#f5f7fb;
     --surface:#ffffff;
