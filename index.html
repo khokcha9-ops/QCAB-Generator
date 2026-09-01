@@ -1009,54 +1009,74 @@
     }
 
     async function loadRepositoryJSON() {
-      try {
-        const [gs1Data, gs2Data, gs3Data] = await Promise.all([
-          fetchJSONFile('./gs1_pyq.json'),
-          fetchJSONFile('./gs2_pyq.json'),
-          fetchJSONFile('./gs3_pyq.json')
-        ]);
+  try {
+    const [gs1Data, gs2Data, gs3Data] = await Promise.all([
+      fetchJSONFile('./gs1_pyq.json'),
+      fetchJSONFile('./gs2_pyq.json'),
+      fetchJSONFile('./gs3_pyq.json')
+    ]);
 
-        const incomingQuestions = [...gs1Data, ...gs2Data, ...gs3Data];
-        let formattedCount = 0;
+    const incomingQuestions = [...gs1Data, ...gs2Data, ...gs3Data];
+    let formattedCount = 0;
 
-        incomingQuestions.forEach((q) => {
-          const cleanMarks =
-            typeof q.marks === 'string'
-              ? parseInt(q.marks.replace(/[^0-9]/g, ''), 10) || 10
-              : parseInt(q.marks || 10, 10);
+    incomingQuestions.forEach((q) => {
+      // Extract question text safely across possible key variations
+      const questionText = (
+        q.question || q.q_text || q.text || q.title || ''
+      ).trim();
 
-          const item = {
-            id: q.id || generateUniqueId('q'),
-            paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
-            topic: q.subtopic || q.topic || q.category || 'General',
-            year: String(q.year || q.exam_year || '2025').trim(),
-            marks: cleanMarks,
-            question: (q.question || q.text || q.q_text || q.title || '').trim()
-          };
-
-          const exists = presetBank.some(
-            (existing) => existing.question.trim().toLowerCase() === item.question.toLowerCase()
-          );
-
-          if (item.question && !exists) {
-            presetBank.push(item);
-            formattedCount++;
-          }
-        });
-
-        if (formattedCount > 0 || presetBank.length > 0) {
-          savePresets();
-        }
-
-        populateFilterYears();
-        populateFilterTopics();
-        renderBankResults();
-      } catch (err) {
-        console.warn('Repository load error:', err);
-        updateBankStatus();
+      // Skip entries where question text is missing or invalid
+      if (!questionText || questionText.toLowerCase() === 'year' || questionText.toLowerCase() === 'syllabus') {
+        return;
       }
+
+      // Parse marks cleanly
+      let rawMarks = q.marks || q.mark || 10;
+      if (typeof rawMarks === 'string') {
+        rawMarks = parseInt(rawMarks.replace(/[^0-9]/g, ''), 10) || 10;
+      }
+
+      // Parse year cleanly
+      let rawYear = String(q.year || q.exam_year || q.Year || '').replace(/[^0-9]/g, '');
+      if (!rawYear || rawYear.length !== 4) rawYear = '2025';
+
+      // Parse paper code
+      const rawPaper = q.paper || q.gs || q.subject || 'GS1';
+
+      // Parse topic
+      const rawTopic = q.topic || q.subtopic || q.category || 'General';
+
+      const item = {
+        id: q.id || generateUniqueId('q'),
+        paper: normalizePaperCode(rawPaper),
+        topic: String(rawTopic).trim(),
+        year: rawYear,
+        marks: Number(rawMarks),
+        question: questionText
+      };
+
+      const exists = presetBank.some(
+        (existing) => existing.question.trim().toLowerCase() === item.question.toLowerCase()
+      );
+
+      if (!exists) {
+        presetBank.push(item);
+        formattedCount++;
+      }
+    });
+
+    if (formattedCount > 0 || presetBank.length > 0) {
+      savePresets();
     }
 
+    populateFilterYears();
+    populateFilterTopics();
+    renderBankResults();
+  } catch (err) {
+    console.warn('Repository load error:', err);
+    updateBankStatus();
+  }
+}
     /* 4. FOLDER & BOOKLET STATE */
     const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
     const defaultRoot = {
