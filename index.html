@@ -211,7 +211,7 @@
   <div class="header-inner">
     <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span></button>
     <p class="eyebrow">Question-cum-Answer Booklet</p>
-    <h1>UPSC Question Bank Generator</h1>
+    <h1>UPSC &amp; OPSC Question Bank Generator</h1>
   </div>
 </header>
 
@@ -463,28 +463,9 @@
     ]
   };
 
-  /* ------------ Built-in Initial Seed Questions ------------ */
-  const SEED_QUESTIONS = [
-    { id: 's1', paper: 'OPT1', topic: '1.1 Meaning, Scope & Development of Anthropology', year: '2023', marks: 15, question: 'Critically examine the scope and relevance of Anthropology in the modern context.' },
-    { id: 's2', paper: 'OPT1', topic: '1.4 Human Evolution & Emergence of Man (Factors & Theories)', year: '2022', marks: 20, question: 'Discuss the synthetic theory of evolution and how it explains modern human biological variations.' },
-    { id: 's3', paper: 'OPT1', topic: '2.3 Marriage (Types, Laws, Regulations & Payments)', year: '2021', marks: 15, question: 'Define incest taboo. Elaborate on the biological, social, and psychological theories explaining it.' },
-    { id: 's4', paper: 'OPT1', topic: '6.0 (c) Functionalism (Malinowski) & Structural-Functionalism (Radcliffe-Brown)', year: '2020', marks: 20, question: 'Compare and contrast Bronislaw Malinowski’s Functionalism with Radcliffe-Brown’s Structural-Functionalism.' },
-    { id: 's5', paper: 'OPT1', topic: '1.6 Phylogenetic Status & Distribution of Fossils (Australopithecus to Cro-Magnon)', year: '2018', marks: 15, question: 'Elaborate on the anatomical characteristics and evolutionary status of Australopithecus.' },
-    { id: 's6', paper: 'OPT1', topic: '9.3 Genetic Polymorphism, Selection & Hardy-Weinberg Law', year: '2015', marks: 15, question: 'Explain Hardy-Weinberg Law. What are the factors that disturb genetic equilibrium in human populations?' },
-    { id: 's7', paper: 'OPT1', topic: '1.8 Prehistoric Archaeology & Prehistoric Cultures (Paleolithic to Iron Age)', year: '2008', marks: 20, question: 'Trace the technological and cultural evolution of the Mesolithic period with suitable Indian examples.' },
-    { id: 's8', paper: 'OPT2', topic: '1.2 Palaeo-Anthropological Evidences from India (Siwaliks & Narmada)', year: '2022', marks: 15, question: 'Discuss the phylogenetic significance of Narmada Man (Homo erectus narmadensis).' },
-    { id: 's9', paper: 'OPT2', topic: '3.2 Caste System in India, Jajmani & Tribe-Caste Continuum', year: '2021', marks: 20, question: 'Critically analyze the concept of Tribe-Caste Continuum as proposed by F.G. Bailey and Surajit Sinha.' },
-    { id: 's10', paper: 'OPT2', topic: '6.1 Tribal Situation in India (Variability & Distribution)', year: '2019', marks: 15, question: 'Describe the geographic, linguistic, and socio-economic classification of Indian tribes.' },
-    { id: 's11', paper: 'OPT2', topic: '9.1 History of Tribal Administration, PTGs/PVTGs & Development', year: '2016', marks: 15, question: 'Discuss the major problems faced by Particularly Vulnerable Tribal Groups (PVTGs) in India.' },
-    { id: 's12', paper: 'OPT2', topic: '3.3 Sacred Complex & Nature-Man-Spirit Complex', year: '2010', marks: 20, question: 'Explain L.P. Vidyarthi’s concept of Sacred Complex with reference to Gaya or Puri.' },
-    { id: 's13', paper: 'GS1', topic: 'Art & Culture', year: '2023', marks: 10, question: 'Explain the main features of Chola architecture and sculpture with prominent examples.' },
-    { id: 's14', paper: 'GS2', topic: 'Polity', year: '2022', marks: 15, question: 'Discuss the constitutional jurisdiction of the Supreme Court under Article 142.' },
-    { id: 's15', paper: 'GS3', topic: 'Economy', year: '2021', marks: 15, question: 'What are the main causes of inclusive growth remaining elusive in India? Suggest policy remedies.' }
-  ];
-
   /* ------------ Question Bank Storage ------------ */
-  let storedBank = JSON.parse(localStorage.getItem('qcab_preset_bank'));
-  let presetBank = (storedBank && storedBank.length > 0) ? storedBank : SEED_QUESTIONS;
+  // Loads exclusively from user local storage
+  let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
 
   function savePresets() {
     localStorage.setItem('qcab_preset_bank', JSON.stringify(presetBank));
@@ -570,18 +551,26 @@
   /* ------------ Dynamic Year Range Generation ------------ */
   function populateFilterYears() {
     filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
-    const selectedP = filterPaper.value;
-    const isOptional = selectedP === 'OPT1' || selectedP === 'OPT2';
-
-    const startYear = isOptional ? 2000 : 2013;
-    const currentYear = new Date().getFullYear();
-
-    for (let yr = currentYear; yr >= startYear; yr--) {
-      const opt = document.createElement('option');
-      opt.value = yr.toString();
-      opt.textContent = yr.toString();
-      filterYear.appendChild(opt);
+    
+    // Extract unique years dynamically from user's actual preset bank
+    const yearsInBank = [...new Set(presetBank.map(q => String(q.year)).filter(y => y && y !== 'undefined'))];
+    
+    // Fallback standard years if none present
+    if (yearsInBank.length === 0) {
+      const currentYear = new Date().getFullYear();
+      for (let yr = currentYear; yr >= 2013; yr--) {
+        yearsInBank.push(yr.toString());
+      }
+    } else {
+      yearsInBank.sort((a,b) => b - a);
     }
+
+    yearsInBank.forEach(yr => {
+      const opt = document.createElement('option');
+      opt.value = yr;
+      opt.textContent = yr;
+      filterYear.appendChild(opt);
+    });
   }
 
   /* ------------ Search & Filter Preset Bank ------------ */
@@ -639,7 +628,7 @@
     });
 
     if (filtered.length === 0) {
-      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching your filter selection. Try setting paper to "-- All Papers --" or selecting different filters.</p>';
+      bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found in your bank matching this selection. Try selecting "-- All Papers --" or "-- All Years --".</p>';
       return;
     }
 
@@ -650,7 +639,7 @@
         <div style="font-size:13.5px; font-weight:600; margin-bottom:6px;">${escapeHtml(q.question)}</div>
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <span class="tag paper">${q.paper}</span>
+            <span class="tag paper">${q.paper || 'GS1'}</span>
             <span class="tag">${escapeHtml(q.topic)}</span>
             <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
           </div>
@@ -950,7 +939,7 @@
   populateFilterYears();
   populateFilterTopics();
   renderAll();
-  renderBankResults(); // Automatically load initial preset questions on startup
+  renderBankResults();
 
 })();
 </script>
