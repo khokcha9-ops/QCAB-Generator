@@ -474,12 +474,11 @@
       populateFilterYears();
       renderBankResults();
     } catch (err) {
-      console.warn('Could not auto-load gs1_pyq.json:', err);
-      if (presetBank.length === 0) {
-        if (statusEl) statusEl.textContent = 'Note: Ensure gs1_pyq.json is located in the same repository root directory.';
-      } else {
+    console.warn('Could not auto-load gs1_pyq.json:', err);
+    if (presetBank.length > 0) {
         updateBankStatus();
-      }
+    }
+}
     }
   }
 
