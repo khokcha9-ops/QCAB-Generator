@@ -2,6 +2,15 @@
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Smooth dark/light crossfade: gradients and background-images can't be
+   animated by CSS transitions, so we fade the whole page out briefly,
+   flip the theme while invisible-ish, then fade back in. This reads as
+   one continuous crossfade instead of buttons/backgrounds snapping. */
+html.theme-switching body {
+  transition: opacity 0.16s ease !important;
+  opacity: 0.35;
+}
+
 /* The rest of your existing CSS rules go below this *//* ==========================================
    1. DESIGN SYSTEM & GRADIENT PATTERNS
    ========================================== */
@@ -66,7 +75,8 @@ body {
   background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.6;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.4s ease, color 0.4s ease, opacity 0.25s ease;
+  opacity: 1;
   min-height: 100vh;
 }
 
@@ -228,6 +238,38 @@ body::after {
   border-color: var(--accent-primary);
   color: var(--accent-primary);
   transform: translateY(-1px);
+}
+
+/* ==========================================
+   6. COLLAPSIBLE PYQ BANK
+   ========================================== */
+#pyq-bank-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition: grid-template-rows 0.35s ease, opacity 0.25s ease, margin-top 0.35s ease;
+}
+#pyq-bank-body > * {
+  min-height: 0;
+  overflow: hidden;
+}
+#pyq-bank-body.collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: -8px;
+}
+#pyq-bank-body.collapsed > * {
+  overflow: hidden;
+}
+#toggle-bank-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+#toggle-bank-icon {
+  display: inline-block;
+  transition: transform 0.25s ease;
 }
 
 input, select, textarea {
