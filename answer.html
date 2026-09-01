@@ -7,6 +7,64 @@
 <!-- Markdown Parser -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
 <style>
+  /* --- MULTI-COLOR ACCENT STYLING (FORCED) --- */
+
+/* 1. Core Keywords -> Navy Blue */
+#content .kw-term {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+  background: #eff6ff !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+}
+
+/* 2. Examples & Thinkers -> Emerald Green */
+#content .kw-example {
+  color: #047857 !important;
+  font-weight: 700 !important;
+  background: #ecfdf5 !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+}
+
+/* 3. Dates, Articles & Metadata -> Deep Purple / Indigo */
+#content .kw-meta {
+  color: #6d28d9 !important;
+  font-weight: 700 !important;
+  background: #f5f3ff !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+}
+
+/* 4. Highlight Takeaways -> Amber / Gold */
+#content .kw-highlight {
+  color: #92400e !important;
+  font-weight: 700 !important;
+  background: #fef3c7 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+}
+
+/* --- Dark Mode Multi-Color Adjustments --- */
+[data-theme="dark"] #content .kw-term {
+  color: #60a5fa !important;
+  background: #1e3a8a !important;
+}
+
+[data-theme="dark"] #content .kw-example {
+  color: #34d399 !important;
+  background: #064e3b !important;
+}
+
+[data-theme="dark"] #content .kw-meta {
+  color: #a78bfa !important;
+  background: #3b0764 !important;
+}
+
+[data-theme="dark"] #content .kw-highlight {
+  color: #fde68a !important;
+  background: #78350f !important;
+}
   /* --- ENHANCED TYPOGRAPHY & READABILITY --- */
 
 body {
