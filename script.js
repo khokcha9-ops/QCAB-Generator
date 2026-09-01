@@ -630,3 +630,25 @@
   loadRepositoryJSON();
 
 })();
+let filtered = presetBank.filter(q => {
+  const normQPaper = normalizePaperCode(q.paper);
+  const normSelectedP = normalizePaperCode(selectedP);
+  
+  // 1. Match Paper Code
+  if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
+  
+  // 2. Match Year
+  if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
+  
+  // 3. Match Topic (Flexible / Includes Check)
+  if (!isYearMode && selectedT !== 'ALL') {
+    const qTopicClean = String(q.topic || '').trim().toLowerCase();
+    const selectedTClean = String(selectedT).trim().toLowerCase();
+
+    // Checks if the topic in JSON contains or relates to the dropdown option
+    const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+    if (!matchesTopic) return false;
+  }
+  
+  return true;
+});
