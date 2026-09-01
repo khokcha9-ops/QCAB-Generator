@@ -104,20 +104,26 @@
       let formattedCount = 0;
 
       incomingQuestions.forEach(q => {
+        // Safe numeric marks parser handling "10 M", "5 M", or 10
+        const cleanMarks = typeof q.marks === 'string' 
+          ? parseInt(q.marks.replace(/[^0-9]/g, ''), 10) || 10 
+          : parseInt(q.marks || 10, 10);
+
         const item = {
           id: q.id || 'q_' + Math.random().toString(36).substr(2, 9),
           paper: normalizePaperCode(q.paper || q.subject || q.gs || 'GS1'),
-          topic: q.topic || q.subtopic || q.category || 'General',
-          year: String(q.year || q.exam_year || '2025'),
-          marks: parseInt(q.marks || q.mark || 10, 10),
-          question: q.question || q.text || q.q_text || q.title || ''
+          // Checks subtopic first (used in your JSON), then falls back to topic
+          topic: q.subtopic || q.topic || q.category || 'General',
+          year: String(q.year || q.exam_year || '2025').trim(),
+          marks: cleanMarks,
+          question: (q.question || q.text || q.q_text || q.title || '').trim()
         };
 
         const exists = presetBank.some(existing => 
-          existing.question.trim().toLowerCase() === item.question.trim().toLowerCase()
+          existing.question.trim().toLowerCase() === item.question.toLowerCase()
         );
 
-        if (item.question.trim() && !exists) {
+        if (item.question && !exists) {
           presetBank.push(item);
           formattedCount++;
         }
@@ -292,14 +298,22 @@
 
     let filtered = presetBank.filter(q => {
       const normQPaper = normalizePaperCode(q.paper);
-      if (selectedP !== 'ALL' && normQPaper !== normalizePaperCode(selectedP)) return false;
+      const normSelectedP = normalizePaperCode(selectedP);
+
+      // 1. Match Paper Code
+      if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
+
+      // 2. Match Year
       if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
-      
+
+      // 3. Match Topic (Flexible / Includes Check)
       if (!isYearMode && selectedT !== 'ALL') {
         const qTopicClean = String(q.topic || '').trim().toLowerCase();
         const selectedTClean = String(selectedT).trim().toLowerCase();
-        if (!qTopicClean.includes(selectedTClean)) return false;
+        const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+        if (!matchesTopic) return false;
       }
+
       return true;
     });
 
@@ -630,52 +644,3 @@
   loadRepositoryJSON();
 
 })();
-let filtered = presetBank.filter(q => {
-  const normQPaper = normalizePaperCode(q.paper);
-  const normSelectedP = normalizePaperCode(selectedP);
-  
-  // 1. Match Paper Code
-  if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
-  
-  // 2. Match Year
-  if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
-  
-  // 3. Match Topic (Flexible / Includes Check)
-  if (!isYearMode && selectedT !== 'ALL') {
-    const qTopicClean = String(q.topic || '').trim().toLowerCase();
-    const selectedTClean = String(selectedT).trim().toLowerCase();
-
-    // Checks if the topic in JSON contains or relates to the dropdown option
-    const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-    if (!matchesTopic) return false;
-  }
-  
-  return true;
-});
-
-// Replace the mapping block inside loadRepositoryJSON with this:
-incomingQuestions.forEach(q => {
-  // Extract number from "10 M", "5 M", or 10
-  const cleanMarks = typeof q.marks === 'string' 
-    ? parseInt(q.marks.replace(/[^0-9]/g, ''), 10) || 10 
-    : parseInt(q.marks || 10, 10);
-
-  const item = {
-    id: q.id || 'q_' + Math.random().toString(36).substr(2, 9),
-    paper: normalizePaperCode(q.paper),
-    // FALLBACK: Check q.subtopic first, then q.topic
-    topic: q.subtopic || q.topic || 'General',
-    year: String(q.year || '2025').trim(),
-    marks: cleanMarks,
-    question: (q.question || '').trim()
-  };
-
-  // Prevent duplicate additions
-  const exists = presetBank.some(existing => 
-    existing.question.trim().toLowerCase() === item.question.toLowerCase()
-  );
-
-  if (item.question && !exists) {
-    presetBank.push(item);
-  }
-});
