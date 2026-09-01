@@ -7,65 +7,175 @@
 <!-- Markdown Parser -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
 <style>
-  /* --- MULTI-COLOR ACCENT STYLING (FORCED) --- */
+:root {
+  --bg-main: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #334155;
+  --heading-color: #0f172a;
+  --border-color: #e2e8f0;
+  --accent-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+}
 
-/* 1. Core Keywords -> Navy Blue */
+[data-theme="dark"] {
+  --bg-main: #0f172a;
+  --card-bg: #1e293b;
+  --text-main: #cbd5e1;
+  --heading-color: #f8fafc;
+  --border-color: #334155;
+  --accent-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+  --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.8;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+/* Header Section */
+header {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  padding: 48px 24px 64px 24px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+}
+
+.meta-pills {
+  display: flex;
+  gap: 10px;
+}
+
+.meta-pill {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Main Content Card */
+main {
+  max-width: 860px;
+  margin: -32px auto 60px auto;
+  padding: 0 16px;
+}
+
+.answer-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 40px 48px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+}
+
+/* Typography & Headings */
+#content h1, #content h2, #content h3 {
+  color: var(--heading-color);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+#content h1 { font-size: 24px; margin-top: 36px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+#content h2 { font-size: 21px; margin-top: 32px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+#content h3 { font-size: 19px; margin-top: 28px; }
+
+/* Multi-Color Highlight System */
 #content .kw-term {
-  color: #1e40af !important;
-  font-weight: 700 !important;
+  color: #2563eb !important;
   background: #eff6ff !important;
-  padding: 1px 5px !important;
-  border-radius: 4px !important;
-}
-
-/* 2. Examples & Thinkers -> Emerald Green */
-#content .kw-example {
-  color: #047857 !important;
   font-weight: 700 !important;
-  background: #ecfdf5 !important;
-  padding: 1px 5px !important;
-  border-radius: 4px !important;
-}
-
-/* 3. Dates, Articles & Metadata -> Deep Purple / Indigo */
-#content .kw-meta {
-  color: #6d28d9 !important;
-  font-weight: 700 !important;
-  background: #f5f3ff !important;
-  padding: 1px 5px !important;
-  border-radius: 4px !important;
-}
-
-/* 4. Highlight Takeaways -> Amber / Gold */
-#content .kw-highlight {
-  color: #92400e !important;
-  font-weight: 700 !important;
-  background: #fef3c7 !important;
   padding: 2px 6px !important;
   border-radius: 4px !important;
 }
 
-/* --- Dark Mode Multi-Color Adjustments --- */
-[data-theme="dark"] #content .kw-term {
-  color: #60a5fa !important;
-  background: #1e3a8a !important;
+#content .kw-example {
+  color: #059669 !important;
+  background: #ecfdf5 !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
 }
 
-[data-theme="dark"] #content .kw-example {
-  color: #34d399 !important;
-  background: #064e3b !important;
+#content .kw-meta {
+  color: #7c3aed !important;
+  background: #f5f3ff !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
 }
 
-[data-theme="dark"] #content .kw-meta {
-  color: #a78bfa !important;
-  background: #3b0764 !important;
+#content .kw-highlight {
+  color: #d97706 !important;
+  background: #fffbe0 !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
 }
 
-[data-theme="dark"] #content .kw-highlight {
-  color: #fde68a !important;
-  background: #78350f !important;
+/* Dark Mode Multi-Color Adjustments */
+[data-theme="dark"] #content .kw-term { color: #60a5fa !important; background: #1e3a8a !important; }
+[data-theme="dark"] #content .kw-example { color: #34d399 !important; background: #064e3b !important; }
+[data-theme="dark"] #content .kw-meta { color: #a78bfa !important; background: #4c1d95 !important; }
+[data-theme="dark"] #content .kw-highlight { color: #fbbf24 !important; background: #78350f !important; }
+
+/* Tables */
+#content table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 24px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
 }
-  /* --- ENHANCED TYPOGRAPHY & READABILITY --- */
+
+#content th {
+  background: var(--bg-main);
+  color: var(--heading-color);
+  font-weight: 700;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#content td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+}
 
 body {
   margin: 0;
