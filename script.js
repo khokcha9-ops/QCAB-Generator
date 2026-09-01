@@ -135,7 +135,90 @@
       
       populateFilterYears();
       populateFilterTopics();
-      renderBankResults();
+      // 1. Get the search input element from DOM (place with your other DOM variables at top)
+const searchInput = document.getElementById('search-input');
+
+// 2. The complete renderBankResults function
+function renderBankResults() {
+  bankResultsContainer.innerHTML = '';
+  const selectedP = filterPaper.value;
+  const selectedY = filterYear.value;
+  const selectedT = filterTopic.value;
+  const isYearMode = modeYearRadio.checked;
+
+  // Read current search query
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+  // Filter preset bank using both dropdowns and search input
+  let filtered = presetBank.filter(q => {
+    const normQPaper = normalizePaperCode(q.paper);
+
+    // Keyword matching for question text, topic, or year
+    const matchesQuery = !query || 
+      q.question.toLowerCase().includes(query) || 
+      (q.topic && q.topic.toLowerCase().includes(query)) ||
+      (q.year && String(q.year).includes(query));
+
+    if (!matchesQuery) return false;
+    if (selectedP !== 'ALL' && normQPaper !== normalizePaperCode(selectedP)) return false;
+    if (selectedY !== 'ALL' && String(q.year) !== String(selectedY)) return false;
+    if (!isYearMode && selectedT !== 'ALL' && q.topic !== selectedT) return false;
+
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">No questions found matching this selection.</p>';
+    return;
+  }
+
+  // Render matching cards
+  filtered.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'bank-item';
+    div.innerHTML = `
+      <div style="font-size:13.5px; font-weight:600; margin-bottom:6px;">${escapeHtml(q.question)}</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag paper">${q.paper || 'GS1'}</span>
+          <span class="tag">${escapeHtml(q.topic || 'General')}</span>
+          <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
+          <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
+        </div>
+      </div>
+    `;
+
+    div.querySelector('.btn-add-item').addEventListener('click', () => {
+      getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
+      saveState();
+      renderQuestions();
+    });
+
+    div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
+      getActiveFolder().questions.push({ question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic });
+      saveState();
+      renderQuestions();
+      generatePDF();
+    });
+
+    bankResultsContainer.appendChild(div);
+  });
+}
+
+// 3. Attach event listeners (place below renderBankResults)
+searchBankBtn.addEventListener('click', renderBankResults);
+
+if (searchInput) {
+  searchInput.addEventListener('input', renderBankResults);
+}
+
+clearResultsBtn.addEventListener('click', () => {
+  if (searchInput) searchInput.value = '';
+  bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Search results cleared.</p>';
+});
     } catch (err) {
       console.warn('Repository load error:', err);
       updateBankStatus();
