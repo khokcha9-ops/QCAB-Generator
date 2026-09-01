@@ -335,12 +335,12 @@
             <option value="OPT2">Anthropology Optional Paper 2</option>
           </select>
 
-          <select id="filter-year" style="flex:1; min-width: 110px;">
-            <option value="ALL">-- All Years --</option>
-          </select>
-
           <select id="filter-topic" style="flex:1; min-width: 130px; display:none;">
             <option value="ALL">-- All Subtopics --</option>
+          </select>
+
+          <select id="filter-year" style="flex:1; min-width: 110px;">
+            <option value="ALL">-- All Years --</option>
           </select>
 
           <button class="btn-primary" id="search-bank-btn" style="width:auto; padding:8px 14px;">Search</button>
@@ -554,6 +554,7 @@
   qPaper.addEventListener('change', populateFormSubtopics);
 
   function populateFilterYears() {
+    const prevSelected = filterYear.value;
     filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
     const yearsInBank = [...new Set(presetBank.map(q => String(q.year)).filter(y => y && y !== 'undefined'))];
     if (yearsInBank.length === 0) {
@@ -566,14 +567,16 @@
       opt.value = yr; opt.textContent = yr;
       filterYear.appendChild(opt);
     });
+    if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
+      filterYear.value = prevSelected;
+    }
   }
 
   function updateFilterMode() {
+    filterYear.style.display = 'inline-block';
     if (modeYearRadio.checked) {
-      filterYear.style.display = 'inline-block';
       filterTopic.style.display = 'none';
     } else {
-      filterYear.style.display = 'none';
       filterTopic.style.display = 'inline-block';
       populateFilterTopics();
     }
@@ -614,11 +617,8 @@
     let filtered = presetBank.filter(q => {
       const normQPaper = normalizePaperCode(q.paper);
       if (selectedP !== 'ALL' && normQPaper !== normalizePaperCode(selectedP)) return false;
-      if (isYearMode) {
-        if (selectedY !== 'ALL' && String(q.year) !== String(selectedY)) return false;
-      } else {
-        if (selectedT !== 'ALL' && q.topic !== selectedT) return false;
-      }
+      if (selectedY !== 'ALL' && String(q.year) !== String(selectedY)) return false;
+      if (!isYearMode && selectedT !== 'ALL' && q.topic !== selectedT) return false;
       return true;
     });
 
@@ -908,6 +908,7 @@
   populateFormSubtopics();
   populateFilterYears();
   populateFilterTopics();
+  updateFilterMode();
   renderAll();
   loadRepositoryJSON();
 
