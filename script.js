@@ -111,9 +111,32 @@
   const PRESET_STORAGE_KEY = 'qcab_preset_bank';
   let presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
 
+  /* Fuse.js Initialization & Helper Functions */
+  let fuseInstance = null;
+  const fuseOptions = {
+    includeScore: true,
+    threshold: 0.4, // Optimal typo tolerance balance
+    keys: ['question', 'topic', 'paper', 'year']
+  };
+
+  function initFuseIndex() {
+    if (typeof Fuse !== 'undefined' && Array.isArray(presetBank)) {
+      fuseInstance = new Fuse(presetBank, fuseOptions);
+    }
+  }
+
+  function updateFuseIndex() {
+    if (fuseInstance && Array.isArray(presetBank)) {
+      fuseInstance.setCollection(presetBank);
+    } else {
+      initFuseIndex();
+    }
+  }
+
   function savePresets() {
     localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetBank));
     updateBankStatus();
+    updateFuseIndex();
   }
 
   function updateBankStatus() {
@@ -325,9 +348,12 @@
     filterPaper.addEventListener('change', () => {
       populateFilterYears();
       populateFilterTopics();
+      renderBankResults();
     });
-  if (modeYearRadio) modeYearRadio.addEventListener('change', updateFilterMode);
-  if (modeTopicRadio) modeTopicRadio.addEventListener('change', updateFilterMode);
+  if (filterYear) filterYear.addEventListener('change', renderBankResults);
+  if (filterTopic) filterTopic.addEventListener('change', renderBankResults);
+  if (modeYearRadio) modeYearRadio.addEventListener('change', () => { updateFilterMode(); renderBankResults(); });
+  if (modeTopicRadio) modeTopicRadio.addEventListener('change', () => { updateFilterMode(); renderBankResults(); });
 
   if (searchInput) searchInput.addEventListener('input', renderBankResults);
   if (searchBankBtn) searchBankBtn.addEventListener('click', renderBankResults);
@@ -356,7 +382,7 @@
   }
 
   /* ==========================================
-     6. RENDER SEARCH RESULTS (KEYWORD & FILTERS)
+     6. RENDER SEARCH RESULTS (FUZZY SEARCH & FILTERS)
      ========================================== */
   function renderBankResults() {
     if (!bankResultsContainer) return;
@@ -365,20 +391,26 @@
     const selectedY = filterYear ? filterYear.value : 'ALL';
     const selectedT = filterTopic ? filterTopic.value : 'ALL';
     const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
-    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const query = searchInput ? searchInput.value.trim() : '';
 
-    let filtered = presetBank.filter((q) => {
+    let candidateQuestions = [];
+
+    // Ensure Fuse index is active
+    if (!fuseInstance) initFuseIndex();
+
+    // Perform Fuzzy Search if search input has text; otherwise take all questions
+    if (query && fuseInstance) {
+      const fuseResults = fuseInstance.search(query);
+      candidateQuestions = fuseResults.map((res) => res.item);
+    } else {
+      candidateQuestions = presetBank;
+    }
+
+    // Apply Dropdown Filters
+    let filtered = candidateQuestions.filter((q) => {
       const normQPaper = normalizePaperCode(q.paper);
       const normSelectedP = normalizePaperCode(selectedP);
 
-      const matchesQuery =
-        !query ||
-        (q.question && q.question.toLowerCase().includes(query)) ||
-        (q.topic && q.topic.toLowerCase().includes(query)) ||
-        (q.paper && q.paper.toLowerCase().includes(query)) ||
-        (q.year && String(q.year).includes(query));
-
-      if (!matchesQuery) return false;
       if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
       if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
 
@@ -808,6 +840,7 @@
   /* ==========================================
      9. INITIALIZATION ON PAGE LOAD
      ========================================== */
+  initFuseIndex();
   populateFormSubtopics();
   populateFilterYears();
   populateFilterTopics();
