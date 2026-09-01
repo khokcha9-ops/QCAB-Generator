@@ -140,6 +140,7 @@
       const [gs1Data, gs2Data] = await Promise.all([
         fetchJSONFile('./gs1_pyq.json'),
         fetchJSONFile('./gs2_pyq.json')
+        fetchJSONFile('./gs3_pyq.json')
       ]);
 
       const incomingQuestions = [...gs1Data, ...gs2Data];
