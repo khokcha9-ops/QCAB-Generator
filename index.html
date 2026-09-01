@@ -895,5 +895,81 @@
       });
   });
 </script>  
+<script>
+  let allQuestions = [];
+
+  document.addEventListener("DOMContentLoaded", function() {
+    fetch('gs1.json')
+      .then(response => response.json())
+      .then(data => {
+        allQuestions = data;
+        // Initial load: render all questions
+        renderQuestions(allQuestions);
+      })
+      .catch(err => console.error("Error loading gs1.json:", err));
+  });
+
+  function renderQuestions(questions) {
+    const container = document.getElementById('questions-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (questions.length === 0) {
+      container.innerHTML = '<p style="color: #94a3b8; padding: 10px;">No questions found for this topic.</p>';
+      return;
+    }
+
+    questions.forEach((q, index) => {
+      const card = document.createElement('div');
+      card.className = 'qcab-card'; // Retains your site's dark mode card styling
+      card.style.marginBottom = '20px';
+
+      // Format Syllabus string nicely (e.g. "art and culture" -> "Art & Culture")
+      let topic = q.Syllabus || q.subject || 'GS 1';
+      if (topic.toLowerCase() === 'art and culture') topic = 'Art & Culture';
+
+      const year = q.Year ? q.Year : '';
+      const marks = q.Marks ? ' • ' + q.Marks + ' Marks' : '';
+      const questionText = q.Question || q.question || '';
+
+      // HTML output formatted cleanly without Model Answer button
+      card.innerHTML = `
+        <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px; font-weight: 500;">
+          <span style="color: #60a5fa; text-transform: capitalize;">${topic}</span> 
+          <span> • ${year}${marks}</span>
+        </div>
+        <div style="font-size: 1rem; color: #f8fafc; line-height: 1.5; margin-bottom: 10px;">
+          <strong>Q${index + 1}.</strong> ${questionText}
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  // Call this function when clicking the "Search Questions" button or changing dropdowns
+  function filterAndSortQuestions() {
+    // Get values from your site's filter dropdowns
+    const subtopicDropdown = document.querySelector('select[name="subtopic"]') || document.querySelectorAll('select')[1];
+    const selectedSubtopic = subtopicDropdown ? subtopicDropdown.value.toLowerCase().trim() : '';
+
+    let filtered = allQuestions.filter(q => {
+      if (!selectedSubtopic || selectedSubtopic === 'all') return true;
+
+      const qTopic = (q.Syllabus || q.subject || '').toLowerCase().trim();
+
+      // Flexible matching for Art & Culture variants
+      if (selectedSubtopic.includes('art') && qTopic.includes('art')) return true;
+
+      return qTopic === selectedSubtopic;
+    });
+
+    // Sort by Year (Latest first)
+    filtered.sort((a, b) => (b.Year || 0) - (a.Year || 0));
+
+    renderQuestions(filtered);
+  }
+</script>
 </body>
 </html>
