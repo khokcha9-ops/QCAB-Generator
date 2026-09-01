@@ -179,7 +179,7 @@
   .q-list{ list-style:none; margin:0; padding:0; }
   .q-item{
     display:grid;
-    grid-template-columns:24px 24px 1fr auto;
+    grid-template-columns:24px 1fr auto;
     gap:8px;
     align-items:start;
     padding:12px 0;
@@ -219,8 +219,9 @@
 </div>
 
 <main>
-  <!-- LEFT PANEL: Add Custom Question / Preset Manager -->
+  <!-- LEFT PANEL: Add Custom Question & Active Booklet Generator -->
   <section>
+    <!-- Card 1: Add Custom Question -->
     <div class="card">
       <h2 id="add-heading">Add Custom Question</h2>
       
@@ -272,13 +273,42 @@
       <button class="btn-secondary-sm" id="add-preset-btn" style="width:100%; margin-top:8px;">Save as Preset Bank Question</button>
       <button class="btn-cancel" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
     </div>
+
+    <!-- Card 2: Active Booklet Questions & PDF Generation (Positioned Below Add Form) -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;">Active Folder Questions</h2>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-secondary-sm" id="rename-folder-btn">Rename</button>
+          <button class="btn-danger-sm" id="delete-folder-btn">Delete</button>
+          <button class="btn-secondary-sm" id="clear-q-btn">Clear</button>
+        </div>
+      </div>
+
+      <div>
+        <span style="font-size:12px; color:var(--ink-soft);" id="count-tag">0 questions</span>
+      </div>
+
+      <div id="empty-state" style="text-align:center; color:var(--ink-soft); padding:20px; border:1px dashed var(--rule); margin-top:10px;">
+        No questions added to this booklet yet. Select questions from the right panel!
+      </div>
+
+      <ol class="q-list" id="q-list"></ol>
+
+      <div class="summary-bar" id="summary-bar" style="display:none;">
+        <span>Total marks: <strong id="total-marks">0</strong></span>
+        <span>Answer pages: <strong id="total-pages">0</strong></span>
+      </div>
+
+      <button class="btn-generate" id="generate-btn" disabled>Generate &amp; Download PDF Booklet</button>
+    </div>
   </section>
 
-  <!-- RIGHT PANEL: Question Bank Search & Active Folder Booklet -->
+  <!-- RIGHT PANEL: Question Bank Search -->
   <section>
-    <!-- Preset Question Bank Search/Filter Panel -->
     <div class="card">
       <h2>Browse Preset Question Bank</h2>
+      
       <div class="mode-switch">
         <label>
           <input type="radio" name="bankMode" value="year" checked id="mode-year">
@@ -292,7 +322,8 @@
 
       <div class="filter-box">
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-          <select id="filter-paper" style="flex:1;">
+          <!-- Select Paper -->
+          <select id="filter-paper" style="flex:1; min-width: 140px;">
             <option value="ALL">-- Select Paper --</option>
             <option value="GS1">GS Paper 1</option>
             <option value="GS2">GS Paper 2</option>
@@ -302,56 +333,36 @@
             <option value="OPT2">Anthropology Optional Paper 2</option>
           </select>
 
-          <select id="filter-year" style="flex:1;">
-            <option value="ALL">-- Select Year --</option>
+          <!-- Dynamic Year Select -->
+          <select id="filter-year" style="flex:1; min-width: 120px;">
+            <option value="ALL">-- All Years --</option>
           </select>
 
-          <select id="filter-topic" style="flex:1; display:none;">
-            <option value="ALL">-- Select Subtopic --</option>
+          <!-- Dynamic Topic Select -->
+          <select id="filter-topic" style="flex:1; min-width: 140px; display:none;">
+            <option value="ALL">-- All Subtopics --</option>
+          </select>
+
+          <!-- Sort Order Select -->
+          <select id="filter-sort" style="flex:0.8; min-width: 110px;">
+            <option value="DESC">Newest First</option>
+            <option value="ASC">Oldest First</option>
           </select>
 
           <button class="btn-primary" id="search-bank-btn" style="width:auto; padding:8px 16px;">Search Questions</button>
         </div>
       </div>
-<div id="questions-container"></div>
+
       <div id="bank-results-container">
-        <!-- Results load ONLY when requested -->
-        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select filters above and click "Search Questions" to browse preset questions.</p>
+        <p style="font-size:13px; color:var(--ink-soft); font-style:italic;">Select options above and click "Search Questions" to load results.</p>
       </div>
-    </div>
-
-    <!-- Active Booklet Questions -->
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h2 style="margin:0;">Active Folder Questions</h2>
-        <div style="display:flex; gap:6px;">
-          <button class="btn-secondary-sm" id="rename-folder-btn">Rename Folder</button>
-          <button class="btn-danger-sm" id="delete-folder-btn">Delete Folder</button>
-          <button class="btn-secondary-sm" id="clear-q-btn">Clear All</button>
-        </div>
-      </div>
-
-      <div>
-        <span style="font-size:12px; color:var(--ink-soft);" id="count-tag">0 questions</span>
-      </div>
-
-      <div id="empty-state" style="text-align:center; color:var(--ink-soft); padding:30px; border:1px dashed var(--rule); margin-top:10px;">
-        No questions added to this booklet yet. Add from the preset bank above or create custom questions on the left!
-      </div>
-
-      <ol class="q-list" id="q-list"></ol>
-
-      <div class="summary-bar" id="summary-bar" style="display:none;">
-        <span>Total marks: <strong id="total-marks">0</strong></span>
-        <span>Answer pages: <strong id="total-pages">0</strong></span>
-      </div>
-
-      <button class="btn-generate" id="generate-btn" disabled>Generate &amp; Download PDF Booklet</button>
     </div>
   </section>
 </main>
 
-<footer>Project by Biswajit Nahak</footer>
+<footer style="text-align: center; padding: 20px; font-size: 13px; color: var(--ink-soft);">
+  Project by Biswajit Nahak
+</footer>
 
 <script>
 (function(){
@@ -463,6 +474,13 @@
     localStorage.setItem('qcab_preset_bank', JSON.stringify(presetBank));
   }
 
+  function escapeHtml(str) {
+    if(!str) return '';
+    return str.replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
+  }
+
   /* ------------ Core Folder State Management ------------ */
   const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
   const defaultRoot = { id: 'root', name: 'General Booklet', parentId: null, subfolders: [], questions: [] };
@@ -496,12 +514,18 @@
   const totalPagesEl = document.getElementById('total-pages');
   const generateBtn = document.getElementById('generate-btn');
 
+  // Folder Action Buttons
+  const renameFolderBtn = document.getElementById('rename-folder-btn');
+  const deleteFolderBtn = document.getElementById('delete-folder-btn');
+  const clearQBtn = document.getElementById('clear-q-btn');
+
   // Filter Elements
   const modeYearRadio = document.getElementById('mode-year');
   const modeTopicRadio = document.getElementById('mode-topic');
   const filterPaper = document.getElementById('filter-paper');
   const filterYear = document.getElementById('filter-year');
   const filterTopic = document.getElementById('filter-topic');
+  const filterSort = document.getElementById('filter-sort');
   const searchBankBtn = document.getElementById('search-bank-btn');
   const bankResultsContainer = document.getElementById('bank-results-container');
 
@@ -527,6 +551,24 @@
     });
   }
   qPaper.addEventListener('change', populateFormSubtopics);
+
+  /* ------------ Dynamic Year Range Generation ------------ */
+  function populateFilterYears() {
+    filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
+    const selectedP = filterPaper.value;
+    const isOptional = selectedP === 'OPT1' || selectedP === 'OPT2';
+
+    // Start year: 2000 for Anthropology Optional, 2013 for General Studies
+    const startYear = isOptional ? 2000 : 2013;
+    const currentYear = new Date().getFullYear();
+
+    for (let yr = currentYear; yr >= startYear; yr--) {
+      const opt = document.createElement('option');
+      opt.value = yr.toString();
+      opt.textContent = yr.toString();
+      filterYear.appendChild(opt);
+    }
+  }
 
   /* ------------ Search & Filter Preset Bank ------------ */
   function updateFilterMode() {
@@ -557,17 +599,10 @@
     });
   }
 
-  function populateFilterYears() {
-    filterYear.innerHTML = '<option value="ALL">-- All Years --</option>';
-    const years = [...new Set(presetBank.map(q => q.year).filter(Boolean))].sort().reverse();
-    years.forEach(y => {
-      const opt = document.createElement('option');
-      opt.value = y; opt.textContent = y;
-      filterYear.appendChild(opt);
-    });
-  }
-
-  filterPaper.addEventListener('change', () => { populateFilterTopics(); });
+  filterPaper.addEventListener('change', () => { 
+    populateFilterYears();
+    populateFilterTopics(); 
+  });
   modeYearRadio.addEventListener('change', updateFilterMode);
   modeTopicRadio.addEventListener('change', updateFilterMode);
   searchBankBtn.addEventListener('click', renderBankResults);
@@ -577,16 +612,24 @@
     const selectedP = filterPaper.value;
     const selectedY = filterYear.value;
     const selectedT = filterTopic.value;
+    const sortOrder = filterSort.value;
     const isYearMode = modeYearRadio.checked;
 
-    const filtered = presetBank.filter(q => {
+    let filtered = presetBank.filter(q => {
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
       if (isYearMode) {
-        if (selectedY !== 'ALL' && q.year !== selectedY) return false;
+        if (selectedY !== 'ALL' && String(q.year) !== String(selectedY)) return false;
       } else {
         if (selectedT !== 'ALL' && q.topic !== selectedT) return false;
       }
       return true;
+    });
+
+    // Sort Questions Chronologically
+    filtered.sort((a, b) => {
+      const yrA = parseInt(a.year || 0, 10);
+      const yrB = parseInt(b.year || 0, 10);
+      return sortOrder === 'ASC' ? yrA - yrB : yrB - yrA;
     });
 
     if (filtered.length === 0) {
@@ -605,7 +648,7 @@
             <span class="tag">${escapeHtml(q.topic)}</span>
             <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
           </div>
-          <button class="btn-secondary-sm" data-id="${q.id}">+ Add to Booklet</button>
+          <button class="btn-secondary-sm">+ Add to Booklet</button>
         </div>
       `;
       div.querySelector('button').addEventListener('click', () => {
@@ -616,6 +659,41 @@
       bankResultsContainer.appendChild(div);
     });
   }
+
+  /* ------------ Folder Actions ------------ */
+  renameFolderBtn.addEventListener('click', () => {
+    const current = getActiveFolder();
+    if (current.id === 'root') { alert('Cannot rename root folder.'); return; }
+    const newName = prompt('Rename folder:', current.name);
+    if (newName && newName.trim()) {
+      current.name = newName.trim();
+      saveState();
+      renderAll();
+    }
+  });
+
+  deleteFolderBtn.addEventListener('click', () => {
+    const current = getActiveFolder();
+    if (current.id === 'root') { alert('Cannot delete root folder.'); return; }
+    if (confirm(`Delete folder "${current.name}" and its content?`)) {
+      const parent = folderMap[current.parentId];
+      if (parent) {
+        parent.subfolders = parent.subfolders.filter(id => id !== current.id);
+        delete folderMap[current.id];
+        activeFolderId = parent.id;
+        saveState();
+        renderAll();
+      }
+    }
+  });
+
+  clearQBtn.addEventListener('click', () => {
+    if (confirm('Clear all questions from current folder?')) {
+      getActiveFolder().questions = [];
+      saveState();
+      renderQuestions();
+    }
+  });
 
   /* ------------ Navigation & Folders ------------ */
   function renderBreadcrumbs() {
@@ -729,7 +807,6 @@
       const li = document.createElement('li');
       li.className = 'q-item';
       li.innerHTML = `
-        <div style="width:16px;"></div>
         <div class="q-num">${i + 1}.</div>
         <div>
           <div class="q-text">${escapeHtml(q.question)}</div>
@@ -776,200 +853,86 @@
     });
   }
 
+  function renderAll() {
+    renderBreadcrumbs();
+    renderFolders();
+    renderQuestions();
+  }
+
   /* ------------ PDF Generation ------------ */
   generateBtn.addEventListener('click', () => {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28, PAD = 3;
+    const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
 
     function dividers() { doc.setDrawColor(0); doc.setLineWidth(0.3); doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM); doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM); }
 
+    let currentPg = 1;
+
+    // Optional Index Page
     if (document.getElementById('include-index').checked) {
-      doc.setFont('times', 'normal'); doc.setFontSize(11); let y = 28;
-      questions.forEach((q, i) => {
-        const lines = doc.splitTextToSize(`${i + 1}. ${q.question} [${q.marks} M / ${q.year || ''}]`, PAGE_W - 50);
-        lines.forEach(line => { doc.text(line, 25, y); y += 5; });
-        y += 4;
-      });
-      doc.addPage();
-    }
-
-    questions.forEach((q, idx) => {
       dividers();
-      doc.setFont('times', 'normal'); doc.setFontSize(13);
-      doc.text('Q.' + (idx + 1), 8, TOP + 6);
-      const lines = doc.splitTextToSize(`${q.question} [${q.marks} M${q.year ? ' / ' + q.year : ''}]`, RIGHT_DIV - LEFT_DIV - 6);
-      let ty = TOP + 6;
-      lines.forEach(line => { doc.text(line, LEFT_DIV + PAD, ty); ty += 6; });
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
+      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W / 2, 25, { align: 'center' });
+      doc.setFontSize(11); doc.setFont('helvetica', 'normal');
+      doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W / 2, 32, { align: 'center' });
+      
+      let y = 45;
+      doc.setFont('helvetica', 'bold');
+      doc.text('Q#', 28, y); doc.text('Question & Syllabus Mapping', 40, y); doc.text('Marks', 170, y);
+      y += 4; doc.line(28, y, 180, y); y += 6;
+      doc.setFont('helvetica', 'normal');
 
-      for (let p = 1; p < MARK_RULES[q.marks]; p++) {
-        doc.addPage();
-        dividers();
-      }
-      if (idx < questions.length - 1) doc.addPage();
-    });
-
-    doc.save(`${getActiveFolder().name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_qcab.pdf`);
-  });
-
-  /* ------------ Folder Controls ------------ */
-  document.getElementById('rename-folder-btn').addEventListener('click', () => {
-    const current = getActiveFolder();
-    const newName = prompt('Rename folder:', current.name);
-    if (newName && newName.trim()) {
-      current.name = newName.trim();
-      saveState();
-      renderAll();
-    }
-  });
-
-  document.getElementById('delete-folder-btn').addEventListener('click', () => {
-    const current = getActiveFolder();
-    if (current.id === 'root') { alert('Cannot delete root folder.'); return; }
-    if (confirm(`Delete folder "${current.name}"?`)) {
-      delete folderMap[current.id];
-      activeFolderId = 'root';
-      saveState();
-      renderAll();
-    }
-  });
-
-  document.getElementById('clear-q-btn').addEventListener('click', () => {
-    if (confirm('Clear all questions in this booklet?')) {
-      getActiveFolder().questions = [];
-      saveState();
-      renderQuestions();
-    }
-  });
-
-  function renderAll() {
-    renderBreadcrumbs();
-    renderFolders();
-    populateFormSubtopics();
-    populateFilterTopics();
-    populateFilterYears();
-    updateFilterMode();
-    renderQuestions();
-  }
-
-  function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
-
-  renderAll();
-})();
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var container = document.getElementById('questions-container');
-    if (!container) return;
-
-    fetch('gs1.json')
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        container.innerHTML = '';
-        data.forEach(function(q, index) {
-          var card = document.createElement('div');
-          card.className = 'qcab-card'; // Uses your site's card style if you have one
-          
-          var syllabus = q.Syllabus || q.subject || 'GS 1';
-          var year = q.Year ? q.Year : '';
-          var marks = q.Marks ? ' • ' + q.Marks + ' Marks' : '';
-          var question = q.Question || q.question || '';
-          var answer = (q.Answer || q.answer) ? (q.Answer || q.answer) : '<em>Model answer coming soon.</em>';
-
-          card.innerHTML = 
-            '<div class="qcab-header">' +
-              '<span class="qcab-tag">' + syllabus + '</span>' +
-              '<span class="qcab-meta">' + year + marks + '</span>' +
-            '</div>' +
-            '<p class="qcab-question"><strong>Q' + (index + 1) + '.</strong> ' + question + '</p>' +
-            '<button onclick="this.nextElementSibling.style.display = (this.nextElementSibling.style.display === \'block\' ? \'none\' : \'block\')">View Model Answer</button>' +
-            '<div style="display:none; margin-top:10px; padding:10px; border-top:1px dashed #666;">' + answer + '</div>';
-
-          container.appendChild(card);
-        });
-      })
-      .catch(function(err) {
-        console.error("Error loading gs1.json", err);
+      questions.forEach((q, idx) => {
+        if (y > 270) { doc.addPage(); currentPg++; dividers(); y = 25; }
+        doc.text(`${idx + 1}`, 28, y);
+        const textLines = doc.splitTextToSize(q.question, 125);
+        doc.text(textLines, 40, y);
+        doc.text(`${q.marks}M`, 170, y);
+        y += (textLines.length * 5) + 4;
       });
-  });
-</script>  
-<script>
-  let allQuestions = [];
-
-  document.addEventListener("DOMContentLoaded", function() {
-    fetch('gs1.json')
-      .then(response => response.json())
-      .then(data => {
-        allQuestions = data;
-        // Initial load: render all questions
-        renderQuestions(allQuestions);
-      })
-      .catch(err => console.error("Error loading gs1.json:", err));
-  });
-
-  function renderQuestions(questions) {
-    const container = document.getElementById('questions-container');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    if (questions.length === 0) {
-      container.innerHTML = '<p style="color: #94a3b8; padding: 10px;">No questions found for this topic.</p>';
-      return;
+      doc.addPage(); currentPg++;
     }
 
-    questions.forEach((q, index) => {
-      const card = document.createElement('div');
-      card.className = 'qcab-card'; // Retains your site's dark mode card styling
-      card.style.marginBottom = '20px';
+    // Questions Pages
+    questions.forEach((q, idx) => {
+      const pageCount = MARK_RULES[q.marks] || 2;
+      for (let p = 1; p <= pageCount; p++) {
+        dividers();
+        if (p === 1) {
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+          doc.text(`Q${idx + 1}.`, 28, 22);
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
+          const lines = doc.splitTextToSize(q.question, 138);
+          doc.text(lines, 38, 22);
+          let boxY = 22 + (lines.length * 5) + 2;
+          doc.setFont('helvetica', 'italic'); doc.setFontSize(9);
+          doc.text(`[ ${q.paper || ''} • ${q.topic || ''} • ${q.marks} Marks ]`, 38, boxY);
+          doc.line(28, boxY + 3, RIGHT_DIV - 3, boxY + 3);
+        }
+        
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+        doc.text(`Page ${currentPg}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
 
-      // Format Syllabus string nicely (e.g. "art and culture" -> "Art & Culture")
-      let topic = q.Syllabus || q.subject || 'GS 1';
-      if (topic.toLowerCase() === 'art and culture') topic = 'Art & Culture';
-
-      const year = q.Year ? q.Year : '';
-      const marks = q.Marks ? ' • ' + q.Marks + ' Marks' : '';
-      const questionText = q.Question || q.question || '';
-
-      // HTML output formatted cleanly without Model Answer button
-      card.innerHTML = `
-        <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px; font-weight: 500;">
-          <span style="color: #60a5fa; text-transform: capitalize;">${topic}</span> 
-          <span> • ${year}${marks}</span>
-        </div>
-        <div style="font-size: 1rem; color: #f8fafc; line-height: 1.5; margin-bottom: 10px;">
-          <strong>Q${index + 1}.</strong> ${questionText}
-        </div>
-      `;
-
-      container.appendChild(card);
-    });
-  }
-
-  // Call this function when clicking the "Search Questions" button or changing dropdowns
-  function filterAndSortQuestions() {
-    // Get values from your site's filter dropdowns
-    const subtopicDropdown = document.querySelector('select[name="subtopic"]') || document.querySelectorAll('select')[1];
-    const selectedSubtopic = subtopicDropdown ? subtopicDropdown.value.toLowerCase().trim() : '';
-
-    let filtered = allQuestions.filter(q => {
-      if (!selectedSubtopic || selectedSubtopic === 'all') return true;
-
-      const qTopic = (q.Syllabus || q.subject || '').toLowerCase().trim();
-
-      // Flexible matching for Art & Culture variants
-      if (selectedSubtopic.includes('art') && qTopic.includes('art')) return true;
-
-      return qTopic === selectedSubtopic;
+        if (!(idx === questions.length - 1 && p === pageCount)) {
+          doc.addPage();
+          currentPg++;
+        }
+      }
     });
 
-    // Sort by Year (Latest first)
-    filtered.sort((a, b) => (b.Year || 0) - (a.Year || 0));
+    doc.save(`${getActiveFolder().name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qcab.pdf`);
+  });
 
-    renderQuestions(filtered);
-  }
+  /* ------------ Initializations ------------ */
+  populateFormSubtopics();
+  populateFilterYears();
+  populateFilterTopics();
+  renderAll();
+
+})();
 </script>
 </body>
 </html>
