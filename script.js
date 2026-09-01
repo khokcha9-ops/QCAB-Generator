@@ -133,6 +133,25 @@ async function fetchPresetQuestions() {
   } catch (err) {
     console.log("Auto-fetch fallback to localStorage", err);
   }
+  async function loadRepositoryJSON() {
+  try {
+    // Fetch both GS1 and GS2 files
+    const [res1, res2] = await Promise.all([
+      fetch('./gs1_pyq.json').then(res => res.ok ? res.json() : []),
+      fetch('./gs2_pyq.json').then(res => res.ok ? res.json() : [])
+    ]);
+
+    const combinedArray = [
+      ...(Array.isArray(res1) ? res1 : (res1.questions || [])),
+      ...(Array.isArray(res2) ? res2 : (res2.questions || []))
+    ];
+
+    processIncomingArray(combinedArray);
+  } catch (err) {
+    console.warn('Fetch fallback: using local browser cache');
+    updateBankStatus();
+  }
+}
 }
 
 // Call auto-fetch on load
