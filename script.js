@@ -66,3 +66,51 @@ async function fetchPresetData(url) {
     return [];
   }
 }
+// Safe merge loading function to prevent deleting custom data/subtopics
+async function loadRepositoryJSON() {
+  const STORAGE_KEY = 'qcab_preset_bank'; // Matches your app's storage key
+  
+  // 1. Fetch JSON safely helper
+  const fetchSafe = async (url) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : (data.questions || data.bank || data.data || []);
+    } catch (e) {
+      console.warn(`Optional file skipped: ${url}`);
+      return [];
+    }
+  };
+
+  try {
+    // 2. Fetch both GS1 and GS2 (add any other files here if needed)
+    const [res1, res2] = await Promise.all([
+      fetchSafe('./gs1_pyq.json'),
+      fetchSafe('./gs2_pyq.json')
+    ]);
+    const fetchedQuestions = [...res1, ...res2];
+
+    // 3. Get what is currently saved in browser memory (including your custom/anthropology entries)
+    let storedQuestions = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    // 4. Only add new items if they don't already exist, keeping everything else safe
+    const existingIds = new Set(storedQuestions.map(q => q.id));
+    const newQuestions = fetchedQuestions.filter(q => q.id && !existingIds.has(q.id));
+
+    if (newQuestions.length > 0) {
+      storedQuestions = [...storedQuestions, ...newQuestions];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(storedQuestions));
+    }
+
+    // 5. Load into your app's global presetBank variable
+    presetBank = storedQuestions;
+    if (typeof updateBankStatus === 'function') updateBankStatus();
+    if (typeof populateFilterYears === 'function') populateFilterYears();
+    if (typeof populateFilterTopics === 'function') populateFilterTopics();
+
+  } catch (err) {
+    console.warn('Repository load error:', err);
+    if (typeof updateBankStatus === 'function') updateBankStatus();
+  }
+}
