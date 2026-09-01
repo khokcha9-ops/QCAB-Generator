@@ -40,6 +40,11 @@ html.theme-switching body {
   --backdrop-blur: blur(16px);
 }
 
+/* Ensure collapsed container hides properly */
+#pyq-bank-body.collapsed {
+  display: none !important;
+}
+
 /* Dark Mode Overrides */
 [data-theme="dark"] {
   --bg-main: #090d16;
