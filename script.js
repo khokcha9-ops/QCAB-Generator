@@ -52,3 +52,17 @@ function normalizePaperCode(paperVal) {
   if (str.includes('OPT2')) return 'OPT2';
   return 'GS1';
 }
+async function fetchPresetData(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const data = await res.json();
+    
+    // Handles array, or objects containing questions/bank arrays
+    if (Array.isArray(data)) return data;
+    return data.questions || data.bank || data.data || [];
+  } catch (err) {
+    console.warn(`Could not load preset from ${url}:`, err);
+    return [];
+  }
+}
