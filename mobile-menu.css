@@ -1,160 +1,140 @@
-/* =========================================================
-   QCAB MOBILE MENU
-   Works with the existing .mobile-nav and .sidebar
-   ========================================================= */
+/* ================================
+   MOBILE MENU
+================================ */
 
-:root {
-  --qc-purple: #6d28d9;
-  --qc-blue: #2563eb;
-  --qc-pink: #db2777;
-  --qc-cyan: #0891b2;
-  --qc-green: #059669;
-  --qc-orange: #ea580c;
-  --qc-yellow: #ca8a04;
-  --qc-mobile-overlay: rgba(15, 23, 42, .48);
+.mobile-menu-toggle {
+    display: none;
 }
 
-/* Hamburger is hidden on desktop */
-.qcab-mobile-menu-btn {
-  display: none;
+.mobile-menu {
+    display: none;
 }
 
-/* Overlay */
-.qcab-mobile-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--qc-mobile-overlay);
-  z-index: 9990;
-  backdrop-filter: blur(2px);
+
+/* ================================
+   MOBILE DEVICES
+================================ */
+
+@media (max-width: 768px) {
+
+    .mobile-menu-toggle {
+        display: flex;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 48px;
+        height: 48px;
+        align-items: center;
+        justify-content: center;
+
+        border: none;
+        border-radius: 12px;
+
+        background: #7c3aed;
+        color: white;
+
+        font-size: 26px;
+        cursor: pointer;
+
+        z-index: 99999;
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .mobile-menu {
+        display: flex;
+
+        position: fixed;
+
+        top: 0;
+        right: -320px;
+
+        width: 290px;
+        height: 100vh;
+
+        flex-direction: column;
+
+        padding: 80px 20px 30px;
+
+        background: #111827;
+
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.35);
+
+        transition: right 0.3s ease;
+
+        z-index: 99998;
+
+        overflow-y: auto;
+    }
+
+
+    .mobile-menu.active {
+        right: 0;
+    }
+
+
+    .mobile-menu a {
+        display: block;
+
+        padding: 15px 14px;
+
+        margin-bottom: 8px;
+
+        border-radius: 10px;
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 16px;
+
+        transition: 0.2s ease;
+    }
+
+
+    .mobile-menu a:hover {
+        background: #7c3aed;
+        transform: translateX(4px);
+    }
+
+
+    .mobile-menu-close {
+        position: absolute;
+
+        top: 15px;
+        right: 18px;
+
+        width: 42px;
+        height: 42px;
+
+        border: none;
+        border-radius: 10px;
+
+        background: #ef4444;
+        color: white;
+
+        font-size: 28px;
+
+        cursor: pointer;
+    }
+
+
+    body.menu-open {
+        overflow: hidden;
+    }
 }
 
-.qcab-mobile-overlay.is-open {
-  display: block;
-}
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
-@media (max-width: 820px) {
+/* Desktop */
+@media (min-width: 769px) {
 
-  /* The existing mobile header becomes:
-     hamburger | logo | dark mode */
-  .mobile-nav {
-    display: flex !important;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    gap: 10px;
-  }
+    .mobile-menu {
+        display: none !important;
+    }
 
-  .qcab-mobile-menu-btn {
-    display: grid !important;
-    place-items: center;
-    flex: 0 0 42px;
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    background: var(--surface);
-    color: var(--text);
-    font-size: 22px;
-    line-height: 1;
-    box-shadow: var(--shadow-sm);
-    transition: .2s ease;
-  }
+    .mobile-menu-toggle {
+        display: none !important;
+    }
 
-  .qcab-mobile-menu-btn:hover,
-  .qcab-mobile-menu-btn.is-open {
-    color: #fff;
-    border-color: transparent;
-    background: linear-gradient(135deg, var(--qc-purple), var(--qc-blue));
-  }
-
-  /* IMPORTANT:
-     The original index.html hides .sidebar on mobile.
-     We override that and turn it into a drawer. */
-  .app > .sidebar {
-    display: flex !important;
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    width: min(290px, 86vw) !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    padding: 24px 18px !important;
-    z-index: 9999 !important;
-    transform: translateX(-110%) !important;
-    transition: transform .28s ease, box-shadow .28s ease !important;
-    overflow-y: auto !important;
-    box-shadow: none !important;
-  }
-
-  .app > .sidebar.qcab-mobile-open {
-    transform: translateX(0) !important;
-    box-shadow: 12px 0 35px rgba(15, 23, 42, .22) !important;
-  }
-
-  /* Main app remains full width */
-  .app {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Keep content behind the drawer */
-  .content {
-    min-width: 0;
-    width: 100%;
-  }
-
-  /* Make mobile navigation touch friendly */
-  .mobile-nav .theme-toggle {
-    min-width: 42px;
-    min-height: 42px;
-    padding: 8px 12px;
-  }
-
-  body.qc-mobile-menu-open {
-    overflow: hidden;
-  }
-}
-
-/* =========================================================
-   COLOUR SYSTEM FOR FUTURE DASHBOARD CARDS
-   ========================================================= */
-
-.qc-color-purple { border-left: 4px solid var(--qc-purple) !important; }
-.qc-color-blue   { border-left: 4px solid var(--qc-blue) !important; }
-.qc-color-pink   { border-left: 4px solid var(--qc-pink) !important; }
-.qc-color-cyan   { border-left: 4px solid var(--qc-cyan) !important; }
-.qc-color-green  { border-left: 4px solid var(--qc-green) !important; }
-.qc-color-orange { border-left: 4px solid var(--qc-orange) !important; }
-.qc-color-yellow { border-left: 4px solid var(--qc-yellow) !important; }
-
-.qc-kpi-purple { --kpi: var(--qc-purple); }
-.qc-kpi-blue   { --kpi: var(--qc-blue); }
-.qc-kpi-pink   { --kpi: var(--qc-pink); }
-.qc-kpi-cyan   { --kpi: var(--qc-cyan); }
-.qc-kpi-green  { --kpi: var(--qc-green); }
-.qc-kpi-orange { --kpi: var(--qc-orange); }
-
-.qc-kpi {
-  border-top: 3px solid var(--kpi, var(--qc-purple)) !important;
-}
-
-/* Small phones */
-@media (max-width: 520px) {
-  .mobile-nav {
-    padding: 0 12px !important;
-  }
-
-  .mobile-brand {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .mobile-brand span {
-    white-space: nowrap;
-  }
 }
