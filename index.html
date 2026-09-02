@@ -953,6 +953,7 @@
               </div>
 
               <div id="bank-status-text">Loading question bank...</div>
+              <div style="font-size:11px;color:var(--muted);margin:-5px 0 12px;">Year filter: 2013–2026. Questions outside this range are grouped under <strong>Other</strong>.</div>
 
               <div id="bank-results-container">
                 <p style="font-size:13px;color:var(--muted);font-style:italic;">
@@ -1141,7 +1142,12 @@
         'Economic & Human Geography',
         'Indian society'
       ],
-      GS2: ['Polity', 'Governance', 'Social Justice', 'International Relations'],
+      GS2: [
+        'Polity',
+        'Governance',
+        'Social Justice',
+        'International Relations'
+      ],
       GS3: [
         'Economy',
         'Agriculture',
@@ -1149,26 +1155,111 @@
         'Environment & Disaster Management',
         'Science & Tech'
       ],
-      GS4: ['Ethics Theory', 'Case Studies'],
-      OPT1: ['Anthropology Paper 1 Topics'],
-      OPT2: ['Anthropology Paper 2 Topics']
+      GS4: [
+        'Ethics Theory',
+        'Case Studies'
+      ],
+
+      /* Anthropology Optional — Paper I */
+      OPT1: [
+        '1.1 Meaning, Scope & Development of Anthropology',
+        '1.2 Relationships with Other Disciplines',
+        '1.3 Main Branches of Anthropology (Scope & Relevance)',
+        '1.4 Human Evolution & Emergence of Man (Factors & Theories)',
+        '1.5 Characteristics of Primates & Evolutionary Trends',
+        '1.6 Phylogenetic Status & Distribution of Fossils (Australopithecus to Cro-Magnon)',
+        '1.7 Biological Basis of Life (Cell, DNA, Mutation, Chromosomes)',
+        '1.8 Prehistoric Archaeology & Prehistoric Cultures (Paleolithic to Iron Age)',
+        '2.1 Nature of Culture & Ethnocentrism vs Cultural Relativism',
+        '2.2 Nature of Society, Social Institutions & Stratification',
+        '2.3 Marriage (Types, Laws, Regulations & Payments)',
+        '2.4 Family (Types, Functions & Contemporary Changes)',
+        '2.5 Kinship (Descent, Alliance, Terminology & Groups)',
+        '3.0 Economic Organization & Economic Anthropology',
+        '4.0 Political Organization & Social Control',
+        '5.0 Religion, Magic & Science',
+        '6.0 (a) Classical Evolutionism (Tylor, Morgan, Frazer)',
+        '6.0 (b) Historical Particularism (Boas) & Diffusionism',
+        '6.0 (c) Functionalism (Malinowski) & Structural-Functionalism (Radcliffe-Brown)',
+        '6.0 (d) Structuralism (Levi-Strauss, E. Leach)',
+        '6.0 (e) Culture & Personality (Benedict, Mead, Linton, Kardiner, Cora-du-Bois)',
+        '6.0 (f) Neo-Evolutionism (Childe, White, Steward, Sahlins, Service)',
+        '6.0 (g) Cultural Materialism (Harris)',
+        '6.0 (h) Symbolic & Interpretive Theories (Turner, Schneider, Geertz)',
+        '6.0 (i) Cognitive Theories (Tyler, Conklin)',
+        '6.0 (j) Post-Modernism in Anthropology',
+        '7.0 Culture, Language & Communication',
+        '8.0 Research Methods in Anthropology',
+        '9.1 Human Genetics Methods & Applications',
+        '9.2 Mendelian Genetics in Man',
+        '9.3 Genetic Polymorphism, Selection & Hardy-Weinberg Law',
+        '9.4 Chromosomes & Chromosomal Aberrations',
+        '9.5 Race & Racism',
+        '9.6 Age, Sex & Population Variation as Genetic Marker',
+        '9.7 Ecological Anthropology & Bio-cultural Adaptations',
+        '9.8 Epidemiological Anthropology',
+        '10.0 Concept of Human Growth & Development',
+        '11.1 Bioevents to Fertility & Demographic Patterns',
+        '11.2 Demographic Theories',
+        '11.3 Biological & Socio-ecological Factors in Demography',
+        '12.0 Applications of Anthropology'
+      ],
+
+      /* Anthropology Optional — Paper II */
+      OPT2: [
+        '1.1 Evolution of Indian Culture & Civilization (Prehistoric to Harappan)',
+        '1.2 Palaeo-Anthropological Evidences from India (Siwaliks & Narmada)',
+        '1.3 Ethno-archaeology in India',
+        '2.0 Demographic Profile of India (Ethnic & Linguistic Elements)',
+        '3.1 Traditional Indian Social System (Varnashram, Purushartha, Karma)',
+        '3.2 Caste System in India, Jajmani & Tribe-Caste Continuum',
+        '3.3 Sacred Complex & Nature-Man-Spirit Complex',
+        '3.4 Impact of Buddhism, Jainism, Islam & Christianity on Indian Society',
+        '4.0 Emergence, Growth & Development of Anthropology in India',
+        '5.1 Indian Village & Social Structure',
+        '5.2 Linguistic & Religious Minorities',
+        '5.3 Processes of Socio-Cultural Change (Sanskritization, Westernization, etc.)',
+        '6.1 Tribal Situation in India (Variability & Distribution)',
+        '6.2 Problems of Tribal Communities',
+        '6.3 Developmental Projects, Displacement & Forest Policies',
+        '7.1 Exploitation, Deprivation & Constitutional Safeguards for SC/ST',
+        '7.2 Social Change & Contemporary Tribal Societies',
+        '7.3 Ethnicity, Tribal Unrest & Regionalism',
+        '8.1 Impact of World Religions on Tribal Societies',
+        '8.2 Tribe & Nation State (Comparative Study)',
+        '9.1 History of Tribal Administration, PTGs/PVTGs & Development',
+        '9.2 Role of Anthropology in Tribal & Rural Development',
+        '9.3 Anthropology in Understanding Regionalism, Communalism & Movements'
+      ]
     };
 
     function normalizePaperCode(paperVal) {
       if (!paperVal) return 'GS1';
       const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
-      if (str.includes('GS1') || str.includes('PAPER1')) return 'GS1';
+      /* Check Optional first because "Anthropology Optional Paper 1"
+         also contains the text "PAPER1". */
+      if (
+        str.includes('OPT1') ||
+        str.includes('OPTIONAL1') ||
+        str.includes('ANTHROPOLOGYOPTIONALPAPER1')
+      ) return 'OPT1';
+
+      if (
+        str.includes('OPT2') ||
+        str.includes('OPTIONAL2') ||
+        str.includes('ANTHROPOLOGYOPTIONALPAPER2')
+      ) return 'OPT2';
+
+      if (str.includes('GS1') || str === 'PAPER1') return 'GS1';
       if (
         str.includes('GS2') ||
-        str.includes('PAPER2') ||
+        str === 'PAPER2' ||
         str.includes('POLITY') ||
         str.includes('GOVERNANCE')
       )
         return 'GS2';
-      if (str.includes('GS3') || str.includes('PAPER3')) return 'GS3';
-      if (str.includes('GS4') || str.includes('PAPER4')) return 'GS4';
-      if (str.includes('OPT1') || str.includes('OPTIONAL1')) return 'OPT1';
-      if (str.includes('OPT2') || str.includes('OPTIONAL2')) return 'OPT2';
+      if (str.includes('GS3') || str === 'PAPER3') return 'GS3';
+      if (str.includes('GS4') || str === 'PAPER4') return 'GS4';
       return 'GS1';
     }
 
@@ -1232,14 +1323,33 @@
 
     async function loadRepositoryJSON() {
       try {
-        const [gs1Data, gs2Data, gs3Data, gs4Data] = await Promise.all([
+        const [
+          gs1Data,
+          gs2Data,
+          gs3Data,
+          gs4Data,
+          opt1Data,
+          opt2Data
+        ] = await Promise.all([
           fetchJSONFile('./gs1_pyq.json'),
           fetchJSONFile('./gs2_pyq.json'),
           fetchJSONFile('./gs3_pyq.json'),
-          fetchJSONFile('./gs4_pyq.json')
+          fetchJSONFile('./gs4_pyq.json'),
+
+          /* Optional JSON files are loaded if present.
+             If you have not uploaded them yet, the site continues normally. */
+          fetchJSONFile('./opt1_pyq.json'),
+          fetchJSONFile('./opt2_pyq.json')
         ]);
 
-        const incomingQuestions = [...gs1Data, ...gs2Data, ...gs3Data, ...gs4Data];
+        const incomingQuestions = [
+          ...gs1Data,
+          ...gs2Data,
+          ...gs3Data,
+          ...gs4Data,
+          ...opt1Data,
+          ...opt2Data
+        ];
         let formattedCount = 0;
 
         incomingQuestions.forEach((q) => {
@@ -1256,17 +1366,23 @@
             rawMarks = parseInt(rawMarks.replace(/[^0-9]/g, ''), 10) || 10;
           }
 
-          let rawYear = String(q.year || q.exam_year || q.Year || '').replace(/[^0-9]/g, '');
-          if (!rawYear || rawYear.length !== 4) rawYear = '2025';
+          const rawYearText = String(q.year || q.exam_year || q.Year || '').trim();
+          const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
+          const rawYear = yearMatch ? yearMatch[1] : 'Other';
+          const yearNumber = rawYear === 'Other' ? NaN : Number(rawYear);
+          const yearGroup = Number.isInteger(yearNumber) && yearNumber >= 2013 && yearNumber <= 2026
+            ? String(yearNumber)
+            : 'Other';
 
           const rawPaper = q.paper || q.gs || q.subject || 'GS1';
-          const rawTopic = q.topic || q.subtopic || q.category || 'General';
+          const rawTopic = q.topic || q.subtopic || q.category || SYLLABUS[normalizePaperCode(rawPaper)]?.[0] || 'General';
 
           const item = {
             id: q.id || generateUniqueId('q'),
             paper: normalizePaperCode(rawPaper),
             topic: String(rawTopic).trim(),
             year: rawYear,
+            yearGroup: yearGroup,
             marks: Number(rawMarks),
             question: questionText
           };
@@ -1421,24 +1537,34 @@
     }
     if (qPaper) qPaper.addEventListener('change', populateFormSubtopics);
 
+    function getYearGroup(q) {
+      const raw = String(q.year || '').trim();
+      const match = raw.match(/\b(19\d{2}|20\d{2})\b/);
+      const y = match ? Number(match[1]) : NaN;
+      return Number.isInteger(y) && y >= 2013 && y <= 2026 ? String(y) : 'Other';
+    }
+
     function populateFilterYears() {
       if (!filterYear) return;
       const prevSelected = filterYear.value;
       filterYear.innerHTML = '<option value="ALL">All Years</option>';
-      const yearsInBank = [
-        ...new Set(presetBank.map((q) => String(q.year)).filter((y) => y && y !== 'undefined'))
-      ];
-      if (yearsInBank.length === 0) {
-        yearsInBank.push('2025', '2024', '2023', '2022', '2021', '2020');
-      } else {
-        yearsInBank.sort((a, b) => b - a);
-      }
-      yearsInBank.forEach((yr) => {
+
+      // Fixed official UPSC window + a catch-all bucket for older/newer/unknown years.
+      for (let year = 2026; year >= 2013; year--) {
         const opt = document.createElement('option');
-        opt.value = yr;
-        opt.textContent = yr;
+        opt.value = String(year);
+        opt.textContent = String(year);
         filterYear.appendChild(opt);
-      });
+      }
+
+      const hasOther = presetBank.some((q) => getYearGroup(q) === 'Other');
+      if (hasOther) {
+        const opt = document.createElement('option');
+        opt.value = 'Other';
+        opt.textContent = 'Other (Before 2013 / Outside 2013–2026)';
+        filterYear.appendChild(opt);
+      }
+
       if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
         filterYear.value = prevSelected;
       }
@@ -1557,7 +1683,7 @@
 
         if (!matchesQuery) return false;
         if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
-        if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
+        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
 
         if (!isYearMode && selectedT !== 'ALL') {
           const qTopicClean = String(q.topic || '').trim().toLowerCase();
@@ -1759,6 +1885,7 @@
           question: text,
           marks: selectedMarks,
           year: qYear ? qYear.value.trim() : '',
+          yearGroup: getYearGroup({ year: qYear ? qYear.value.trim() : '' }),
           paper: qPaper ? qPaper.value : 'GS1',
           topic: qTopic ? qTopic.value : 'General'
         };
@@ -1783,6 +1910,7 @@
           paper: qPaper ? qPaper.value : 'GS1',
           topic: qTopic ? qTopic.value : 'General',
           year: qYear ? qYear.value.trim() || '2025' : '2025',
+          yearGroup: getYearGroup({ year: qYear ? qYear.value.trim() || '2025' : '2025' }),
           marks: selectedMarks,
           question: text
         };
