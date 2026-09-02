@@ -487,6 +487,29 @@
   .btn-action-sm{background:var(--primary);border-color:var(--primary);color:#fff}
   .btn-action-sm:hover{background:var(--primary-hover);color:#fff}
 
+  /* HIGHLIGHTED AI MODEL ANSWER BUTTON */
+  .btn-ai-highlight {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(114, 47, 55, 0.25);
+  }
+  .btn-ai-highlight:hover {
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    box-shadow: 0 5px 14px rgba(114, 47, 55, 0.35);
+  }
+  [data-theme="dark"] .btn-ai-highlight {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #0f172a !important;
+    box-shadow: 0 3px 10px rgba(239, 107, 124, 0.3);
+  }
+  [data-theme="dark"] .btn-ai-highlight:hover {
+    background: var(--primary-hover) !important;
+    color: #fff !important;
+  }
+
   /* QCAB PANEL */
   .sticky-card{position:sticky;top:92px}
   .empty-state{
@@ -1357,7 +1380,7 @@
             <div class="bank-actions">
               <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
               <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
-              <button class="btn-secondary-sm btn-ai-answer" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
+              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
             </div>
           </div>
         `;
