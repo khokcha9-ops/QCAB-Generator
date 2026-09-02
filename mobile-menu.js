@@ -1,76 +1,34 @@
-/* QCAB Mobile Menu - integrated with the EXISTING mobile header */
-(function () {
-  function initQCABMobileMenu() {
-    const sidebar = document.querySelector('.sidebar');
-    const mobileNav = document.querySelector('.mobile-nav');
+document.addEventListener("DOMContentLoaded", function () {
 
-    if (!sidebar || !mobileNav) {
-      console.warn('QCAB Mobile Menu: sidebar or mobile-nav not found.');
-      return;
+    const menuToggle = document.getElementById("mobile-menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const menuClose = document.getElementById("mobile-menu-close");
+
+    if (!menuToggle || !mobileMenu) {
+        console.error("Mobile menu elements not found.");
+        return;
     }
 
-    /* Avoid creating the button twice */
-    if (document.querySelector('.qcab-mobile-menu-btn')) return;
+    menuToggle.addEventListener("click", function () {
+        mobileMenu.classList.add("active");
+        document.body.classList.add("menu-open");
+    });
 
-    const overlay = document.createElement('div');
-    overlay.className = 'qcab-mobile-overlay';
-    document.body.appendChild(overlay);
-
-    const btn = document.createElement('button');
-    btn.className = 'qcab-mobile-menu-btn';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Open navigation menu');
-    btn.setAttribute('aria-expanded', 'false');
-    btn.innerHTML = '☰';
-
-    /* Put hamburger inside the header that already appears on mobile */
-    mobileNav.insertBefore(btn, mobileNav.firstChild);
-
-    function openMenu() {
-      sidebar.classList.add('qcab-mobile-open');
-      overlay.classList.add('is-open');
-      btn.classList.add('is-open');
-      btn.innerHTML = '✕';
-      btn.setAttribute('aria-label', 'Close navigation menu');
-      btn.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('qc-mobile-menu-open');
+    if (menuClose) {
+        menuClose.addEventListener("click", function () {
+            mobileMenu.classList.remove("active");
+            document.body.classList.remove("menu-open");
+        });
     }
 
-    function closeMenu() {
-      sidebar.classList.remove('qcab-mobile-open');
-      overlay.classList.remove('is-open');
-      btn.classList.remove('is-open');
-      btn.innerHTML = '☰';
-      btn.setAttribute('aria-label', 'Open navigation menu');
-      btn.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('qc-mobile-menu-open');
-    }
+    // Close menu when a link is clicked
+    const menuLinks = mobileMenu.querySelectorAll("a");
 
-    btn.addEventListener('click', function () {
-      sidebar.classList.contains('qcab-mobile-open') ? closeMenu() : openMenu();
+    menuLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+            mobileMenu.classList.remove("active");
+            document.body.classList.remove("menu-open");
+        });
     });
 
-    overlay.addEventListener('click', closeMenu);
-
-    /* Existing sidebar uses buttons, not links */
-    sidebar.addEventListener('click', function (event) {
-      if (event.target.closest('button')) {
-        setTimeout(closeMenu, 100);
-      }
-    });
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeMenu();
-    });
-
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 820) closeMenu();
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initQCABMobileMenu);
-  } else {
-    initQCABMobileMenu();
-  }
-})();
+});
