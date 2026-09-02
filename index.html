@@ -506,41 +506,95 @@
   [data-theme="dark"] .tag-paper-opt{background:#4c0519;color:#fecdd3}
 
   .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
-  .btn-secondary-sm,.btn-action-sm{
+  
+  /* Distinct Distinctive Action Buttons */
+  .btn-secondary-sm{
     border:1px solid var(--border);
     background:var(--surface);
     color:var(--muted);
     border-radius:10px;
-    padding:8px 12px;
-    font-size:11px;
+    padding:8px 14px;
+    font-size:12px;
     font-weight:750;
     cursor:pointer;
     transition:all 0.2s ease;
     box-shadow:var(--shadow-sm);
   }
-  .btn-secondary-sm:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-  .btn-action-sm{background:var(--accent);border-color:transparent;color:#fff}
-  .btn-action-sm:hover{background:#4338ca;color:#fff}
+  .btn-secondary-sm:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+    background:var(--accent-soft);
+  }
 
-  /* HIGHLIGHTED AI MODEL ANSWER BUTTON */
+  /* Button 1: Add to Booklet (Teal / Emerald style) */
+  .btn-add-item {
+    background: #ecfdf5 !important;
+    border: 1px solid #10b981 !important;
+    color: #047857 !important;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15) !important;
+  }
+  .btn-add-item:hover {
+    background: #10b981 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+  }
+
+  /* Button 2: Direct to PDF (Amber / Orange style) */
+  .btn-direct-pdf {
+    background: #fffbeb !important;
+    border: 1px solid #f59e0b !important;
+    color: #b45309 !important;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15) !important;
+  }
+  .btn-direct-pdf:hover {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+  }
+
+  /* Button 3: AI Model Answer - Highly Prominent Glowing Violet/Purple style */
   .btn-ai-highlight {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
-    border-color: transparent !important;
-    color: #fff !important;
-    box-shadow: 0 4px 14px rgba(79,70,229,0.3) !important;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+    border: 1px solid transparent !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    padding: 9px 16px !important;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
+    transform: translateY(-1px);
   }
   .btn-ai-highlight:hover {
-    background: linear-gradient(135deg, #4338ca, #6d28d9) !important;
-    box-shadow: 0 6px 18px rgba(79,70,229,0.45) !important;
+    background: linear-gradient(135deg, #6d28d9, #4338ca) !important;
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6) !important;
+    transform: translateY(-2px);
   }
+
+  [data-theme="dark"] .btn-add-item {
+    background: #064e3b !important;
+    border-color: #34d399 !important;
+    color: #a7f3d0 !important;
+  }
+  [data-theme="dark"] .btn-add-item:hover {
+    background: #10b981 !important;
+    color: #ffffff !important;
+  }
+
+  [data-theme="dark"] .btn-direct-pdf {
+    background: #451a03 !important;
+    border-color: #fbbf24 !important;
+    color: #fde68a !important;
+  }
+  [data-theme="dark"] .btn-direct-pdf:hover {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+  }
+
   [data-theme="dark"] .btn-ai-highlight {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 14px rgba(99,102,241,0.35) !important;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
   }
   [data-theme="dark"] .btn-ai-highlight:hover {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
-    color: #fff !important;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.65) !important;
   }
 
   /* QCAB PANEL */
@@ -1413,7 +1467,7 @@
             </div>
             <div class="bank-actions">
               <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-              <button class="btn-action-sm btn-direct-pdf">⚡ Direct to PDF</button>
+              <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
               <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
             </div>
           </div>
@@ -1832,7 +1886,7 @@ window.fetchAIAnswer = function(buttonElement) {
   let marks = '';
   let year = '';
 
-  tags.forEach(tag => {
+  tags.exports?.forEach || tags.forEach(tag => {
     const text = tag.innerText;
     if (text.includes('M')) {
       const parts = text.split('/');
