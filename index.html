@@ -1,736 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="upsc-prep-tools.css">
-<link rel="stylesheet" href="mobile-menu.css">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPSC Mains PYQ cum QCAB Generator by Biswa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-
-<style>
-  :root{
-    /* Vibrant, eye-catching Light Mode palette — multi-hue, not maroon-led */
-    --bg:#f4f7fc;
-    --surface:#ffffff;
-    --surface-2:#eef2f9;
-    --text:#0f172a;
-    --muted:#475569;
-    --border:#cbd5e1;
-    --border-strong:#94a3b8;
-    
-    /* Violet primary + Teal accent + Amber highlight */
-    --primary:#7c3aed;
-    --primary-hover:#6d28d9;
-    --primary-soft:#f3e8ff;
-    
-    --accent:#0891b2;
-    --accent-soft:#cffafe;
-
-    --highlight:#f59e0b;
-    --highlight-soft:#fffbeb;
-    
-    --success:#047857;
-    --success-soft:#ecfdf5;
-    --danger:#b91c1c;
-    --danger-soft:#fef2f2;
-    
-    --shadow:0 12px 35px -5px rgba(8,145,178,0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
-    --shadow-sm:0 2px 8px rgba(15,23,42,0.04);
-    --radius:18px;
-    --radius-sm:10px;
-    --sans:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --serif:Georgia, "Times New Roman", serif;
-  }
-
-  [data-theme="dark"]{
-    --bg:#07090e;
-    --surface:#111622;
-    --surface-2:#1a2234;
-    --text:#f1f5f9;
-    --muted:#94a3b8;
-    --border:#2a364f;
-    --border-strong:#3b4d71;
-    
-    --primary:#a78bfa;
-    --primary-hover:#c4b5fd;
-    --primary-soft:#2e1065;
-    
-    --accent:#22d3ee;
-    --accent-soft:#083344;
-
-    --highlight:#fbbf24;
-    --highlight-soft:#422006;
-    
-    --success:#34d399;
-    --success-soft:#064e3b;
-    --danger:#f87171;
-    --danger-soft:#451a03;
-    
-    --shadow:0 14px 35px -5px rgba(0,0,0,0.4);
-    --shadow-sm:0 2px 8px rgba(0,0,0,0.25);
-  }
-
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:var(--sans);
-    -webkit-font-smoothing:antialiased;
-    letter-spacing:-0.01em;
-    transition:background .25s ease, color .25s ease;
-  }
-  button,input,textarea,select{font:inherit}
-  button{cursor:pointer}
-
-  .app{
-    min-height:100vh;
-    display:grid;
-    grid-template-columns:260px minmax(0,1fr);
-  }
-
-  /* SIDEBAR */
-  .sidebar{
-    position:sticky;
-    top:0;
-    height:100vh;
-    padding:24px 18px;
-    background:var(--surface);
-    border-right:1px solid var(--border);
-    display:flex;
-    flex-direction:column;
-    z-index:20;
-    box-shadow:4px 0 20px rgba(0,0,0,0.01);
-  }
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:4px 8px 28px;
-  }
-  .brand-mark{
-    width:42px;height:42px;
-    border-radius:14px;
-    display:grid;place-items:center;
-    background:linear-gradient(135deg, var(--primary), var(--accent));
-    color:#fff;
-    font-weight:800;
-    font-size:18px;
-    box-shadow:0 6px 16px rgba(124,58,237,0.25);
-  }
-  .brand strong{display:block;font-size:15px;font-weight:750}
-  .brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px;font-weight:500}
-  .nav-title{
-    padding:0 12px 10px;
-    font-size:11px;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:.1em;
-    color:var(--muted);
-  }
-  .nav{
-    display:grid;
-    gap:6px;
-  }
-  .nav-btn{
-    width:100%;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    padding:12px 14px;
-    border-radius:12px;
-    text-align:left;
-    font-size:14px;
-    font-weight:650;
-    transition:all 0.2s ease;
-  }
-  .nav-btn:hover{
-    background:var(--surface-2);
-    color:var(--text);
-  }
-  .nav-btn.active{
-    background:linear-gradient(135deg, var(--primary), var(--accent));
-    color:#fff;
-    box-shadow:0 6px 16px rgba(124,58,237,0.25);
-  }
-  [data-theme="dark"] .nav-btn.active {
-    background:linear-gradient(135deg, var(--primary), var(--accent));
-    box-shadow:0 6px 16px rgba(167,139,250,0.3);
-  }
-  .nav-icon{width:20px;text-align:center;font-size:16px}
-  .sidebar-bottom{
-    margin-top:auto;
-    border-top:1px solid var(--border);
-    padding-top:16px;
-  }
-
-  /* MAIN CONTENT */
-  .content{min-width:0}
-  .topbar{
-    position:sticky;
-    top:0;
-    z-index:15;
-    height:72px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 36px;
-    background:color-mix(in srgb, var(--bg) 85%, transparent);
-    backdrop-filter:blur(16px);
-    border-bottom:1px solid var(--border);
-  }
-  .topbar-title{font-size:15px;font-weight:750}
-  .topbar-sub{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
-  .topbar-actions{display:flex;align-items:center;gap:10px}
-  .theme-toggle,.icon-top{
-    border:1px solid var(--border);
-    background:var(--surface);
-    color:var(--text);
-    border-radius:11px;
-    padding:8px 14px;
-    font-size:13px;
-    font-weight:650;
-    transition:all 0.2s ease;
-    box-shadow:var(--shadow-sm);
-  }
-  .theme-toggle:hover,.icon-top:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
-
-  .page{
-    width:min(1280px, 100%);
-    margin:auto;
-    padding:36px;
-  }
-
-  .hero{
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:24px;
-    margin-bottom:28px;
-  }
-  .eyebrow{
-    margin:0 0 8px;
-    color:var(--accent);
-    font-size:12px;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-  }
-  h1{
-    margin:0;
-    font-family:var(--serif);
-    font-size:clamp(32px, 4vw, 46px);
-    line-height:1.08;
-    font-weight:400;
-    letter-spacing:-.02em;
-  }
-  .hero p{margin:12px 0 0;color:var(--muted);font-size:15px;max-width:680px;line-height:1.5;font-weight:500}
-  .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-  .btn{
-    border:1px solid var(--border-strong);
-    background:var(--surface);
-    color:var(--text);
-    border-radius:12px;
-    padding:11px 18px;
-    font-size:13px;
-    font-weight:750;
-    transition:all 0.2s ease;
-    box-shadow:var(--shadow-sm);
-  }
-  .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);transform:translateY(-1px)}
-  .btn-primary{
-    border-color:transparent;
-    background:linear-gradient(135deg, var(--primary), var(--accent));
-    color:#fff;
-    box-shadow:0 4px 14px rgba(124,58,237,0.25);
-  }
-  .btn-primary:hover{background:linear-gradient(135deg, var(--primary-hover), var(--primary));color:#fff;box-shadow:0 6px 18px rgba(124,58,237,0.35)}
-  .btn-danger{color:var(--danger);border-color:var(--border)}
-  .btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
-  .btn-wide{width:100%;padding:13px 16px}
-
-  /* STATS */
-  .stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:16px;
-    margin-bottom:24px;
-  }
-  .stat{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:22px;
-    box-shadow:var(--shadow-sm);
-    transition:all 0.2s ease;
-    position:relative;
-    overflow:hidden;
-  }
-  .stat::after{
-    content:'';
-    position:absolute;
-    top:0;left:0;width:4px;height:100%;
-    background:linear-gradient(to bottom, var(--primary), var(--accent));
-    opacity:0.8;
-  }
-  .stat:hover{transform:translateY(-2px);border-color:var(--border-strong);box-shadow:var(--shadow)}
-  .stat-label{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:0.05em}
-  .stat-value{font-size:30px;font-weight:850;margin-top:6px;letter-spacing:-0.03em;color:var(--text)}
-  .stat-note{font-size:11px;color:var(--muted);margin-top:4px;font-weight:500}
-
-  .workspace{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) 390px;
-    gap:20px;
-    align-items:start;
-  }
-
-  .card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow-sm);
-    padding:26px;
-    margin-bottom:20px;
-    transition:all 0.2s ease;
-  }
-  .card:hover{box-shadow:var(--shadow);border-color:var(--border-strong)}
-  .card-header{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:14px;
-    margin-bottom:20px;
-  }
-  .card-title{margin:0;font-size:18px;font-weight:800;letter-spacing:-0.01em}
-  .card-sub{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5;font-weight:500}
-
-  /* FOLDER BAR */
-  .folder-wrap{
-    margin-bottom:22px;
-  }
-  .breadcrumbs{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-    color:var(--muted);
-    font-size:12px;
-    margin-bottom:10px;
-    font-weight:600;
-  }
-  .crumb{cursor:pointer;color:var(--accent);font-weight:750}
-  .crumb:hover{text-decoration:underline}
-  .folder-bar{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    padding-bottom:6px;
-  }
-  .folder-tab,.btn-new-folder{
-    white-space:nowrap;
-    border:1px solid var(--border);
-    background:var(--surface);
-    color:var(--muted);
-    border-radius:999px;
-    padding:8px 14px;
-    font-size:12px;
-    font-weight:750;
-    transition:all 0.2s ease;
-    box-shadow:var(--shadow-sm);
-  }
-  .folder-tab:hover,.btn-new-folder:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-
-  /* FORM INPUTS */
-  .field{margin-bottom:16px}
-  label{
-    display:block;
-    color:var(--text);
-    font-size:12px;
-    font-weight:750;
-    margin:0 0 6px;
-  }
-  textarea,input[type=text],select{
-    width:100%;
-    color:var(--text);
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:12px 14px;
-    outline:none;
-    font-size:14px;
-    font-weight:500;
-    transition:all 0.2s ease;
-  }
-  textarea{min-height:120px;resize:vertical;line-height:1.6}
-  textarea:focus,input[type=text]:focus,select:focus{
-    border-color:var(--accent);
-    background:var(--surface);
-    box-shadow:0 0 0 4px var(--accent-soft);
-  }
-  .marks-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .marks-btn{
-    padding:11px 8px;
-    border:1px solid var(--border);
-    border-radius:11px;
-    background:var(--surface-2);
-    color:var(--muted);
-    font-size:13px;
-    font-weight:800;
-    transition:all 0.2s ease;
-  }
-  .marks-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-  .marks-btn[aria-pressed="true"]{background:linear-gradient(135deg, var(--accent), #0e7490);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(8,145,178,0.3)}
-  .checkbox-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:var(--text);
-    font-size:12px;
-    font-weight:700;
-  }
-  .checkbox-row label{margin:0;color:var(--text);font-size:12px}
-
-  .form-actions{display:grid;gap:8px;margin-top:8px}
-
-  /* PYQ BANK */
-  .mode-switch{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:6px;
-    padding:5px;
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:14px;
-    margin-bottom:14px;
-  }
-  .mode-switch label{
-    margin:0;
-    text-align:center;
-    padding:99px;
-    border-radius:10px;
-    cursor:pointer;
-    color:var(--muted);
-    font-size:12px;
-    font-weight:750;
-    transition:all 0.2s ease;
-  }
-  .mode-switch input{display:none}
-  .mode-switch input:checked + span{
-    display:block;
-    color:var(--primary);
-    font-weight:850;
-    background:var(--surface);
-    border-radius:10px;
-    padding:0;
-    box-shadow:var(--shadow-sm);
-  }
-
-  .search-main{position:relative;margin-bottom:12px}
-  .search-main .search-icon{
-    position:absolute;left:14px;top:50%;transform:translateY(-50%);
-    color:var(--muted);pointer-events:none;
-    font-size:16px;
-  }
-  #search-input{padding-left:40px;height:46px;background:var(--surface)}
-  .filter-box{
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:14px;
-    margin-bottom:16px;
-  }
-  .filters{
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr auto auto;
-    gap:8px;
-    align-items:center;
-  }
-  .filters select{min-width:0;height:42px}
-  .filters .btn{height:42px;padding:9px 14px}
-  #filter-topic{display:none}
-
-  #bank-status-text{
-    color:var(--muted);
-    font-size:12px;
-    margin:0 0 12px;
-    font-weight:600;
-  }
-  .bank-item{
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:20px;
-    margin-bottom:14px;
-    background:var(--surface);
-    transition:all 0.2s ease;
-    box-shadow:var(--shadow-sm);
-  }
-  .bank-item:hover{border-color:var(--border-strong);box-shadow:var(--shadow);transform:translateY(-1px)}
-  .bank-question{font-size:15px;font-weight:750;line-height:1.6;margin-bottom:14px;color:var(--text)}
-  .bank-bottom{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .tags,.q-meta{display:flex;gap:6px;flex-wrap:wrap}
-  .tag{
-    display:inline-flex;
-    align-items:center;
-    font-size:11px;
-    line-height:1;
-    font-weight:800;
-    padding:6px 10px;
-    border-radius:999px;
-    background:var(--primary-soft);
-    color:var(--primary);
-  }
-  .tag-paper{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
-  .tag-topic{background:var(--accent-soft);color:var(--accent)}
-  
-  /* Paper color badges */
-  .tag-paper-gs1{background:#fef3c7;color:#92400e}
-  .tag-paper-gs2{background:#ecfdf5;color:#065f46}
-  .tag-paper-gs3{background:#e0e7ff;color:#3730a3}
-  .tag-paper-gs4{background:#fae8ff;color:#86198f}
-  .tag-paper-opt{background:#fdf2f8;color:#a21caf}
-
-  [data-theme="dark"] .tag-paper-gs1{background:#451a03;color:#fde68a}
-  [data-theme="dark"] .tag-paper-gs2{background:#064e3b;color:#a7f3d0}
-  [data-theme="dark"] .tag-paper-gs3{background:#1e1b4b;color:#c7d2fe}
-  [data-theme="dark"] .tag-paper-gs4{background:#701a75;color:#f5d0fe}
-  [data-theme="dark"] .tag-paper-opt{background:#4a044e;color:#f5d0fe}
-
-  .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
-  
-  /* Distinct Distinctive Action Buttons */
-  .btn-secondary-sm{
-    border:1px solid var(--border);
-    background:var(--surface);
-    color:var(--muted);
-    border-radius:10px;
-    padding:8px 14px;
-    font-size:12px;
-    font-weight:750;
-    cursor:pointer;
-    transition:all 0.2s ease;
-    box-shadow:var(--shadow-sm);
-  }
-  .btn-secondary-sm:hover{
-    border-color:var(--accent);
-    color:var(--accent);
-    background:var(--accent-soft);
-  }
-
-  /* Button 1: Add to Booklet (Teal / Emerald style) */
-  .btn-add-item {
-    background: #ecfdf5 !important;
-    border: 1px solid #10b981 !important;
-    color: #047857 !important;
-    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15) !important;
-  }
-  .btn-add-item:hover {
-    background: #10b981 !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-  }
-
-  /* Button 2: Direct to PDF (Amber / Orange style) */
-  .btn-direct-pdf {
-    background: #fffbeb !important;
-    border: 1px solid #f59e0b !important;
-    color: #b45309 !important;
-    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15) !important;
-  }
-  .btn-direct-pdf:hover {
-    background: #f59e0b !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
-  }
-
-  /* Button 3: AI Model Answer - Highly Prominent Glowing Violet/Purple style */
-  .btn-ai-highlight {
-    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
-    border: 1px solid transparent !important;
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    padding: 9px 16px !important;
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
-    transform: translateY(-1px);
-  }
-  .btn-ai-highlight:hover {
-    background: linear-gradient(135deg, #6d28d9, #4338ca) !important;
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6) !important;
-    transform: translateY(-2px);
-  }
-
-  [data-theme="dark"] .btn-add-item {
-    background: #064e3b !important;
-    border-color: #34d399 !important;
-    color: #a7f3d0 !important;
-  }
-  [data-theme="dark"] .btn-add-item:hover {
-    background: #10b981 !important;
-    color: #ffffff !important;
-  }
-
-  [data-theme="dark"] .btn-direct-pdf {
-    background: #451a03 !important;
-    border-color: #fbbf24 !important;
-    color: #fde68a !important;
-  }
-  [data-theme="dark"] .btn-direct-pdf:hover {
-    background: #f59e0b !important;
-    color: #ffffff !important;
-  }
-
-  [data-theme="dark"] .btn-ai-highlight {
-    background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
-  }
-  [data-theme="dark"] .btn-ai-highlight:hover {
-    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.65) !important;
-  }
-
-  /* QCAB PANEL */
-  .sticky-card{position:sticky;top:92px}
-  .empty-state{
-    text-align:center;
-    padding:40px 20px;
-    border:2px dashed var(--border);
-    border-radius:14px;
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.6;
-    background:var(--surface-2);
-    font-weight:500;
-  }
-  .q-list{list-style:none;margin:0;padding:0}
-  .q-item{
-    display:grid;
-    grid-template-columns:28px minmax(0,1fr) 30px;
-    gap:10px;
-    align-items:start;
-    padding:18px 0;
-    border-bottom:1px solid var(--border);
-  }
-  .q-item:last-child{border-bottom:0}
-  .q-num{font-family:var(--serif);font-size:16px;color:var(--primary);font-weight:800}
-  .q-text{font-size:14px;line-height:1.55;word-break:break-word;font-weight:700}
-  .q-meta{margin-top:8px}
-  .q-actions{display:flex;flex-direction:column;gap:4px}
-  .icon-btn{
-    width:28px;height:28px;
-    display:grid;place-items:center;
-    border:0;border-radius:8px;
-    background:transparent;
-    color:var(--muted);
-    font-size:13px;
-    transition:all 0.2s ease;
-  }
-  .icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
-  .icon-btn.danger:hover{background:var(--danger-soft);color:var(--danger)}
-  .summary-bar{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:16px;
-    padding-top:16px;
-    border-top:1px solid var(--border);
-  }
-  .summary-stat{
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:14px;
-  }
-  .summary-stat span{display:block;font-size:10px;color:var(--muted);font-weight:850;letter-spacing:0.05em}
-  .summary-stat strong{display:block;font-size:20px;margin-top:4px;letter-spacing:-0.02em;color:var(--text)}
-  .btn-generate{
-    width:100%;
-    margin-top:16px;
-    padding:14px;
-    border:0;
-    border-radius:12px;
-    background:linear-gradient(135deg, var(--primary), var(--highlight));
-    color:#fff;
-    font-size:13px;
-    font-weight:850;
-    box-shadow:0 6px 18px rgba(245,158,11,0.3);
-    transition:all 0.2s ease;
-  }
-  .btn-generate:hover{background:linear-gradient(135deg, var(--primary-hover), var(--highlight));transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,158,11,0.4)}
-  .btn-generate:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
-
-  footer{
-    text-align:center;
-    color:var(--muted);
-    font-size:11px;
-    padding:30px 0 10px;
-    font-weight:600;
-  }
-
-  /* MOBILE RESPONSIVENESS */
-  .mobile-nav{display:none}
-  @media(max-width:1050px){
-    .workspace{grid-template-columns:1fr}
-    .sticky-card{position:static}
-  }
-  @media(max-width:820px){
-    .app{grid-template-columns:1fr}
-    .sidebar{display:none}
-    .mobile-nav{
-      display:flex;
-      position:sticky;
-      top:0;
-      z-index:30;
-      height:60px;
-      background:var(--surface);
-      border-bottom:1px solid var(--border);
-      align-items:center;
-      justify-content:space-between;
-      padding:0 18px;
-    }
-    .mobile-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
-    .mobile-brand .brand-mark{width:34px;height:34px;border-radius:10px;font-size:12px}
-    .topbar{display:none}
-    .page{padding:24px 18px 40px}
-    .hero{display:block}
-    .hero-actions{margin-top:18px}
-    .stats{grid-template-columns:1fr 1fr}
-    .stats .stat:last-child{grid-column:1/-1}
-    .filters{grid-template-columns:1fr 1fr}
-    .filters .btn{width:100%}
-  }
-  @media(max-width:520px){
-    .stats{grid-template-columns:1fr}
-    .stats .stat:last-child{grid-column:auto}
-    .filters{grid-template-columns:1fr}
-    .hero h1{font-size:32px}
-    .card{padding:18px}
-    .bank-bottom{align-items:flex-start}
-    .bank-actions{width:100%}
-    .bank-actions button{flex:1}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPSC Mains PYQ cum QCAB Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
 <body>
 <div class="app">
 
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">Q</div>
@@ -739,7 +22,6 @@
         <span>UPSC Mains Practice</span>
       </div>
     </div>
-
     <div class="nav-title">Workspace</div>
     <nav class="nav">
       <button class="nav-btn active" data-scroll="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
@@ -747,22 +29,21 @@
       <button class="nav-btn" data-scroll="create-question"><span class="nav-icon">＋</span>Create Question</button>
       <button class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
     </nav>
-
     <div class="sidebar-bottom">
       <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark Mode</button>
     </div>
   </aside>
 
   <div class="content">
-
+    <!-- MOBILE BAR -->
     <div class="mobile-nav">
       <div class="mobile-brand">
-        <div class="brand-mark">Q</div>
-        UPSC Help
+        <div class="brand-mark">Q</div> UPSC Help
       </div>
       <button class="theme-toggle" id="mobile-theme-toggle">☾</button>
     </div>
 
+    <!-- TOPBAR -->
     <header class="topbar">
       <div>
         <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
@@ -770,19 +51,18 @@
       </div>
       <div class="topbar-actions">
         <button class="theme-toggle" id="theme-toggle">
-          <span id="theme-icon">🌙</span>
-          <span id="theme-text">Dark Mode</span>
+          <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
         </button>
       </div>
     </header>
 
     <main class="page">
-
+      <!-- HERO SECTION -->
       <section class="hero" id="dashboard">
         <div>
           <p class="eyebrow">Question-cum-Answer Booklet</p>
           <h1>UPSC PYQ Bank<br>cum QCAB Generator</h1>
-          <p>Find previous year questions, build your custom practice set and generate a print-ready answer booklet.</p>
+          <p>Find previous year questions, build your custom practice set, and generate a print-ready answer booklet.</p>
         </div>
         <div class="hero-actions">
           <button class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
@@ -790,11 +70,12 @@
         </div>
       </section>
 
+      <!-- STATS -->
       <section class="stats">
         <div class="stat">
           <div class="stat-label">QUESTION BANK</div>
           <div class="stat-value" id="dashboard-bank-count">—</div>
-          <div class="stat-note">PYQs currently loaded</div>
+          <div class="stat-note">PYQs loaded</div>
         </div>
         <div class="stat">
           <div class="stat-label">ACTIVE QCAB</div>
@@ -804,20 +85,21 @@
         <div class="stat">
           <div class="stat-label">ANSWER PAGES</div>
           <div class="stat-value" id="dashboard-pages">0</div>
-          <div class="stat-note">Based on marks selected</div>
+          <div class="stat-note">Based on marks</div>
         </div>
       </section>
 
+      <!-- FOLDER BAR -->
       <div class="folder-wrap">
         <div class="breadcrumbs" id="breadcrumbs"></div>
         <div class="folder-bar" id="folder-bar"></div>
       </div>
 
+      <!-- MAIN WORKSPACE GRID -->
       <div class="workspace">
-
-        <!-- LEFT: CREATE + PYQ BANK -->
+        <!-- LEFT COLUMN -->
         <section>
-
+          <!-- CREATE CUSTOM QUESTION CARD -->
           <div class="card" id="create-question">
             <div class="card-header">
               <div>
@@ -861,7 +143,7 @@
 
               <div class="field">
                 <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
-                <input type="text" id="q-year" placeholder="e.g. 2025">
+                <input type="text" id="q-year" placeholder="e.g. 2026">
               </div>
 
               <div class="field checkbox-row">
@@ -877,17 +159,18 @@
             </div>
           </div>
 
+          <!-- PYQ BANK SEARCH CARD -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
               <div>
                 <h2 class="card-title">PYQ Bank</h2>
-                <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
+                <p class="card-sub">Search by question, topic, paper, or year. Results update as you type.</p>
               </div>
               <div style="display:flex; gap:8px;">
-                <button class="btn" id="toggle-bank-btn" title="Collapse to scroll the page more easily">
+                <button class="btn" id="toggle-bank-btn">
                   <span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span>
                 </button>
-                <button class="btn btn-danger" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
+                <button class="btn btn-danger" id="clear-bank-btn">Reset Bank</button>
               </div>
             </div>
 
@@ -903,9 +186,9 @@
                 </label>
               </div>
 
-              <div class="search-main" style="position: relative;">
+              <div class="search-main">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
+                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2026...">
               </div>
 
               <div class="filter-box">
@@ -920,13 +203,8 @@
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
 
-                  <select id="filter-topic">
-                    <option value="ALL">All Subtopics</option>
-                  </select>
-
-                  <select id="filter-year">
-                    <option value="ALL">All Years</option>
-                  </select>
+                  <select id="filter-topic"><option value="ALL">All Subtopics</option></select>
+                  <select id="filter-year"><option value="ALL">All Years</option></select>
 
                   <button class="btn btn-primary" id="search-bank-btn">Search</button>
                   <button class="btn" id="clear-results-btn">Clear</button>
@@ -934,18 +212,12 @@
               </div>
 
               <div id="bank-status-text">Loading question bank...</div>
-
-              <div id="bank-results-container">
-                <p style="font-size:13px;color:var(--muted);font-style:italic;">
-                  Loading repository questions...
-                </p>
-              </div>
+              <div id="bank-results-container"></div>
             </div>
           </div>
-
         </section>
 
-        <!-- RIGHT: ACTIVE QCAB -->
+        <!-- RIGHT COLUMN: ACTIVE BOOKLET -->
         <aside class="card sticky-card" id="my-qcab">
           <div class="card-header">
             <div>
@@ -955,15 +227,15 @@
             <span class="tag" id="count-tag">0 questions</span>
           </div>
 
-          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;">
+          <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:14px;">
             <button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button>
             <button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button>
             <button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button>
           </div>
 
           <div id="empty-state" class="empty-state">
-            <div style="font-size:28px;margin-bottom:8px;">▣</div>
-            <strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>
+            <div style="font-size:28px; margin-bottom:8px;">▣</div>
+            <strong>Your booklet is empty</strong>
             Add questions from the PYQ Bank or create a custom question.
           </div>
 
@@ -980,964 +252,118 @@
             </div>
           </div>
 
-          <button class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
+          <button class="btn-generate" id="generate-btn" disabled>⇩ Generate & Download PDF</button>
         </aside>
-
       </div>
 
-      <footer>
-        QCAB Generator · Project by Biswajit Nahak
-      </footer>
-
+      <footer>QCAB Generator · Project</footer>
     </main>
   </div>
 </div>
 
 <script>
-  /* Navigation & Dashboard Synchronization Logic */
-  document.querySelectorAll('[data-scroll]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.scroll;
-      const target = document.getElementById(id);
-      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
-      document.querySelectorAll('.nav-btn[data-scroll]').forEach(n => n.classList.remove('active'));
-      const match = document.querySelector(`.nav-btn[data-scroll="${id}"]`);
-      if(match) match.classList.add('active');
-    });
-  });
-
-  function syncDashboard(){
-    const qList = document.getElementById('q-list');
-    const count = qList ? qList.querySelectorAll('.q-item').length : 0;
-    const pages = document.getElementById('total-pages')?.textContent || '0';
-    const bankStatus = document.getElementById('bank-status-text')?.textContent || '';
-    const nums = bankStatus.match(/\d+/);
-    const bankCount = nums ? nums[0] : '—';
-
-    const qCount = document.getElementById('dashboard-q-count');
-    const pageCount = document.getElementById('dashboard-pages');
-    const bankCountEl = document.getElementById('dashboard-bank-count');
-    if(qCount && qCount.textContent !== String(count)) qCount.textContent = count;
-    if(pageCount && pageCount.textContent !== String(pages)) pageCount.textContent = pages;
-    if(bankCountEl && bankCountEl.textContent !== bankCount) bankCountEl.textContent = bankCount;
-  }
-
-  window.addEventListener('load', () => {
-    syncDashboard();
-    setTimeout(syncDashboard, 700);
-    setTimeout(syncDashboard, 1800);
-  });
-
-  document.getElementById('sidebar-theme')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
-  document.getElementById('mobile-theme-toggle')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
-
-  /* ==========================================
-     COMPLETE ENHANCED APPLICATION LOGIC
-     ========================================== */
-  (function () {
-    /* 1. THEME TOGGLE */
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
-
-    function applyTheme(theme) {
-      if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        if (themeIcon) themeIcon.textContent = '☀️';
-        if (themeText) themeText.textContent = 'Light Mode';
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        if (themeIcon) themeIcon.textContent = '🌙';
-        if (themeText) themeText.textContent = 'Dark Mode';
-      }
-    }
-
-    const savedTheme =
-      localStorage.getItem('qcab_theme') ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    applyTheme(savedTheme);
-
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const nextTheme = isDark ? 'light' : 'dark';
-        localStorage.setItem('qcab_theme', nextTheme);
-        applyTheme(nextTheme);
-      });
-    }
-
-    /* 1b. CREATE SECTION COLLAPSE TOGGLE */
-    const toggleCreateBtn = document.getElementById('toggle-create-section-btn');
-    const createFormBody = document.getElementById('create-form-body');
-
-    function setCreateCollapsed(collapsed) {
-      if (!createFormBody || !toggleCreateBtn) return;
-      createFormBody.style.display = collapsed ? 'none' : 'block';
-      toggleCreateBtn.textContent = collapsed ? 'Show Form ▸' : 'Hide Form ▾';
-    }
-
-    const createCollapsedSaved = localStorage.getItem('qcab_create_collapsed') === '1';
-    setCreateCollapsed(createCollapsedSaved);
-
-    if (toggleCreateBtn) {
-      toggleCreateBtn.addEventListener('click', () => {
-        const willCollapse = createFormBody.style.display !== 'none';
-        setCreateCollapsed(willCollapse);
-        localStorage.setItem('qcab_create_collapsed', willCollapse ? '1' : '0');
-      });
-    }
-
-    /* 1c. PYQ BANK COLLAPSE TOGGLE */
-    const toggleBankBtn = document.getElementById('toggle-bank-btn');
-    const toggleBankIcon = document.getElementById('toggle-bank-icon');
-    const toggleBankText = document.getElementById('toggle-bank-text');
-    const bankBody = document.getElementById('pyq-bank-body');
-
-    function setBankCollapsed(collapsed) {
-      if (!bankBody) return;
-      bankBody.style.display = collapsed ? 'none' : 'block';
-      if (toggleBankIcon) toggleBankIcon.textContent = collapsed ? '▸' : '▾';
-      if (toggleBankText) toggleBankText.textContent = collapsed ? 'Show Bank' : 'Hide Bank';
-    }
-
-    const bankCollapsedSaved = localStorage.getItem('qcab_bank_collapsed') === '1';
-    setBankCollapsed(bankCollapsedSaved);
-
-    if (toggleBankBtn) {
-      toggleBankBtn.addEventListener('click', () => {
-        const willCollapse = bankBody.style.display !== 'none';
-        setBankCollapsed(willCollapse);
-        localStorage.setItem('qcab_bank_collapsed', willCollapse ? '1' : '0');
-      });
-    }
-
-    /* 2. SYLLABUS MAPPING & PAPER CODES */
-    const SYLLABUS = {
-      GS1: [
-        'Art & Culture',
-        'Modern History',
-        'Post Independence',
-        'World History',
-        'Physical Geography',
-        'Economic & Human Geography',
-        'Indian society'
-      ],
-      GS2: ['Polity', 'Governance', 'Social Justice', 'International Relations'],
-      GS3: [
-        'Economy',
-        'Agriculture',
-        'Internal Security',
-        'Environment & Disaster Management',
-        'Science & Tech'
-      ],
-      GS4: ['Ethics Theory', 'Case Studies'],
-      OPT1: ['Anthropology Paper 1 Topics'],
-      OPT2: ['Anthropology Paper 2 Topics']
-    };
-
-    function normalizePaperCode(paperVal) {
-      if (!paperVal) return 'GS1';
-      const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
-      if (str.includes('GS1') || str.includes('PAPER1')) return 'GS1';
-      if (
-        str.includes('GS2') ||
-        str.includes('PAPER2') ||
-        str.includes('POLITY') ||
-        str.includes('GOVERNANCE')
-      )
-        return 'GS2';
-      if (str.includes('GS3') || str.includes('PAPER3')) return 'GS3';
-      if (str.includes('GS4') || str.includes('PAPER4')) return 'GS4';
-      if (str.includes('OPT1') || str.includes('OPTIONAL1')) return 'OPT1';
-      if (str.includes('OPT2') || str.includes('OPTIONAL2')) return 'OPT2';
-      return 'GS1';
-    }
-
-    function getPaperTagClass(paper) {
-      const norm = normalizePaperCode(paper);
-      if (norm === 'GS1') return 'tag-paper-gs1';
-      if (norm === 'GS2') return 'tag-paper-gs2';
-      if (norm === 'GS3') return 'tag-paper-gs3';
-      if (norm === 'GS4') return 'tag-paper-gs4';
-      return 'tag-paper-opt';
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>"']/g, function (m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#039;'
-        }[m];
-      });
-    }
-
-    function generateUniqueId(prefix = 'id') {
-      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-        return `${prefix}_${crypto.randomUUID()}`;
-      }
-      return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    }
-
-    /* 3. PRESET BANK & SEPARATE JSON LOADING */
-    const PRESET_STORAGE_KEY = 'qcab_preset_bank';
-    let presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
-
-    function savePresets() {
-      localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetBank));
-      updateBankStatus();
-    }
-
-    function updateBankStatus() {
-      const statusEl = document.getElementById('bank-status-text');
-      if (statusEl) {
-        statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) loaded.`;
-      }
-      syncDashboard();
-    }
-
-    async function fetchJSONFile(url) {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) return [];
-        const data = await response.json();
-        return Array.isArray(data) ? data : data.questions || data.bank || data.data || [];
-      } catch (err) {
-        console.warn(`Could not load file from ${url}:`, err);
-        return [];
-      }
-    }
-
-    async function loadRepositoryJSON() {
-      try {
-        const [gs1Data, gs2Data, gs3Data, gs4Data] = await Promise.all([
-          fetchJSONFile('./gs1_pyq.json'),
-          fetchJSONFile('./gs2_pyq.json'),
-          fetchJSONFile('./gs3_pyq.json'),
-          fetchJSONFile('./gs4_pyq.json')
-        ]);
-
-        const incomingQuestions = [...gs1Data, ...gs2Data, ...gs3Data, ...gs4Data];
-        let formattedCount = 0;
-
-        incomingQuestions.forEach((q) => {
-          const questionText = (
-            q.question || q.q_text || q.text || q.title || ''
-          ).trim();
-
-          if (!questionText || questionText.toLowerCase() === 'year' || questionText.toLowerCase() === 'syllabus') {
-            return;
-          }
-
-          let rawMarks = q.marks || q.mark || 10;
-          if (typeof rawMarks === 'string') {
-            rawMarks = parseInt(rawMarks.replace(/[^0-9]/g, ''), 10) || 10;
-          }
-
-          let rawYear = String(q.year || q.exam_year || q.Year || '').replace(/[^0-9]/g, '');
-          if (!rawYear || rawYear.length !== 4) rawYear = '2025';
-
-          const rawPaper = q.paper || q.gs || q.subject || 'GS1';
-          const rawTopic = q.topic || q.subtopic || q.category || 'General';
-
-          const item = {
-            id: q.id || generateUniqueId('q'),
-            paper: normalizePaperCode(rawPaper),
-            topic: String(rawTopic).trim(),
-            year: rawYear,
-            marks: Number(rawMarks),
-            question: questionText
-          };
-
-          const exists = presetBank.some(
-            (existing) => existing.question.trim().toLowerCase() === item.question.toLowerCase()
-          );
-
-          if (!exists) {
-            presetBank.push(item);
-            formattedCount++;
-          }
-        });
-
-        if (formattedCount > 0 || presetBank.length > 0) {
-          savePresets();
-        }
-
-        populateFilterYears();
-        populateFilterTopics();
-        renderBankResults();
-      } catch (err) {
-        console.warn('Repository load error:', err);
-        updateBankStatus();
-      }
-    }
-
-    /* 4. FOLDER & BOOKLET STATE */
-    const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
-    const defaultRoot = {
-      id: 'root',
-      name: 'General Booklet',
-      parentId: null,
-      subfolders: [],
-      questions: []
-    };
-    let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: defaultRoot };
-    let activeFolderId = localStorage.getItem('qcab_active_nested_folder') || 'root';
-    if (!folderMap[activeFolderId]) activeFolderId = 'root';
-    let editingIndex = null;
-
-    function saveState() {
-      localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
-      localStorage.setItem('qcab_active_nested_folder', activeFolderId);
-    }
-    function getActiveFolder() {
-      return folderMap[activeFolderId] || folderMap['root'];
-    }
-
-    /* 5. DOM ELEMENT BINDINGS */
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    const folderBar = document.getElementById('folder-bar');
-    const qPaper = document.getElementById('q-paper');
-    const qTopic = document.getElementById('q-topic');
-    const qText = document.getElementById('q-text');
-    const qYear = document.getElementById('q-year');
-    const addBtn = document.getElementById('add-btn');
-    const addPresetBtn = document.getElementById('add-preset-btn');
-    const cancelEditBtn = document.getElementById('cancel-edit-btn');
-    const marksButtons = document.querySelectorAll('.marks-btn');
-    const qList = document.getElementById('q-list');
-    const emptyState = document.getElementById('empty-state');
-    const countTag = document.getElementById('count-tag');
-    const summaryBar = document.getElementById('summary-bar');
-    const totalMarksEl = document.getElementById('total-marks');
-    const totalPagesEl = document.getElementById('total-pages');
-    const generateBtn = document.getElementById('generate-btn');
-
-    const renameFolderBtn = document.getElementById('rename-folder-btn');
-    const deleteFolderBtn = document.getElementById('delete-folder-btn');
-    const clearQBtn = document.getElementById('clear-q-btn');
-    const clearBankBtn = document.getElementById('clear-bank-btn');
-
-    const searchInput = document.getElementById('search-input');
-    const modeYearRadio = document.getElementById('mode-year');
-    const modeTopicRadio = document.getElementById('mode-topic');
-    const filterPaper = document.getElementById('filter-paper');
-    const filterYear = document.getElementById('filter-year');
-    const filterTopic = document.getElementById('filter-topic');
-    const searchBankBtn = document.getElementById('search-bank-btn');
-    const clearResultsBtn = document.getElementById('clear-results-btn');
-    const bankResultsContainer = document.getElementById('bank-results-container');
-
-    let selectedMarks = 10;
-    if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
-
-    marksButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        selectedMarks = parseInt(btn.dataset.marks, 10);
-        marksButtons.forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
-      });
-    });
-
-    function populateFormSubtopics() {
-      if (!qTopic || !qPaper) return;
-      qTopic.innerHTML = '';
-      const paper = qPaper.value;
-      const list = SYLLABUS[paper] || ['General'];
-      list.forEach((t) => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        qTopic.appendChild(opt);
-      });
-    }
-    if (qPaper) qPaper.addEventListener('change', populateFormSubtopics);
-
-    function populateFilterYears() {
-      if (!filterYear) return;
-      const prevSelected = filterYear.value;
-      filterYear.innerHTML = '<option value="ALL">All Years</option>';
-      const yearsInBank = [
-        ...new Set(presetBank.map((q) => String(q.year)).filter((y) => y && y !== 'undefined'))
-      ];
-      if (yearsInBank.length === 0) {
-        yearsInBank.push('2025', '2024', '2023', '2022', '2021', '2020');
-      } else {
-        yearsInBank.sort((a, b) => b - a);
-      }
-      yearsInBank.forEach((yr) => {
-        const opt = document.createElement('option');
-        opt.value = yr;
-        opt.textContent = yr;
-        filterYear.appendChild(opt);
-      });
-      if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
-        filterYear.value = prevSelected;
-      }
-    }
-
-    function updateFilterMode() {
-      if (!filterYear || !filterTopic) return;
-      filterYear.style.display = 'inline-block';
-      if (modeYearRadio && modeYearRadio.checked) {
-        filterTopic.style.display = 'none';
-      } else {
-        filterTopic.style.display = 'inline-block';
-        populateFilterTopics();
-      }
-    }
-
-    function populateFilterTopics() {
-      if (!filterTopic || !filterPaper) return;
-      filterTopic.innerHTML = '<option value="ALL">All Subtopics</option>';
-      const paper = filterPaper.value;
-      let list = [];
-      if (paper === 'ALL') {
-        Object.values(SYLLABUS).forEach((arr) => list.push(...arr));
-        list = [...new Set(list)];
-      } else {
-        list = SYLLABUS[paper] || [];
-      }
-      list.forEach((t) => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        filterTopic.appendChild(opt);
-      });
-    }
-
-    if (filterPaper)
-      filterPaper.addEventListener('change', () => {
-        populateFilterYears();
-        populateFilterTopics();
-      });
-    if (modeYearRadio) modeYearRadio.addEventListener('change', updateFilterMode);
-    if (modeTopicRadio) modeTopicRadio.addEventListener('change', updateFilterMode);
-
-    if (searchInput) searchInput.addEventListener('input', renderBankResults);
-    if (searchBankBtn) searchBankBtn.addEventListener('click', renderBankResults);
-
-    if (clearResultsBtn) {
-      clearResultsBtn.addEventListener('click', () => {
-        if (searchInput) searchInput.value = '';
-        if (bankResultsContainer)
-          bankResultsContainer.innerHTML =
-            '<p style="font-size:13px; color:var(--muted); font-style:italic;">Search results cleared.</p>';
-      });
-    }
-
-    if (clearBankBtn) {
-      clearBankBtn.addEventListener('click', async () => {
-        if (confirm('Reset and reload default questions from files?')) {
-          presetBank = [];
-          localStorage.removeItem(PRESET_STORAGE_KEY);
-          updateBankStatus();
-          if (bankResultsContainer)
-            bankResultsContainer.innerHTML =
-              '<p style="font-size:13px; color:var(--muted); font-style:italic;">Reloading questions...</p>';
-          await loadRepositoryJSON();
-        }
-      });
-    }
-
-    /* 6. RENDER SEARCH RESULTS */
-    let renderRequestId = 0;
-    async function renderBankResults() {
-      if (!bankResultsContainer) return;
-      const requestId = ++renderRequestId;
-      const selectedP = filterPaper ? filterPaper.value : 'ALL';
-      const selectedY = filterYear ? filterYear.value : 'ALL';
-      const selectedT = filterTopic ? filterTopic.value : 'ALL';
-      const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
-      const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
-      if (requestId !== renderRequestId) return;
-
-      bankResultsContainer.innerHTML = '';
-
-      let filtered = presetBank.filter((q) => {
-        const normQPaper = normalizePaperCode(q.paper);
-        const normSelectedP = normalizePaperCode(selectedP);
-        const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
-
-        const matchesQuery = !query || qText.includes(query);
-
-        if (!matchesQuery) return false;
-        if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
-        if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
-
-        if (!isYearMode && selectedT !== 'ALL') {
-          const qTopicClean = String(q.topic || '').trim().toLowerCase();
-          const selectedTClean = String(selectedT).trim().toLowerCase();
-          const matchesTopic =
-            qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-          if (!matchesTopic) return false;
-        }
-
-        return true;
-      });
-
-      if (filtered.length === 0) {
-        bankResultsContainer.innerHTML =
-          '<p style="font-size:13px; color:var(--muted); font-style:italic;">No questions found matching this selection.</p>';
-        return;
-      }
-
-      filtered.forEach((q) => {
-        const div = document.createElement('div');
-        div.className = 'bank-item';
-        const paperClass = getPaperTagClass(q.paper);
-
-        div.innerHTML = `
-          <div class="bank-question">${escapeHtml(q.question)}</div>
-          <div class="bank-bottom">
-            <div class="tags">
-              <span class="tag ${paperClass}">${escapeHtml(q.paper || 'GS1')}</span>
-              <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
-              <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
-            </div>
-            <div class="bank-actions">
-              <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-              <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
-              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
-            </div>
-          </div>
-        `;
-
-        div.querySelector('.btn-add-item').addEventListener('click', () => {
-          getActiveFolder().questions.push({
-            question: q.question,
-            marks: q.marks,
-            year: q.year,
-            paper: q.paper,
-            topic: q.topic
-          });
-          saveState();
-          renderQuestions();
-        });
-
-        div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
-          getActiveFolder().questions.push({
-            question: q.question,
-            marks: q.marks,
-            year: q.year,
-            paper: q.paper,
-            topic: q.topic
-          });
-          saveState();
-          renderQuestions();
-          generatePDF();
-        });
-
-        bankResultsContainer.appendChild(div);
-      });
-    }
-
-    /* 7. FOLDER & BOOKLET MANAGEMENT UI */
-    if (renameFolderBtn) {
-      renameFolderBtn.addEventListener('click', () => {
-        const current = getActiveFolder();
-        if (current.id === 'root') {
-          alert('Cannot rename root folder.');
-          return;
-        }
-        const newName = prompt('Rename folder:', current.name);
-        if (newName && newName.trim()) {
-          current.name = newName.trim();
-          saveState();
-          renderAll();
-        }
-      });
-    }
-
-    if (deleteFolderBtn) {
-      deleteFolderBtn.addEventListener('click', () => {
-        const current = getActiveFolder();
-        if (current.id === 'root') {
-          alert('Cannot delete root folder.');
-          return;
-        }
-        if (confirm(`Delete folder "${current.name}" and its content?`)) {
-          const parent = folderMap[current.parentId];
-          if (parent) {
-            parent.subfolders = parent.subfolders.filter((id) => id !== current.id);
-            delete folderMap[current.id];
-            activeFolderId = parent.id;
-            saveState();
-            renderAll();
-          }
-        }
-      });
-    }
-
-    if (clearQBtn) {
-      clearQBtn.addEventListener('click', () => {
-        if (confirm('Clear all questions from active folder?')) {
-          getActiveFolder().questions = [];
-          saveState();
-          renderQuestions();
-        }
-      });
-    }
-
-    function renderBreadcrumbs() {
-      if (!breadcrumbs) return;
-      breadcrumbs.innerHTML = '';
-      const path = [];
-      let curr = getActiveFolder();
-      while (curr) {
-        path.unshift(curr);
-        curr = curr.parentId ? folderMap[curr.parentId] : null;
-      }
-      path.forEach((f, idx) => {
-        if (idx > 0) breadcrumbs.appendChild(document.createTextNode(' / '));
-        const crumb = document.createElement('span');
-        crumb.className = 'crumb';
-        crumb.textContent = f.name;
-        crumb.addEventListener('click', () => {
-          activeFolderId = f.id;
-          saveState();
-          renderAll();
-        });
-        breadcrumbs.appendChild(crumb);
-      });
-    }
-
-    function renderFolders() {
-      if (!folderBar) return;
-      folderBar.innerHTML = '';
-      const current = getActiveFolder();
-      current.subfolders.forEach((subId) => {
-        const sub = folderMap[subId];
-        if (!sub) return;
-        const tab = document.createElement('button');
-        tab.className = 'folder-tab';
-        tab.innerHTML = `📁 ${escapeHtml(sub.name)}`;
-        tab.addEventListener('click', () => {
-          activeFolderId = sub.id;
-          saveState();
-          renderAll();
-        });
-        folderBar.appendChild(tab);
-      });
-      const newBtn = document.createElement('button');
-      newBtn.className = 'btn-new-folder';
-      newBtn.textContent = '+ New Folder';
-      newBtn.addEventListener('click', () => {
-        const name = prompt(`Create subfolder under "${current.name}":`);
-        if (name && name.trim()) {
-          const newId = generateUniqueId('folder');
-          folderMap[newId] = {
-            id: newId,
-            name: name.trim(),
-            parentId: current.id,
-            subfolders: [],
-            questions: []
-          };
-          current.subfolders.push(newId);
-          activeFolderId = newId;
-          saveState();
-          renderAll();
-        }
-      });
-      folderBar.appendChild(newBtn);
-    }
-
-    function resetForm() {
-      editingIndex = null;
-      if (qText) qText.value = '';
-      if (qYear) qYear.value = '';
-      const headingEl = document.getElementById('add-heading');
-      if (headingEl) headingEl.textContent = 'Create Custom Question';
-      if (addBtn) addBtn.textContent = 'Add to Active Folder';
-      if (cancelEditBtn) cancelEditBtn.style.display = 'none';
-    }
-    if (cancelEditBtn) cancelEditBtn.addEventListener('click', resetForm);
-
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
-        const text = qText ? qText.value.trim() : '';
-        if (!text) {
-          if (qText) qText.focus();
-          return;
-        }
-
-        const item = {
-          question: text,
-          marks: selectedMarks,
-          year: qYear ? qYear.value.trim() : '',
-          paper: qPaper ? qPaper.value : 'GS1',
-          topic: qTopic ? qTopic.value : 'General'
-        };
-        const currentFolder = getActiveFolder();
-        if (editingIndex !== null) currentFolder.questions[editingIndex] = item;
-        else currentFolder.questions.push(item);
-        resetForm();
-        saveState();
-        renderQuestions();
-      });
-    }
-
-    if (addPresetBtn) {
-      addPresetBtn.addEventListener('click', () => {
-        const text = qText ? qText.value.trim() : '';
-        if (!text) {
-          if (qText) qText.focus();
-          return;
-        }
-        const newPreset = {
-          id: generateUniqueId('p'),
-          paper: qPaper ? qPaper.value : 'GS1',
-          topic: qTopic ? qTopic.value : 'General',
-          year: qYear ? qYear.value.trim() || '2025' : '2025',
-          marks: selectedMarks,
-          question: text
-        };
-        presetBank.push(newPreset);
-        savePresets();
-        populateFilterYears();
-        populateFilterTopics();
-        alert('Question saved to Preset Bank!');
-        resetForm();
-        renderBankResults();
-      });
-    }
-
-    function renderQuestions() {
-      if (!qList) return;
-      const questions = getActiveFolder().questions;
-      qList.innerHTML = '';
-      if (questions.length === 0) {
-        if (emptyState) emptyState.style.display = 'block';
-        if (summaryBar) summaryBar.style.display = 'none';
-        if (generateBtn) generateBtn.disabled = true;
-        if (countTag) countTag.textContent = '0 questions';
-        syncDashboard();
-        return;
-      }
-      if (emptyState) emptyState.style.display = 'none';
-      if (summaryBar) summaryBar.style.display = 'grid';
-      if (generateBtn) generateBtn.disabled = false;
-      if (countTag) countTag.textContent = questions.length + ' question(s)';
-
-      let totalMarks = 0,
-        totalPages = 0;
-      questions.forEach((q, i) => {
-        totalMarks += q.marks;
-        totalPages += MARK_RULES[q.marks] || 2;
-        const li = document.createElement('li');
-        li.className = 'q-item';
-        const paperClass = getPaperTagClass(q.paper);
-
-        li.innerHTML = `
-          <div class="q-num">${i + 1}.</div>
-          <div>
-            <div class="q-text">${escapeHtml(q.question)}</div>
-            <div class="q-meta">
-              ${q.paper ? `<span class="tag ${paperClass}">${escapeHtml(q.paper)}</span>` : ''}
-              ${q.topic ? `<span class="tag tag-topic">${escapeHtml(q.topic)}</span>` : ''}
-              <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
-              <span class="tag pages">${MARK_RULES[q.marks] || 2} pages</span>
-            </div>
-          </div>
-          <div class="q-actions">
-            <button class="icon-btn" title="Edit" data-action="edit" data-i="${i}">✏️</button>
-            <button class="icon-btn danger" title="Remove" data-action="remove" data-i="${i}">&#10005;</button>
-          </div>
-        `;
-        qList.appendChild(li);
-      });
-
-      if (totalMarksEl) totalMarksEl.textContent = totalMarks;
-      if (totalPagesEl) totalPagesEl.textContent = totalPages;
-
-      qList.querySelectorAll('.icon-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const i = parseInt(btn.dataset.i, 10);
-          if (btn.dataset.action === 'edit') {
-            const q = questions[i];
-            editingIndex = i;
-            if (qText) qText.value = q.question;
-            if (qYear) qYear.value = q.year || '';
-            if (qPaper) qPaper.value = q.paper || 'GS1';
-            populateFormSubtopics();
-            if (qTopic) qTopic.value = q.topic || '';
-            selectedMarks = q.marks;
-            marksButtons.forEach((b) =>
-              b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false')
-            );
-            const headingEl = document.getElementById('add-heading');
-            if (headingEl) headingEl.textContent = 'Edit Question #' + (i + 1);
-            if (addBtn) addBtn.textContent = 'Update Question';
-            if (cancelEditBtn) cancelEditBtn.style.display = 'block';
-          } else if (btn.dataset.action === 'remove') {
-            questions.splice(i, 1);
-            saveState();
-            renderQuestions();
-          }
-        });
-      });
-
-      syncDashboard();
-    }
-
-    function renderAll() {
-      renderBreadcrumbs();
-      renderFolders();
-      renderQuestions();
-    }
-
-    /* 8. PDF GENERATOR */
-    function generatePDF() {
-      const questions = getActiveFolder().questions;
-      if (questions.length === 0) return;
-      if (!window.jspdf) {
-        alert('jsPDF library not loaded.');
-        return;
-      }
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-      const PAGE_W = 210,
-        PAGE_H = 297,
-        TOP = 15,
-        BOTTOM = PAGE_H - 13,
-        LEFT_DIV = 25,
-        RIGHT_DIV = PAGE_W - 28;
-
-      function dividers() {
-        doc.setDrawColor(0);
-        doc.setLineWidth(0.3);
-        doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM);
-        doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM);
-      }
-
-      let currentPg = 1;
-      const includeIndexEl = document.getElementById('include-index');
-
-      if (includeIndexEl && includeIndexEl.checked) {
-        dividers();
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(16);
-        doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W / 2, 25, { align: 'center' });
-        doc.setFontSize(11);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W / 2, 32, { align: 'center' });
-
-        let y = 45;
-        doc.setFont('helvetica', 'bold');
-        doc.text('Q#', 28, y);
-        doc.text('Question', 40, y);
-        doc.text('Marks', 170, y);
-        y += 4;
-        doc.line(28, y, 180, y);
-        y += 6;
-        doc.setFont('helvetica', 'normal');
-
-        questions.forEach((q, idx) => {
-          if (y > 270) {
-            doc.addPage();
-            currentPg++;
-            dividers();
-            y = 25;
-          }
-          doc.text(`${idx + 1}`, 28, y);
-          const textLines = doc.splitTextToSize(q.question, 125);
-          doc.text(textLines, 40, y);
-          doc.text(`${q.marks}M`, 170, y);
-          y += textLines.length * 5 + 4;
-        });
-        doc.addPage();
-        currentPg++;
-      }
-
-      questions.forEach((q, idx) => {
-        const pageCount = MARK_RULES[q.marks] || 2;
-        for (let p = 1; p <= pageCount; p++) {
-          dividers();
-          if (p === 1) {
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.text(`Q${idx + 1}.`, 28, 22);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10.5);
-            const lines = doc.splitTextToSize(q.question, 138);
-            doc.text(lines, 38, 22);
-
-            let boxY = 22 + lines.length * 5 + 2;
-            doc.setFont('helvetica', 'italic');
-            doc.setFontSize(9);
-
-            const metaText = q.year ? `[ ${q.marks} Marks / ${q.year} ]` : `[ ${q.marks} Marks ]`;
-            doc.text(metaText, 38, boxY);
-
-            doc.line(28, boxY + 3, RIGHT_DIV - 3, boxY + 3);
-          }
-
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8);
-          doc.text(`Page ${currentPg}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
-
-          if (!(idx === questions.length - 1 && p === pageCount)) {
-            doc.addPage();
-            currentPg++;
-          }
-        }
-      });
-
-      doc.save(`${getActiveFolder().name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qcab.pdf`);
-    }
-
-    if (generateBtn) generateBtn.addEventListener('click', generatePDF);
-
-    /* 9. INITIALIZATION ON PAGE LOAD */
-    populateFormSubtopics();
-    populateFilterYears();
-    populateFilterTopics();
-    updateFilterMode();
-    renderAll();
-    loadRepositoryJSON();
-  })();
-</script>
-
-<!-- AI Generation Logic -->
-<script>
-function openAnswerPage(item) {
-  const url = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
-  window.open(url, '_blank');
-}
-
-window.fetchAIAnswer = function(buttonElement) {
-  const card = buttonElement.closest('.bank-item');
-  if (!card) return;
-
-  const questionEl = card.querySelector('.bank-question');
-  const questionText = questionEl ? questionEl.innerText.trim() : '';
-
-  const tags = card.querySelectorAll('.tag');
-  let marks = '';
-  let year = '';
-
-  tags.forEach(tag => {
-    const text = tag.innerText;
-    if (text.includes('M')) {
-      const parts = text.split('/');
-      marks = parts[0].trim();
-      if (parts[1]) year = parts[1].trim();
-    }
-  });
-
-  const questionItem = {
-    question: questionText,
-    marks: marks,
-    year: year
+  /* --- Application State & Engine Logic --- */
+  const SYLLABUS = {
+    GS1: ['Art & Culture', 'Modern History', 'Post Independence', 'World History', 'Physical Geography', 'Economic & Human Geography', 'Indian Society'],
+    GS2: ['Polity', 'Governance', 'Social Justice', 'International Relations'],
+    GS3: ['Economy', 'Agriculture', 'Internal Security', 'Environment & Disaster Management', 'Science & Tech'],
+    GS4: ['Ethics Theory', 'Case Studies'],
+    OPT1: ['Anthropology Paper 1 Topics'],
+    OPT2: ['Anthropology Paper 2 Topics']
   };
 
-  openAnswerPage(questionItem);
-};
+  const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
+  const PRESET_STORAGE_KEY = 'qcab_preset_bank';
+  let presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
+
+  let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || {
+    root: { id: 'root', name: 'General Booklet', parentId: null, subfolders: [], questions: [] }
+  };
+  let activeFolderId = localStorage.getItem('qcab_active_nested_folder') || 'root';
+  if (!folderMap[activeFolderId]) activeFolderId = 'root';
+
+  function saveState() {
+    localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
+    localStorage.setItem('qcab_active_nested_folder', activeFolderId);
+  }
+  function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
+
+  /* Utility functions */
+  function normalizePaperCode(paper) {
+    if (!paper) return 'GS1';
+    const s = String(paper).toUpperCase();
+    if (s.includes('GS1')) return 'GS1';
+    if (s.includes('GS2')) return 'GS2';
+    if (s.includes('GS3')) return 'GS3';
+    if (s.includes('GS4')) return 'GS4';
+    if (s.includes('OPT1')) return 'OPT1';
+    if (s.includes('OPT2')) return 'OPT2';
+    return 'GS1';
+  }
+
+  function getPaperTagClass(paper) {
+    const code = normalizePaperCode(paper);
+    if (code === 'GS1') return 'tag-paper-gs1';
+    if (code === 'GS2') return 'tag-paper-gs2';
+    if (code === 'GS3') return 'tag-paper-gs3';
+    if (code === 'GS4') return 'tag-paper-gs4';
+    return 'tag-paper-opt';
+  }
+
+  /* PDF Generator */
+  function generatePDF() {
+    const questions = getActiveFolder().questions;
+    if (questions.length === 0 || !window.jspdf) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
+
+    function drawDividers() {
+      doc.setDrawColor(0); doc.setLineWidth(0.3);
+      doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM);
+      doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM);
+    }
+
+    let currentPg = 1;
+    if (document.getElementById('include-index')?.checked) {
+      drawDividers();
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W / 2, 25, { align: 'center' });
+      let y = 45;
+      questions.forEach((q, idx) => {
+        if (y > 270) { doc.addPage(); currentPg++; drawDividers(); y = 25; }
+        doc.text(`${idx + 1}.`, 28, y);
+        const lines = doc.splitTextToSize(q.question, 125);
+        doc.text(lines, 38, y);
+        doc.text(`${q.marks}M`, 170, y);
+        y += lines.length * 5 + 4;
+      });
+      doc.addPage(); currentPg++;
+    }
+
+    questions.forEach((q, idx) => {
+      const pageCount = MARK_RULES[q.marks] || 2;
+      for (let p = 1; p <= pageCount; p++) {
+        drawDividers();
+        if (p === 1) {
+          doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5);
+          doc.text(`Q${idx + 1}.`, 28, 22);
+          doc.setFont('helvetica', 'normal');
+          const lines = doc.splitTextToSize(q.question, 138);
+          doc.text(lines, 38, 22);
+          let boxY = 22 + lines.length * 5 + 2;
+          doc.text(`[ ${q.marks} Marks / ${q.year || '2026'} ]`, 38, boxY);
+          doc.line(28, boxY + 3, RIGHT_DIV - 3, boxY + 3);
+        }
+        doc.setFontSize(8);
+        doc.text(`Page ${currentPg}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
+        if (!(idx === questions.length - 1 && p === pageCount)) { doc.addPage(); currentPg++; }
+      }
+    });
+    doc.save(`${getActiveFolder().name.toLowerCase().replace(/\s+/g, '_')}_qcab.pdf`);
+  }
+
+  document.getElementById('generate-btn')?.addEventListener('click', generatePDF);
 </script>
-<script src="mobile-menu.js"></script>
-<script src="upsc-prep-tools.js"></script>
 </body>
 </html>
