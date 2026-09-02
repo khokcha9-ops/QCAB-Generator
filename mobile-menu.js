@@ -1,34 +1,64 @@
+/* ==========================================
+   MOBILE MENU
+   Turns the existing sidebar into a slide-in
+   drawer on small screens. Works for both the
+   built-in nav (Dashboard / PYQ Bank / Create
+   Question / My QCAB) and the "Preparation"
+   group injected by upsc-prep-tools.js, since
+   it targets .sidebar directly instead of
+   duplicating the menu markup.
+   ========================================== */
 document.addEventListener("DOMContentLoaded", function () {
+  const sidebar = document.querySelector(".sidebar");
+  const mobileNav = document.querySelector(".mobile-nav");
+  if (!sidebar || !mobileNav) return;
 
-    const menuToggle = document.getElementById("mobile-menu-toggle");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const menuClose = document.getElementById("mobile-menu-close");
+  // Hamburger button, injected into the existing mobile top bar
+  const toggle = document.createElement("button");
+  toggle.id = "mobile-menu-toggle";
+  toggle.className = "mobile-menu-toggle";
+  toggle.setAttribute("aria-label", "Open menu");
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.innerHTML = "☰";
+  mobileNav.appendChild(toggle);
 
-    if (!menuToggle || !mobileMenu) {
-        console.error("Mobile menu elements not found.");
-        return;
-    }
+  // Backdrop, click to dismiss
+  const backdrop = document.createElement("div");
+  backdrop.className = "mobile-menu-backdrop";
+  document.body.appendChild(backdrop);
 
-    menuToggle.addEventListener("click", function () {
-        mobileMenu.classList.add("active");
-        document.body.classList.add("menu-open");
-    });
+  // Close (×) button inside the drawer itself
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "mobile-menu-close";
+  closeBtn.setAttribute("aria-label", "Close menu");
+  closeBtn.innerHTML = "×";
+  sidebar.prepend(closeBtn);
 
-    if (menuClose) {
-        menuClose.addEventListener("click", function () {
-            mobileMenu.classList.remove("active");
-            document.body.classList.remove("menu-open");
-        });
-    }
+  function openMenu() {
+    sidebar.classList.add("mobile-open");
+    backdrop.classList.add("active");
+    document.body.classList.add("menu-open");
+    toggle.setAttribute("aria-expanded", "true");
+  }
 
-    // Close menu when a link is clicked
-    const menuLinks = mobileMenu.querySelectorAll("a");
+  function closeMenu() {
+    sidebar.classList.remove("mobile-open");
+    backdrop.classList.remove("active");
+    document.body.classList.remove("menu-open");
+    toggle.setAttribute("aria-expanded", "false");
+  }
 
-    menuLinks.forEach(function (link) {
-        link.addEventListener("click", function () {
-            mobileMenu.classList.remove("active");
-            document.body.classList.remove("menu-open");
-        });
-    });
+  toggle.addEventListener("click", openMenu);
+  closeBtn.addEventListener("click", closeMenu);
+  backdrop.addEventListener("click", closeMenu);
 
+  // Close the drawer once a nav item is picked (event delegation, so this
+  // also covers nav buttons injected later, e.g. by upsc-prep-tools.js)
+  sidebar.addEventListener("click", function (e) {
+    if (e.target.closest(".nav-btn")) closeMenu();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMenu();
+  });
 });
