@@ -817,53 +817,56 @@
                 <h2 class="card-title" id="add-heading">Create Custom Question</h2>
                 <p class="card-sub">Add your own question directly to the active booklet.</p>
               </div>
+              <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
             </div>
 
-            <div class="field">
-              <label for="q-paper">Paper</label>
-              <select id="q-paper">
-                <option value="GS1">GS Paper 1</option>
-                <option value="GS2">GS Paper 2</option>
-                <option value="GS3">GS Paper 3</option>
-                <option value="GS4">GS Paper 4</option>
-                <option value="OPT1">Anthropology Optional Paper 1</option>
-                <option value="OPT2">Anthropology Optional Paper 2</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="q-topic">Subtopic</label>
-              <select id="q-topic"></select>
-            </div>
-
-            <div class="field">
-              <label for="q-text">Question Text</label>
-              <textarea id="q-text" placeholder="Paste or type your question here..."></textarea>
-            </div>
-
-            <div class="field">
-              <label>Marks</label>
-              <div class="marks-row">
-                <button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button>
-                <button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button>
-                <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button>
+            <div id="create-form-body">
+              <div class="field">
+                <label for="q-paper">Paper</label>
+                <select id="q-paper">
+                  <option value="GS1">GS Paper 1</option>
+                  <option value="GS2">GS Paper 2</option>
+                  <option value="GS3">GS Paper 3</option>
+                  <option value="GS4">GS Paper 4</option>
+                  <option value="OPT1">Anthropology Optional Paper 1</option>
+                  <option value="OPT2">Anthropology Optional Paper 2</option>
+                </select>
               </div>
-            </div>
 
-            <div class="field">
-              <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
-              <input type="text" id="q-year" placeholder="e.g. 2025">
-            </div>
+              <div class="field">
+                <label for="q-topic">Subtopic</label>
+                <select id="q-topic"></select>
+              </div>
 
-            <div class="field checkbox-row">
-              <input type="checkbox" id="include-index" checked>
-              <label for="include-index">Include index page in PDF</label>
-            </div>
+              <div class="field">
+                <label for="q-text">Question Text</label>
+                <textarea id="q-text" placeholder="Paste or type your question here..."></textarea>
+              </div>
 
-            <div class="form-actions">
-              <button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
-              <button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
-              <button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
+              <div class="field">
+                <label>Marks</label>
+                <div class="marks-row">
+                  <button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button>
+                  <button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button>
+                  <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
+                <input type="text" id="q-year" placeholder="e.g. 2025">
+              </div>
+
+              <div class="field checkbox-row">
+                <input type="checkbox" id="include-index" checked>
+                <label for="include-index">Include index page in PDF</label>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
+                <button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
+                <button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
+              </div>
             </div>
           </div>
 
@@ -1056,7 +1059,28 @@
       });
     }
 
-    /* 1b. PYQ BANK COLLAPSE TOGGLE */
+    /* 1b. CREATE SECTION COLLAPSE TOGGLE */
+    const toggleCreateBtn = document.getElementById('toggle-create-section-btn');
+    const createFormBody = document.getElementById('create-form-body');
+
+    function setCreateCollapsed(collapsed) {
+      if (!createFormBody || !toggleCreateBtn) return;
+      createFormBody.style.display = collapsed ? 'none' : 'block';
+      toggleCreateBtn.textContent = collapsed ? 'Show Form ▸' : 'Hide Form ▾';
+    }
+
+    const createCollapsedSaved = localStorage.getItem('qcab_create_collapsed') === '1';
+    setCreateCollapsed(createCollapsedSaved);
+
+    if (toggleCreateBtn) {
+      toggleCreateBtn.addEventListener('click', () => {
+        const willCollapse = createFormBody.style.display !== 'none';
+        setCreateCollapsed(willCollapse);
+        localStorage.setItem('qcab_create_collapsed', willCollapse ? '1' : '0');
+      });
+    }
+
+    /* 1c. PYQ BANK COLLAPSE TOGGLE */
     const toggleBankBtn = document.getElementById('toggle-bank-btn');
     const toggleBankIcon = document.getElementById('toggle-bank-icon');
     const toggleBankText = document.getElementById('toggle-bank-text');
@@ -1886,7 +1910,7 @@ window.fetchAIAnswer = function(buttonElement) {
   let marks = '';
   let year = '';
 
-  tags.exports?.forEach || tags.forEach(tag => {
+  tags.forEach(tag => {
     const text = tag.innerText;
     if (text.includes('M')) {
       const parts = text.split('/');
