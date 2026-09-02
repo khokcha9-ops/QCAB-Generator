@@ -249,14 +249,6 @@
     box-shadow:var(--shadow-sm);
   }
   .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);transform:translateY(-1px)}
-  #ai-mode-toggle{opacity:.65;transition:all .2s ease}
-  #ai-mode-toggle.active{
-    opacity:1;
-    color:#fff;
-    border-color:transparent;
-    background:linear-gradient(135deg, var(--accent), var(--primary));
-    box-shadow:0 4px 14px rgba(8,145,178,0.35);
-  }
   .btn-primary{
     border-color:transparent;
     background:linear-gradient(135deg, var(--primary), var(--accent));
@@ -426,7 +418,7 @@
   .mode-switch label{
     margin:0;
     text-align:center;
-    padding:9px;
+    padding:99px;
     border-radius:10px;
     cursor:pointer;
     color:var(--muted);
@@ -916,17 +908,6 @@
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
               </div>
 
-              <!-- AI Search Mode Controls -->
-              <div class="search-controls-wrapper" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                <!-- AI Toggle Button -->
-                <button type="button" id="ai-mode-toggle" class="btn-secondary-sm" aria-pressed="false">
-                  ✨ AI Search Mode
-                </button>
-                
-                <!-- Status Text Indicator -->
-                <div id="ai-search-indicator" style="font-size: 12px; color: var(--accent); font-weight: 500; display: none;"></div>
-              </div>
-
               <div class="filter-box">
                 <div class="filters">
                   <select id="filter-paper">
@@ -1349,53 +1330,6 @@
     const searchBankBtn = document.getElementById('search-bank-btn');
     const clearResultsBtn = document.getElementById('clear-results-btn');
     const bankResultsContainer = document.getElementById('bank-results-container');
-    const aiModeToggle = document.getElementById('ai-mode-toggle');
-    const aiSearchIndicator = document.getElementById('ai-search-indicator');
-
-    /* AI-enabled search: expands the query into related sub-topics via the
-   DeepSeek proxy worker, then matches those extra terms against the bank. */
-    let isAISearchActive = false;
-    const AI_CORRELATE_URL = 'https://qcabproxy.khokcha9.workers.dev/api/correlate';
-
-    function setAISearchState(active) {
-      isAISearchActive = active;
-      if (aiModeToggle) {
-        aiModeToggle.classList.toggle('active', active);
-        aiModeToggle.setAttribute('aria-pressed', active ? 'true' : 'false');
-      }
-      if (aiSearchIndicator) {
-        aiSearchIndicator.style.display = active ? 'block' : 'none';
-        aiSearchIndicator.textContent = active ? '✨ AI Search Mode is on — related topics will be included.' : '';
-      }
-    }
-
-    if (aiModeToggle) {
-      setAISearchState(false);
-      aiModeToggle.addEventListener('click', () => {
-        setAISearchState(!isAISearchActive);
-        renderBankResults();
-      });
-    }
-
-    async function getAIExpandedTokens(query) {
-      const res = await fetch(`${AI_CORRELATE_URL}?keyword=${encodeURIComponent(query)}`);
-      if (!res.ok) {
-        let detail = '';
-        try {
-          const errBody = await res.json();
-          detail = errBody.error || errBody.details || '';
-        } catch (_) { /* body wasn't JSON */ }
-        throw new Error(`AI proxy error ${res.status}${detail ? ' — ' + detail : ''}`);
-      }
-      const data = await res.json();
-      const subtopics = Array.isArray(data.subtopics) ? data.subtopics : [];
-      const rawTerms = [query, ...subtopics].join(' ').toLowerCase()
-        .replace(/center/g, 'centre')
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .split(/\s+/)
-        .filter((w) => w.length > 2 && !['and', 'with', 'from', 'that', 'this', 'nature'].includes(w));
-      return { subtopics, tokens: [...new Set(rawTerms)] };
-    }
 
     let selectedMarks = 10;
     if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
@@ -1519,29 +1453,6 @@
       const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-      let aiTokens = null;
-      if (isAISearchActive && query) {
-        if (aiSearchIndicator) {
-          aiSearchIndicator.style.display = 'block';
-          aiSearchIndicator.textContent = '✨ AI is expanding your search…';
-        }
-        try {
-          const { subtopics, tokens } = await getAIExpandedTokens(query);
-          if (requestId !== renderRequestId) return; // a newer search superseded this one
-          aiTokens = tokens;
-          if (aiSearchIndicator) {
-            aiSearchIndicator.textContent = subtopics.length
-              ? `✨ AI expanded into: ${subtopics.slice(0, 5).join(', ')}${subtopics.length > 5 ? '…' : ''}`
-              : '✨ AI Search Mode is on.';
-          }
-        } catch (err) {
-          console.error('AI search failed, falling back to standard search:', err);
-          if (requestId !== renderRequestId) return;
-          if (aiSearchIndicator) {
-            aiSearchIndicator.textContent = `⚠️ AI search failed (${err.message}) — showing standard results.`;
-          }
-        }
-      }
       if (requestId !== renderRequestId) return;
 
       bankResultsContainer.innerHTML = '';
@@ -1551,9 +1462,7 @@
         const normSelectedP = normalizePaperCode(selectedP);
         const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
-        const matchesQuery =
-          !query ||
-          (aiTokens ? aiTokens.some((t) => qText.includes(t)) : qText.includes(query));
+        const matchesQuery = !query || qText.includes(query);
 
         if (!matchesQuery) return false;
         if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
