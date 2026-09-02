@@ -137,6 +137,37 @@ function generateUniqueId(prefix = 'id') {
 }
 
 /* ==========================================
+   2b. AI-POWERED SEMANTIC SEARCH HELPER
+   ========================================== */
+let isAISearchActive = false;
+
+async function performAISearchViaAPI(query, allQuestions) {
+  const indicatorEl = document.getElementById('ai-search-indicator');
+  const compressed = allQuestions.map((q, idx) => ({ id: idx, q: q.question }));
+
+  const prompt = `You are an expert UPSC/OPSC mentor. A student is searching for: "${query}".
+Analyze the question list below and return ONLY a JSON array of the matching numeric IDs (e.g., [0, 4, 12]). Do not include markdown formatting like \`\`\`json.
+
+Questions:
+${JSON.stringify(compressed)}`;
+
+  try {
+    const response = await callYourModelAnswerAPI(prompt);
+    const cleanJSON = response.replace(/```json/g, '').replace(/```/g, '').trim();
+    const matchedIds = JSON.parse(cleanJSON);
+
+    if (indicatorEl)
+      indicatorEl.textContent = `✨ AI found ${matchedIds.length} conceptually relevant questions.`;
+    return matchedIds.map((id) => allQuestions[id]).filter(Boolean);
+  } catch (err) {
+    console.error('AI search failed, falling back:', err);
+    if (indicatorEl)
+      indicatorEl.textContent = '⚠️ AI search encountered an issue. Using standard filter.';
+    return allQuestions.filter((q) => q.question.toLowerCase().includes(query.toLowerCase()));
+  }
+}
+
+/* ==========================================
    3. PRESET BANK & SEPARATE JSON LOADING
    ========================================== */
 const PRESET_STORAGE_KEY = 'qcab_preset_bank';
@@ -267,7 +298,15 @@ function getActiveFolder() {
 let breadcrumbs, folderBar, qPaper, qTopic, qText, qYear, addBtn, addPresetBtn, cancelEditBtn;
 let marksButtons, qList, emptyState, countTag, summaryBar, totalMarksEl, totalPagesEl, generateBtn;
 let renameFolderBtn, deleteFolderBtn, clearQBtn, clearBankBtn;
-let searchInput, modeYearRadio, modeTopicRadio, filterPaper, filterYear, filterTopic, searchBankBtn, clearResultsBtn, bankResultsContainer;
+let searchInput,
+  modeYearRadio,
+  modeTopicRadio,
+  filterPaper,
+  filterYear,
+  filterTopic,
+  searchBankBtn,
+  clearResultsBtn,
+  bankResultsContainer;
 
 let selectedMarks = 10;
 
@@ -304,6 +343,27 @@ function initDomElements() {
   searchBankBtn = document.getElementById('search-bank-btn');
   clearResultsBtn = document.getElementById('clear-results-btn');
   bankResultsContainer = document.getElementById('bank-results-container');
+
+  // AI Toggle Button Handler
+  const aiToggleBtn = document.getElementById('ai-mode-toggle');
+  const indicatorEl = document.getElementById('ai-search-indicator');
+
+  if (aiToggleBtn) {
+    aiToggleBtn.addEventListener('click', () => {
+      isAISearchActive = !isAISearchActive;
+      aiToggleBtn.style.opacity = isAISearchActive ? '1' : '0.6';
+      aiToggleBtn.style.filter = isAISearchActive
+        ? 'drop-shadow(0 0 4px var(--accent-primary))'
+        : 'none';
+      if (indicatorEl) {
+        indicatorEl.style.display = isAISearchActive ? 'block' : 'none';
+        indicatorEl.textContent = isAISearchActive
+          ? '✨ Smart AI Search Enabled (Tagless JSON Mode)'
+          : '';
+      }
+      renderBankResults();
+    });
+  }
 
   if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
 
@@ -526,16 +586,26 @@ function populateFilterTopics() {
 }
 
 /* ==========================================
-   6. RENDER SEARCH RESULTS
+   6. RENDER SEARCH RESULTS (WITH AI SEARCH INTERCEPT)
    ========================================== */
-function renderBankResults() {
+async function renderBankResults() {
   if (!bankResultsContainer) return;
-  bankResultsContainer.innerHTML = '';
+
   const selectedP = filterPaper ? filterPaper.value : 'ALL';
   const selectedY = filterYear ? filterYear.value : 'ALL';
   const selectedT = filterTopic ? filterTopic.value : 'ALL';
   const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
   const query = searchInput ? searchInput.value.trim() : '';
+
+  // --- AI SEARCH INTERCEPTOR ---
+  if (isAISearchActive && query.length > 2) {
+    bankResultsContainer.innerHTML =
+      '<p style="font-size:12px; color:var(--text-muted); font-style:italic; margin:5px 0;">🤖 AI is reasoning across your question bank...</p>';
+    const aiFiltered = await performAISearchViaAPI(query, presetBank);
+    renderQuestionCardsFiltered(aiFiltered);
+    return;
+  }
+  // -----------------------------
 
   let candidateQuestions = [];
 
@@ -565,6 +635,13 @@ function renderBankResults() {
 
     return true;
   });
+
+  renderQuestionCardsFiltered(filtered);
+}
+
+function renderQuestionCardsFiltered(filtered) {
+  if (!bankResultsContainer) return;
+  bankResultsContainer.innerHTML = '';
 
   if (filtered.length === 0) {
     bankResultsContainer.innerHTML =
@@ -757,7 +834,10 @@ function renderQuestions() {
         if (qTopic) qTopic.value = q.topic || '';
         selectedMarks = q.marks;
         marksButtons.forEach((b) =>
-          b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false')
+          b.setAttribute(
+            'aria-pressed',
+            parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false'
+          )
         );
         const headingEl = document.getElementById('add-heading');
         if (headingEl) headingEl.textContent = 'Edit Question #' + (i + 1);
