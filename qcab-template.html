@@ -65,7 +65,7 @@
       overflow: hidden;
     }
 
-    /* UPSC Watermark */
+    /* UPSC Watermark (Low Opacity) */
     .watermark {
       position: absolute;
       top: 50%;
@@ -111,6 +111,7 @@
       white-space: nowrap;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      z-index: 2;
     }
 
     .margin-notice-right {
@@ -124,6 +125,7 @@
       white-space: nowrap;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      z-index: 2;
     }
 
     /* Question Header Box */
@@ -165,19 +167,6 @@
       border-top: 0.5px dashed #cbd5e1;
       padding-top: 4px;
       z-index: 3;
-    }
-
-    /* Rule Lines Pattern (Optional Practice Sheet effect) */
-    .ruled-lines {
-      position: absolute;
-      top: 20mm;
-      bottom: 15mm;
-      left: 25mm;
-      right: 25mm;
-      background-image: linear-gradient(to bottom, transparent 27px, #e2e8f0 28px);
-      background-size: 100% 28px;
-      z-index: 0;
-      pointer-events: none;
     }
 
     @media print {
@@ -233,7 +222,7 @@
           const pageDiv = document.createElement('div');
           pageDiv.className = 'qcab-page';
 
-          // Inner Page Structure
+          // Inner Page Structure with Watermark, Margins, and English Warnings
           let pageHTML = `
             <div class="watermark">UPSC</div>
             <div class="margin-left"></div>
@@ -267,38 +256,12 @@
           container.appendChild(pageDiv);
         }
       });
+
+      // Automatically trigger the print dialog after a brief render delay
+      setTimeout(() => {
+        // window.print(); // Uncomment this if you want it to trigger automatically on open
+      }, 500);
     });
-    document.addEventListener('DOMContentLoaded', () => {
-  const savedData = localStorage.getItem('qcab_selected_data');
-  
-  if (!savedData) {
-    document.body.innerHTML = '<h2>No questions found. Please select questions from the main page.</h2>';
-    return;
-  }
-
-  const questions = JSON.parse(savedData);
-  const container = document.getElementById('booklet-container'); // Change to your container ID
-
-  questions.forEach((q, index) => {
-    // Generate page elements based on marks/word limit
-    const pageElement = document.createElement('div');
-    pageElement.className = 'qcab-page';
-    pageElement.innerHTML = `
-      <div class="header">
-        <span>${q.paper} (${q.year})</span>
-        <span>Marks: ${q.marks} | Word Limit: ${q.wordLimit}</span>
-      </div>
-      <div class="question-box">
-        <strong>Q${index + 1}.</strong> ${q.text}
-      </div>
-      <div class="answer-space"></div>
-    `;
-    container.appendChild(pageElement);
-  });
-
-  // Automatically trigger the print dialog once populated
-  setTimeout(() => window.print(), 500);
-});
   </script>
 </body>
 </html>
