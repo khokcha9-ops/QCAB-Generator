@@ -195,14 +195,25 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Fetch dynamic selection from localStorage or fallback to defaults
-      let selectedQuestions = JSON.parse(localStorage.getItem('qcab_selected_data'));
+      // 1. Fetch questions from the active folder in index.html's storage structure
+      let selectedQuestions = [];
+      try {
+        const folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders'));
+        const activeId = localStorage.getItem('qcab_active_nested_folder') || 'root';
+        if (folderMap && folderMap[activeId]) {
+          selectedQuestions = folderMap[activeId].questions || [];
+        } else if (folderMap && folderMap['root']) {
+          selectedQuestions = folderMap['root'].questions || [];
+        }
+      } catch (e) {
+        console.error("Error reading folder storage:", e);
+      }
       
-      // Fallback if accessed directly without stored selection
+      // Fallback if no questions are found in storage
       if (!selectedQuestions || selectedQuestions.length === 0) {
         selectedQuestions = [
-          { id: 1, paper: 'GS1', year: 2023, marks: 10, wordLimit: 150, text: 'Explain the role of geographical factors in the development of ancient river valley civilizations in India.' },
-          { id: 2, paper: 'GS2', year: 2023, marks: 15, wordLimit: 250, text: '"Simultaneous election to the Lok Sabha and State Assemblies will limit time and money spent in electioneering but reduce accountability." Discuss.' }
+          { id: 1, paper: 'GS1', year: 2023, marks: 10, wordLimit: 150, question: 'Explain the role of geographical factors in the development of ancient river valley civilizations in India.' },
+          { id: 2, paper: 'GS2', year: 2023, marks: 15, wordLimit: 250, question: '"Simultaneous election to the Lok Sabha and State Assemblies will limit time and money spent in electioneering but reduce accountability." Discuss.' }
         ];
       }
 
@@ -210,20 +221,15 @@
       container.innerHTML = '';
 
       selectedQuestions.forEach((q, qIdx) => {
-        // Determine total pages allowed based on marks/word limit
-        let totalPages = 2; // Default for 10-marker (150 words)
-        if (q.marks > 10 || q.wordLimit > 150) {
-          totalPages = 3;   // 15-marker (250 words)
-        }
-        if (q.marks >= 100 || q.wordLimit >= 800) {
-          totalPages = 10;  // Essay Papers
+        let totalPages = 2; // Default for 10-marker
+        if (q.marks > 10) {
+          totalPages = 3;   // 15-marker
         }
 
         for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
           const pageDiv = document.createElement('div');
           pageDiv.className = 'qcab-page';
 
-          // Inner Page Structure with Watermark, Margins, and English Warnings
           let pageHTML = `
             <div class="watermark">UPSC</div>
             <div class="margin-left"></div>
@@ -232,20 +238,18 @@
             <div class="margin-notice-right">Do not write anything in this margin</div>
           `;
 
-          // Header rendered only on Page 1 of each question
           if (pageNum === 1) {
             pageHTML += `
               <div class="question-header">
                 <div class="q-meta">
                   <span>Q${qIdx + 1}. (${q.paper || 'GS'} ${q.year || ''})</span>
-                  <span>${q.marks ? q.marks + ' Marks' : ''} / ${q.wordLimit ? q.wordLimit + ' Words' : ''}</span>
+                  <span>${q.marks ? q.marks + ' Marks' : ''}</span>
                 </div>
-                <div class="q-text">${q.text || q.question}</div>
+                <div class="q-text">${q.question || q.text}</div>
               </div>
             `;
           }
 
-          // Footer info
           pageHTML += `
             <div class="page-footer">
               <span>Q${qIdx + 1} - Page ${pageNum} of ${totalPages}</span>
@@ -257,11 +261,6 @@
           container.appendChild(pageDiv);
         }
       });
-
-      // Automatically trigger the print dialog after a brief render delay
-      setTimeout(() => {
-        // window.print(); // Uncomment this if you want it to trigger automatically on open
-      }, 500);
     });
   </script>
 </body>
