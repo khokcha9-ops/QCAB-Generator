@@ -129,6 +129,15 @@ function escapeHtml(str) {
   });
 }
 
+function normalizeSearchText(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/center/g, 'centre')
+    .replace(/-/g, ' ')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim();
+}
+
 function generateUniqueId(prefix = 'id') {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return `${prefix}_${crypto.randomUUID()}`;
@@ -143,27 +152,47 @@ let isAISearchActive = false;
 
 async function performAISearchViaAPI(query, allQuestions) {
   const indicatorEl = document.getElementById('ai-search-indicator');
-  const compressed = allQuestions.map((q, idx) => ({ id: idx, q: q.question }));
-
-  const prompt = `You are an expert UPSC/OPSC mentor. A student is searching for: "${query}".
-Analyze the question list below and return ONLY a JSON array of the matching numeric IDs (e.g., [0, 4, 12]). Do not include markdown formatting like \`\`\`json.
-
-Questions:
-${JSON.stringify(compressed)}`;
 
   try {
-    const response = await callYourModelAnswerAPI(prompt);
-    const cleanJSON = response.replace(/```json/g, '').replace(/```/g, '').trim();
-    const matchedIds = JSON.parse(cleanJSON);
+    const res = await fetch(
+      `https://qcabproxy.khokcha9.workers.dev/api/correlate?keyword=${encodeURIComponent(query)}`
+    );
 
-    if (indicatorEl)
-      indicatorEl.textContent = `✨ AI found ${matchedIds.length} conceptually relevant questions.`;
-    return matchedIds.map((id) => allQuestions[id]).filter(Boolean);
+    if (!res.ok) throw new Error(`Proxy error status: ${res.status}`);
+
+    const data = await res.json();
+    const subtopics = data.subtopics || [];
+
+    const rawTerms = [query, ...subtopics];
+    const keyWords = rawTerms
+      .join(' ')
+      .toLowerCase()
+      .replace(/center/g, 'centre')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter((word) => word.length > 2 && !['and', 'with', 'from', 'that', 'this', 'nature'].includes(word));
+
+    const uniqueTokens = [...new Set(keyWords)];
+
+    if (indicatorEl) {
+      indicatorEl.textContent = `✨ AI expanded search into ${subtopics.length} subtopics (${uniqueTokens.length} key terms matched).`;
+    }
+
+    return allQuestions.filter((q) => {
+      const qText = normalizeSearchText(`${q.question} ${q.topic} ${q.paper} ${q.year}`);
+      return uniqueTokens.some((token) => qText.includes(token));
+    });
   } catch (err) {
-    console.error('AI search failed, falling back:', err);
-    if (indicatorEl)
+    console.error('AI search failed, falling back to standard search:', err);
+    if (indicatorEl) {
       indicatorEl.textContent = '⚠️ AI search encountered an issue. Using standard filter.';
-    return allQuestions.filter((q) => q.question.toLowerCase().includes(query.toLowerCase()));
+    }
+
+    const queryTokens = normalizeSearchText(query).split(/\s+/).filter(Boolean);
+    return allQuestions.filter((q) => {
+      const qText = normalizeSearchText(`${q.question} ${q.topic} ${q.paper} ${q.year}`);
+      return queryTokens.every((token) => qText.includes(token));
+    });
   }
 }
 
@@ -358,7 +387,7 @@ function initDomElements() {
       if (indicatorEl) {
         indicatorEl.style.display = isAISearchActive ? 'block' : 'none';
         indicatorEl.textContent = isAISearchActive
-          ? '✨ Smart AI Search Enabled (Tagless JSON Mode)'
+          ? '✨ Smart AI Search Enabled'
           : '';
       }
       renderBankResults();
@@ -401,6 +430,9 @@ function initDomElements() {
   if (clearResultsBtn) {
     clearResultsBtn.addEventListener('click', () => {
       if (searchInput) searchInput.value = '';
+      if (filterPaper) filterPaper.value = 'ALL';
+      if (filterYear) filterYear.value = 'ALL';
+      if (filterTopic) filterTopic.value = 'ALL';
       renderBankResults();
     });
   }
@@ -600,22 +632,51 @@ async function renderBankResults() {
   // --- AI SEARCH INTERCEPTOR ---
   if (isAISearchActive && query.length > 2) {
     bankResultsContainer.innerHTML =
-      '<p style="font-size:12px; color:var(--text-muted); font-style:italic; margin:5px 0;">🤖 AI is reasoning across your question bank...</p>';
+      '<p style="font-size:12px; color:var(--text-muted); font-style:italic; margin:5px 0;">🤖 AI is expanding terms across your question bank...</p>';
     const aiFiltered = await performAISearchViaAPI(query, presetBank);
-    renderQuestionCardsFiltered(aiFiltered);
+
+    // Filter AI results against dropdown selections
+    const dropdownFiltered = aiFiltered.filter((q) => {
+      const normQPaper = normalizePaperCode(q.paper);
+      const normSelectedP = normalizePaperCode(selectedP);
+
+      if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
+      if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
+      if (!isYearMode && selectedT !== 'ALL') {
+        const qTopicClean = normalizeSearchText(q.topic);
+        const selectedTClean = normalizeSearchText(selectedT);
+        if (!qTopicClean.includes(selectedTClean) && !selectedTClean.includes(qTopicClean)) return false;
+      }
+      return true;
+    });
+
+    renderQuestionCardsFiltered(dropdownFiltered);
     return;
   }
-  // -----------------------------
 
-  let candidateQuestions = [];
+  // --- HYBRID TOKEN + FUSE SEARCH LOGIC ---
+  let candidateQuestions = presetBank;
 
-  if (!fuseInstance) initFuseIndex();
+  if (query) {
+    const normalizedQuery = normalizeSearchText(query);
+    const queryTokens = normalizedQuery.split(/\s+/).filter((word) => word.length > 2);
 
-  if (query && fuseInstance) {
-    const fuseResults = fuseInstance.search(query);
-    candidateQuestions = fuseResults.map((res) => res.item);
-  } else {
-    candidateQuestions = presetBank;
+    if (queryTokens.length > 0) {
+      const tokenMatches = presetBank.filter((q) => {
+        const fullContent = normalizeSearchText(`${q.question} ${q.topic} ${q.paper} ${q.year}`);
+        return queryTokens.every((token) => fullContent.includes(token));
+      });
+
+      if (tokenMatches.length > 0) {
+        candidateQuestions = tokenMatches;
+      } else {
+        if (!fuseInstance) initFuseIndex();
+        if (fuseInstance) {
+          const fuseResults = fuseInstance.search(query);
+          candidateQuestions = fuseResults.map((res) => res.item);
+        }
+      }
+    }
   }
 
   let filtered = candidateQuestions.filter((q) => {
@@ -626,8 +687,8 @@ async function renderBankResults() {
     if (selectedY !== 'ALL' && String(q.year).trim() !== String(selectedY).trim()) return false;
 
     if (!isYearMode && selectedT !== 'ALL') {
-      const qTopicClean = String(q.topic || '').trim().toLowerCase();
-      const selectedTClean = String(selectedT).trim().toLowerCase();
+      const qTopicClean = normalizeSearchText(q.topic);
+      const selectedTClean = normalizeSearchText(selectedT);
       const matchesTopic =
         qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
       if (!matchesTopic) return false;
