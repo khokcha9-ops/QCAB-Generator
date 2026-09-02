@@ -896,10 +896,17 @@
                 </label>
               </div>
 
-              <div class="search-main">
-                <span class="search-icon">⌕</span>
-                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
-              </div>
+              <div class="search-main" style="position: relative;">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
+    <!-- AI Mode Toggle Button -->
+    <button id="ai-mode-toggle" 
+            title="Toggle AI Semantic Search" 
+            style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.6; transition: opacity 0.2s;">
+      ✨
+    </button>
+</div>
+<div id="ai-search-indicator" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: none;"></div>
 
               <div class="filter-box">
                 <div class="filters">
