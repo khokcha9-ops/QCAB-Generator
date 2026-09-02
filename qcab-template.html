@@ -66,15 +66,16 @@
     }
 
     /* UPSC Watermark (Increased Opacity) */
+    /* UPSC Watermark (Large, Visible, Non-Intrusive) */
     .watermark {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-30deg);
-      font-size: 100pt;
+      font-size: 140pt; /* Increased size to make it prominent across the page */
       font-weight: 900;
-      color: rgba(0, 0, 0, 0.09); /* Increased from 0.03 to 0.09 for better visibility */
-      letter-spacing: 12px;
+      color: rgba(0, 0, 0, 0.07); /* Balanced grey tone so it stays readable underneath handwriting */
+      letter-spacing: 16px;
       user-select: none;
       pointer-events: none;
       white-space: nowrap;
