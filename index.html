@@ -15,7 +15,7 @@
 
 <style>
   :root{
-    /* Vibrant, eye-catching Light Mode palette */
+    /* Vibrant, eye-catching Light Mode palette — multi-hue, not maroon-led */
     --bg:#f4f7fc;
     --surface:#ffffff;
     --surface-2:#eef2f9;
@@ -24,20 +24,23 @@
     --border:#cbd5e1;
     --border-strong:#94a3b8;
     
-    /* Striking Crimson & Deep Indigo accents */
-    --primary:#881337;
-    --primary-hover:#6c0f2b;
-    --primary-soft:#fff1f2;
+    /* Violet primary + Teal accent + Amber highlight */
+    --primary:#7c3aed;
+    --primary-hover:#6d28d9;
+    --primary-soft:#f3e8ff;
     
-    --accent:#4f46e5;
-    --accent-soft:#e0e7ff;
+    --accent:#0891b2;
+    --accent-soft:#cffafe;
+
+    --highlight:#f59e0b;
+    --highlight-soft:#fffbeb;
     
     --success:#047857;
     --success-soft:#ecfdf5;
     --danger:#b91c1c;
     --danger-soft:#fef2f2;
     
-    --shadow:0 12px 35px -5px rgba(79,70,229,0.08), 0 4px 12px -2px rgba(0,0,0,0.03);
+    --shadow:0 12px 35px -5px rgba(8,145,178,0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
     --shadow-sm:0 2px 8px rgba(15,23,42,0.04);
     --radius:18px;
     --radius-sm:10px;
@@ -54,12 +57,15 @@
     --border:#2a364f;
     --border-strong:#3b4d71;
     
-    --primary:#fb7185;
-    --primary-hover:#fda4af;
-    --primary-soft:#38131d;
+    --primary:#a78bfa;
+    --primary-hover:#c4b5fd;
+    --primary-soft:#2e1065;
     
-    --accent:#818cf8;
-    --accent-soft:#1e1b4b;
+    --accent:#22d3ee;
+    --accent-soft:#083344;
+
+    --highlight:#fbbf24;
+    --highlight-soft:#422006;
     
     --success:#34d399;
     --success-soft:#064e3b;
@@ -117,7 +123,7 @@
     color:#fff;
     font-weight:800;
     font-size:18px;
-    box-shadow:0 6px 16px rgba(136,19,55,0.25);
+    box-shadow:0 6px 16px rgba(124,58,237,0.25);
   }
   .brand strong{display:block;font-size:15px;font-weight:750}
   .brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px;font-weight:500}
@@ -153,13 +159,13 @@
     color:var(--text);
   }
   .nav-btn.active{
-    background:linear-gradient(135deg, var(--primary), #9f1239);
+    background:linear-gradient(135deg, var(--primary), var(--accent));
     color:#fff;
-    box-shadow:0 6px 16px rgba(136,19,55,0.25);
+    box-shadow:0 6px 16px rgba(124,58,237,0.25);
   }
   [data-theme="dark"] .nav-btn.active {
-    background:linear-gradient(135deg, var(--primary), #e11d48);
-    box-shadow:0 6px 16px rgba(251,113,133,0.25);
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    box-shadow:0 6px 16px rgba(167,139,250,0.3);
   }
   .nav-icon{width:20px;text-align:center;font-size:16px}
   .sidebar-bottom{
@@ -243,13 +249,21 @@
     box-shadow:var(--shadow-sm);
   }
   .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);transform:translateY(-1px)}
+  #ai-mode-toggle{opacity:.65;transition:all .2s ease}
+  #ai-mode-toggle.active{
+    opacity:1;
+    color:#fff;
+    border-color:transparent;
+    background:linear-gradient(135deg, var(--accent), var(--primary));
+    box-shadow:0 4px 14px rgba(8,145,178,0.35);
+  }
   .btn-primary{
     border-color:transparent;
-    background:linear-gradient(135deg, var(--primary), #9f1239);
+    background:linear-gradient(135deg, var(--primary), var(--accent));
     color:#fff;
-    box-shadow:0 4px 14px rgba(136,19,55,0.25);
+    box-shadow:0 4px 14px rgba(124,58,237,0.25);
   }
-  .btn-primary:hover{background:linear-gradient(135deg, var(--primary-hover), #881337);color:#fff;box-shadow:0 6px 18px rgba(136,19,55,0.35)}
+  .btn-primary:hover{background:linear-gradient(135deg, var(--primary-hover), var(--primary));color:#fff;box-shadow:0 6px 18px rgba(124,58,237,0.35)}
   .btn-danger{color:var(--danger);border-color:var(--border)}
   .btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
   .btn-wide{width:100%;padding:13px 16px}
@@ -385,7 +399,7 @@
     transition:all 0.2s ease;
   }
   .marks-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-  .marks-btn[aria-pressed="true"]{background:linear-gradient(135deg, var(--accent), #4338ca);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(79,70,229,0.3)}
+  .marks-btn[aria-pressed="true"]{background:linear-gradient(135deg, var(--accent), #0e7490);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(8,145,178,0.3)}
   .checkbox-row{
     display:flex;
     align-items:center;
@@ -499,13 +513,13 @@
   .tag-paper-gs2{background:#ecfdf5;color:#065f46}
   .tag-paper-gs3{background:#e0e7ff;color:#3730a3}
   .tag-paper-gs4{background:#fae8ff;color:#86198f}
-  .tag-paper-opt{background:#fff1f2;color:#9f1239}
+  .tag-paper-opt{background:#fdf2f8;color:#a21caf}
 
   [data-theme="dark"] .tag-paper-gs1{background:#451a03;color:#fde68a}
   [data-theme="dark"] .tag-paper-gs2{background:#064e3b;color:#a7f3d0}
   [data-theme="dark"] .tag-paper-gs3{background:#1e1b4b;color:#c7d2fe}
   [data-theme="dark"] .tag-paper-gs4{background:#701a75;color:#f5d0fe}
-  [data-theme="dark"] .tag-paper-opt{background:#4c0519;color:#fecdd3}
+  [data-theme="dark"] .tag-paper-opt{background:#4a044e;color:#f5d0fe}
 
   .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
   
@@ -659,14 +673,14 @@
     padding:14px;
     border:0;
     border-radius:12px;
-    background:linear-gradient(135deg, var(--primary), #9f1239);
+    background:linear-gradient(135deg, var(--primary), var(--highlight));
     color:#fff;
     font-size:13px;
     font-weight:850;
-    box-shadow:0 6px 18px rgba(136,19,55,0.3);
+    box-shadow:0 6px 18px rgba(245,158,11,0.3);
     transition:all 0.2s ease;
   }
-  .btn-generate:hover{background:linear-gradient(135deg, var(--primary-hover), #881337);transform:translateY(-1px);box-shadow:0 8px 22px rgba(136,19,55,0.4)}
+  .btn-generate:hover{background:linear-gradient(135deg, var(--primary-hover), var(--highlight));transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,158,11,0.4)}
   .btn-generate:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
 
   footer{
@@ -740,7 +754,6 @@
       <button class="nav-btn" data-scroll="pyq-bank"><span class="nav-icon">▤</span>PYQ Bank</button>
       <button class="nav-btn" data-scroll="create-question"><span class="nav-icon">＋</span>Create Question</button>
       <button class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
-      <button class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">⇩</span>Generate PDF</button>
     </nav>
 
     <div class="sidebar-bottom">
@@ -906,12 +919,12 @@
               <!-- AI Search Mode Controls -->
               <div class="search-controls-wrapper" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
                 <!-- AI Toggle Button -->
-                <button type="button" id="ai-mode-toggle" class="btn-secondary-sm" style="opacity: 0.6; transition: all 0.2s ease;">
+                <button type="button" id="ai-mode-toggle" class="btn-secondary-sm" aria-pressed="false">
                   ✨ AI Search Mode
                 </button>
                 
                 <!-- Status Text Indicator -->
-                <div id="ai-search-indicator" style="font-size: 12px; color: var(--accent, #4f46e5); font-weight: 500; display: none;"></div>
+                <div id="ai-search-indicator" style="font-size: 12px; color: var(--accent); font-weight: 500; display: none;"></div>
               </div>
 
               <div class="filter-box">
@@ -1335,6 +1348,46 @@
     const searchBankBtn = document.getElementById('search-bank-btn');
     const clearResultsBtn = document.getElementById('clear-results-btn');
     const bankResultsContainer = document.getElementById('bank-results-container');
+    const aiModeToggle = document.getElementById('ai-mode-toggle');
+    const aiSearchIndicator = document.getElementById('ai-search-indicator');
+
+    /* AI-enabled search: expands the query into related sub-topics via the
+       Gemini proxy worker, then matches those extra terms against the bank. */
+    let isAISearchActive = false;
+    const AI_CORRELATE_URL = 'https://qcabproxy.khokcha9.workers.dev/api/correlate';
+
+    function setAISearchState(active) {
+      isAISearchActive = active;
+      if (aiModeToggle) {
+        aiModeToggle.classList.toggle('active', active);
+        aiModeToggle.setAttribute('aria-pressed', active ? 'true' : 'false');
+      }
+      if (aiSearchIndicator) {
+        aiSearchIndicator.style.display = active ? 'block' : 'none';
+        aiSearchIndicator.textContent = active ? '✨ AI Search Mode is on — related topics will be included.' : '';
+      }
+    }
+
+    if (aiModeToggle) {
+      setAISearchState(false);
+      aiModeToggle.addEventListener('click', () => {
+        setAISearchState(!isAISearchActive);
+        renderBankResults();
+      });
+    }
+
+    async function getAIExpandedTokens(query) {
+      const res = await fetch(`${AI_CORRELATE_URL}?keyword=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error(`AI proxy error ${res.status}`);
+      const data = await res.json();
+      const subtopics = Array.isArray(data.subtopics) ? data.subtopics : [];
+      const rawTerms = [query, ...subtopics].join(' ').toLowerCase()
+        .replace(/center/g, 'centre')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .split(/\s+/)
+        .filter((w) => w.length > 2 && !['and', 'with', 'from', 'that', 'this', 'nature'].includes(w));
+      return { subtopics, tokens: [...new Set(rawTerms)] };
+    }
 
     let selectedMarks = 10;
     if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
@@ -1448,25 +1501,51 @@
     }
 
     /* 6. RENDER SEARCH RESULTS */
-    function renderBankResults() {
+    let renderRequestId = 0;
+    async function renderBankResults() {
       if (!bankResultsContainer) return;
-      bankResultsContainer.innerHTML = '';
+      const requestId = ++renderRequestId;
       const selectedP = filterPaper ? filterPaper.value : 'ALL';
       const selectedY = filterYear ? filterYear.value : 'ALL';
       const selectedT = filterTopic ? filterTopic.value : 'ALL';
       const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
+      let aiTokens = null;
+      if (isAISearchActive && query) {
+        if (aiSearchIndicator) {
+          aiSearchIndicator.style.display = 'block';
+          aiSearchIndicator.textContent = '✨ AI is expanding your search…';
+        }
+        try {
+          const { subtopics, tokens } = await getAIExpandedTokens(query);
+          if (requestId !== renderRequestId) return; // a newer search superseded this one
+          aiTokens = tokens;
+          if (aiSearchIndicator) {
+            aiSearchIndicator.textContent = subtopics.length
+              ? `✨ AI expanded into: ${subtopics.slice(0, 5).join(', ')}${subtopics.length > 5 ? '…' : ''}`
+              : '✨ AI Search Mode is on.';
+          }
+        } catch (err) {
+          console.error('AI search failed, falling back to standard search:', err);
+          if (requestId !== renderRequestId) return;
+          if (aiSearchIndicator) {
+            aiSearchIndicator.textContent = '⚠️ AI search unavailable right now — showing standard results.';
+          }
+        }
+      }
+      if (requestId !== renderRequestId) return;
+
+      bankResultsContainer.innerHTML = '';
+
       let filtered = presetBank.filter((q) => {
         const normQPaper = normalizePaperCode(q.paper);
         const normSelectedP = normalizePaperCode(selectedP);
+        const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
         const matchesQuery =
           !query ||
-          (q.question && q.question.toLowerCase().includes(query)) ||
-          (q.topic && q.topic.toLowerCase().includes(query)) ||
-          (q.paper && q.paper.toLowerCase().includes(query)) ||
-          (q.year && String(q.year).includes(query));
+          (aiTokens ? aiTokens.some((t) => qText.includes(t)) : qText.includes(query));
 
         if (!matchesQuery) return false;
         if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
