@@ -1,26 +1,37 @@
-export async function onRequestGet(context) {
+export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
-  const keyword = url.searchParams.get('keyword');
+  
+  let keyword = '';
+
+  // Extract keyword from query param (GET) or JSON payload (POST)
+  if (request.method === 'GET') {
+    keyword = url.searchParams.get('keyword');
+  } else if (request.method === 'POST') {
+    try {
+      const body = await request.json();
+      keyword = body.keyword;
+    } catch (e) {
+      keyword = '';
+    }
+  }
 
   if (!keyword) {
-    return new Response(JSON.stringify({ error: 'Missing search keyword' }), {
+    return new Response(JSON.stringify({ error: 'Missing keyword parameter' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  // Access secret API key stored in Cloudflare Dashboard
   const apiKey = env.GEMINI_API_KEY;
-
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'API key not configured in Cloudflare environment' }), {
+    return new Response(JSON.stringify({ error: 'GEMINI_API_KEY environment variable missing' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  const prompt = `You are an expert UPSC curriculum coordinator. For the search term "${keyword}", output a JSON array of closely related sub-topics and alternate UPSC GS keywords (e.g., if topic is "Federalism", output ["Centre-State Relations", "Fiscal Federalism", "Governor", "Inter-State Water Disputes", "Seventh Schedule"]). Return ONLY a JSON array of strings and nothing else.`;
+  const prompt = `You are a UPSC subject expert. For the topic "${keyword}", output a JSON array of closely related sub-topics and keywords (e.g., if topic is "Federalism", output ["Centre-State Relations", "Fiscal Federalism", "Governor", "Inter-State Water Disputes"]). Output strictly a JSON array of strings and nothing else.`;
 
   try {
     const aiResponse = await fetch(
@@ -36,8 +47,6 @@ export async function onRequestGet(context) {
 
     const data = await aiResponse.json();
     const rawText = data.candidates[0].content.parts[0].text;
-    
-    // Clean up potential markdown code block wrappers
     const cleanJson = rawText.replace(/```json|```/g, '').trim();
     const subtopics = JSON.parse(cleanJson);
 
