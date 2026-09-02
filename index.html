@@ -1379,7 +1379,14 @@
 
     async function getAIExpandedTokens(query) {
       const res = await fetch(`${AI_CORRELATE_URL}?keyword=${encodeURIComponent(query)}`);
-      if (!res.ok) throw new Error(`AI proxy error ${res.status}`);
+      if (!res.ok) {
+        let detail = '';
+        try {
+          const errBody = await res.json();
+          detail = errBody.error || errBody.details || '';
+        } catch (_) { /* body wasn't JSON */ }
+        throw new Error(`AI proxy error ${res.status}${detail ? ' — ' + detail : ''}`);
+      }
       const data = await res.json();
       const subtopics = Array.isArray(data.subtopics) ? data.subtopics : [];
       const rawTerms = [query, ...subtopics].join(' ').toLowerCase()
@@ -1531,7 +1538,7 @@
           console.error('AI search failed, falling back to standard search:', err);
           if (requestId !== renderRequestId) return;
           if (aiSearchIndicator) {
-            aiSearchIndicator.textContent = '⚠️ AI search unavailable right now — showing standard results.';
+            aiSearchIndicator.textContent = `⚠️ AI search failed (${err.message}) — showing standard results.`;
           }
         }
       }
