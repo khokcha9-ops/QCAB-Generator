@@ -23,9 +23,9 @@ export async function onRequest(context) {
     });
   }
 
-  const apiKey = env.GEMINI_API_KEY;
+  const apiKey = env.DEEPSEEK_API_KEY;
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'GEMINI_API_KEY environment variable missing' }), {
+    return new Response(JSON.stringify({ error: 'DEEPSEEK_API_KEY environment variable missing' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
@@ -35,20 +35,43 @@ export async function onRequest(context) {
 
   try {
     const aiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
+      'https://api.deepseek.com/chat/completions',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.3,
+          response_format: { type: 'json_object' }
         })
       }
     );
 
     const data = await aiResponse.json();
-    const rawText = data.candidates[0].content.parts[0].text;
+
+    if (!aiResponse.ok) {
+      return new Response(JSON.stringify({ error: data.error?.message || 'DeepSeek API Error' }), {
+        status: aiResponse.status,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const rawText = data.choices[0].message.content;
     const cleanJson = rawText.replace(/```json|```/g, '').trim();
-    const subtopics = JSON.parse(cleanJson);
+    
+    let subtopics = [];
+    try {
+      const parsed = JSON.parse(cleanJson);
+      subtopics = Array.isArray(parsed) ? parsed : (parsed.subtopics || Object.values(parsed)[0] || []);
+    } catch (e) {
+      subtopics = [];
+    }
 
     return new Response(JSON.stringify({ keyword, subtopics }), {
       headers: { 
