@@ -171,7 +171,7 @@
     height:72px;
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    justify-space-between;
     padding:0 36px;
     background:color-mix(in srgb, var(--bg) 85%, transparent);
     backdrop-filter:blur(16px);
@@ -1761,7 +1761,7 @@
 
     if (clearBankBtn) {
       clearBankBtn.addEventListener('click', async () => {
-        if (confirm('Reset and reload default questions from files?')) {
+        if (confirm('Reset and reload default questions?')) {
           presetBank = [];
           localStorage.removeItem(PRESET_STORAGE_KEY);
           localStorage.removeItem(VERSION_KEY);
@@ -2320,7 +2320,10 @@ window.fetchAIAnswer = function(buttonElement) {
   if (!card) return;
 
   const questionEl = card.querySelector('.bank-question');
-  const questionText = questionEl ? questionEl.innerText.trim() : '';
+  let questionText = questionEl ? questionEl.innerText.trim() : '';
+
+  // Remove leading numbers or indices (e.g., "1. ") from the extracted question text
+  questionText = questionText.replace(/^\d+\.\s*/, '');
 
   const tags = card.querySelectorAll('.tag');
   let marks = '', year = '';
