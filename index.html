@@ -14,7 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
-  /* --- Your existing styles (unchanged) --- */
+  /* --- Your existing styles --- */
   :root{
     --bg:#f4f7fc;
     --surface:#ffffff;
@@ -92,6 +92,7 @@
     flex-direction:column;
     z-index:20;
     box-shadow:4px 0 20px rgba(0,0,0,0.01);
+    overflow-y:auto;
   }
   .brand{
     display:flex;
@@ -228,7 +229,6 @@
     box-shadow:var(--shadow-sm);
   }
   .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);transform:translateY(-1px)}
-  #ai-mode-toggle{display:none !important;} /* Hide if any left */
   .btn-primary{
     border-color:transparent;
     background:linear-gradient(135deg, var(--primary), var(--accent));
@@ -494,6 +494,24 @@
     color:var(--accent);
     background:var(--accent-soft);
   }
+  /* Study action buttons */
+  .btn-study {
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--muted);
+    border-radius:10px;
+    padding:4px 10px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
+  .btn-study:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+  .btn-study.active-bookmark{background:#fef3c7;color:#b45309;border-color:#f59e0b}
+  .btn-study.active-revised{background:#ecfdf5;color:#065f46;border-color:#10b981}
+  .btn-study.note-btn{background:#f3e8ff;color:#6d28d9;border-color:#8b5cf6}
+
   .btn-add-item {
     background: #ecfdf5 !important;
     border: 1px solid #10b981 !important;
@@ -631,14 +649,81 @@
     padding:30px 0 10px;
     font-weight:600;
   }
+  /* Mobile menu */
   .mobile-nav{display:none}
+  .mobile-menu-toggle {
+    display: none;
+  }
+  /* Study modal */
+  .study-modal {
+    position:fixed;
+    inset:0;
+    display:none;
+    z-index:10000;
+    background:rgba(0,0,0,0.4);
+    justify-content:center;
+    align-items:center;
+  }
+  .study-modal.open{display:flex}
+  .study-modal-content{
+    background:var(--surface);
+    border-radius:16px;
+    padding:24px;
+    max-width:480px;
+    width:90%;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  }
+  .study-modal-content h3{margin-top:0}
+  .study-modal-content textarea{width:100%;min-height:100px;margin:10px 0}
+  .study-modal-content .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
+
   @media(max-width:1050px){
     .workspace{grid-template-columns:1fr}
     .sticky-card{position:static}
   }
   @media(max-width:820px){
     .app{grid-template-columns:1fr}
-    .sidebar{display:none}
+    .sidebar{
+      display:flex !important;
+      position:fixed !important;
+      top:0;left:0;
+      width:280px !important;
+      max-width:82vw !important;
+      height:100vh !important;
+      transform:translateX(-100%);
+      transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      z-index:1000;
+      box-shadow:10px 0 35px rgba(0,0,0,0.25);
+      overflow-y:auto;
+    }
+    .sidebar.mobile-open{transform:translateX(0)}
+    .mobile-menu-backdrop{
+      display:block;
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.5);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.3s ease;
+      z-index:999;
+    }
+    .mobile-menu-backdrop.active{opacity:1;pointer-events:auto}
+    .mobile-menu-close{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:34px;height:34px;
+      border:none;
+      border-radius:8px;
+      background:var(--surface-2);
+      color:var(--text);
+      font-size:22px;
+      cursor:pointer;
+      margin:10px 0 10px auto;
+    }
+    body.menu-open{overflow:hidden}
     .mobile-nav{
       display:flex;
       position:sticky;
@@ -653,6 +738,19 @@
     }
     .mobile-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
     .mobile-brand .brand-mark{width:34px;height:34px;border-radius:10px;font-size:12px}
+    .mobile-menu-toggle{
+      display:inline-flex !important;
+      align-items:center;
+      justify-content:center;
+      width:40px;height:40px;
+      border:none;
+      border-radius:10px;
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      color:#fff;
+      font-size:19px;
+      cursor:pointer;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
     .topbar{display:none}
     .page{padding:24px 18px 40px}
     .hero{display:block}
@@ -678,7 +776,7 @@
 <body>
 <div class="app">
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="main-sidebar">
     <div class="brand">
       <div class="brand-mark">Q</div>
       <div>
@@ -693,6 +791,7 @@
       <button class="nav-btn" data-scroll="pyq-bank"><span class="nav-icon">▤</span>PYQ Bank</button>
       <button class="nav-btn" data-scroll="create-question"><span class="nav-icon">＋</span>Create Question</button>
       <button class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
+      <button class="nav-btn" data-scroll="my-study"><span class="nav-icon">📘</span>My Study</button>
     </nav>
 
     <div class="sidebar-bottom">
@@ -707,8 +806,12 @@
         <div class="brand-mark">Q</div>
         UPSC Help
       </div>
-      <button class="theme-toggle" id="mobile-theme-toggle">☾</button>
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
     </div>
+
+    <!-- Mobile backdrop & close -->
+    <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
+    <button class="mobile-menu-close" id="mobile-menu-close">×</button>
 
     <header class="topbar">
       <div>
@@ -855,7 +958,7 @@
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
               </div>
 
-              <!-- AI Search Mode controls are removed -->
+              <!-- AI Search Mode removed -->
 
               <div class="filter-box">
                 <div class="filters">
@@ -935,11 +1038,49 @@
 
       </div>
 
+      <!-- MY STUDY SECTION -->
+      <section id="my-study" style="margin-top:30px;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📘 My Study</h2>
+              <p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary-sm" id="export-study-btn">⬇ Export</button>
+              <button class="btn btn-secondary-sm" id="import-study-btn">⬆ Import</button>
+            </div>
+          </div>
+          <div id="study-dashboard">
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;">
+              <div class="stat" style="padding:14px;"><div class="stat-label">📌 Bookmarked</div><div class="stat-value" id="study-bookmarked">0</div></div>
+              <div class="stat" style="padding:14px;"><div class="stat-label">✅ Revised</div><div class="stat-value" id="study-revised">0</div></div>
+              <div class="stat" style="padding:14px;"><div class="stat-label">📝 With Notes</div><div class="stat-value" id="study-notes">0</div></div>
+            </div>
+            <div id="study-list-container">
+              <p style="color:var(--muted);font-style:italic;">Your bookmarked questions will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer>
         QCAB Generator · Project by Biswajit Nahak
       </footer>
 
     </main>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="study-modal" id="note-modal">
+  <div class="study-modal-content">
+    <h3>📝 Add Note</h3>
+    <textarea id="note-textarea" placeholder="Write your note here..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary-sm" id="note-save-btn">Save</button>
+      <button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -982,6 +1123,38 @@
 
   document.getElementById('sidebar-theme')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
   document.getElementById('mobile-theme-toggle')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
+
+  /* ==============================================
+     MOBILE MENU (improved)
+     ============================================== */
+  (function() {
+    const sidebar = document.getElementById('main-sidebar');
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const backdrop = document.getElementById('mobile-backdrop');
+    if (!sidebar || !toggleBtn) return;
+
+    function openMenu() {
+      sidebar.classList.add('mobile-open');
+      backdrop.classList.add('active');
+      document.body.classList.add('menu-open');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+      document.body.classList.remove('menu-open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+    toggleBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (backdrop) backdrop.addEventListener('click', closeMenu);
+    // Close on any nav-btn click inside sidebar
+    sidebar.addEventListener('click', function(e) {
+      if (e.target.closest('.nav-btn')) closeMenu();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  })();
 
   /* ==============================================
      MAIN APPLICATION LOGIC
@@ -1171,8 +1344,9 @@
       return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     }
 
-    /* 4. PRESET BANK – with versioning and full reload */
+    /* 4. PRESET BANK & STUDY DATA */
     const PRESET_STORAGE_KEY = 'qcab_preset_bank';
+    const STUDY_DATA_KEY = 'qcab_study_data';
     const VERSION_KEY = 'qcab_data_version';
     const CURRENT_VERSION = '2';
 
@@ -1185,6 +1359,21 @@
       presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
     }
 
+    // Study data: { questionId: { bookmarked: bool, revised: bool, note: string } }
+    let studyData = JSON.parse(localStorage.getItem(STUDY_DATA_KEY)) || {};
+
+    function saveStudyData() {
+      localStorage.setItem(STUDY_DATA_KEY, JSON.stringify(studyData));
+      updateStudyDashboard();
+    }
+
+    function getStudyRecord(q) {
+      const id = q.id || q.question; // fallback
+      if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false, note: '' };
+      return studyData[id];
+    }
+
+    /* 5. LOAD JSON */
     function savePresets() {
       localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetBank));
       updateBankStatus();
@@ -1277,6 +1466,7 @@
         populateFilterTopics();
         renderBankResults();
         updateBankStatus();
+        updateStudyDashboard();
 
       } catch (err) {
         console.warn('Repository load error:', err);
@@ -1284,7 +1474,7 @@
       }
     }
 
-    /* 5. FOLDER & BOOKLET STATE */
+    /* 6. FOLDER & BOOKLET STATE */
     const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
     const defaultRoot = {
       id: 'root',
@@ -1306,7 +1496,7 @@
       return folderMap[activeFolderId] || folderMap['root'];
     }
 
-    /* 6. DOM REFERENCES */
+    /* 7. DOM REFERENCES */
     const breadcrumbs = document.getElementById('breadcrumbs');
     const folderBar = document.getElementById('folder-bar');
     const qPaper = document.getElementById('q-paper');
@@ -1340,9 +1530,55 @@
     const clearResultsBtn = document.getElementById('clear-results-btn');
     const bankResultsContainer = document.getElementById('bank-results-container');
 
-    // AI mode variables and logic are removed
+    /* 8. STUDY DASHBOARD */
+    function updateStudyDashboard() {
+      let bookmarked = 0, revised = 0, withNotes = 0;
+      const listContainer = document.getElementById('study-list-container');
+      const items = [];
 
-    /* 7. MARKS & FORM HELPERS */
+      // We need to iterate over all questions in presetBank to show bookmarked ones
+      presetBank.forEach(q => {
+        const id = q.id;
+        if (studyData[id] && studyData[id].bookmarked) {
+          bookmarked++;
+          if (studyData[id].revised) revised++;
+          if (studyData[id].note && studyData[id].note.trim()) withNotes++;
+          items.push(q);
+        }
+      });
+
+      document.getElementById('study-bookmarked').textContent = bookmarked;
+      document.getElementById('study-revised').textContent = revised;
+      document.getElementById('study-notes').textContent = withNotes;
+
+      if (items.length === 0) {
+        listContainer.innerHTML = '<p style="color:var(--muted);font-style:italic;">You haven\'t bookmarked any questions yet. Use the ⭐ button on any question to start.</p>';
+        return;
+      }
+
+      let html = '<div style="display:grid;gap:10px;">';
+      items.forEach(q => {
+        const rec = getStudyRecord(q);
+        const status = rec.revised ? '✅ Revised' : '⏳ Not revised';
+        const notePreview = rec.note ? rec.note.substring(0, 60) + (rec.note.length>60?'…':'') : 'No note';
+        html += `
+          <div style="border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface-2);">
+            <div style="font-weight:700;margin-bottom:4px;">${escapeHtml(q.question)}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
+              <span class="tag">${escapeHtml(q.paper)}</span>
+              <span class="tag tag-topic">${escapeHtml(q.topic)}</span>
+              <span class="tag">${q.year||''}</span>
+              <span class="tag">${status}</span>
+              <span class="tag">📝 ${notePreview}</span>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      listContainer.innerHTML = html;
+    }
+
+    /* 9. MARKS & FORM HELPERS */
     let selectedMarks = 10;
     if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
 
@@ -1474,7 +1710,7 @@
       });
     }
 
-    /* 8. RENDER BANK RESULTS – with count and serial numbers, no AI */
+    /* 10. RENDER BANK RESULTS – with study buttons */
     let renderRequestId = 0;
     async function renderBankResults() {
       if (!bankResultsContainer) return;
@@ -1485,7 +1721,6 @@
       const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-      // No AI – just use plain query
       if (requestId !== renderRequestId) return;
 
       bankResultsContainer.innerHTML = '';
@@ -1495,25 +1730,18 @@
 
         const matchesQuery = !query || qText.includes(query);
         if (!matchesQuery) return false;
-        
-        // Paper filter
         if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
-        
-        // Year filter
         if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
 
-        // Topic filter (only if in topic mode)
         if (!isYearMode && selectedT !== 'ALL') {
           const qTopicClean = String(q.topic || '').trim().toLowerCase();
           const selectedTClean = String(selectedT).trim().toLowerCase();
           const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
           if (!matchesTopic) return false;
         }
-
         return true;
       });
 
-      // Show count and total
       const total = presetBank.length;
       const showing = filtered.length;
       const countMsg = document.createElement('div');
@@ -1534,6 +1762,10 @@
         div.className = 'bank-item';
         const paperClass = getPaperTagClass(q.paper);
 
+        const rec = getStudyRecord(q);
+        const bookmarked = rec.bookmarked;
+        const revised = rec.revised;
+
         const numberedQuestion = `<strong>${index + 1}.</strong> ${escapeHtml(q.question)}`;
 
         div.innerHTML = `
@@ -1544,14 +1776,39 @@
               <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
               <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
             </div>
-            <div class="bank-actions">
-              <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-              <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
-              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
+            <div class="bank-actions" style="flex-wrap:wrap; gap:6px;">
+              <button class="btn-study ${bookmarked ? 'active-bookmark' : ''}" data-action="bookmark" data-id="${q.id}">⭐ ${bookmarked ? 'Bookmarked' : 'Bookmark'}</button>
+              <button class="btn-study ${revised ? 'active-revised' : ''}" data-action="revise" data-id="${q.id}">✅ ${revised ? 'Revised' : 'Mark Revised'}</button>
+              <button class="btn-study note-btn" data-action="note" data-id="${q.id}">📝 Note</button>
+              <button class="btn-secondary-sm btn-add-item">+ Add</button>
+              <button class="btn-secondary-sm btn-direct-pdf">⚡ PDF</button>
+              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI</button>
             </div>
           </div>
         `;
 
+        // Study action buttons
+        div.querySelectorAll('[data-action]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const action = btn.dataset.action;
+            const id = btn.dataset.id;
+            if (action === 'bookmark') {
+              studyData[id] = studyData[id] || { bookmarked: false, revised: false, note: '' };
+              studyData[id].bookmarked = !studyData[id].bookmarked;
+              saveStudyData();
+              renderBankResults(); // re-render to update UI
+            } else if (action === 'revise') {
+              studyData[id] = studyData[id] || { bookmarked: false, revised: false, note: '' };
+              studyData[id].revised = !studyData[id].revised;
+              saveStudyData();
+              renderBankResults();
+            } else if (action === 'note') {
+              openNoteModal(id);
+            }
+          });
+        });
+
+        // Add to booklet
         div.querySelector('.btn-add-item').addEventListener('click', () => {
           getActiveFolder().questions.push({
             question: q.question,
@@ -1581,7 +1838,73 @@
       });
     }
 
-    /* 9. FOLDER MANAGEMENT UI */
+    /* 11. NOTE MODAL */
+    let currentNoteId = null;
+    function openNoteModal(id) {
+      currentNoteId = id;
+      const rec = studyData[id] || { note: '' };
+      document.getElementById('note-textarea').value = rec.note || '';
+      document.getElementById('note-modal').classList.add('open');
+    }
+    function closeNoteModal() {
+      document.getElementById('note-modal').classList.remove('open');
+      currentNoteId = null;
+    }
+    document.getElementById('note-cancel-btn').addEventListener('click', closeNoteModal);
+    document.getElementById('note-save-btn').addEventListener('click', () => {
+      if (currentNoteId) {
+        const note = document.getElementById('note-textarea').value.trim();
+        studyData[currentNoteId] = studyData[currentNoteId] || { bookmarked: false, revised: false, note: '' };
+        studyData[currentNoteId].note = note;
+        saveStudyData();
+        closeNoteModal();
+        renderBankResults();
+      }
+    });
+    // Close on backdrop click
+    document.getElementById('note-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeNoteModal();
+    });
+
+    /* 12. EXPORT/IMPORT STUDY DATA */
+    document.getElementById('export-study-btn').addEventListener('click', () => {
+      const data = JSON.stringify(studyData, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'qcab_study_data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('import-study-btn').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (typeof data === 'object') {
+              studyData = data;
+              saveStudyData();
+              renderBankResults();
+              alert('Study data imported successfully!');
+            } else {
+              alert('Invalid file format.');
+            }
+          } catch(err) { alert('Error reading file.'); }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    });
+
+    /* 13. FOLDER MANAGEMENT UI */
     if (renameFolderBtn) {
       renameFolderBtn.addEventListener('click', () => {
         const current = getActiveFolder();
@@ -1820,9 +2143,10 @@
       renderBreadcrumbs();
       renderFolders();
       renderQuestions();
+      updateStudyDashboard();
     }
 
-    /* 10. PDF GENERATOR */
+    /* 14. PDF GENERATOR */
     function generatePDF() {
       const questions = getActiveFolder().questions;
       if (questions.length === 0) return;
@@ -1914,13 +2238,12 @@
 
     if (generateBtn) generateBtn.addEventListener('click', generatePDF);
 
-    /* 11. INITIALIZATION */
+    /* 15. INITIALIZATION */
     populateFormSubtopics();
     populateFilterYears();
     populateFilterTopics();
     updateFilterMode();
     renderAll();
-    // Load data – this will re-populate filters and re-render when done
     loadRepositoryJSON();
 
   })();
