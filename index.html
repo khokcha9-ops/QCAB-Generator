@@ -710,7 +710,41 @@
     opacity: 1;
     visibility: visible;
   }
-
+/* Login Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.modal-box h2 { color: var(--text); }
+.modal-box input {
+  width: 100%; padding: 12px; margin: 8px 0;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--text);
+}
+.modal-box input:focus { border-color: var(--accent); outline: none; }
+.modal-box .switch { font-size: 13px; }
   @media(max-width:1050px){
     .workspace{grid-template-columns:1fr}
     .sticky-card{position:static}
@@ -1641,8 +1675,6 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
     const clearBankBtn = document.getElementById('clear-bank-btn');
 
     const searchInput = document.getElementById('search-input');
-    const modeYearRadio = document.getElementById('mode-year');
-    const modeTopicRadio = document.getElementById('mode-topic');
     const filterPaper = document.getElementById('filter-paper');
     const filterYear = document.getElementById('filter-year');
     const filterTopic = document.getElementById('filter-topic');
@@ -1790,8 +1822,6 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
         populateFilterTopics();
       });
     }
-    if (modeYearRadio) modeYearRadio.addEventListener('change', updateFilterMode);
-    if (modeTopicRadio) modeTopicRadio.addEventListener('change', updateFilterMode);
 
     if (searchInput) searchInput.addEventListener('input', renderBankResults);
     if (searchBankBtn) searchBankBtn.addEventListener('click', renderBankResults);
@@ -1821,20 +1851,11 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
     }
 
     /* RENDER BANK RESULTS */
+        /* RENDER BANK RESULTS */
     let renderRequestId = 0;
     async function renderBankResults() {
       if (!bankResultsContainer) return;
       const requestId = ++renderRequestId;
-            // Check Year filter
-      if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
-      
-      // Check Topic filter
-      if (selectedT !== 'ALL') {
-        const qTopicClean = String(q.topic || '').trim().toLowerCase();
-        const selectedTClean = String(selectedT).trim().toLowerCase();
-        const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-        if (!matchesTopic) return false;
-      }
 
       const selectedP = filterPaper ? filterPaper.value : 'ALL';
       const selectedY = filterYear ? filterYear.value : 'ALL';
@@ -1850,21 +1871,25 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
 
         const matchesQuery = !query || qText.includes(query);
         if (!matchesQuery) return false;
+        
+        // Check Paper
         if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
-
-        if (isYearMode) {
-          if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
-        } else {
-          if (selectedT !== 'ALL') {
-            const qTopicClean = String(q.topic || '').trim().toLowerCase();
-            const selectedTClean = String(selectedT).trim().toLowerCase();
-            const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-            if (!matchesTopic) return false;
-          }
+        
+        // Check Year (Always checks now)
+        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+        
+        // Check Topic (Always checks now)
+        if (selectedT !== 'ALL') {
+          const qTopicClean = String(q.topic || '').trim().toLowerCase();
+          const selectedTClean = String(selectedT).trim().toLowerCase();
+          const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+          if (!matchesTopic) return false;
         }
+        
         return true;
       });
 
+      // ... (Rest of the function remains the same: generating HTML, buttons, etc.)
       const total = presetBank.length;
       const showing = filtered.length;
       const countMsg = document.createElement('div');
@@ -1958,6 +1983,7 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
         bankResultsContainer.appendChild(div);
       });
     }
+    
 
     /* NOTE MODAL */
     let currentNoteId = null;
@@ -2362,7 +2388,6 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
     populateFormSubtopics();
     populateFilterYears();
     populateFilterTopics();
-    updateFilterMode();
     renderAll();
     loadRepositoryJSON();
     loadCloudStudy();
@@ -2372,23 +2397,80 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
 </script>
 
 <script>
+/* --- POPUP LOGIN LOGIC --- */
+const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev'; // Your Worker URL
+let isRegisterMode = false;
+
+function openLogin() {
+    document.getElementById('login-modal').style.display = 'flex';
+    document.getElementById('modal-error').innerText = '';
+}
+function closeLogin() {
+    document.getElementById('login-modal').style.display = 'none';
+}
+function toggleModalMode() {
+    isRegisterMode = !isRegisterMode;
+    const nameInput = document.getElementById('modal-name');
+    const title = document.getElementById('modal-title');
+    const btn = document.getElementById('modal-submit-btn');
+
+    if (isRegisterMode) {
+        nameInput.style.display = 'block';
+        title.innerText = 'Register';
+        btn.innerText = 'Register';
+    } else {
+        nameInput.style.display = 'none';
+        title.innerText = 'Login';
+        btn.innerText = 'Login';
+    }
+}
+
+async function handleModalAuth() {
+    const name = document.getElementById('modal-name').value;
+    const email = document.getElementById('modal-email').value;
+    const password = document.getElementById('modal-password').value;
+    const errorEl = document.getElementById('modal-error');
+
+    const endpoint = isRegisterMode ? '/api/register' : '/api/login';
+    const bodyData = { email, password };
+    if (isRegisterMode) bodyData.name = name;
+
+    try {
+        const res = await fetch(WORKER_URL + endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyData)
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            if (isRegisterMode) {
+                alert('Registration successful! Please login.');
+                toggleModalMode();
+            } else {
+                localStorage.setItem('userToken', data.token);
+                localStorage.setItem('userName', data.name || email);
+                closeLogin();
+                alert('Login successful! Click the AI button again.');
+            }
+        } else {
+            errorEl.innerText = data.error || 'Login failed';
+        }
+    } catch (e) {
+        errorEl.innerText = 'Network error. Please try again.';
+    }
+}
+
+/* --- AI BUTTON LOGIC --- */
 function openAnswerPage(item) {
-    // 1. Check if user is logged in OR if you are the owner
     const userToken = localStorage.getItem('userToken');
     const ownerKey = localStorage.getItem('qcab_owner_key');
-
-    // 2. Create the target URL for answer.html
     const targetUrl = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
 
-    // 3. If NOT logged in and NOT the owner, redirect to login
     if (!userToken && !ownerKey) {
-        alert("Please login first to view the AI generated answer.");
-        // Redirect the current window to login page, passing where we were going
-        window.location.href = `./login.html?redirect=${encodeURIComponent(targetUrl)}`;
+        openLogin();
         return;
     }
-
-    // 4. If logged in (or owner), open the answer page in a new tab
     window.open(targetUrl, '_blank');
 }
 
@@ -2398,8 +2480,6 @@ window.fetchAIAnswer = function(buttonElement) {
 
   const questionEl = card.querySelector('.bank-question');
   let questionText = questionEl ? questionEl.innerText.trim() : '';
-
-  // Remove leading numbers or indices (e.g., "1. ") from the extracted question text
   questionText = questionText.replace(/^\d+\.\s*/, '');
 
   const tags = card.querySelectorAll('.tag');
@@ -2414,14 +2494,25 @@ window.fetchAIAnswer = function(buttonElement) {
     }
   });
 
-  const questionItem = {
-    question: questionText,
-    marks: marks,
-    year: year
-  };
+  const questionItem = { question: questionText, marks: marks, year: year };
+  openAnswerPage(questionItem);
+};
 
   openAnswerPage(questionItem);
 };
+<!-- POPUP LOGIN MODAL -->
+<div id="login-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeLogin()">&times;</span>
+    <h2 id="modal-title" style="margin-top:0;">Login</h2>
+    <input type="text" id="modal-name" placeholder="Your Name" style="display: none;">
+    <input type="email" id="modal-email" placeholder="Email">
+    <input type="password" id="modal-password" placeholder="Password">
+    <button class="btn btn-primary btn-wide" onclick="handleModalAuth()" id="modal-submit-btn">Login</button>
+    <p class="switch" onclick="toggleModalMode()" style="text-align: center; color: var(--primary); cursor: pointer; margin-top: 10px;">Don't have an account? Register</p>
+    <p id="modal-error" style="color: red; font-size: 13px;"></p>
+  </div>
+</div>
 </script>
 <script src="mobile-menu.js"></script>
 <script src="upsc-prep-tools.js"></script>
