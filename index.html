@@ -1234,34 +1234,27 @@
     };
 
     function normalizePaperCode(paperVal) {
-      if (!paperVal) return 'GS1';
-      const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
-      /* Check Optional first because "Anthropology Optional Paper 1"
-         also contains the text "PAPER1". */
-      if (
-        str.includes('OPT1') ||
-        str.includes('OPTIONAL1') ||
-        str.includes('ANTHROPOLOGYOPTIONALPAPER1')
-      ) return 'OPT1';
-
-      if (
-        str.includes('OPT2') ||
-        str.includes('OPTIONAL2') ||
-        str.includes('ANTHROPOLOGYOPTIONALPAPER2')
-      ) return 'OPT2';
-
-      if (str.includes('GS1') || str === 'PAPER1') return 'GS1';
-      if (
-        str.includes('GS2') ||
-        str === 'PAPER2' ||
-        str.includes('POLITY') ||
-        str.includes('GOVERNANCE')
-      )
-        return 'GS2';
-      if (str.includes('GS3') || str === 'PAPER3') return 'GS3';
-      if (str.includes('GS4') || str === 'PAPER4') return 'GS4';
-      return 'GS1';
-    }
+    if (!paperVal) return 'GS1';
+    const str = String(paperVal).toUpperCase().trim();
+    
+    // Direct matches first
+    if (str === 'GS1' || str === 'GS PAPER 1') return 'GS1';
+    if (str === 'GS2' || str === 'GS PAPER 2') return 'GS2';
+    if (str === 'GS3' || str === 'GS PAPER 3') return 'GS3';
+    if (str === 'GS4' || str === 'GS PAPER 4') return 'GS4';
+    
+    // Optional papers
+    if (str.includes('OPT1') || str.includes('ANTHROPOLOGY OPTIONAL PAPER 1')) return 'OPT1';
+    if (str.includes('OPT2') || str.includes('ANTHROPOLOGY OPTIONAL PAPER 2')) return 'OPT2';
+    
+    // Partial matches
+    if (str.includes('GS1') || str.includes('PAPER 1')) return 'GS1';
+    if (str.includes('GS2') || str.includes('PAPER 2')) return 'GS2';
+    if (str.includes('GS3') || str.includes('PAPER 3')) return 'GS3';
+    if (str.includes('GS4') || str.includes('PAPER 4')) return 'GS4';
+    
+    return 'GS1'; // Default fallback
+}
 
     function getPaperTagClass(paper) {
       const norm = normalizePaperCode(paper);
