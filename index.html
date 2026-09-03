@@ -12,24 +12,6 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
-  root {
-      --bg-primary: #ffffff;
-      --bg-card: #ffffff;
-      --text-primary: #111827;
-      /* ... other light variables */
-    }
-
-    [data-theme="dark"] {
-      --bg-primary: #0a0d14;
-      --bg-card: #182030;
-      --text-primary: #f9fafb;
-      /* ... other dark variables */
-    }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-    }
   :root{
     --bg:#f4f7fc;
     --surface:#ffffff;
@@ -930,7 +912,7 @@
 
     <header class="topbar">
       <div>
-        <div class="topbar-title">UPSC Mains Answer Workspace</div>
+        <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
         <div class="topbar-sub">Build, organize and print your question-cum-answer booklet</div>
       </div>
       <div class="topbar-actions">
@@ -2426,7 +2408,6 @@
 /* POPUP AUTHENTICATION & AI MODEL ANSWER HANDLERS */
 const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
 let isRegisterMode = false;
-let pendingAIButton = null;
 
 function openLogin() {
     const modal = document.getElementById('login-modal');
@@ -2492,10 +2473,7 @@ async function handleModalAuth() {
         if (data.token) {
             localStorage.setItem('userToken', data.token);
             closeLogin();
-            if (pendingAIButton) {
-                fetchAIAnswer(pendingAIButton);
-                pendingAIButton = null;
-            }
+            window.location.href = './answer.html';
         } else {
             errorEl.textContent = 'Authentication token missing in server response.';
         }
@@ -2510,74 +2488,26 @@ function closeAIModal() {
     if (modal) modal.style.display = 'none';
 }
 
+/* FIXED FUNCTION: Uses Redirect instead of Popup to avoid Brave blocking */
 async function fetchAIAnswer(btn) {
     const token = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
-    if (!token) {
-        pendingAIButton = btn;
-        openLogin();
-        return;
-    }
-
+    
     const item = btn.closest('.bank-item');
     if (!item) return;
     
     const questionEl = item.querySelector('.bank-question');
     const questionText = questionEl ? questionEl.innerText.replace(/^\d+\.\s*/, '').trim() : '';
 
-    const aiModal = document.getElementById('ai-answer-modal');
-    const aiTitle = document.getElementById('ai-question-title');
-    const aiContent = document.getElementById('ai-answer-content');
-
-    if (aiModal && aiTitle && aiContent) {
-        aiTitle.textContent = questionText;
-        aiContent.textContent = "⏳ Generating AI Model Answer and Framework Structure...";
-        aiModal.style.display = 'flex';
+    // If NOT logged in, redirect to login.html (Unblockable by Brave!)
+    if (!token) {
+        const targetUrl = `answer.html?q=${encodeURIComponent(questionText)}`;
+        window.location.href = `./login.html?redirect=${encodeURIComponent(targetUrl)}`;
+        return;
     }
 
-    try {
-        const res = await fetch(`${WORKER_URL}/api/ai/generate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ question: questionText })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            if (res.status === 401) {
-                localStorage.removeItem('userToken');
-                closeAIModal();
-                pendingAIButton = btn;
-                openLogin();
-                return;
-            }
-            if (aiContent) aiContent.textContent = `❌ Error: ${data.error || 'Failed to generate answer.'}`;
-            return;
-        }
-
-        if (aiContent) {
-            aiContent.textContent = data.answer || data.response || JSON.stringify(data, null, 2);
-        }
-    } catch (err) {
-        console.error(err);
-        if (aiContent) aiContent.textContent = "❌ Network Error while requesting AI model answer.";
-    }
+    // If logged in (or owner), open the answer in a new tab
+    window.open(`answer.html?q=${encodeURIComponent(questionText)}`, '_blank');
 }
 </script>
-<script>
-    const themeToggleBtn = document.querySelector('#theme-toggle');
-
-    themeToggleBtn.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      
-      document.documentElement.setAttribute('data-theme', newTheme);
-      themeToggleBtn.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-      localStorage.setItem('theme', newTheme);
-    });
-  </script>
 </body>
 </html>
