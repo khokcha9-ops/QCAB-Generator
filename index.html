@@ -15,7 +15,6 @@
 
 <style>
   :root{
-    /* Vibrant, eye-catching Light Mode palette — multi-hue, not maroon-led */
     --bg:#f4f7fc;
     --surface:#ffffff;
     --surface-2:#eef2f9;
@@ -23,23 +22,17 @@
     --muted:#475569;
     --border:#cbd5e1;
     --border-strong:#94a3b8;
-    
-    /* Violet primary + Teal accent + Amber highlight */
     --primary:#7c3aed;
     --primary-hover:#6d28d9;
     --primary-soft:#f3e8ff;
-    
     --accent:#0891b2;
     --accent-soft:#cffafe;
-
     --highlight:#f59e0b;
     --highlight-soft:#fffbeb;
-    
     --success:#047857;
     --success-soft:#ecfdf5;
     --danger:#b91c1c;
     --danger-soft:#fef2f2;
-    
     --shadow:0 12px 35px -5px rgba(8,145,178,0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
     --shadow-sm:0 2px 8px rgba(15,23,42,0.04);
     --radius:18px;
@@ -56,22 +49,17 @@
     --muted:#94a3b8;
     --border:#2a364f;
     --border-strong:#3b4d71;
-    
     --primary:#a78bfa;
     --primary-hover:#c4b5fd;
     --primary-soft:#2e1065;
-    
     --accent:#22d3ee;
     --accent-soft:#083344;
-
     --highlight:#fbbf24;
     --highlight-soft:#422006;
-    
     --success:#34d399;
     --success-soft:#064e3b;
     --danger:#f87171;
     --danger-soft:#451a03;
-    
     --shadow:0 14px 35px -5px rgba(0,0,0,0.4);
     --shadow-sm:0 2px 8px rgba(0,0,0,0.25);
   }
@@ -96,7 +84,6 @@
     grid-template-columns:260px minmax(0,1fr);
   }
 
-  /* SIDEBAR */
   .sidebar{
     position:sticky;
     top:0;
@@ -174,7 +161,6 @@
     padding-top:16px;
   }
 
-  /* MAIN CONTENT */
   .content{min-width:0}
   .topbar{
     position:sticky;
@@ -268,7 +254,6 @@
   .btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
   .btn-wide{width:100%;padding:13px 16px}
 
-  /* STATS */
   .stats{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -324,7 +309,6 @@
   .card-title{margin:0;font-size:18px;font-weight:800;letter-spacing:-0.01em}
   .card-sub{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5;font-weight:500}
 
-  /* FOLDER BAR */
   .folder-wrap{
     margin-bottom:22px;
   }
@@ -360,7 +344,6 @@
   }
   .folder-tab:hover,.btn-new-folder:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 
-  /* FORM INPUTS */
   .field{margin-bottom:16px}
   label{
     display:block;
@@ -412,7 +395,6 @@
 
   .form-actions{display:grid;gap:8px;margin-top:8px}
 
-  /* PYQ BANK */
   .mode-switch{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -508,7 +490,6 @@
   .tag-paper{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
   .tag-topic{background:var(--accent-soft);color:var(--accent)}
   
-  /* Paper color badges */
   .tag-paper-gs1{background:#fef3c7;color:#92400e}
   .tag-paper-gs2{background:#ecfdf5;color:#065f46}
   .tag-paper-gs3{background:#e0e7ff;color:#3730a3}
@@ -523,7 +504,6 @@
 
   .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
   
-  /* Distinct Distinctive Action Buttons */
   .btn-secondary-sm{
     border:1px solid var(--border);
     background:var(--surface);
@@ -542,7 +522,6 @@
     background:var(--accent-soft);
   }
 
-  /* Button 1: Add to Booklet (Teal / Emerald style) */
   .btn-add-item {
     background: #ecfdf5 !important;
     border: 1px solid #10b981 !important;
@@ -555,7 +534,6 @@
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
   }
 
-  /* Button 2: Direct to PDF (Amber / Orange style) */
   .btn-direct-pdf {
     background: #fffbeb !important;
     border: 1px solid #f59e0b !important;
@@ -568,7 +546,6 @@
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
   }
 
-  /* Button 3: AI Model Answer - Highly Prominent Glowing Violet/Purple style */
   .btn-ai-highlight {
     background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
     border: 1px solid transparent !important;
@@ -613,7 +590,6 @@
     box-shadow: 0 8px 25px rgba(139, 92, 246, 0.65) !important;
   }
 
-  /* QCAB PANEL */
   .sticky-card{position:sticky;top:92px}
   .empty-state{
     text-align:center;
@@ -691,7 +667,6 @@
     font-weight:600;
   }
 
-  /* MOBILE RESPONSIVENESS */
   .mobile-nav{display:none}
   @media(max-width:1050px){
     .workspace{grid-template-columns:1fr}
@@ -1014,7 +989,10 @@
 </div>
 
 <script>
-  /* Navigation & Dashboard Synchronization Logic */
+  // ==========================================
+  // COMPLETE APPLICATION LOGIC
+  // ==========================================
+  
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.scroll;
@@ -1051,9 +1029,6 @@
   document.getElementById('sidebar-theme')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
   document.getElementById('mobile-theme-toggle')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
 
-  /* ==========================================
-     COMPLETE ENHANCED APPLICATION LOGIC
-     ========================================== */
   (function () {
     /* 1. THEME TOGGLE */
     const themeToggle = document.getElementById('theme-toggle');
@@ -1159,8 +1134,6 @@
         'Ethics Theory',
         'Case Studies'
       ],
-
-      /* Anthropology Optional — Paper I */
       OPT1: [
         '1.1 Meaning, Scope & Development of Anthropology',
         '1.2 Relationships with Other Disciplines',
@@ -1204,8 +1177,6 @@
         '11.3 Biological & Socio-ecological Factors in Demography',
         '12.0 Applications of Anthropology'
       ],
-
-      /* Anthropology Optional — Paper II */
       OPT2: [
         '1.1 Evolution of Indian Culture & Civilization (Prehistoric to Harappan)',
         '1.2 Palaeo-Anthropological Evidences from India (Siwaliks & Narmada)',
@@ -1236,8 +1207,6 @@
     function normalizePaperCode(paperVal) {
       if (!paperVal) return 'GS1';
       const str = String(paperVal).toUpperCase().replace(/[\s\-_]/g, '');
-      /* Check Optional first because "Anthropology Optional Paper 1"
-         also contains the text "PAPER1". */
       if (
         str.includes('OPT1') ||
         str.includes('OPTIONAL1') ||
@@ -1294,6 +1263,10 @@
 
     /* 3. PRESET BANK & SEPARATE JSON LOADING */
     const PRESET_STORAGE_KEY = 'qcab_preset_bank';
+    
+    // Clear old cache to ensure fresh data
+    // localStorage.removeItem(PRESET_STORAGE_KEY); // Uncomment if needed
+    
     let presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
 
     function savePresets() {
@@ -1311,7 +1284,7 @@
 
     async function fetchJSONFile(url) {
       try {
-        const response = await fetch(url);
+        const response = await fetch(url + '?t=' + Date.now()); // Prevent caching
         if (!response.ok) return [];
         const data = await response.json();
         return Array.isArray(data) ? data : data.questions || data.bank || data.data || [];
@@ -1335,9 +1308,6 @@
           fetchJSONFile('./gs2_pyq.json'),
           fetchJSONFile('./gs3_pyq.json'),
           fetchJSONFile('./gs4_pyq.json'),
-
-          /* Optional JSON files are loaded if present.
-             If you have not uploaded them yet, the site continues normally. */
           fetchJSONFile('./opt1_pyq.json'),
           fetchJSONFile('./opt2_pyq.json')
         ]);
@@ -1369,7 +1339,7 @@
           const rawYearText = String(q.year || q.exam_year || q.Year || '').trim();
           const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
           const rawYear = yearMatch ? yearMatch[1] : 'Other';
-          const displayYear = rawYear;  // ← ADD THIS LINE
+          const displayYear = rawYear;
           const yearNumber = rawYear === 'Other' ? NaN : Number(rawYear);
           const yearGroup = Number.isInteger(yearNumber) && yearNumber >= 2013 && yearNumber <= 2026
             ? String(yearNumber)
@@ -1388,6 +1358,7 @@
             question: questionText
           };
 
+          // Check if question already exists (by text)
           const exists = presetBank.some(
             (existing) => existing.question.trim().toLowerCase() === item.question.toLowerCase()
           );
@@ -1398,16 +1369,23 @@
           }
         });
 
+        console.log(`Loaded ${formattedCount} new questions. Total: ${presetBank.length}`);
+        
         if (formattedCount > 0 || presetBank.length > 0) {
           savePresets();
         }
 
+        // Populate filter dropdowns with all available years
         populateFilterYears();
         populateFilterTopics();
         renderBankResults();
+        updateBankStatus();
+        
+        return presetBank;
       } catch (err) {
         console.warn('Repository load error:', err);
         updateBankStatus();
+        throw err;
       }
     }
 
@@ -1469,8 +1447,7 @@
     const aiModeToggle = document.getElementById('ai-mode-toggle');
     const aiSearchIndicator = document.getElementById('ai-search-indicator');
 
-    /* AI-enabled search: expands the query into related sub-topics via the
-       Gemini proxy worker, then matches those extra terms against the bank. */
+    /* AI-enabled search */
     let isAISearchActive = false;
     const AI_CORRELATE_URL = 'https://qcabproxy.khokcha9.workers.dev/api/correlate';
 
@@ -1501,7 +1478,7 @@
         try {
           const errBody = await res.json();
           detail = errBody.error || errBody.details || '';
-        } catch (_) { /* body wasn't JSON */ }
+        } catch (_) {}
         throw new Error(`AI proxy error ${res.status}${detail ? ' — ' + detail : ''}`);
       }
       const data = await res.json();
@@ -1550,12 +1527,25 @@
       const prevSelected = filterYear.value;
       filterYear.innerHTML = '<option value="ALL">All Years</option>';
 
-      // Fixed official UPSC window + a catch-all bucket for older/newer/unknown years.
+      // Get all unique years from presetBank
+      const years = new Set();
+      presetBank.forEach(q => {
+        const yearGroup = getYearGroup(q);
+        if (yearGroup !== 'Other') {
+          years.add(yearGroup);
+        }
+      });
+
+      // Add years from 2013 to 2026 if they exist in the data
       for (let year = 2026; year >= 2013; year--) {
-        const opt = document.createElement('option');
-        opt.value = String(year);
-        opt.textContent = String(year);
-        filterYear.appendChild(opt);
+        const yearStr = String(year);
+        // Only add years that actually exist in the data
+        if (years.has(yearStr)) {
+          const opt = document.createElement('option');
+          opt.value = yearStr;
+          opt.textContent = yearStr;
+          filterYear.appendChild(opt);
+        }
       }
 
       const hasOther = presetBank.some((q) => getYearGroup(q) === 'Other');
@@ -1566,9 +1556,14 @@
         filterYear.appendChild(opt);
       }
 
-      if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
+      // If ALL is selected, keep it; otherwise try to restore previous selection
+      if (prevSelected === 'ALL') {
+        filterYear.value = 'ALL';
+      } else if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
         filterYear.value = prevSelected;
       }
+      
+      console.log('Available years in dropdown:', years);
     }
 
     function updateFilterMode() {
@@ -1654,7 +1649,7 @@
         }
         try {
           const { subtopics, tokens } = await getAIExpandedTokens(query);
-          if (requestId !== renderRequestId) return; // a newer search superseded this one
+          if (requestId !== renderRequestId) return;
           aiTokens = tokens;
           if (aiSearchIndicator) {
             aiSearchIndicator.textContent = subtopics.length
@@ -1684,7 +1679,12 @@
 
         if (!matchesQuery) return false;
         if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
-        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+        
+        // FIXED: Year filtering
+        if (selectedY !== 'ALL') {
+          const qYearGroup = getYearGroup(q);
+          if (qYearGroup !== String(selectedY).trim()) return false;
+        }
 
         if (!isYearMode && selectedT !== 'ALL') {
           const qTopicClean = String(q.topic || '').trim().toLowerCase();
@@ -2112,16 +2112,17 @@
     if (generateBtn) generateBtn.addEventListener('click', generatePDF);
 
     /* 9. INITIALIZATION ON PAGE LOAD */
-populateFormSubtopics();
-populateFilterTopics();   // ← Notice populateFilterYears() is REMOVED from here
-updateFilterMode();
-renderAll();
+    populateFormSubtopics();
+    populateFilterTopics();
+    updateFilterMode();
+    renderAll();
 
-// Load the repository and THEN populate years (so 2025 & 2026 get included)
-loadRepositoryJSON().then(() => {
-    populateFilterYears();  // ← Now this runs AFTER data loads
-    renderBankResults();
-}).catch(err => console.warn('Initial load failed:', err));
+    // Load the repository and THEN populate years (so 2025 & 2026 get included)
+    loadRepositoryJSON().then(() => {
+        populateFilterYears();
+        renderBankResults();
+    }).catch(err => console.warn('Initial load failed:', err));
+    
   })();
 </script>
 
