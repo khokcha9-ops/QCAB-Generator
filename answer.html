@@ -330,6 +330,7 @@
   </div>
 
   <script>
+    // ⚠️ REPLACE THIS URL WITH YOUR ACTUAL WORKER URL
     const AI_PROXY_URL = "https://qcap-ai-v2.khokcha9.workers.dev/api/generate-answer";
 
     // --- Dark Mode Handler ---
@@ -381,14 +382,37 @@
     }
 
     async function fetchAnswer() {
+      // --- SECURITY CHECK: Get the token from localStorage ---
+      const userToken = localStorage.getItem('userToken');
+
+      // If not logged in, kick them to the login page
+      if (!userToken) {
+        alert("Please login first to view the answer.");
+        window.location.href = "/login.html";
+        return;
+      }
+
       try {
         const res = await fetch(AI_PROXY_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            // --- THIS IS THE FIX: Sending the token ---
+            'Authorization': 'Bearer ' + userToken 
+          },
           body: JSON.stringify({ question: questionText })
         });
 
         const data = await res.json();
+
+        // Check for expired or invalid tokens
+        if (res.status === 401) {
+          localStorage.removeItem('userToken');
+          localStorage.removeItem('userName');
+          alert("Session expired. Please login again.");
+          window.location.href = "/login.html";
+          return;
+        }
 
         if (!res.ok) {
           throw new Error(data.error || `Server error (${res.status})`);
