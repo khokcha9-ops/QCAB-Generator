@@ -14,7 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
-  /* --- Your existing styles --- */
+  /* --- Your existing styles (unchanged) --- */
   :root{
     --bg:#f4f7fc;
     --surface:#ffffff;
@@ -228,14 +228,7 @@
     box-shadow:var(--shadow-sm);
   }
   .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);transform:translateY(-1px)}
-  #ai-mode-toggle{opacity:.65;transition:all .2s ease}
-  #ai-mode-toggle.active{
-    opacity:1;
-    color:#fff;
-    border-color:transparent;
-    background:linear-gradient(135deg, var(--accent), var(--primary));
-    box-shadow:0 4px 14px rgba(8,145,178,0.35);
-  }
+  #ai-mode-toggle{display:none !important;} /* Hide if any left */
   .btn-primary{
     border-color:transparent;
     background:linear-gradient(135deg, var(--primary), var(--accent));
@@ -862,6 +855,8 @@
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
               </div>
 
+              <!-- AI Search Mode controls are removed -->
+
               <div class="filter-box">
                 <div class="filters">
                   <select id="filter-paper">
@@ -888,6 +883,7 @@
               </div>
 
               <div id="bank-status-text">Loading question bank...</div>
+              <!-- Static year message removed -->
 
               <div id="bank-results-container">
                 <p style="font-size:13px;color:var(--muted);font-style:italic;">
@@ -1175,14 +1171,12 @@
       return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     }
 
-    /* 4. PRESET BANK – now with versioning and full reload */
+    /* 4. PRESET BANK – with versioning and full reload */
     const PRESET_STORAGE_KEY = 'qcab_preset_bank';
     const VERSION_KEY = 'qcab_data_version';
-    const CURRENT_VERSION = '2'; // increment when data structure changes
+    const CURRENT_VERSION = '2';
 
     let presetBank = [];
-
-    // On load, check version – if mismatch, clear old data
     if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
       localStorage.removeItem(PRESET_STORAGE_KEY);
       localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
@@ -1206,7 +1200,6 @@
 
     async function fetchJSONFile(url) {
       try {
-        // Add cache‑busting timestamp
         const response = await fetch(url + '?t=' + Date.now());
         if (!response.ok) return [];
         const data = await response.json();
@@ -1231,11 +1224,9 @@
 
         console.log(`📊 GS1: ${gs1Data.length}, GS2: ${gs2Data.length}, GS3: ${gs3Data.length}, GS4: ${gs4Data.length}, OPT1: ${opt1Data.length}, OPT2: ${opt2Data.length}`);
 
-        // Collect all incoming questions
         const incoming = [...gs1Data, ...gs2Data, ...gs3Data, ...gs4Data, ...opt1Data, ...opt2Data];
         const newQuestions = [];
 
-        // Process each incoming question
         incoming.forEach((q) => {
           const questionText = (q.question || q.q_text || q.text || q.title || '').trim();
           if (!questionText || questionText.toLowerCase() === 'year' || questionText.toLowerCase() === 'syllabus') return;
@@ -1268,23 +1259,20 @@
           newQuestions.push(item);
         });
 
-        // Merge with existing custom questions (keep those not in incoming by text match)
+        // Preserve custom questions (by text match)
         const existingCustom = presetBank.filter(ex => {
-          // If the question text doesn't exist in newQuestions, keep it as custom
           return !newQuestions.some(nq => nq.question.trim().toLowerCase() === ex.question.trim().toLowerCase());
         });
 
-        // Replace presetBank with new questions + custom ones
         presetBank = [...newQuestions, ...existingCustom];
         savePresets();
 
-        console.log(`✅ Loaded ${newQuestions.length} questions from JSON, kept ${existingCustom.length} custom questions. Total: ${presetBank.length}`);
+        console.log(`✅ Loaded ${newQuestions.length} from JSON, kept ${existingCustom.length} custom. Total: ${presetBank.length}`);
         console.log('📊 Paper distribution:', presetBank.reduce((acc, q) => {
           acc[q.paper] = (acc[q.paper] || 0) + 1;
           return acc;
         }, {}));
 
-        // Update dropdowns and re‑render
         populateFilterYears();
         populateFilterTopics();
         renderBankResults();
@@ -1352,8 +1340,9 @@
     const clearResultsBtn = document.getElementById('clear-results-btn');
     const bankResultsContainer = document.getElementById('bank-results-container');
 
+    // AI mode variables and logic are removed
 
-    /* 8. MARKS & FORM HELPERS */
+    /* 7. MARKS & FORM HELPERS */
     let selectedMarks = 10;
     if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
 
@@ -1476,7 +1465,7 @@
         if (confirm('Reset and reload default questions from files?')) {
           presetBank = [];
           localStorage.removeItem(PRESET_STORAGE_KEY);
-          localStorage.removeItem(VERSION_KEY); // force reload on next page load too
+          localStorage.removeItem(VERSION_KEY);
           updateBankStatus();
           if (bankResultsContainer)
             bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--muted); font-style:italic;">Reloading questions...</p>';
@@ -1485,140 +1474,114 @@
       });
     }
 
-    /* 9. RENDER BANK RESULTS */
+    /* 8. RENDER BANK RESULTS – with count and serial numbers, no AI */
     let renderRequestId = 0;
     async function renderBankResults() {
-  if (!bankResultsContainer) return;
-  const requestId = ++renderRequestId;
-  const selectedP = filterPaper ? filterPaper.value : 'ALL';
-  const selectedY = filterYear ? filterYear.value : 'ALL';
-  const selectedT = filterTopic ? filterTopic.value : 'ALL';
-  const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
-  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      if (!bankResultsContainer) return;
+      const requestId = ++renderRequestId;
+      const selectedP = filterPaper ? filterPaper.value : 'ALL';
+      const selectedY = filterYear ? filterYear.value : 'ALL';
+      const selectedT = filterTopic ? filterTopic.value : 'ALL';
+      const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
+      const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-  let aiTokens = null;
-  if (isAISearchActive && query) {
-    if (aiSearchIndicator) {
-      aiSearchIndicator.style.display = 'block';
-      aiSearchIndicator.textContent = '✨ AI is expanding your search…';
-    }
-    try {
-      const { subtopics, tokens } = await getAIExpandedTokens(query);
+      // No AI – just use plain query
       if (requestId !== renderRequestId) return;
-      aiTokens = tokens;
-      if (aiSearchIndicator) {
-        aiSearchIndicator.textContent = subtopics.length
-          ? `✨ AI expanded into: ${subtopics.slice(0, 5).join(', ')}${subtopics.length > 5 ? '…' : ''}`
-          : '✨ AI Search Mode is on.';
-      }
-    } catch (err) {
-      console.error('AI search failed, falling back to standard search:', err);
-      if (requestId !== renderRequestId) return;
-      if (aiSearchIndicator) {
-        aiSearchIndicator.textContent = `⚠️ AI search failed (${err.message}) — showing standard results.`;
-      }
-    }
-  }
-  if (requestId !== renderRequestId) return;
 
-  // --- FILTERING ---
-  let filtered = presetBank.filter((q) => {
-    const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
+      bankResultsContainer.innerHTML = '';
 
-    const matchesQuery = !query || (aiTokens ? aiTokens.some(t => qText.includes(t)) : qText.includes(query));
-    if (!matchesQuery) return false;
-    
-    // Paper filter (direct comparison, as paper is already normalized)
-    if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
-    
-    // Year filter
-    if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+      let filtered = presetBank.filter((q) => {
+        const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
-    // Topic filter (only if in topic mode)
-    if (!isYearMode && selectedT !== 'ALL') {
-      const qTopicClean = String(q.topic || '').trim().toLowerCase();
-      const selectedTClean = String(selectedT).trim().toLowerCase();
-      const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-      if (!matchesTopic) return false;
-    }
+        const matchesQuery = !query || qText.includes(query);
+        if (!matchesQuery) return false;
+        
+        // Paper filter
+        if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
+        
+        // Year filter
+        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
 
-    return true;
-  });
+        // Topic filter (only if in topic mode)
+        if (!isYearMode && selectedT !== 'ALL') {
+          const qTopicClean = String(q.topic || '').trim().toLowerCase();
+          const selectedTClean = String(selectedT).trim().toLowerCase();
+          const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+          if (!matchesTopic) return false;
+        }
 
-  // --- RENDER ---
-  bankResultsContainer.innerHTML = '';
-
-  // Show count and total
-  const total = presetBank.length;
-  const showing = filtered.length;
-  const countMsg = document.createElement('div');
-  countMsg.style.cssText = 'margin-bottom: 12px; font-weight: 600; color: var(--text); font-size: 14px;';
-  countMsg.textContent = `Showing ${showing} of ${total} question${total > 1 ? 's' : ''}`;
-  bankResultsContainer.appendChild(countMsg);
-
-  if (filtered.length === 0) {
-    const noResult = document.createElement('p');
-    noResult.style.cssText = 'font-size:13px; color:var(--muted); font-style:italic;';
-    noResult.textContent = 'No questions found matching this selection.';
-    bankResultsContainer.appendChild(noResult);
-    return;
-  }
-
-  // Render each question with a serial number
-  filtered.forEach((q, index) => {
-    const div = document.createElement('div');
-    div.className = 'bank-item';
-    const paperClass = getPaperTagClass(q.paper);
-
-    // Prefix the question with a number (index+1)
-    const numberedQuestion = `<strong>${index + 1}.</strong> ${escapeHtml(q.question)}`;
-
-    div.innerHTML = `
-      <div class="bank-question">${numberedQuestion}</div>
-      <div class="bank-bottom">
-        <div class="tags">
-          <span class="tag ${paperClass}">${escapeHtml(q.paper || 'GS1')}</span>
-          <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
-          <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
-        </div>
-        <div class="bank-actions">
-          <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-          <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
-          <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
-        </div>
-      </div>
-    `;
-
-    div.querySelector('.btn-add-item').addEventListener('click', () => {
-      getActiveFolder().questions.push({
-        question: q.question,
-        marks: q.marks,
-        year: q.year,
-        paper: q.paper,
-        topic: q.topic
+        return true;
       });
-      saveState();
-      renderQuestions();
-    });
 
-    div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
-      getActiveFolder().questions.push({
-        question: q.question,
-        marks: q.marks,
-        year: q.year,
-        paper: q.paper,
-        topic: q.topic
+      // Show count and total
+      const total = presetBank.length;
+      const showing = filtered.length;
+      const countMsg = document.createElement('div');
+      countMsg.style.cssText = 'margin-bottom: 12px; font-weight: 600; color: var(--text); font-size: 14px;';
+      countMsg.textContent = `Showing ${showing} of ${total} question${total > 1 ? 's' : ''}`;
+      bankResultsContainer.appendChild(countMsg);
+
+      if (filtered.length === 0) {
+        const noResult = document.createElement('p');
+        noResult.style.cssText = 'font-size:13px; color:var(--muted); font-style:italic;';
+        noResult.textContent = 'No questions found matching this selection.';
+        bankResultsContainer.appendChild(noResult);
+        return;
+      }
+
+      filtered.forEach((q, index) => {
+        const div = document.createElement('div');
+        div.className = 'bank-item';
+        const paperClass = getPaperTagClass(q.paper);
+
+        const numberedQuestion = `<strong>${index + 1}.</strong> ${escapeHtml(q.question)}`;
+
+        div.innerHTML = `
+          <div class="bank-question">${numberedQuestion}</div>
+          <div class="bank-bottom">
+            <div class="tags">
+              <span class="tag ${paperClass}">${escapeHtml(q.paper || 'GS1')}</span>
+              <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
+              <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
+            </div>
+            <div class="bank-actions">
+              <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
+              <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
+              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
+            </div>
+          </div>
+        `;
+
+        div.querySelector('.btn-add-item').addEventListener('click', () => {
+          getActiveFolder().questions.push({
+            question: q.question,
+            marks: q.marks,
+            year: q.year,
+            paper: q.paper,
+            topic: q.topic
+          });
+          saveState();
+          renderQuestions();
+        });
+
+        div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
+          getActiveFolder().questions.push({
+            question: q.question,
+            marks: q.marks,
+            year: q.year,
+            paper: q.paper,
+            topic: q.topic
+          });
+          saveState();
+          renderQuestions();
+          generatePDF();
+        });
+
+        bankResultsContainer.appendChild(div);
       });
-      saveState();
-      renderQuestions();
-      generatePDF();
-    });
+    }
 
-    bankResultsContainer.appendChild(div);
-  });
-}
-
-    /* 10. FOLDER MANAGEMENT UI */
+    /* 9. FOLDER MANAGEMENT UI */
     if (renameFolderBtn) {
       renameFolderBtn.addEventListener('click', () => {
         const current = getActiveFolder();
@@ -1859,7 +1822,7 @@
       renderQuestions();
     }
 
-    /* 11. PDF GENERATOR */
+    /* 10. PDF GENERATOR */
     function generatePDF() {
       const questions = getActiveFolder().questions;
       if (questions.length === 0) return;
@@ -1951,7 +1914,7 @@
 
     if (generateBtn) generateBtn.addEventListener('click', generatePDF);
 
-    /* 12. INITIALIZATION */
+    /* 11. INITIALIZATION */
     populateFormSubtopics();
     populateFilterYears();
     populateFilterTopics();
@@ -1963,7 +1926,7 @@
   })();
 </script>
 
-<!-- AI Generation Logic -->
+<!-- AI Generation Logic (Model Answer button) -->
 <script>
 function openAnswerPage(item) {
   const url = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
