@@ -12,7 +12,6 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
-  /* --- Your existing styles --- */
   :root{
     --bg:#f4f7fc;
     --surface:#ffffff;
@@ -91,6 +90,14 @@
     z-index:20;
     box-shadow:4px 0 20px rgba(0,0,0,0.01);
     overflow-y:auto;
+  }
+  .sidebar-header-mobile {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
   }
   .brand{
     display:flex;
@@ -492,7 +499,6 @@
     color:var(--accent);
     background:var(--accent-soft);
   }
-  /* Study action buttons */
   .btn-study {
     border:1px solid var(--border);
     background:var(--surface);
@@ -647,12 +653,10 @@
     padding:30px 0 10px;
     font-weight:600;
   }
-  /* Mobile menu */
   .mobile-nav{display:none}
   .mobile-menu-toggle {
     display: none;
   }
-  /* Study modal */
   .study-modal {
     position:fixed;
     inset:0;
@@ -677,6 +681,33 @@
   .study-modal-content textarea{width:100%;min-height:100px;margin:10px 0}
   .study-modal-content .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
 
+  /* Scroll To Top Button */
+  .back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+  }
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
   @media(max-width:1050px){
     .workspace{grid-template-columns:1fr}
     .sticky-card{position:static}
@@ -696,6 +727,9 @@
       box-shadow:10px 0 35px rgba(0,0,0,0.25);
       overflow-y:auto;
     }
+    .sidebar-header-mobile {
+      display: flex;
+    }
     .sidebar.mobile-open{transform:translateX(0)}
     .mobile-menu-backdrop{
       display:block;
@@ -712,42 +746,59 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      width:34px;height:34px;
+      width:32px;height:32px;
       border:none;
       border-radius:8px;
       background:var(--surface-2);
       color:var(--text);
-      font-size:22px;
+      font-size:18px;
       cursor:pointer;
-      margin:10px 0 10px auto;
     }
     body.menu-open{overflow:hidden}
     .mobile-nav{
       display:flex;
       position:sticky;
       top:0;
-      z-index:30;
+      z-index:100;
       height:60px;
       background:var(--surface);
       border-bottom:1px solid var(--border);
       align-items:center;
       justify-content:space-between;
       padding:0 18px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
     }
     .mobile-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
     .mobile-brand .brand-mark{width:34px;height:34px;border-radius:10px;font-size:12px}
+    .mobile-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .mobile-menu-toggle{
       display:inline-flex !important;
       align-items:center;
       justify-content:center;
-      width:40px;height:40px;
+      width:38px;height:38px;
       border:none;
       border-radius:10px;
       background:linear-gradient(135deg, var(--primary), var(--accent));
       color:#fff;
-      font-size:19px;
+      font-size:18px;
       cursor:pointer;
       box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .mobile-theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 16px;
     }
     .topbar{display:none}
     .page{padding:24px 18px 40px}
@@ -775,6 +826,11 @@
 <div class="app">
 
   <aside class="sidebar" id="main-sidebar">
+    <div class="sidebar-header-mobile">
+      <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
+      <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close Menu">✕</button>
+    </div>
+
     <div class="brand">
       <div class="brand-mark">Q</div>
       <div>
@@ -793,23 +849,26 @@
     </nav>
 
     <div class="sidebar-bottom">
-      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark Mode</button>
+      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light Mode</button>
     </div>
   </aside>
 
   <div class="content">
 
+    <!-- Sticky Mobile Bar -->
     <div class="mobile-nav">
       <div class="mobile-brand">
         <div class="brand-mark">Q</div>
-        UPSC Help
+        UPSC QCAB
       </div>
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="mobile-actions-right">
+        <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Toggle Theme">🌙</button>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open Menu">☰</button>
+      </div>
     </div>
 
-    <!-- Mobile backdrop & close -->
+    <!-- Mobile Backdrop -->
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
-    <button class="mobile-menu-close" id="mobile-menu-close">×</button>
 
     <header class="topbar">
       <div>
@@ -956,8 +1015,6 @@
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
               </div>
 
-              <!-- AI Search Mode removed -->
-
               <div class="filter-box">
                 <div class="filters">
                   <select id="filter-paper">
@@ -984,7 +1041,6 @@
               </div>
 
               <div id="bank-status-text">Loading question bank...</div>
-              <!-- Static year message removed -->
 
               <div id="bank-results-container">
                 <p style="font-size:13px;color:var(--muted);font-style:italic;">
@@ -1070,6 +1126,9 @@
   </div>
 </div>
 
+<!-- Back to top button -->
+<button class="back-to-top" id="back-to-top" title="Back to top">↑</button>
+
 <!-- NOTE MODAL -->
 <div class="study-modal" id="note-modal">
   <div class="study-modal-content">
@@ -1083,18 +1142,40 @@
 </div>
 
 <script>
-  /* ==============================================
-     NAVIGATION & DASHBOARD SYNC
-     ============================================== */
+  /* NAVIGATION & SCROLL MANAGEMENT */
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.scroll;
       const target = document.getElementById(id);
-      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      if (target) {
+        const offset = window.innerWidth <= 820 ? 70 : 10;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = target.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
       document.querySelectorAll('.nav-btn[data-scroll]').forEach(n => n.classList.remove('active'));
       const match = document.querySelector(`.nav-btn[data-scroll="${id}"]`);
       if(match) match.classList.add('active');
     });
+  });
+
+  // Scroll to Top behavior
+  const backToTopBtn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopBtn?.classList.add('visible');
+    } else {
+      backToTopBtn?.classList.remove('visible');
+    }
+  });
+  backToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   function syncDashboard(){
@@ -1119,12 +1200,7 @@
     setTimeout(syncDashboard, 1800);
   });
 
-  document.getElementById('sidebar-theme')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
-  document.getElementById('mobile-theme-toggle')?.addEventListener('click',()=>document.getElementById('theme-toggle')?.click());
-
-  /* ==============================================
-     MOBILE MENU (improved)
-     ============================================== */
+  /* MOBILE MENU TOGGLE LOGIC */
   (function() {
     const sidebar = document.getElementById('main-sidebar');
     const toggleBtn = document.getElementById('mobile-menu-toggle');
@@ -1134,32 +1210,32 @@
 
     function openMenu() {
       sidebar.classList.add('mobile-open');
-      backdrop.classList.add('active');
+      if (backdrop) backdrop.classList.add('active');
       document.body.classList.add('menu-open');
       toggleBtn.setAttribute('aria-expanded', 'true');
     }
     function closeMenu() {
       sidebar.classList.remove('mobile-open');
-      backdrop.classList.remove('active');
+      if (backdrop) backdrop.classList.remove('active');
       document.body.classList.remove('menu-open');
       toggleBtn.setAttribute('aria-expanded', 'false');
     }
     toggleBtn.addEventListener('click', openMenu);
     if (closeBtn) closeBtn.addEventListener('click', closeMenu);
     if (backdrop) backdrop.addEventListener('click', closeMenu);
-    // Close on any nav-btn click inside sidebar
+
     sidebar.addEventListener('click', function(e) {
       if (e.target.closest('.nav-btn')) closeMenu();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   })();
 
-  /* ==============================================
-     MAIN APPLICATION LOGIC
-     ============================================== */
+  /* MAIN APPLICATION LOGIC */
   (function () {
-    /* 1. THEME TOGGLE */
+    /* THEME TOGGLE */
     const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebarThemeBtn = document.getElementById('sidebar-theme');
     const themeIcon = document.getElementById('theme-icon');
     const themeText = document.getElementById('theme-text');
 
@@ -1168,28 +1244,31 @@
         document.documentElement.setAttribute('data-theme', 'dark');
         if (themeIcon) themeIcon.textContent = '☀️';
         if (themeText) themeText.textContent = 'Light Mode';
+        if (mobileThemeToggle) mobileThemeToggle.textContent = '☀️';
       } else {
         document.documentElement.removeAttribute('data-theme');
         if (themeIcon) themeIcon.textContent = '🌙';
         if (themeText) themeText.textContent = 'Dark Mode';
+        if (mobileThemeToggle) mobileThemeToggle.textContent = '🌙';
       }
     }
 
-    const savedTheme =
-      localStorage.getItem('qcab_theme') ||
+    const savedTheme = localStorage.getItem('qcab_theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     applyTheme(savedTheme);
 
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const nextTheme = isDark ? 'light' : 'dark';
-        localStorage.setItem('qcab_theme', nextTheme);
-        applyTheme(nextTheme);
-      });
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      localStorage.setItem('qcab_theme', nextTheme);
+      applyTheme(nextTheme);
     }
 
-    /* 2. CREATE / BANK COLLAPSE TOGGLES */
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+    if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
+    if (sidebarThemeBtn) sidebarThemeBtn.addEventListener('click', toggleTheme);
+
+    /* CREATE / BANK COLLAPSE TOGGLES */
     const toggleCreateBtn = document.getElementById('toggle-create-section-btn');
     const createFormBody = document.getElementById('create-form-body');
     function setCreateCollapsed(collapsed) {
@@ -1227,7 +1306,7 @@
       });
     }
 
-    /* 3. SYLLABUS & PAPER NORMALIZATION */
+    /* SYLLABUS DATA */
     const SYLLABUS = {
       GS1: ['Art & Culture','Modern History','Post Independence','World History','Physical Geography','Economic & Human Geography','Indian society'],
       GS2: ['Polity','Governance','Social Justice','International Relations'],
@@ -1342,7 +1421,7 @@
       return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     }
 
-    /* 4. PRESET BANK & STUDY DATA */
+    /* STORAGE DATA */
     const PRESET_STORAGE_KEY = 'qcab_preset_bank';
     const STUDY_DATA_KEY = 'qcab_study_data';
     const VERSION_KEY = 'qcab_data_version';
@@ -1357,7 +1436,6 @@
       presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
     }
 
-    // Study data: { questionId: { bookmarked: bool, revised: bool, note: string } }
     let studyData = JSON.parse(localStorage.getItem(STUDY_DATA_KEY)) || {};
 
     function saveStudyData() {
@@ -1366,12 +1444,11 @@
     }
 
     function getStudyRecord(q) {
-      const id = q.id || q.question; // fallback
+      const id = q.id || q.question;
       if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false, note: '' };
       return studyData[id];
     }
 
-    /* 5. LOAD JSON */
     function savePresets() {
       localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetBank));
       updateBankStatus();
@@ -1398,7 +1475,6 @@
     }
 
     async function loadRepositoryJSON() {
-      console.log('🔄 Loading fresh repository data...');
       try {
         const [gs1Data, gs2Data, gs3Data, gs4Data, opt1Data, opt2Data] = await Promise.all([
           fetchJSONFile('./gs1_pyq.json'),
@@ -1408,8 +1484,6 @@
           fetchJSONFile('./opt1_pyq.json'),
           fetchJSONFile('./opt2_pyq.json')
         ]);
-
-        console.log(`📊 GS1: ${gs1Data.length}, GS2: ${gs2Data.length}, GS3: ${gs3Data.length}, GS4: ${gs4Data.length}, OPT1: ${opt1Data.length}, OPT2: ${opt2Data.length}`);
 
         const incoming = [...gs1Data, ...gs2Data, ...gs3Data, ...gs4Data, ...opt1Data, ...opt2Data];
         const newQuestions = [];
@@ -1446,19 +1520,12 @@
           newQuestions.push(item);
         });
 
-        // Preserve custom questions (by text match)
         const existingCustom = presetBank.filter(ex => {
           return !newQuestions.some(nq => nq.question.trim().toLowerCase() === ex.question.trim().toLowerCase());
         });
 
         presetBank = [...newQuestions, ...existingCustom];
         savePresets();
-
-        console.log(`✅ Loaded ${newQuestions.length} from JSON, kept ${existingCustom.length} custom. Total: ${presetBank.length}`);
-        console.log('📊 Paper distribution:', presetBank.reduce((acc, q) => {
-          acc[q.paper] = (acc[q.paper] || 0) + 1;
-          return acc;
-        }, {}));
 
         populateFilterYears();
         populateFilterTopics();
@@ -1472,7 +1539,7 @@
       }
     }
 
-    /* 6. FOLDER & BOOKLET STATE */
+    /* FOLDER & BOOKLET STATE */
     const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
     const defaultRoot = {
       id: 'root',
@@ -1494,7 +1561,7 @@
       return folderMap[activeFolderId] || folderMap['root'];
     }
 
-    /* 7. DOM REFERENCES */
+    /* DOM REFERENCES */
     const breadcrumbs = document.getElementById('breadcrumbs');
     const folderBar = document.getElementById('folder-bar');
     const qPaper = document.getElementById('q-paper');
@@ -1528,13 +1595,12 @@
     const clearResultsBtn = document.getElementById('clear-results-btn');
     const bankResultsContainer = document.getElementById('bank-results-container');
 
-    /* 8. STUDY DASHBOARD */
+    /* STUDY DASHBOARD */
     function updateStudyDashboard() {
       let bookmarked = 0, revised = 0, withNotes = 0;
       const listContainer = document.getElementById('study-list-container');
       const items = [];
 
-      // We need to iterate over all questions in presetBank to show bookmarked ones
       presetBank.forEach(q => {
         const id = q.id;
         if (studyData[id] && studyData[id].bookmarked) {
@@ -1576,7 +1642,6 @@
       listContainer.innerHTML = html;
     }
 
-    /* 9. MARKS & FORM HELPERS */
     let selectedMarks = 10;
     if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
 
@@ -1708,7 +1773,7 @@
       });
     }
 
-    /* 10. RENDER BANK RESULTS – with study buttons */
+    /* RENDER BANK RESULTS */
     let renderRequestId = 0;
     async function renderBankResults() {
       if (!bankResultsContainer) return;
@@ -1785,7 +1850,6 @@
           </div>
         `;
 
-        // Study action buttons
         div.querySelectorAll('[data-action]').forEach(btn => {
           btn.addEventListener('click', (e) => {
             const action = btn.dataset.action;
@@ -1794,7 +1858,7 @@
               studyData[id] = studyData[id] || { bookmarked: false, revised: false, note: '' };
               studyData[id].bookmarked = !studyData[id].bookmarked;
               saveStudyData();
-              renderBankResults(); // re-render to update UI
+              renderBankResults();
             } else if (action === 'revise') {
               studyData[id] = studyData[id] || { bookmarked: false, revised: false, note: '' };
               studyData[id].revised = !studyData[id].revised;
@@ -1806,7 +1870,6 @@
           });
         });
 
-        // Add to booklet
         div.querySelector('.btn-add-item').addEventListener('click', () => {
           getActiveFolder().questions.push({
             question: q.question,
@@ -1836,7 +1899,7 @@
       });
     }
 
-    /* 11. NOTE MODAL */
+    /* NOTE MODAL */
     let currentNoteId = null;
     function openNoteModal(id) {
       currentNoteId = id;
@@ -1859,12 +1922,11 @@
         renderBankResults();
       }
     });
-    // Close on backdrop click
     document.getElementById('note-modal').addEventListener('click', function(e) {
       if (e.target === this) closeNoteModal();
     });
 
-    /* 12. EXPORT/IMPORT STUDY DATA */
+    /* EXPORT/IMPORT STUDY DATA */
     document.getElementById('export-study-btn').addEventListener('click', () => {
       const data = JSON.stringify(studyData, null, 2);
       const blob = new Blob([data], { type: 'application/json' });
@@ -1902,7 +1964,7 @@
       input.click();
     });
 
-    /* 13. FOLDER MANAGEMENT UI */
+    /* FOLDER MANAGEMENT UI */
     if (renameFolderBtn) {
       renameFolderBtn.addEventListener('click', () => {
         const current = getActiveFolder();
@@ -2144,7 +2206,7 @@
       updateStudyDashboard();
     }
 
-    /* 14. PDF GENERATOR */
+    /* PDF GENERATOR */
     function generatePDF() {
       const questions = getActiveFolder().questions;
       if (questions.length === 0) return;
@@ -2236,7 +2298,7 @@
 
     if (generateBtn) generateBtn.addEventListener('click', generatePDF);
 
-    /* 15. INITIALIZATION */
+    /* INITIALIZATION */
     populateFormSubtopics();
     populateFilterYears();
     populateFilterTopics();
@@ -2247,7 +2309,6 @@
   })();
 </script>
 
-<!-- AI Generation Logic (Model Answer button) -->
 <script>
 function openAnswerPage(item) {
   const url = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
