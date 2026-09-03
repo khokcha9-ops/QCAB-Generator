@@ -388,7 +388,8 @@
       // If not logged in, kick them to the login page
       if (!userToken) {
         alert("Please login first to view the answer.");
-        window.location.href = "/login.html";
+        // CHANGE MADE HERE: Used ./login.html instead of /login.html
+        window.location.href = "./login.html";
         return;
       }
 
@@ -410,7 +411,8 @@
           localStorage.removeItem('userToken');
           localStorage.removeItem('userName');
           alert("Session expired. Please login again.");
-          window.location.href = "/login.html";
+          // CHANGE MADE HERE: Used ./login.html instead of /login.html
+          window.location.href = "./login.html";
           return;
         }
 
