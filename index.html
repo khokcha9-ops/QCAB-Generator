@@ -1542,114 +1542,135 @@
     /* 9. RENDER BANK RESULTS */
     let renderRequestId = 0;
     async function renderBankResults() {
-      if (!bankResultsContainer) return;
-      const requestId = ++renderRequestId;
-      const selectedP = filterPaper ? filterPaper.value : 'ALL';
-      const selectedY = filterYear ? filterYear.value : 'ALL';
-      const selectedT = filterTopic ? filterTopic.value : 'ALL';
-      const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
-      const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  if (!bankResultsContainer) return;
+  const requestId = ++renderRequestId;
+  const selectedP = filterPaper ? filterPaper.value : 'ALL';
+  const selectedY = filterYear ? filterYear.value : 'ALL';
+  const selectedT = filterTopic ? filterTopic.value : 'ALL';
+  const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-      let aiTokens = null;
-      if (isAISearchActive && query) {
-        if (aiSearchIndicator) {
-          aiSearchIndicator.style.display = 'block';
-          aiSearchIndicator.textContent = '✨ AI is expanding your search…';
-        }
-        try {
-          const { subtopics, tokens } = await getAIExpandedTokens(query);
-          if (requestId !== renderRequestId) return;
-          aiTokens = tokens;
-          if (aiSearchIndicator) {
-            aiSearchIndicator.textContent = subtopics.length
-              ? `✨ AI expanded into: ${subtopics.slice(0,5).join(', ')}${subtopics.length>5?'…':''}`
-              : '✨ AI Search Mode is on.';
-          }
-        } catch (err) {
-          console.error('AI search failed, falling back to standard search:', err);
-          if (requestId !== renderRequestId) return;
-          if (aiSearchIndicator) {
-            aiSearchIndicator.textContent = `⚠️ AI search failed (${err.message}) — showing standard results.`;
-          }
-        }
-      }
-      if (requestId !== renderRequestId) return;
-
-      bankResultsContainer.innerHTML = '';
-
-      let filtered = presetBank.filter((q) => {
-        const normQPaper = normalizePaperCode(q.paper);
-        const normSelectedP = normalizePaperCode(selectedP);
-        const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
-
-        const matchesQuery = !query || (aiTokens ? aiTokens.some(t => qText.includes(t)) : qText.includes(query));
-        if (!matchesQuery) return false;
-        if (selectedP !== 'ALL' && normQPaper !== normSelectedP) return false;
-        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
-
-        if (!isYearMode && selectedT !== 'ALL') {
-          const qTopicClean = String(q.topic || '').trim().toLowerCase();
-          const selectedTClean = String(selectedT).trim().toLowerCase();
-          const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-          if (!matchesTopic) return false;
-        }
-        return true;
-      });
-
-      if (filtered.length === 0) {
-        bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--muted); font-style:italic;">No questions found matching this selection.</p>';
-        return;
-      }
-
-      filtered.forEach((q) => {
-        const div = document.createElement('div');
-        div.className = 'bank-item';
-        const paperClass = getPaperTagClass(q.paper);
-
-        div.innerHTML = `
-          <div class="bank-question">${escapeHtml(q.question)}</div>
-          <div class="bank-bottom">
-            <div class="tags">
-              <span class="tag ${paperClass}">${escapeHtml(q.paper || 'GS1')}</span>
-              <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
-              <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
-            </div>
-            <div class="bank-actions">
-              <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
-              <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
-              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
-            </div>
-          </div>
-        `;
-
-        div.querySelector('.btn-add-item').addEventListener('click', () => {
-          getActiveFolder().questions.push({
-            question: q.question,
-            marks: q.marks,
-            year: q.year,
-            paper: q.paper,
-            topic: q.topic
-          });
-          saveState();
-          renderQuestions();
-        });
-
-        div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
-          getActiveFolder().questions.push({
-            question: q.question,
-            marks: q.marks,
-            year: q.year,
-            paper: q.paper,
-            topic: q.topic
-          });
-          saveState();
-          renderQuestions();
-          generatePDF();
-        });
-
-        bankResultsContainer.appendChild(div);
-      });
+  let aiTokens = null;
+  if (isAISearchActive && query) {
+    if (aiSearchIndicator) {
+      aiSearchIndicator.style.display = 'block';
+      aiSearchIndicator.textContent = '✨ AI is expanding your search…';
     }
+    try {
+      const { subtopics, tokens } = await getAIExpandedTokens(query);
+      if (requestId !== renderRequestId) return;
+      aiTokens = tokens;
+      if (aiSearchIndicator) {
+        aiSearchIndicator.textContent = subtopics.length
+          ? `✨ AI expanded into: ${subtopics.slice(0, 5).join(', ')}${subtopics.length > 5 ? '…' : ''}`
+          : '✨ AI Search Mode is on.';
+      }
+    } catch (err) {
+      console.error('AI search failed, falling back to standard search:', err);
+      if (requestId !== renderRequestId) return;
+      if (aiSearchIndicator) {
+        aiSearchIndicator.textContent = `⚠️ AI search failed (${err.message}) — showing standard results.`;
+      }
+    }
+  }
+  if (requestId !== renderRequestId) return;
+
+  // --- FILTERING ---
+  let filtered = presetBank.filter((q) => {
+    const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
+
+    const matchesQuery = !query || (aiTokens ? aiTokens.some(t => qText.includes(t)) : qText.includes(query));
+    if (!matchesQuery) return false;
+    
+    // Paper filter (direct comparison, as paper is already normalized)
+    if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
+    
+    // Year filter
+    if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+
+    // Topic filter (only if in topic mode)
+    if (!isYearMode && selectedT !== 'ALL') {
+      const qTopicClean = String(q.topic || '').trim().toLowerCase();
+      const selectedTClean = String(selectedT).trim().toLowerCase();
+      const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+      if (!matchesTopic) return false;
+    }
+
+    return true;
+  });
+
+  // --- RENDER ---
+  bankResultsContainer.innerHTML = '';
+
+  // Show count and total
+  const total = presetBank.length;
+  const showing = filtered.length;
+  const countMsg = document.createElement('div');
+  countMsg.style.cssText = 'margin-bottom: 12px; font-weight: 600; color: var(--text); font-size: 14px;';
+  countMsg.textContent = `Showing ${showing} of ${total} question${total > 1 ? 's' : ''}`;
+  bankResultsContainer.appendChild(countMsg);
+
+  if (filtered.length === 0) {
+    const noResult = document.createElement('p');
+    noResult.style.cssText = 'font-size:13px; color:var(--muted); font-style:italic;';
+    noResult.textContent = 'No questions found matching this selection.';
+    bankResultsContainer.appendChild(noResult);
+    return;
+  }
+
+  // Render each question with a serial number
+  filtered.forEach((q, index) => {
+    const div = document.createElement('div');
+    div.className = 'bank-item';
+    const paperClass = getPaperTagClass(q.paper);
+
+    // Prefix the question with a number (index+1)
+    const numberedQuestion = `<strong>${index + 1}.</strong> ${escapeHtml(q.question)}`;
+
+    div.innerHTML = `
+      <div class="bank-question">${numberedQuestion}</div>
+      <div class="bank-bottom">
+        <div class="tags">
+          <span class="tag ${paperClass}">${escapeHtml(q.paper || 'GS1')}</span>
+          <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
+          <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
+        </div>
+        <div class="bank-actions">
+          <button class="btn-secondary-sm btn-add-item">+ Add to Booklet</button>
+          <button class="btn-secondary-sm btn-direct-pdf">⚡ Direct to PDF</button>
+          <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI Model Answer</button>
+        </div>
+      </div>
+    `;
+
+    div.querySelector('.btn-add-item').addEventListener('click', () => {
+      getActiveFolder().questions.push({
+        question: q.question,
+        marks: q.marks,
+        year: q.year,
+        paper: q.paper,
+        topic: q.topic
+      });
+      saveState();
+      renderQuestions();
+    });
+
+    div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
+      getActiveFolder().questions.push({
+        question: q.question,
+        marks: q.marks,
+        year: q.year,
+        paper: q.paper,
+        topic: q.topic
+      });
+      saveState();
+      renderQuestions();
+      generatePDF();
+    });
+
+    bankResultsContainer.appendChild(div);
+  });
+}
 
     /* 10. FOLDER MANAGEMENT UI */
     if (renameFolderBtn) {
