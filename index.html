@@ -720,34 +720,33 @@
   justify-content: center;
 }
 .modal-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 16px;
   padding: 30px;
   width: 90%;
   max-width: 400px;
   position: relative;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  z-index: 100000; /* THIS makes sure it shows! */
+  display: block; /* Forces it to be visible */
 }
 .modal-close {
   position: absolute;
   top: 10px; right: 15px;
   font-size: 24px;
   cursor: pointer;
-  color: var(--muted);
+  color: #64748b;
 }
-.modal-box h2 { color: var(--text); }
+.modal-box h2 { color: #0f172a; }
 .modal-box input {
   width: 100%; padding: 12px; margin: 8px 0;
-  border: 1px solid var(--border); border-radius: 8px;
-  background: var(--surface-2); color: var(--text);
+  border: 1px solid #cbd5e1; border-radius: 8px;
+  background: #eef2f9; color: #0f172a;
 }
-.modal-box input:focus { border-color: var(--accent); outline: none; }
+.modal-box input:focus { border-color: #0891b2; outline: none; }
 .modal-box .switch { font-size: 13px; }
-  @media(max-width:1050px){
-    .workspace{grid-template-columns:1fr}
-    .sticky-card{position:static}
-  }
+]
   @media(max-width:820px){
     .app{grid-template-columns:1fr}
     .sidebar{
@@ -1176,7 +1175,7 @@
   </div>
 </div>
 
-<!-- POPUP LOGIN MODAL (Moved here outside the script!) -->
+<!-- POPUP LOGIN MODAL (PASTE THIS OUTSIDE THE SCRIPT TAGS) -->
 <div id="login-modal" class="modal-overlay" style="display: none;">
   <div class="modal-box">
     <span class="modal-close" onclick="closeLogin()">&times;</span>
