@@ -44,7 +44,6 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* --- Glassmorphism Header Section --- */
   header {
     background: var(--accent-gradient);
     color: #ffffff;
@@ -56,7 +55,7 @@
   .header-content {
     max-width: 860px;
     margin: 0 auto;
-    padding-right: 70px; /* Space for theme toggle */
+    padding-right: 70px;
   }
 
   .eyebrow {
@@ -115,7 +114,6 @@
     background: rgba(255, 255, 255, 0.3);
   }
 
-  /* --- Main Content Layout --- */
   .wrap {
     max-width: 860px;
     margin: -36px auto 60px auto;
@@ -151,7 +149,6 @@
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* --- Content Typography & Headings --- */
   #content h1, #content h2, #content h3, #content h4 {
     color: var(--heading-color);
     font-weight: 800;
@@ -191,7 +188,6 @@
     border-radius: 0 8px 8px 0;
   }
 
-  /* --- Tables --- */
   #content table {
     width: 100%;
     border-collapse: separate;
@@ -221,58 +217,18 @@
     border-bottom: 1px solid var(--border-color);
   }
 
-  /* --- Multi-Color Highlight System --- */
-  /* 1. Standard Bold / Key Terms -> Crimson/Rose */
-  #content strong {
-    color: #e11d48 !important;
-    font-weight: 700 !important;
-  }
+  #content strong { color: #e11d48 !important; font-weight: 700 !important; }
+  #content .kw-term { color: #2563eb !important; background: #eff6ff !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
+  #content .kw-example, #content .eg, #content em { color: #059669 !important; background: #ecfdf5 !important; font-style: normal !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
+  #content .kw-meta, #content .tag-meta { color: #7c3aed !important; background: #f5f3ff !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
+  #content .kw-highlight, #content mark.highlight { color: #d97706 !important; background: #fffbe0 !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
 
-  /* 2. Key Terms Class -> Blue */
-  #content .kw-term {
-    color: #2563eb !important;
-    background: #eff6ff !important;
-    font-weight: 700 !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-  }
-
-  /* 3. Examples, Thinkers, Schemes -> Emerald Green */
-  #content .kw-example, #content .eg, #content em {
-    color: #059669 !important;
-    background: #ecfdf5 !important;
-    font-style: normal !important;
-    font-weight: 700 !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-  }
-
-  /* 4. Dates, Articles, Laws -> Deep Purple */
-  #content .kw-meta, #content .tag-meta {
-    color: #7c3aed !important;
-    background: #f5f3ff !important;
-    font-weight: 700 !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-  }
-
-  /* 5. Highlight Takeaways -> Amber */
-  #content .kw-highlight, #content mark.highlight {
-    color: #d97706 !important;
-    background: #fffbe0 !important;
-    font-weight: 700 !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-  }
-
-  /* --- Dark Mode Highlight Adjustments --- */
   [data-theme="dark"] #content strong { color: #fb7185 !important; }
   [data-theme="dark"] #content .kw-term { color: #60a5fa !important; background: #1e3a8a !important; }
   [data-theme="dark"] #content .kw-example, [data-theme="dark"] #content .eg, [data-theme="dark"] #content em { color: #34d399 !important; background: #064e3b !important; }
   [data-theme="dark"] #content .kw-meta, [data-theme="dark"] #content .tag-meta { color: #a78bfa !important; background: #4c1d95 !important; }
   [data-theme="dark"] #content .kw-highlight, [data-theme="dark"] #content mark.highlight { color: #fbbf24 !important; background: #78350f !important; }
 
-  /* --- Action Buttons & Alerts --- */
   .error-box {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
@@ -382,14 +338,14 @@
     }
 
     async function fetchAnswer() {
-      // --- SECURITY CHECK: Get the token from localStorage ---
+      // --- SECURITY CHECK: Get the token (or Owner Key) from localStorage ---
       const userToken = localStorage.getItem('userToken');
-
-      // If not logged in, kick them to the login page
-      if (!userToken) {
-        alert("Please login first to view the answer.");
-        // CHANGE MADE HERE: Used ./login.html instead of /login.html
-        window.location.href = "./login.html";
+      const ownerKey = localStorage.getItem('qcab_owner_key');
+      
+      // If NOT logged in and NOT the owner, redirect to login page with the return URL
+      if (!userToken && !ownerKey) {
+        const currentURL = window.location.href;
+        window.location.href = "./login.html?redirect=" + encodeURIComponent(currentURL);
         return;
       }
 
@@ -398,8 +354,8 @@
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
-            // --- THIS IS THE FIX: Sending the token ---
-            'Authorization': 'Bearer ' + userToken 
+            // Use the token or the owner key
+            'Authorization': 'Bearer ' + (userToken || ownerKey)
           },
           body: JSON.stringify({ question: questionText })
         });
@@ -408,12 +364,17 @@
 
         // Check for expired or invalid tokens
         if (res.status === 401) {
-          localStorage.removeItem('userToken');
-          localStorage.removeItem('userName');
-          alert("Session expired. Please login again.");
-          // CHANGE MADE HERE: Used ./login.html instead of /login.html
-          window.location.href = "./login.html";
-          return;
+          // Only clear and redirect if it wasn't the owner key
+          if (!ownerKey) {
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userName');
+            alert("Session expired. Please login again.");
+            const currentURL = window.location.href;
+            window.location.href = "./login.html?redirect=" + encodeURIComponent(currentURL);
+            return;
+          } else {
+            throw new Error("Owner key is invalid. Please check your browser console.");
+          }
         }
 
         if (!res.ok) {
