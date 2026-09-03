@@ -1538,10 +1538,21 @@
     if (qPaper) qPaper.addEventListener('change', populateFormSubtopics);
 
     function getYearGroup(q) {
-      const raw = String(q.year || '').trim();
-      const match = raw.match(/\b(19\d{2}|20\d{2})\b/);
-      const y = match ? Number(match[1]) : NaN;
-      return Number.isInteger(y) && y >= 2013 && y <= 2026 ? String(y) : 'Other';
+    // First, check if yearGroup is already correctly set
+    if (q.yearGroup && q.yearGroup !== 'Other') {
+        return q.yearGroup;
+    }
+    
+    // If not, try to extract from the year field
+    const raw = String(q.year || '').trim();
+    const match = raw.match(/\b(19\d{2}|20\d{2})\b/);
+    const y = match ? Number(match[1]) : NaN;
+    
+    if (Number.isInteger(y) && y >= 2013 && y <= 2026) {
+        return String(y);
+    }
+    
+    return 'Other';
     }
 
     function populateFilterYears() {
