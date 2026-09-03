@@ -1432,6 +1432,9 @@
 
     /* STORAGE DATA */
     const PRESET_STORAGE_KEY = 'qcab_preset_bank';
+    // ⚠️ REPLACE THIS WITH YOUR ACTUAL WORKER URL
+const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
+const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
     const STUDY_DATA_KEY = 'qcab_study_data';
     const VERSION_KEY = 'qcab_data_version';
     const CURRENT_VERSION = '2';
@@ -1445,12 +1448,62 @@
       presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
     }
 
-    let studyData = JSON.parse(localStorage.getItem(STUDY_DATA_KEY)) || {};
+    let studyData = {};
 
-    function saveStudyData() {
-      localStorage.setItem(STUDY_DATA_KEY, JSON.stringify(studyData));
-      updateStudyDashboard();
+    async function saveStudyData() {
+    if (!USER_TOKEN) return;
+    
+    // Loop through all changes and send to Cloudflare D1
+    const keys = Object.keys(studyData);
+    for (const question_id of keys) {
+        const rec = studyData[question_id];
+        if (!rec || typeof rec !== 'object') continue;
+        
+        try {
+            await fetch(`${WORKER_URL}/api/study/update`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + USER_TOKEN 
+                },
+                body: JSON.stringify({ 
+                    question_id: question_id, 
+                    bookmarked: rec.bookmarked ? 1 : 0, 
+                    revised: rec.revised ? 1 : 0, 
+                    note: rec.note || '' 
+                })
+            });
+        } catch (e) {
+            console.error('Failed to save to cloud for', question_id, e);
+        }
     }
+    updateStudyDashboard();
+}
+    async function loadCloudStudy() {
+    if (!USER_TOKEN) return;
+    try {
+        const res = await fetch(`${WORKER_URL}/api/study/get`, {
+            headers: { 'Authorization': 'Bearer ' + USER_TOKEN }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // Convert array from backend to object format
+        data.forEach(item => {
+            studyData[item.question_id] = {
+                bookmarked: item.bookmarked == 1,
+                revised: item.revised == 1,
+                note: item.note || ''
+            };
+        });
+        
+        // Update the dashboard and re-render the bank buttons
+        updateStudyDashboard();
+        renderBankResults(); 
+    } catch (e) {
+        console.error('Failed to load study data from cloud', e);
+    }
+}
 
     function getStudyRecord(q) {
       const id = q.id || q.question;
@@ -2330,6 +2383,8 @@
     updateFilterMode();
     renderAll();
     loadRepositoryJSON();
+    loadCloudStudy();
+        
 
   })();
 </script>
