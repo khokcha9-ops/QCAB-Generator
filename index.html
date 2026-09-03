@@ -12,11 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
-  /* ============================================================
-     ALL YOUR ORIGINAL CSS IS PRESERVED BELOW.
-     I've only STRENGTHENED the login modal CSS at the end.
-     ============================================================ */
-  :root {
+  :root{
     --bg:#f4f7fc;
     --surface:#ffffff;
     --surface-2:#eef2f9;
@@ -94,10 +90,6 @@
     z-index:20;
     box-shadow:4px 0 20px rgba(0,0,0,0.01);
     overflow-y:auto;
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  }
-  .sidebar.closed {
-    transform: translateX(-100%);
   }
   .sidebar-header-mobile {
     display: none;
@@ -254,7 +246,7 @@
   .btn-wide{width:100%;padding:13px 16px}
   .stats{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:16px;
     margin-bottom:24px;
   }
@@ -489,7 +481,7 @@
   [data-theme="dark"] .tag-paper-gs3{background:#1e1b4b;color:#c7d2fe}
   [data-theme="dark"] .tag-paper-gs4{background:#701a75;color:#f5d0fe}
   [data-theme="dark"] .tag-paper-opt{background:#4a044e;color:#f5d0fe}
-  .bank-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
   .btn-secondary-sm{
     border:1px solid var(--border);
     background:var(--surface);
@@ -523,6 +515,7 @@
   .btn-study.active-bookmark{background:#fef3c7;color:#b45309;border-color:#f59e0b}
   .btn-study.active-revised{background:#ecfdf5;color:#065f46;border-color:#10b981}
   .btn-study.note-btn{background:#f3e8ff;color:#6d28d9;border-color:#8b5cf6}
+
   .btn-add-item {
     background: #ecfdf5 !important;
     border: 1px solid #10b981 !important;
@@ -687,6 +680,8 @@
   .study-modal-content h3{margin-top:0}
   .study-modal-content textarea{width:100%;min-height:100px;margin:10px 0}
   .study-modal-content .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
+
+  /* Scroll To Top Button */
   .back-to-top {
     position: fixed;
     bottom: 20px;
@@ -713,143 +708,6 @@
     visibility: visible;
   }
 
-  /* ---- LOGIN MODAL (FIXED: GUARANTEED VISIBLE) ---- */
-  .login-modal {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    display: none !important;
-    z-index: 10001 !important;
-    background: rgba(0, 0, 0, 0.6) !important;
-    justify-content: center !important;
-    align-items: center !important;
-    backdrop-filter: blur(6px) !important;
-  }
-  .login-modal.open {
-    display: flex !important;
-  }
-  .login-modal-content {
-    background: var(--surface) !important;
-    border-radius: 24px !important;
-    padding: 36px 32px !important;
-    max-width: 420px !important;
-    width: 92% !important;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.4) !important;
-    position: relative !important;
-    border: 1px solid var(--border) !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-    color: var(--text) !important;
-    display: block !important;
-  }
-  .login-modal-content h2 {
-    margin: 0 0 8px !important;
-    font-size: 24px !important;
-    font-weight: 800 !important;
-    color: var(--text) !important;
-  }
-  .login-modal-content p.sub {
-    color: var(--muted) !important;
-    font-size: 14px !important;
-    margin-bottom: 20px !important;
-  }
-  .login-modal-content .field { margin-bottom: 14px !important; }
-  .login-modal-content .field label {
-    display: block !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    color: var(--text) !important;
-    margin-bottom: 4px !important;
-  }
-  .login-modal-content .field input {
-    width: 100% !important;
-    padding: 12px 14px !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 10px !important;
-    background: var(--surface-2) !important;
-    color: var(--text) !important;
-    font-size: 14px !important;
-    outline: none !important;
-    transition: 0.2s !important;
-  }
-  .login-modal-content .field input:focus {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 3px var(--primary-soft) !important;
-  }
-  .login-modal-content .btn-row { display: flex !important; gap: 10px !important; margin-top: 16px !important; }
-  .login-modal-content .btn-row .btn { flex: 1 !important; }
-  .login-modal-content .switch-link {
-    text-align: center !important;
-    margin-top: 14px !important;
-    font-size: 13px !important;
-    color: var(--muted) !important;
-  }
-  .login-modal-content .switch-link a {
-    color: var(--primary) !important;
-    font-weight: 700 !important;
-    cursor: pointer !important;
-    text-decoration: none !important;
-  }
-  .login-modal-content .switch-link a:hover { text-decoration: underline !important; }
-  .login-modal-close {
-    position: absolute !important;
-    top: 16px !important;
-    right: 20px !important;
-    background: none !important;
-    border: none !important;
-    font-size: 24px !important;
-    color: var(--muted) !important;
-    cursor: pointer !important;
-  }
-  .login-modal-close:hover { color: var(--text) !important; }
-
-  .ai-model-selector {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 6px 0 0;
-    flex-wrap: wrap;
-  }
-  .ai-model-selector label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    margin: 0;
-  }
-  .ai-model-selector select {
-    padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 600;
-    outline: none;
-  }
-
-  .mobile-menu-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15,23,42,0.5);
-    z-index: 99;
-  }
-  .mobile-menu-backdrop.active { display: block; }
-  .mobile-menu-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px; height: 32px;
-    border: none;
-    border-radius: 8px;
-    background: var(--surface-2);
-    color: var(--text);
-    font-size: 18px;
-    cursor: pointer;
-  }
-
   @media(max-width:1050px){
     .workspace{grid-template-columns:1fr}
     .sticky-card{position:static}
@@ -857,6 +715,7 @@
   @media(max-width:820px){
     .app{grid-template-columns:1fr}
     .sidebar{
+      display:flex !important;
       position:fixed !important;
       top:0;left:0;
       width:280px !important;
@@ -868,12 +727,35 @@
       box-shadow:10px 0 35px rgba(0,0,0,0.25);
       overflow-y:auto;
     }
-    .sidebar.mobile-open{transform:translateX(0)}
     .sidebar-header-mobile {
       display: flex;
     }
-    .mobile-menu-backdrop.active{display:block}
-    .mobile-menu-close{display:flex}
+    .sidebar.mobile-open{transform:translateX(0)}
+    .mobile-menu-backdrop{
+      display:block;
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.5);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.3s ease;
+      z-index:999;
+    }
+    .mobile-menu-backdrop.active{opacity:1;pointer-events:auto}
+    .mobile-menu-close{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:32px;height:32px;
+      border:none;
+      border-radius:8px;
+      background:var(--surface-2);
+      color:var(--text);
+      font-size:18px;
+      cursor:pointer;
+    }
+    body.menu-open{overflow:hidden}
+    
     .mobile-nav{
       display:flex;
       position:fixed;
@@ -890,9 +772,11 @@
       padding:0 18px;
       box-shadow:0 2px 10px rgba(0,0,0,0.08);
     }
+
     .content {
       padding-top: 60px;
     }
+
     .mobile-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
     .mobile-brand .brand-mark{width:34px;height:34px;border-radius:10px;font-size:12px}
     .mobile-actions-right {
@@ -946,13 +830,13 @@
   }
 </style>
 </head>
+
 <body>
 <div class="app">
 
-  <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar" id="main-sidebar">
     <div class="sidebar-header-mobile">
-      <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation</span>
+      <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
       <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close Menu">✕</button>
     </div>
 
@@ -974,14 +858,13 @@
     </nav>
 
     <div class="sidebar-bottom">
-      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
-      <button class="nav-btn" id="sidebar-login-btn"><span class="nav-icon">🔑</span><span id="sidebar-login-text">Login</span></button>
+      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light Mode</button>
     </div>
   </aside>
 
   <div class="content">
 
-    <!-- Mobile Bar -->
+    <!-- Sticky Mobile Bar -->
     <div class="mobile-nav">
       <div class="mobile-brand">
         <div class="brand-mark">Q</div>
@@ -992,27 +875,25 @@
         <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open Menu">☰</button>
       </div>
     </div>
+
+    <!-- Mobile Backdrop -->
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
-    <!-- Top Bar -->
     <header class="topbar">
       <div>
         <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
         <div class="topbar-sub">Build, organize and print your question-cum-answer booklet</div>
       </div>
       <div class="topbar-actions">
-        <button class="theme-toggle" id="topbar-sidebar-toggle" title="Toggle Sidebar">☰</button>
         <button class="theme-toggle" id="theme-toggle">
           <span id="theme-icon">🌙</span>
           <span id="theme-text">Dark Mode</span>
         </button>
-        <button class="theme-toggle" id="topbar-login-btn">🔑 <span id="topbar-login-text">Login</span></button>
       </div>
     </header>
 
     <main class="page">
 
-      <!-- ===== HERO / DASHBOARD ===== -->
       <section class="hero" id="dashboard">
         <div>
           <p class="eyebrow">Question-cum-Answer Booklet</p>
@@ -1025,43 +906,34 @@
         </div>
       </section>
 
-      <!-- ===== STATS ===== -->
       <section class="stats">
         <div class="stat">
-          <div class="stat-label">📚 QUESTION BANK</div>
+          <div class="stat-label">QUESTION BANK</div>
           <div class="stat-value" id="dashboard-bank-count">—</div>
           <div class="stat-note">PYQs currently loaded</div>
         </div>
         <div class="stat">
-          <div class="stat-label">📝 ACTIVE QCAB</div>
+          <div class="stat-label">ACTIVE QCAB</div>
           <div class="stat-value" id="dashboard-q-count">0</div>
           <div class="stat-note">Questions selected</div>
         </div>
         <div class="stat">
-          <div class="stat-label">📄 ANSWER PAGES</div>
+          <div class="stat-label">ANSWER PAGES</div>
           <div class="stat-value" id="dashboard-pages">0</div>
           <div class="stat-note">Based on marks selected</div>
         </div>
-        <div class="stat">
-          <div class="stat-label">🎯 UPSC 2026</div>
-          <div class="stat-value" id="countdown-days">—</div>
-          <div class="stat-note">Days until Prelims 2026</div>
-        </div>
       </section>
 
-      <!-- ===== FOLDER ===== -->
       <div class="folder-wrap">
         <div class="breadcrumbs" id="breadcrumbs"></div>
         <div class="folder-bar" id="folder-bar"></div>
       </div>
 
-      <!-- ===== WORKSPACE ===== -->
       <div class="workspace">
 
-        <!-- LEFT COLUMN -->
+        <!-- LEFT: CREATE + PYQ BANK -->
         <section>
 
-          <!-- CREATE QUESTION -->
           <div class="card" id="create-question">
             <div class="card-header">
               <div>
@@ -1121,7 +993,6 @@
             </div>
           </div>
 
-          <!-- PYQ BANK -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
               <div>
@@ -1190,7 +1061,7 @@
 
         </section>
 
-        <!-- RIGHT COLUMN: MY QCAB -->
+        <!-- RIGHT: ACTIVE QCAB -->
         <aside class="card sticky-card" id="my-qcab">
           <div class="card-header">
             <div>
@@ -1230,7 +1101,7 @@
 
       </div>
 
-      <!-- ===== MY STUDY ===== -->
+      <!-- MY STUDY SECTION -->
       <section id="my-study" style="margin-top:30px;">
         <div class="card">
           <div class="card-header">
@@ -1264,10 +1135,10 @@
   </div>
 </div>
 
-<!-- ===== BACK TO TOP ===== -->
+<!-- Back to top button -->
 <button class="back-to-top" id="back-to-top" title="Back to top">↑</button>
 
-<!-- ===== NOTE MODAL ===== -->
+<!-- NOTE MODAL -->
 <div class="study-modal" id="note-modal">
   <div class="study-modal-content">
     <h3>📝 Add Note</h3>
@@ -1279,45 +1150,7 @@
   </div>
 </div>
 
-<!-- ===== LOGIN MODAL (FIXED) ===== -->
-<div class="login-modal" id="login-modal">
-  <div class="login-modal-content">
-    <button class="login-modal-close" id="login-modal-close">&times;</button>
-    <h2 id="login-modal-title">Welcome Back</h2>
-    <p class="sub" id="login-modal-sub">Sign in to access AI answers and sync your study data.</p>
-    <div class="field">
-      <label for="login-email">Email</label>
-      <input type="email" id="login-email" placeholder="your@email.com">
-    </div>
-    <div class="field">
-      <label for="login-password">Password</label>
-      <input type="password" id="login-password" placeholder="••••••••">
-    </div>
-    <div id="login-error" style="color:var(--danger);font-size:13px;margin-bottom:10px;display:none;"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="login-submit-btn">Sign In</button>
-    </div>
-    <div class="switch-link">
-      <span id="login-switch-text">Don't have an account?</span> <a id="login-switch-link">Register</a>
-    </div>
-  </div>
-</div>
-
 <script>
-  /* ============================================================
-     ALL ORIGINAL JAVASCRIPT (preserved) + enhancements
-     ============================================================ */
-
-  // ---- [ORIGINAL CODE STARTS] ----
-  // (The entire script from your original index.html, starting from
-  //  the line "/* NAVIGATION & SCROLL MANAGEMENT */" all the way
-  //  to the end, is inserted here. I've included it below.
-  //  To keep this answer readable, I will mark it clearly.)
-
-  // ============================================================
-  //  ORIGINAL CODE BLOCK – copied from your provided file
-  // ============================================================
-
   /* NAVIGATION & SCROLL MANAGEMENT */
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1599,8 +1432,9 @@
 
     /* STORAGE DATA */
     const PRESET_STORAGE_KEY = 'qcab_preset_bank';
-    const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
-    const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
+    // ⚠️ REPLACE THIS WITH YOUR ACTUAL WORKER URL
+const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
+const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
     const STUDY_DATA_KEY = 'qcab_study_data';
     const VERSION_KEY = 'qcab_data_version';
     const CURRENT_VERSION = '2';
@@ -1617,53 +1451,59 @@
     let studyData = {};
 
     async function saveStudyData() {
-      if (!USER_TOKEN) return;
-      const keys = Object.keys(studyData);
-      for (const question_id of keys) {
+    if (!USER_TOKEN) return;
+    
+    // Loop through all changes and send to Cloudflare D1
+    const keys = Object.keys(studyData);
+    for (const question_id of keys) {
         const rec = studyData[question_id];
         if (!rec || typeof rec !== 'object') continue;
+        
         try {
-          await fetch(`${WORKER_URL}/api/study/update`, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + USER_TOKEN 
-            },
-            body: JSON.stringify({ 
-              question_id: question_id, 
-              bookmarked: rec.bookmarked ? 1 : 0, 
-              revised: rec.revised ? 1 : 0, 
-              note: rec.note || '' 
-            })
-          });
+            await fetch(`${WORKER_URL}/api/study/update`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + USER_TOKEN 
+                },
+                body: JSON.stringify({ 
+                    question_id: question_id, 
+                    bookmarked: rec.bookmarked ? 1 : 0, 
+                    revised: rec.revised ? 1 : 0, 
+                    note: rec.note || '' 
+                })
+            });
         } catch (e) {
-          console.error('Failed to save to cloud for', question_id, e);
+            console.error('Failed to save to cloud for', question_id, e);
         }
-      }
-      updateStudyDashboard();
     }
-
+    updateStudyDashboard();
+}
     async function loadCloudStudy() {
-      if (!USER_TOKEN) return;
-      try {
+    if (!USER_TOKEN) return;
+    try {
         const res = await fetch(`${WORKER_URL}/api/study/get`, {
-          headers: { 'Authorization': 'Bearer ' + USER_TOKEN }
+            headers: { 'Authorization': 'Bearer ' + USER_TOKEN }
         });
         if (!res.ok) return;
         const data = await res.json();
+        
+        // Convert array from backend to object format
         data.forEach(item => {
-          studyData[item.question_id] = {
-            bookmarked: item.bookmarked == 1,
-            revised: item.revised == 1,
-            note: item.note || ''
-          };
+            studyData[item.question_id] = {
+                bookmarked: item.bookmarked == 1,
+                revised: item.revised == 1,
+                note: item.note || ''
+            };
         });
+        
+        // Update the dashboard and re-render the bank buttons
         updateStudyDashboard();
         renderBankResults(); 
-      } catch (e) {
+    } catch (e) {
         console.error('Failed to load study data from cloud', e);
-      }
     }
+}
 
     function getStudyRecord(q) {
       const id = q.id || q.question;
@@ -2069,18 +1909,6 @@
 
         const numberedQuestion = `<strong>${index + 1}.</strong> ${escapeHtml(q.question)}`;
 
-        // --- AI Model Selector ---
-        const modelSelectorHtml = `
-          <div class="ai-model-selector">
-            <label for="ai-model-${q.id}">🤖 Model:</label>
-            <select id="ai-model-${q.id}" class="ai-model-select">
-              <option value="perplexity">Perplexity AI</option>
-              <option value="chatgpt">ChatGPT</option>
-              <option value="deepseek">DeepSeek</option>
-            </select>
-          </div>
-        `;
-
         div.innerHTML = `
           <div class="bank-question">${numberedQuestion}</div>
           <div class="bank-bottom">
@@ -2090,7 +1918,6 @@
               <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
             </div>
             <div class="bank-actions" style="flex-wrap:wrap; gap:6px;">
-              ${modelSelectorHtml}
               <button class="btn-study ${bookmarked ? 'active-bookmark' : ''}" data-action="bookmark" data-id="${q.id}">⭐ ${bookmarked ? 'Bookmarked' : 'Bookmark'}</button>
               <button class="btn-study ${revised ? 'active-revised' : ''}" data-action="revise" data-id="${q.id}">✅ ${revised ? 'Revised' : 'Mark Revised'}</button>
               <button class="btn-study note-btn" data-action="note" data-id="${q.id}">📝 Note</button>
@@ -2557,220 +2384,64 @@
     renderAll();
     loadRepositoryJSON();
     loadCloudStudy();
-
-    // ---- END OF ORIGINAL CODE ----
-
-    // ============================================================
-    //  NEW ENHANCEMENTS (Login, Sidebar Toggle, AI Model Selector,
-    //  Countdown, etc.) – integrated with the above
-    // ============================================================
-
-    // ---- COUNTDOWN ----
-    function updateCountdown() {
-      const target = new Date(2026, 4, 31); // May 31, 2026
-      const now = new Date();
-      const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
-      const el = document.getElementById('countdown-days');
-      if (el) el.textContent = diff > 0 ? diff : '🎯';
-    }
-    updateCountdown();
-
-    // ---- SIDEBAR TOGGLE (Desktop) ----
-    const sidebarEl = document.getElementById('main-sidebar');
-    const sidebarToggleBtn = document.getElementById('topbar-sidebar-toggle');
-    if (sidebarToggleBtn) {
-      sidebarToggleBtn.addEventListener('click', function() {
-        sidebarEl.classList.toggle('closed');
-      });
-    }
-
-    // ---- LOGIN SYSTEM (Integrated) ----
-    const loginModal = document.getElementById('login-modal');
-    const loginEmail = document.getElementById('login-email');
-    const loginPassword = document.getElementById('login-password');
-    const loginSubmit = document.getElementById('login-submit-btn');
-    const loginError = document.getElementById('login-error');
-    const loginSwitchLink = document.getElementById('login-switch-link');
-    const loginSwitchText = document.getElementById('login-switch-text');
-    const loginModalTitle = document.getElementById('login-modal-title');
-    const loginModalSub = document.getElementById('login-modal-sub');
-    const loginModalClose = document.getElementById('login-modal-close');
-
-    let isLoginMode = true;
-
-    function openLoginModal(mode) {
-      isLoginMode = mode !== 'register';
-      loginModalTitle.textContent = isLoginMode ? 'Welcome Back' : 'Create Account';
-      loginModalSub.textContent = isLoginMode
-        ? 'Sign in to access AI answers and sync your study data.'
-        : 'Register to save your bookmarks and access AI answers.';
-      loginSwitchText.textContent = isLoginMode ? "Don't have an account?" : 'Already have an account?';
-      loginSwitchLink.textContent = isLoginMode ? 'Register' : 'Sign In';
-      loginSubmit.textContent = isLoginMode ? 'Sign In' : 'Create Account';
-      loginError.style.display = 'none';
-      loginEmail.value = '';
-      loginPassword.value = '';
-      loginModal.classList.add('open');
-    }
-
-    function closeLoginModal() {
-      loginModal.classList.remove('open');
-    }
-
-    loginModalClose.addEventListener('click', closeLoginModal);
-    loginModal.addEventListener('click', function(e) { if (e.target === this) closeLoginModal(); });
-
-    function getUser() {
-      try {
-        const data = JSON.parse(localStorage.getItem('qcab_user'));
-        if (data && data.email) return data;
-      } catch (_) { /* ignore */ }
-      return null;
-    }
-
-    function setUser(user) {
-      if (user) {
-        localStorage.setItem('qcab_user', JSON.stringify(user));
-        localStorage.setItem('userToken', user.token || '');
-        localStorage.setItem('qcab_owner_key', user.token || '');
-      } else {
-        localStorage.removeItem('qcab_user');
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('qcab_owner_key');
-      }
-      updateAuthUI();
-    }
-
-    function updateAuthUI() {
-      const user = getUser();
-      const isLoggedIn = !!user;
-      const loginTexts = document.querySelectorAll('#sidebar-login-text, #topbar-login-text');
-      loginTexts.forEach(el => el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login');
-    }
-
-    // Load user on startup
-    let currentUser = getUser();
-    updateAuthUI();
-
-    document.getElementById('sidebar-login-btn').addEventListener('click', function() {
-      const user = getUser();
-      if (user) {
-        if (confirm('Logout from your account?')) {
-          setUser(null);
-          alert('Logged out.');
-          studyData = {};
-          renderBankResults();
-          updateStudyDashboard();
-        }
-      } else {
-        openLoginModal('login');
-      }
-    });
-
-    document.getElementById('topbar-login-btn').addEventListener('click', function() {
-      const user = getUser();
-      if (user) {
-        if (confirm('Logout from your account?')) {
-          setUser(null);
-          alert('Logged out.');
-          studyData = {};
-          renderBankResults();
-          updateStudyDashboard();
-        }
-      } else {
-        openLoginModal('login');
-      }
-    });
-
-    loginSwitchLink.addEventListener('click', function() {
-      isLoginMode = !isLoginMode;
-      openLoginModal(isLoginMode ? 'login' : 'register');
-    });
-
-    loginSubmit.addEventListener('click', async function() {
-      const email = loginEmail.value.trim();
-      const password = loginPassword.value.trim();
-      if (!email || !password) {
-        loginError.textContent = 'Please fill in all fields.';
-        loginError.style.display = 'block';
-        return;
-      }
-      loginError.style.display = 'none';
-      loginSubmit.disabled = true;
-      loginSubmit.textContent = 'Processing...';
-
-      try {
-        const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/register';
-        const res = await fetch(WORKER_URL + endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || 'Authentication failed.');
-        }
-        setUser({ email, token: data.token || data.key || 'dummy-token' });
-        closeLoginModal();
-        alert(isLoginMode ? 'Welcome back!' : 'Account created!');
-        loadCloudStudy();
-        renderBankResults();
-        updateStudyDashboard();
-      } catch (err) {
-        loginError.textContent = err.message || 'Something went wrong.';
-        loginError.style.display = 'block';
-      } finally {
-        loginSubmit.disabled = false;
-        loginSubmit.textContent = isLoginMode ? 'Sign In' : 'Create Account';
-      }
-    });
-
-    [loginEmail, loginPassword].forEach(field => {
-      field.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') loginSubmit.click();
-      });
-    });
-
-    // ---- OVERRIDE fetchAIAnswer to use model selector ----
-    window.fetchAIAnswer = function(buttonElement) {
-      const card = buttonElement.closest('.bank-item');
-      if (!card) return;
-      const questionEl = card.querySelector('.bank-question');
-      let questionText = questionEl ? questionEl.innerText.trim() : '';
-      questionText = questionText.replace(/^\d+\.\s*/, '');
-      const tags = card.querySelectorAll('.tag');
-      let marks = '', year = '';
-      tags.forEach(tag => {
-        const text = tag.innerText;
-        if (text.includes('M')) {
-          const parts = text.split('/');
-          marks = parts[0].trim();
-          if (parts[1]) year = parts[1].trim();
-        }
-      });
-      const modelSelect = card.querySelector('.ai-model-select');
-      const model = modelSelect ? modelSelect.value : 'perplexity';
-
-      const user = getUser();
-      if (!user) {
-        alert('Please login to access AI answers.');
-        openLoginModal('login');
-        return;
-      }
-      const targetUrl = `answer.html?q=${encodeURIComponent(questionText)}&y=${encodeURIComponent(year)}&m=${encodeURIComponent(marks)}&model=${encodeURIComponent(model)}`;
-      window.open(targetUrl, '_blank');
-    };
-
-    console.log('QCAB Generator with Login, AI Models, Sidebar Toggle, and Countdown – Enhanced version loaded.');
-    console.log('All original features preserved. Subtopics intact.');
+        
 
   })();
-  // ============================================================
-  // END OF SCRIPT
-  // ============================================================
 </script>
 
-<!-- External scripts (if any) -->
+<script>
+function openAnswerPage(item) {
+    // 1. Check if user is logged in OR if you are the owner
+    const userToken = localStorage.getItem('userToken');
+    const ownerKey = localStorage.getItem('qcab_owner_key');
 
+    // 2. Create the target URL for answer.html
+    const targetUrl = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
+
+    // 3. If NOT logged in and NOT the owner, redirect to login
+    if (!userToken && !ownerKey) {
+        alert("Please login first to view the AI generated answer.");
+        // Redirect the current window to login page, passing where we were going
+        window.location.href = `./login.html?redirect=${encodeURIComponent(targetUrl)}`;
+        return;
+    }
+
+    // 4. If logged in (or owner), open the answer page in a new tab
+    window.open(targetUrl, '_blank');
+}
+
+window.fetchAIAnswer = function(buttonElement) {
+  const card = buttonElement.closest('.bank-item');
+  if (!card) return;
+
+  const questionEl = card.querySelector('.bank-question');
+  let questionText = questionEl ? questionEl.innerText.trim() : '';
+
+  // Remove leading numbers or indices (e.g., "1. ") from the extracted question text
+  questionText = questionText.replace(/^\d+\.\s*/, '');
+
+  const tags = card.querySelectorAll('.tag');
+  let marks = '', year = '';
+
+  tags.forEach(tag => {
+    const text = tag.innerText;
+    if (text.includes('M')) {
+      const parts = text.split('/');
+      marks = parts[0].trim();
+      if (parts[1]) year = parts[1].trim();
+    }
+  });
+
+  const questionItem = {
+    question: questionText,
+    marks: marks,
+    year: year
+  };
+
+  openAnswerPage(questionItem);
+};
+</script>
+<script src="mobile-menu.js"></script>
+<script src="upsc-prep-tools.js"></script>
 </body>
 </html>
