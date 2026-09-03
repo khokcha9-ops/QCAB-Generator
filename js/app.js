@@ -184,3 +184,20 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('✅ QCAB Generator loaded successfully!');
   console.log('📋 Subtopics count:', Object.keys(SYLLABUS).length);
 });
+document.getElementById('topbar-login-btn')?.addEventListener('click', () => {
+  const user = getUser();
+  if (user) {
+    if (confirm('Logout?')) { setUser(null); alert('Logged out.'); }
+  } else {
+    openLoginModal('login');
+  }
+});
+
+document.getElementById('sidebar-login-btn')?.addEventListener('click', () => {
+  const user = getUser();
+  if (user) {
+    if (confirm('Logout?')) { setUser(null); alert('Logged out.'); }
+  } else {
+    openLoginModal('login');
+  }
+});
