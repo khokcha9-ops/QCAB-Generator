@@ -369,6 +369,38 @@
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
-
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="login-modal">
+  <div class="login-modal-content">
+    <button class="login-modal-close" id="login-modal-close">&times;</button>
+    <div class="login-brand-icon">Q</div>
+    <h2 id="login-modal-title">Welcome Back</h2>
+    <p class="login-sub" id="login-modal-sub">Sign in to access AI answers and sync your study data.</p>
+    
+    <div id="login-error" style="display:none; color:var(--danger); margin-bottom:10px;"></div>
+    
+    <div class="field">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com">
+    </div>
+    <div class="field">
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+    
+    <button class="btn btn-primary" id="login-submit-btn" style="width:100%;">Sign In</button>
+    
+    <div class="divider">or</div>
+    
+    <button class="btn btn-google" id="google-login-btn">
+      <span style="font-size:18px; margin-right:8px;">G</span> Continue with Google
+    </button>
+    
+    <div class="switch-link">
+      <span id="login-switch-text">Don't have an account?</span> 
+      <a id="login-switch-link">Sign up</a>
+    </div>
+  </div>
+</div>
 </body>
 </html>
