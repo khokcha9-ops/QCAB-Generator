@@ -1367,12 +1367,13 @@
           }
 
           const rawYearText = String(q.year || q.exam_year || q.Year || '').trim();
-          const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
-          const rawYear = yearMatch ? yearMatch[1] : 'Other';
-          const yearNumber = rawYear === 'Other' ? NaN : Number(rawYear);
-          const yearGroup = Number.isInteger(yearNumber) && yearNumber >= 2013 && yearNumber <= 2026
-            ? String(yearNumber)
-            : 'Other';
+const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
+const rawYear = yearMatch ? yearMatch[1] : 'Other';
+const yearNumber = rawYear === 'Other' ? NaN : Number(rawYear);
+// ✅ FIX: Always set yearGroup for valid years 2013-2026
+const yearGroup = Number.isInteger(yearNumber) && yearNumber >= 2013 && yearNumber <= 2026
+    ? String(yearNumber)
+    : 'Other';
 
           const rawPaper = q.paper || q.gs || q.subject || 'GS1';
           const rawTopic = q.topic || q.subtopic || q.category || SYLLABUS[normalizePaperCode(rawPaper)]?.[0] || 'General';
@@ -1556,30 +1557,42 @@
     }
 
     function populateFilterYears() {
-      if (!filterYear) return;
-      const prevSelected = filterYear.value;
-      filterYear.innerHTML = '<option value="ALL">All Years</option>';
+  if (!filterYear) return;
+  const prevSelected = filterYear.value;
+  filterYear.innerHTML = '<option value="ALL">All Years</option>';
 
-      // Fixed official UPSC window + a catch-all bucket for older/newer/unknown years.
-      for (let year = 2026; year >= 2013; year--) {
-        const opt = document.createElement('option');
-        opt.value = String(year);
-        opt.textContent = String(year);
-        filterYear.appendChild(opt);
-      }
-
-      const hasOther = presetBank.some((q) => getYearGroup(q) === 'Other');
-      if (hasOther) {
-        const opt = document.createElement('option');
-        opt.value = 'Other';
-        opt.textContent = 'Other (Before 2013 / Outside 2013–2026)';
-        filterYear.appendChild(opt);
-      }
-
-      if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
-        filterYear.value = prevSelected;
-      }
+  // ✅ FIX: Only show years that actually exist in the data
+  const years = new Set();
+  presetBank.forEach(q => {
+    const yearGroup = getYearGroup(q);
+    if (yearGroup !== 'Other') {
+      years.add(yearGroup);
     }
+  });
+
+  // Add years from 2013 to 2026 that exist in data
+  for (let year = 2026; year >= 2013; year--) {
+    const yearStr = String(year);
+    if (years.has(yearStr)) {
+      const opt = document.createElement('option');
+      opt.value = yearStr;
+      opt.textContent = yearStr;
+      filterYear.appendChild(opt);
+    }
+  }
+
+  const hasOther = presetBank.some((q) => getYearGroup(q) === 'Other');
+  if (hasOther) {
+    const opt = document.createElement('option');
+    opt.value = 'Other';
+    opt.textContent = 'Other (Before 2013 / Outside 2013–2026)';
+    filterYear.appendChild(opt);
+  }
+
+  if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
+    filterYear.value = prevSelected;
+  }
+}
 
     function updateFilterMode() {
       if (!filterYear || !filterTopic) return;
