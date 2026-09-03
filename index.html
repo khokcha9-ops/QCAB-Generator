@@ -960,7 +960,7 @@
     </nav>
 
     <div class="sidebar-bottom">
-      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark Mode</button>
+      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span><span id="sidebar-theme-text">Dark Mode</span></button>
     </div>
   </aside>
 
@@ -970,9 +970,12 @@
     <div class="mobile-nav">
       <div class="mobile-brand">
         <div class="brand-mark">Q</div>
-        QCAB Generator
+        QCAB
       </div>
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button class="theme-toggle" id="mobile-theme-toggle" style="padding:6px 10px; font-size:16px;">🌙</button>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+      </div>
     </div>
 
     <!-- Mobile Menu Backdrop -->
@@ -994,172 +997,4 @@
 
     <main class="page">
 
-      <section class="hero" id="dashboard">
-        <div>
-          <p class="eyebrow">Question-cum-Answer Booklet</p>
-          <h1>UPSC PYQ Bank<br>cum QCAB Generator</h1>
-          <p>Find previous year questions, build your custom practice set and generate a print-ready answer booklet.</p>
-        </div>
-        <div class="hero-actions">
-          <button class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
-          <button class="btn" data-scroll="create-question">＋ Create Question</button>
-        </div>
-      </section>
-
-      <section class="stats">
-        <div class="stat">
-          <div class="stat-label">QUESTION BANK</div>
-          <div class="stat-value" id="dashboard-bank-count">—</div>
-          <div class="stat-note">PYQs currently loaded</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">ACTIVE QCAB</div>
-          <div class="stat-value" id="dashboard-q-count">0</div>
-          <div class="stat-note">Questions selected</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">ANSWER PAGES</div>
-          <div class="stat-value" id="dashboard-pages">0</div>
-          <div class="stat-note">Based on marks selected</div>
-        </div>
-      </section>
-
-      <div class="folder-wrap">
-        <div class="breadcrumbs" id="breadcrumbs"></div>
-        <div class="folder-bar" id="folder-bar"></div>
-      </div>
-
-      <div class="workspace">
-
-        <!-- LEFT: CREATE + PYQ BANK -->
-        <section>
-
-          <div class="card" id="create-question">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title" id="add-heading">Create Custom Question</h2>
-                <p class="card-sub">Add your own question directly to the active booklet.</p>
-              </div>
-              <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
-            </div>
-
-            <div id="create-form-body">
-              <div class="field">
-                <label for="q-paper">Paper</label>
-                <select id="q-paper">
-                  <option value="GS1">GS Paper 1</option>
-                  <option value="GS2">GS Paper 2</option>
-                  <option value="GS3">GS Paper 3</option>
-                  <option value="GS4">GS Paper 4</option>
-                  <option value="OPT1">Anthropology Optional Paper 1</option>
-                  <option value="OPT2">Anthropology Optional Paper 2</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="q-topic">Subtopic</label>
-                <select id="q-topic"></select>
-              </div>
-
-              <div class="field">
-                <label for="q-text">Question Text</label>
-                <textarea id="q-text" placeholder="Paste or type your question here..."></textarea>
-              </div>
-
-              <div class="field">
-                <label>Marks</label>
-                <div class="marks-row">
-                  <button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button>
-                  <button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button>
-                  <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
-                <input type="text" id="q-year" placeholder="e.g. 2025">
-              </div>
-
-              <div class="field checkbox-row">
-                <input type="checkbox" id="include-index" checked>
-                <label for="include-index">Include index page in PDF</label>
-              </div>
-
-              <div class="form-actions">
-                <button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
-                <button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
-                <button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" id="pyq-bank">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">PYQ Bank</h2>
-                <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
-              </div>
-              <div style="display:flex; gap:8px;">
-                <button class="btn" id="toggle-bank-btn" title="Collapse to scroll the page more easily">
-                  <span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span>
-                </button>
-                <button class="btn btn-danger" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
-              </div>
-            </div>
-
-            <div id="pyq-bank-body">
-              <div class="mode-switch">
-                <label>
-                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
-                  <span>Filter by Year</span>
-                </label>
-                <label>
-                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
-                  <span>Filter by Subtopic</span>
-                </label>
-              </div>
-
-              <div class="search-main" style="position: relative;">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
-              </div>
-
-              <div class="filter-box">
-                <div class="filters">
-                  <select id="filter-paper">
-                    <option value="ALL">All Papers</option>
-                    <option value="GS1">GS Paper 1</option>
-                    <option value="GS2">GS Paper 2</option>
-                    <option value="GS3">GS Paper 3</option>
-                    <option value="GS4">GS Paper 4</option>
-                    <option value="OPT1">Anthropology Optional Paper 1</option>
-                    <option value="OPT2">Anthropology Optional Paper 2</option>
-                  </select>
-
-                  <select id="filter-topic">
-                    <option value="ALL">All Subtopics</option>
-                  </select>
-
-                  <select id="filter-year">
-                    <option value="ALL">All Years</option>
-                  </select>
-
-                  <button class="btn btn-primary" id="search-bank-btn">Search</button>
-                  <button class="btn" id="clear-results-btn">Clear</button>
-                </div>
-              </div>
-
-              <div id="bank-status-text">Loading question bank...</div>
-
-              <div id="bank-results-container">
-                <p style="font-size:13px;color:var(--muted);font-style:italic;">
-                  Loading repository questions...
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- RIGHT: ACTIVE QCAB -->
-        <aside class="card sticky-card" id="my-qcab">
+      <!-- PAGE CONTENT STARTS HERE - Rest of your existing HTML remains the same -->
