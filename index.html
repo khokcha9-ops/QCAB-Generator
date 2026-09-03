@@ -1369,6 +1369,7 @@
           const rawYearText = String(q.year || q.exam_year || q.Year || '').trim();
           const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
           const rawYear = yearMatch ? yearMatch[1] : 'Other';
+          const displayYear = rawYear;  // ← ADD THIS LINE
           const yearNumber = rawYear === 'Other' ? NaN : Number(rawYear);
           const yearGroup = Number.isInteger(yearNumber) && yearNumber >= 2013 && yearNumber <= 2026
             ? String(yearNumber)
@@ -1381,7 +1382,7 @@
             id: q.id || generateUniqueId('q'),
             paper: normalizePaperCode(rawPaper),
             topic: String(rawTopic).trim(),
-            year: rawYear,
+            year: displayYear,
             yearGroup: yearGroup,
             marks: Number(rawMarks),
             question: questionText
@@ -2111,12 +2112,16 @@
     if (generateBtn) generateBtn.addEventListener('click', generatePDF);
 
     /* 9. INITIALIZATION ON PAGE LOAD */
-    populateFormSubtopics();
-    populateFilterYears();
-    populateFilterTopics();
-    updateFilterMode();
-    renderAll();
-    loadRepositoryJSON();
+populateFormSubtopics();
+populateFilterTopics();   // ← Notice populateFilterYears() is REMOVED from here
+updateFilterMode();
+renderAll();
+
+// Load the repository and THEN populate years (so 2025 & 2026 get included)
+loadRepositoryJSON().then(() => {
+    populateFilterYears();  // ← Now this runs AFTER data loads
+    renderBankResults();
+}).catch(err => console.warn('Initial load failed:', err));
   })();
 </script>
 
