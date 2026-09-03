@@ -77,14 +77,7 @@
     min-height:100vh;
     display:grid;
     grid-template-columns:260px minmax(0,1fr);
-    transition: grid-template-columns 0.3s ease;
   }
-  /* Fixed Sidebar logic */
-  .app.sidebar-hidden { grid-template-columns: 1fr; }
-  .sidebar.collapsed{display:none !important;}
-  
-  #open-sidebar-btn { display:none; position:fixed; top:20px; left:20px; z-index:10000; }
-
   .sidebar{
     position:sticky;
     top:0;
@@ -98,151 +91,760 @@
     box-shadow:4px 0 20px rgba(0,0,0,0.01);
     overflow-y:auto;
   }
-  
-  .sidebar-header-mobile { display: none; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .brand{ display:flex; align-items:center; gap:12px; padding:4px 8px 28px; }
-  .brand-mark{ width:42px;height:42px; border-radius:14px; display:grid;place-items:center; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; font-weight:800; font-size:18px; box-shadow:0 6px 16px rgba(124,58,237,0.25); }
+  .sidebar-header-mobile {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:4px 8px 28px;
+  }
+  .brand-mark{
+    width:42px;height:42px;
+    border-radius:14px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    color:#fff;
+    font-weight:800;
+    font-size:18px;
+    box-shadow:0 6px 16px rgba(124,58,237,0.25);
+  }
   .brand strong{display:block;font-size:15px;font-weight:750}
   .brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px;font-weight:500}
-  .nav-title{ padding:0 12px 10px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
-  .nav{ display:grid; gap:6px; }
-  .nav-btn{ width:100%; display:flex; align-items:center; gap:12px; border:0; background:transparent; color:var(--muted); padding:12px 14px; border-radius:12px; text-align:left; font-size:14px; font-weight:650; transition:all 0.2s ease; }
-  .nav-btn:hover{ background:var(--surface-2); color:var(--text); }
-  .nav-btn.active{ background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; box-shadow:0 6px 16px rgba(124,58,237,0.25); }
+  .nav-title{
+    padding:0 12px 10px;
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--muted);
+  }
+  .nav{
+    display:grid;
+    gap:6px;
+  }
+  .nav-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:12px 14px;
+    border-radius:12px;
+    text-align:left;
+    font-size:14px;
+    font-weight:650;
+    transition:all 0.2s ease;
+  }
+  .nav-btn:hover{
+    background:var(--surface-2);
+    color:var(--text);
+  }
+  .nav-btn.active{
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    color:#fff;
+    box-shadow:0 6px 16px rgba(124,58,237,0.25);
+  }
+  [data-theme="dark"] .nav-btn.active {
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    box-shadow:0 6px 16px rgba(167,139,250,0.3);
+  }
   .nav-icon{width:20px;text-align:center;font-size:16px}
-  .sidebar-bottom{ margin-top:auto; border-top:1px solid var(--border); padding-top:16px; }
-  
+  .sidebar-bottom{
+    margin-top:auto;
+    border-top:1px solid var(--border);
+    padding-top:16px;
+  }
   .content{min-width:0}
-  .topbar{ position:sticky; top:0; z-index:15; height:72px; display:flex; align-items:center; justify-content:space-between; padding:0 36px; background:color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:15;
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 36px;
+    background:color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+  }
   .topbar-title{font-size:15px;font-weight:750}
   .topbar-sub{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
   .topbar-actions{display:flex;align-items:center;gap:10px}
-  .theme-toggle,.icon-top{ border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:11px; padding:8px 14px; font-size:13px; font-weight:650; transition:all 0.2s ease; box-shadow:var(--shadow-sm); }
+  .theme-toggle,.icon-top{
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    border-radius:11px;
+    padding:8px 14px;
+    font-size:13px;
+    font-weight:650;
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
   .theme-toggle:hover,.icon-top:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
-  .page{ width:min(1280px, 100%); margin:auto; padding:36px; }
-  .hero{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:28px; }
-  .eyebrow{ margin:0 0 8px; color:var(--accent); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; }
-  h1{ margin:0; font-family:var(--serif); font-size:clamp(32px, 4vw, 46px); line-height:1.08; font-weight:400; letter-spacing:-.02em; }
+  .page{
+    width:min(1280px, 100%);
+    margin:auto;
+    padding:36px;
+  }
+  .hero{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    margin:0 0 8px;
+    color:var(--accent);
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+  }
+  h1{
+    margin:0;
+    font-family:var(--serif);
+    font-size:clamp(32px, 4vw, 46px);
+    line-height:1.08;
+    font-weight:400;
+    letter-spacing:-.02em;
+  }
   .hero p{margin:12px 0 0;color:var(--muted);font-size:15px;max-width:680px;line-height:1.5;font-weight:500}
   .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-  .btn{ border:1px solid var(--border-strong); background:var(--surface); color:var(--text); border-radius:12px; padding:11px 18px; font-size:13px; font-weight:750; transition:all 0.2s ease; box-shadow:var(--shadow-sm); }
+  .btn{
+    border:1px solid var(--border-strong);
+    background:var(--surface);
+    color:var(--text);
+    border-radius:12px;
+    padding:11px 18px;
+    font-size:13px;
+    font-weight:750;
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
   .btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);transform:translateY(-1px)}
-  .btn-primary{ border-color:transparent; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; box-shadow:0 4px 14px rgba(124,58,237,0.25); }
+  .btn-primary{
+    border-color:transparent;
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    color:#fff;
+    box-shadow:0 4px 14px rgba(124,58,237,0.25);
+  }
+  .btn-primary:hover{background:linear-gradient(135deg, var(--primary-hover), var(--primary));color:#fff;box-shadow:0 6px 18px rgba(124,58,237,0.35)}
+  .btn-danger{color:var(--danger);border-color:var(--border)}
+  .btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
   .btn-wide{width:100%;padding:13px 16px}
-  
-  .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
-  .stat{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow-sm); position:relative; overflow:hidden; }
-  .stat::after{ content:''; position:absolute; top:0;left:0;width:4px;height:100%; background:linear-gradient(to bottom, var(--primary), var(--accent)); opacity:0.8; }
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-bottom:24px;
+  }
+  .stat{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+    box-shadow:var(--shadow-sm);
+    transition:all 0.2s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat::after{
+    content:'';
+    position:absolute;
+    top:0;left:0;width:4px;height:100%;
+    background:linear-gradient(to bottom, var(--primary), var(--accent));
+    opacity:0.8;
+  }
+  .stat:hover{transform:translateY(-2px);border-color:var(--border-strong);box-shadow:var(--shadow)}
   .stat-label{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:0.05em}
   .stat-value{font-size:30px;font-weight:850;margin-top:6px;letter-spacing:-0.03em;color:var(--text)}
   .stat-note{font-size:11px;color:var(--muted);margin-top:4px;font-weight:500}
-  
-  .workspace{ display:grid; grid-template-columns:minmax(0,1fr) 390px; gap:20px; align-items:start; }
-  .card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); padding:26px; margin-bottom:20px; transition:all 0.2s ease; }
-  .card-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:20px; }
+  .workspace{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 390px;
+    gap:20px;
+    align-items:start;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:26px;
+    margin-bottom:20px;
+    transition:all 0.2s ease;
+  }
+  .card:hover{box-shadow:var(--shadow);border-color:var(--border-strong)}
+  .card-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:20px;
+  }
   .card-title{margin:0;font-size:18px;font-weight:800;letter-spacing:-0.01em}
   .card-sub{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5;font-weight:500}
-  .folder-wrap{ margin-bottom:22px; }
-  
+  .folder-wrap{
+    margin-bottom:22px;
+  }
+  .breadcrumbs{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .crumb{cursor:pointer;color:var(--accent);font-weight:750}
+  .crumb:hover{text-decoration:underline}
+  .folder-bar{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:6px;
+  }
+  .folder-tab,.btn-new-folder{
+    white-space:nowrap;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--muted);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:12px;
+    font-weight:750;
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
+  .folder-tab:hover,.btn-new-folder:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
   .field{margin-bottom:16px}
-  textarea,input[type=text],select{ width:100%; color:var(--text); background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:12px 14px; outline:none; font-size:14px; font-weight:500; transition:all 0.2s ease; }
+  label{
+    display:block;
+    color:var(--text);
+    font-size:12px;
+    font-weight:750;
+    margin:0 0 6px;
+  }
+  textarea,input[type=text],select{
+    width:100%;
+    color:var(--text);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 14px;
+    outline:none;
+    font-size:14px;
+    font-weight:500;
+    transition:all 0.2s ease;
+  }
   textarea{min-height:120px;resize:vertical;line-height:1.6}
+  textarea:focus,input[type=text]:focus,select:focus{
+    border-color:var(--accent);
+    background:var(--surface);
+    box-shadow:0 0 0 4px var(--accent-soft);
+  }
   .marks-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .marks-btn{ padding:11px 8px; border:1px solid var(--border); border-radius:11px; background:var(--surface-2); color:var(--muted); font-size:13px; font-weight:800; transition:all 0.2s ease; }
+  .marks-btn{
+    padding:11px 8px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--surface-2);
+    color:var(--muted);
+    font-size:13px;
+    font-weight:800;
+    transition:all 0.2s ease;
+  }
+  .marks-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
   .marks-btn[aria-pressed="true"]{background:linear-gradient(135deg, var(--accent), #0e7490);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(8,145,178,0.3)}
-  .checkbox-row{ display:flex; align-items:center; gap:10px; color:var(--text); font-size:12px; font-weight:700; }
+  .checkbox-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text);
+    font-size:12px;
+    font-weight:700;
+  }
+  .checkbox-row label{margin:0;color:var(--text);font-size:12px}
   .form-actions{display:grid;gap:8px;margin-top:8px}
-  
+  .mode-switch{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    padding:5px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    margin-bottom:14px;
+  }
+  .mode-switch label{
+    margin:0;
+    text-align:center;
+    padding:9px;
+    border-radius:10px;
+    cursor:pointer;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:750;
+    transition:all 0.2s ease;
+  }
+  .mode-switch input{display:none}
+  .mode-switch input:checked + span{
+    display:block;
+    color:var(--primary);
+    font-weight:850;
+    background:var(--surface);
+    border-radius:10px;
+    padding:0;
+    box-shadow:var(--shadow-sm);
+  }
   .search-main{position:relative;margin-bottom:12px}
-  .search-main .search-icon{ position:absolute;left:14px;top:50%;transform:translateY(-50%); color:var(--muted);pointer-events:none; font-size:16px; }
+  .search-main .search-icon{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    color:var(--muted);pointer-events:none;
+    font-size:16px;
+  }
   #search-input{padding-left:40px;height:46px;background:var(--surface)}
-  .filter-box{ background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:16px; }
-  .filters{ display:grid; grid-template-columns:1fr 1fr 1fr auto auto; gap:8px; align-items:center; }
+  .filter-box{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:16px;
+  }
+  .filters{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr auto auto;
+    gap:8px;
+    align-items:center;
+  }
   .filters select{min-width:0;height:42px}
   .filters .btn{height:42px;padding:9px 14px}
-  #bank-status-text{ color:var(--muted); font-size:12px; margin:0 0 12px; font-weight:600; }
-  
-  /* Original Buttons */
-  .bank-item{ border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:14px; background:var(--surface); transition:all 0.2s ease; box-shadow:var(--shadow-sm); }
+  #filter-topic{display:none}
+  #bank-status-text{
+    color:var(--muted);
+    font-size:12px;
+    margin:0 0 12px;
+    font-weight:600;
+  }
+  .bank-item{
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:14px;
+    background:var(--surface);
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
   .bank-item:hover{border-color:var(--border-strong);box-shadow:var(--shadow);transform:translateY(-1px)}
   .bank-question{font-size:15px;font-weight:750;line-height:1.6;margin-bottom:14px;color:var(--text)}
-  .bank-bottom{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-  .tags{display:flex;gap:6px;flex-wrap:wrap}
-  .tag{ display:inline-flex; align-items:center; font-size:11px; line-height:1; font-weight:800; padding:6px 10px; border-radius:999px; background:var(--primary-soft); color:var(--primary); }
+  .bank-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .tags,.q-meta{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    font-size:11px;
+    line-height:1;
+    font-weight:800;
+    padding:6px 10px;
+    border-radius:999px;
+    background:var(--primary-soft);
+    color:var(--primary);
+  }
+  .tag-paper{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+  .tag-topic{background:var(--accent-soft);color:var(--accent)}
+  .tag-paper-gs1{background:#fef3c7;color:#92400e}
+  .tag-paper-gs2{background:#ecfdf5;color:#065f46}
+  .tag-paper-gs3{background:#e0e7ff;color:#3730a3}
+  .tag-paper-gs4{background:#fae8ff;color:#86198f}
+  .tag-paper-opt{background:#fdf2f8;color:#a21caf}
+  [data-theme="dark"] .tag-paper-gs1{background:#451a03;color:#fde68a}
+  [data-theme="dark"] .tag-paper-gs2{background:#064e3b;color:#a7f3d0}
+  [data-theme="dark"] .tag-paper-gs3{background:#1e1b4b;color:#c7d2fe}
+  [data-theme="dark"] .tag-paper-gs4{background:#701a75;color:#f5d0fe}
+  [data-theme="dark"] .tag-paper-opt{background:#4a044e;color:#f5d0fe}
   .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
-  
-  .btn-study { border:1px solid var(--border); background:var(--surface); color:var(--muted); border-radius:10px; padding:4px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s ease; box-shadow:var(--shadow-sm); }
+  .btn-secondary-sm{
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--muted);
+    border-radius:10px;
+    padding:8px 14px;
+    font-size:12px;
+    font-weight:750;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
+  .btn-secondary-sm:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .btn-study {
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--muted);
+    border-radius:10px;
+    padding:4px 10px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    box-shadow:var(--shadow-sm);
+  }
   .btn-study:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
   .btn-study.active-bookmark{background:#fef3c7;color:#b45309;border-color:#f59e0b}
   .btn-study.active-revised{background:#ecfdf5;color:#065f46;border-color:#10b981}
-  
-  .btn-add-item { background:#ecfdf5 !important; border:1px solid #10b981 !important; color:#047857 !important; }
-  .btn-add-item:hover { background:#10b981 !important; color:#ffffff !important; }
-  .btn-direct-pdf { background:#fffbeb !important; border:1px solid #f59e0b !important; color:#b45309 !important; }
-  .btn-direct-pdf:hover { background:#f59e0b !important; color:#ffffff !important; }
-  .btn-ai-highlight { background:linear-gradient(135deg, #7c3aed, #4f46e5) !important; border:1px solid transparent !important; color:#ffffff !important; font-weight:800 !important; padding:9px 16px !important; box-shadow:0 6px 20px rgba(124,58,237,0.4) !important; transform:translateY(-1px); }
-  .btn-ai-highlight:hover { background:linear-gradient(135deg, #6d28d9, #4338ca) !important; box-shadow:0 8px 25px rgba(124,58,237,0.6) !important; transform:translateY(-2px); }
-  
+  .btn-study.note-btn{background:#f3e8ff;color:#6d28d9;border-color:#8b5cf6}
+
+  .btn-add-item {
+    background: #ecfdf5 !important;
+    border: 1px solid #10b981 !important;
+    color: #047857 !important;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15) !important;
+  }
+  .btn-add-item:hover {
+    background: #10b981 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+  }
+  .btn-direct-pdf {
+    background: #fffbeb !important;
+    border: 1px solid #f59e0b !important;
+    color: #b45309 !important;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15) !important;
+  }
+  .btn-direct-pdf:hover {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+  }
+  .btn-ai-highlight {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+    border: 1px solid transparent !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    padding: 9px 16px !important;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
+    transform: translateY(-1px);
+  }
+  .btn-ai-highlight:hover {
+    background: linear-gradient(135deg, #6d28d9, #4338ca) !important;
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6) !important;
+    transform: translateY(-2px);
+  }
+  [data-theme="dark"] .btn-add-item {
+    background: #064e3b !important;
+    border-color: #34d399 !important;
+    color: #a7f3d0 !important;
+  }
+  [data-theme="dark"] .btn-add-item:hover {
+    background: #10b981 !important;
+    color: #ffffff !important;
+  }
+  [data-theme="dark"] .btn-direct-pdf {
+    background: #451a03 !important;
+    border-color: #fbbf24 !important;
+    color: #fde68a !important;
+  }
+  [data-theme="dark"] .btn-direct-pdf:hover {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+  }
+  [data-theme="dark"] .btn-ai-highlight {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
+  }
+  [data-theme="dark"] .btn-ai-highlight:hover {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.65) !important;
+  }
   .sticky-card{position:sticky;top:92px}
-  .empty-state{ text-align:center; padding:40px 20px; border:2px dashed var(--border); border-radius:14px; color:var(--muted); font-size:13px; line-height:1.6; background:var(--surface-2); font-weight:500; }
+  .empty-state{
+    text-align:center;
+    padding:40px 20px;
+    border:2px dashed var(--border);
+    border-radius:14px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+    background:var(--surface-2);
+    font-weight:500;
+  }
   .q-list{list-style:none;margin:0;padding:0}
-  .q-item{ display:grid; grid-template-columns:28px minmax(0,1fr) 30px; gap:10px; align-items:start; padding:18px 0; border-bottom:1px solid var(--border); }
+  .q-item{
+    display:grid;
+    grid-template-columns:28px minmax(0,1fr) 30px;
+    gap:10px;
+    align-items:start;
+    padding:18px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .q-item:last-child{border-bottom:0}
   .q-num{font-family:var(--serif);font-size:16px;color:var(--primary);font-weight:800}
   .q-text{font-size:14px;line-height:1.55;word-break:break-word;font-weight:700}
+  .q-meta{margin-top:8px}
   .q-actions{display:flex;flex-direction:column;gap:4px}
-  .icon-btn{ width:28px;height:28px; display:grid;place-items:center; border:0;border-radius:8px; background:transparent; color:var(--muted); font-size:13px; transition:all 0.2s ease; }
+  .icon-btn{
+    width:28px;height:28px;
+    display:grid;place-items:center;
+    border:0;border-radius:8px;
+    background:transparent;
+    color:var(--muted);
+    font-size:13px;
+    transition:all 0.2s ease;
+  }
   .icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
-  .btn-generate{ width:100%; margin-top:16px; padding:14px; border:0; border-radius:12px; background:linear-gradient(135deg, var(--primary), var(--highlight)); color:#fff; font-size:13px; font-weight:850; box-shadow:0 6px 18px rgba(245,158,11,0.3); transition:all 0.2s ease; }
+  .icon-btn.danger:hover{background:var(--danger-soft);color:var(--danger)}
+  .summary-bar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px solid var(--border);
+  }
+  .summary-stat{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+  }
+  .summary-stat span{display:block;font-size:10px;color:var(--muted);font-weight:850;letter-spacing:0.05em}
+  .summary-stat strong{display:block;font-size:20px;margin-top:4px;letter-spacing:-0.02em;color:var(--text)}
+  .btn-generate{
+    width:100%;
+    margin-top:16px;
+    padding:14px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--primary), var(--highlight));
+    color:#fff;
+    font-size:13px;
+    font-weight:850;
+    box-shadow:0 6px 18px rgba(245,158,11,0.3);
+    transition:all 0.2s ease;
+  }
   .btn-generate:hover{background:linear-gradient(135deg, var(--primary-hover), var(--highlight));transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,158,11,0.4)}
-  footer{ text-align:center; color:var(--muted); font-size:11px; padding:30px 0 10px; font-weight:600; }
+  .btn-generate:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+    padding:30px 0 10px;
+    font-weight:600;
+  }
   .mobile-nav{display:none}
-  .mobile-menu-toggle { display: none; }
-  
-  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-  .modal-box { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); z-index: 100000; }
-  .modal-close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: var(--muted); }
-  .hidden { display: none; }
+  .mobile-menu-toggle {
+    display: none;
+  }
+  .study-modal {
+    position:fixed;
+    inset:0;
+    display:none;
+    z-index:10000;
+    background:rgba(0,0,0,0.4);
+    justify-content:center;
+    align-items:center;
+  }
+  .study-modal.open{display:flex}
+  .study-modal-content{
+    background:var(--surface);
+    border-radius:16px;
+    padding:24px;
+    max-width:480px;
+    width:90%;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  }
+  .study-modal-content h3{margin-top:0}
+  .study-modal-content textarea{width:100%;min-height:100px;margin:10px 0}
+  .study-modal-content .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
 
+  /* Scroll To Top Button */
+  .back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+  }
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media(max-width:1050px){
+    .workspace{grid-template-columns:1fr}
+    .sticky-card{position:static}
+  }
   @media(max-width:820px){
-    .app{grid-template-columns:1fr; display:block;}
-    .sidebar{ display:flex !important; position:fixed !important; top:0;left:0; width:280px !important; max-width:82vw !important; height:100vh !important; transform:translateX(-100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index:1000; box-shadow:10px 0 35px rgba(0,0,0,0.25); overflow-y:auto; }
+    .app{grid-template-columns:1fr}
+    .sidebar{
+      display:flex !important;
+      position:fixed !important;
+      top:0;left:0;
+      width:280px !important;
+      max-width:82vw !important;
+      height:100vh !important;
+      transform:translateX(-100%);
+      transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      z-index:1000;
+      box-shadow:10px 0 35px rgba(0,0,0,0.25);
+      overflow-y:auto;
+    }
+    .sidebar-header-mobile {
+      display: flex;
+    }
     .sidebar.mobile-open{transform:translateX(0)}
-    .mobile-menu-backdrop{ display:block; position:fixed; inset:0; background:rgba(15,23,42,0.5); opacity:0; pointer-events:none; transition:opacity 0.3s ease; z-index:999; }
+    .mobile-menu-backdrop{
+      display:block;
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.5);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.3s ease;
+      z-index:999;
+    }
     .mobile-menu-backdrop.active{opacity:1;pointer-events:auto}
-    .mobile-nav{ display:flex; position:fixed; top:0; left:0; right:0; width:100%; z-index:100; height:60px; background:var(--surface); border-bottom:1px solid var(--border); align-items:center; justify-content:space-between; padding:0 18px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
-    .content { padding-top: 60px; }
-    .mobile-menu-toggle{ display:inline-flex !important; align-items:center; justify-content:center; width:38px;height:38px; border:none; border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; font-size:18px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+    .mobile-menu-close{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:32px;height:32px;
+      border:none;
+      border-radius:8px;
+      background:var(--surface-2);
+      color:var(--text);
+      font-size:18px;
+      cursor:pointer;
+    }
+    body.menu-open{overflow:hidden}
+    
+    .mobile-nav{
+      display:flex;
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      width:100%;
+      z-index:100;
+      height:60px;
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .content {
+      padding-top: 60px;
+    }
+
+    .mobile-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
+    .mobile-brand .brand-mark{width:34px;height:34px;border-radius:10px;font-size:12px}
+    .mobile-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mobile-menu-toggle{
+      display:inline-flex !important;
+      align-items:center;
+      justify-content:center;
+      width:38px;height:38px;
+      border:none;
+      border-radius:10px;
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      color:#fff;
+      font-size:18px;
+      cursor:pointer;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .mobile-theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 16px;
+    }
     .topbar{display:none}
     .page{padding:24px 18px 40px}
     .hero{display:block}
-    .stats{grid-template-columns:1fr}
-    .workspace{display:block;}
-    .filters{grid-template-columns:1fr}
+    .hero-actions{margin-top:18px}
+    .stats{grid-template-columns:1fr 1fr}
+    .stats .stat:last-child{grid-column:1/-1}
+    .filters{grid-template-columns:1fr 1fr}
     .filters .btn{width:100%}
+  }
+  @media(max-width:520px){
+    .stats{grid-template-columns:1fr}
+    .stats .stat:last-child{grid-column:auto}
+    .filters{grid-template-columns:1fr}
+    .hero h1{font-size:32px}
+    .card{padding:18px}
+    .bank-bottom{align-items:flex-start}
+    .bank-actions{width:100%}
+    .bank-actions button{flex:1}
   }
 </style>
 </head>
 
 <body>
-<div class="app" id="app-container">
+<div class="app">
 
   <aside class="sidebar" id="main-sidebar">
+    <div class="sidebar-header-mobile">
+      <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
+      <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close Menu">✕</button>
+    </div>
+
     <div class="brand">
       <div class="brand-mark">Q</div>
       <div>
         <strong>QCAB Generator</strong>
         <span>UPSC Mains Practice</span>
-      </div>
-    </div>
-
-    <!-- NEW: Login / User Name at TOP of Sidebar -->
-    <div class="sidebar-top-login" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
-      <div id="login-actions">
-          <button class="nav-btn" id="sidebar-login-btn" onclick="openLogin()"><span class="nav-icon">🔑</span> Login</button>
-          <div id="user-greeting" style="display:none;">
-              <div style="padding: 10px 14px; color: var(--primary); font-weight: 700;">Welcome, <span id="user-name-span"></span>!</div>
-              <button class="nav-btn" onclick="logout()"><span class="nav-icon">🚪</span> Logout</button>
-          </div>
       </div>
     </div>
 
@@ -255,25 +857,27 @@
       <button class="nav-btn" data-scroll="my-study"><span class="nav-icon">📘</span>My Study</button>
     </nav>
 
-    <div class="nav-title">UPSC Syllabus</div>
-    <nav class="nav">
-      <a class="nav-btn" href="syllabus.html" target="_blank"><span class="nav-icon">📘</span>Prelims & Mains</a>
-    </nav>
-
     <div class="sidebar-bottom">
       <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light Mode</button>
-      <button class="nav-btn" onclick="toggleSidebar()"><span class="nav-icon">☰</span> Hide Sidebar</button>
     </div>
   </aside>
 
-  <!-- Floating button to reopen sidebar if hidden -->
-  <button id="open-sidebar-btn" class="btn btn-primary" onclick="toggleSidebar()">☰ Menu</button>
-
   <div class="content">
+
+    <!-- Sticky Mobile Bar -->
     <div class="mobile-nav">
-      <div class="mobile-brand" style="font-weight:800;">UPSC QCAB</div>
-      <button class="btn mobile-menu-toggle" onclick="document.getElementById('main-sidebar').classList.toggle('mobile-open')">☰</button>
+      <div class="mobile-brand">
+        <div class="brand-mark">Q</div>
+        UPSC QCAB
+      </div>
+      <div class="mobile-actions-right">
+        <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Toggle Theme">🌙</button>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open Menu">☰</button>
+      </div>
     </div>
+
+    <!-- Mobile Backdrop -->
+    <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
     <header class="topbar">
       <div>
@@ -289,30 +893,56 @@
     </header>
 
     <main class="page">
+
       <section class="hero" id="dashboard">
         <div>
           <p class="eyebrow">Question-cum-Answer Booklet</p>
           <h1>UPSC PYQ Bank<br>cum QCAB Generator</h1>
           <p>Find previous year questions, build your custom practice set and generate a print-ready answer booklet.</p>
         </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
+          <button class="btn" data-scroll="create-question">＋ Create Question</button>
+        </div>
       </section>
 
       <section class="stats">
-        <div class="stat"><div class="stat-label">QUESTION BANK</div><div class="stat-value" id="dashboard-bank-count">0</div></div>
-        <div class="stat"><div class="stat-label">ACTIVE QCAB</div><div class="stat-value" id="dashboard-q-count">0</div></div>
-        <div class="stat"><div class="stat-label">ANSWER PAGES</div><div class="stat-value" id="dashboard-pages">0</div></div>
+        <div class="stat">
+          <div class="stat-label">QUESTION BANK</div>
+          <div class="stat-value" id="dashboard-bank-count">—</div>
+          <div class="stat-note">PYQs currently loaded</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">ACTIVE QCAB</div>
+          <div class="stat-value" id="dashboard-q-count">0</div>
+          <div class="stat-note">Questions selected</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">ANSWER PAGES</div>
+          <div class="stat-value" id="dashboard-pages">0</div>
+          <div class="stat-note">Based on marks selected</div>
+        </div>
       </section>
 
+      <div class="folder-wrap">
+        <div class="breadcrumbs" id="breadcrumbs"></div>
+        <div class="folder-bar" id="folder-bar"></div>
+      </div>
+
       <div class="workspace">
+
+        <!-- LEFT: CREATE + PYQ BANK -->
         <section>
+
           <div class="card" id="create-question">
             <div class="card-header">
               <div>
                 <h2 class="card-title" id="add-heading">Create Custom Question</h2>
                 <p class="card-sub">Add your own question directly to the active booklet.</p>
               </div>
-              <button class="btn btn-secondary-sm" id="toggle-create-section-btn" onclick="toggleCreateForm()">Hide Form ▾</button>
+              <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
             </div>
+
             <div id="create-form-body">
               <div class="field">
                 <label for="q-paper">Paper</label>
@@ -325,14 +955,17 @@
                   <option value="OPT2">Anthropology Optional Paper 2</option>
                 </select>
               </div>
+
               <div class="field">
                 <label for="q-topic">Subtopic</label>
                 <select id="q-topic"></select>
               </div>
+
               <div class="field">
                 <label for="q-text">Question Text</label>
                 <textarea id="q-text" placeholder="Paste or type your question here..."></textarea>
               </div>
+
               <div class="field">
                 <label>Marks</label>
                 <div class="marks-row">
@@ -341,14 +974,17 @@
                   <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button>
                 </div>
               </div>
+
               <div class="field">
                 <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
                 <input type="text" id="q-year" placeholder="e.g. 2025">
               </div>
+
               <div class="field checkbox-row">
                 <input type="checkbox" id="include-index" checked>
                 <label for="include-index">Include index page in PDF</label>
               </div>
+
               <div class="form-actions">
                 <button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
                 <button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
@@ -363,35 +999,69 @@
                 <h2 class="card-title">PYQ Bank</h2>
                 <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
               </div>
-            </div>
-            
-            <div class="search-main" style="position: relative;">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
-            </div>
-            <div class="filter-box">
-              <div class="filters">
-                <select id="filter-paper">
-                  <option value="ALL">All Papers</option>
-                  <option value="GS1">GS Paper 1</option>
-                  <option value="GS2">GS Paper 2</option>
-                  <option value="GS3">GS Paper 3</option>
-                  <option value="GS4">GS Paper 4</option>
-                  <option value="OPT1">Anthropology Optional Paper 1</option>
-                  <option value="OPT2">Anthropology Optional Paper 2</option>
-                </select>
-                <select id="filter-topic"><option value="ALL">All Subtopics</option></select>
-                <select id="filter-year"><option value="ALL">All Years</option></select>
-                <button class="btn btn-primary" id="search-bank-btn" onclick="showAndRenderBank()">Search</button>
-                <button class="btn" id="clear-results-btn" onclick="clearFilters()">Clear</button>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" id="toggle-bank-btn" title="Collapse to scroll the page more easily">
+                  <span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span>
+                </button>
+                <button class="btn btn-danger" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
               </div>
             </div>
-            
-            <div id="bank-status-text">Press Search to fetch and load questions.</div>
-            <div id="bank-results-container" style="display:none;"></div>
+
+            <div id="pyq-bank-body">
+              <div class="mode-switch">
+                <label>
+                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
+                  <span>Filter by Year</span>
+                </label>
+                <label>
+                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
+                  <span>Filter by Subtopic</span>
+                </label>
+              </div>
+
+              <div class="search-main" style="position: relative;">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
+              </div>
+
+              <div class="filter-box">
+                <div class="filters">
+                  <select id="filter-paper">
+                    <option value="ALL">All Papers</option>
+                    <option value="GS1">GS Paper 1</option>
+                    <option value="GS2">GS Paper 2</option>
+                    <option value="GS3">GS Paper 3</option>
+                    <option value="GS4">GS Paper 4</option>
+                    <option value="OPT1">Anthropology Optional Paper 1</option>
+                    <option value="OPT2">Anthropology Optional Paper 2</option>
+                  </select>
+
+                  <select id="filter-topic">
+                    <option value="ALL">All Subtopics</option>
+                  </select>
+
+                  <select id="filter-year">
+                    <option value="ALL">All Years</option>
+                  </select>
+
+                  <button class="btn btn-primary" id="search-bank-btn">Search</button>
+                  <button class="btn" id="clear-results-btn">Clear</button>
+                </div>
+              </div>
+
+              <div id="bank-status-text">Loading question bank...</div>
+
+              <div id="bank-results-container">
+                <p style="font-size:13px;color:var(--muted);font-style:italic;">
+                  Loading repository questions...
+                </p>
+              </div>
+            </div>
           </div>
+
         </section>
 
+        <!-- RIGHT: ACTIVE QCAB -->
         <aside class="card sticky-card" id="my-qcab">
           <div class="card-header">
             <div>
@@ -400,26 +1070,48 @@
             </div>
             <span class="tag" id="count-tag">0 questions</span>
           </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;">
+            <button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button>
+            <button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button>
+            <button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button>
+          </div>
+
           <div id="empty-state" class="empty-state">
             <div style="font-size:28px;margin-bottom:8px;">▣</div>
             <strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>
             Add questions from the PYQ Bank or create a custom question.
           </div>
+
           <ol class="q-list" id="q-list"></ol>
+
           <div class="summary-bar" id="summary-bar" style="display:none;">
-            <div class="summary-stat"><span>TOTAL MARKS</span><strong id="total-marks">0</strong></div>
-            <div class="summary-stat"><span>ANSWER PAGES</span><strong id="total-pages">0</strong></div>
+            <div class="summary-stat">
+              <span>TOTAL MARKS</span>
+              <strong id="total-marks">0</strong>
+            </div>
+            <div class="summary-stat">
+              <span>ANSWER PAGES</span>
+              <strong id="total-pages">0</strong>
+            </div>
           </div>
+
           <button class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
         </aside>
+
       </div>
 
+      <!-- MY STUDY SECTION -->
       <section id="my-study" style="margin-top:30px;">
         <div class="card">
           <div class="card-header">
             <div>
               <h2 class="card-title">📘 My Study</h2>
               <p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary-sm" id="export-study-btn">⬇ Export</button>
+              <button class="btn btn-secondary-sm" id="import-study-btn">⬆ Import</button>
             </div>
           </div>
           <div id="study-dashboard">
@@ -428,311 +1120,1328 @@
               <div class="stat" style="padding:14px;"><div class="stat-label">✅ Revised</div><div class="stat-value" id="study-revised">0</div></div>
               <div class="stat" style="padding:14px;"><div class="stat-label">📝 With Notes</div><div class="stat-value" id="study-notes">0</div></div>
             </div>
-            <div id="study-list-container"></div>
+            <div id="study-list-container">
+              <p style="color:var(--muted);font-style:italic;">Your bookmarked questions will appear here.</p>
+            </div>
           </div>
         </div>
       </section>
-      <footer>QCAB Generator · Project by Biswajit Nahak</footer>
+
+      <footer>
+        QCAB Generator · Project by Biswajit Nahak
+      </footer>
+
     </main>
   </div>
 </div>
 
-<!-- Modals -->
-<div id="login-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-box">
-    <span class="modal-close" onclick="closeLogin()">&times;</span>
-    <h2 id="modal-title" style="margin-top:0; color:var(--text);">Login</h2>
-    <input type="text" id="modal-name" placeholder="Your Name" style="display: none;">
-    <input type="email" id="modal-email" placeholder="Email">
-    <input type="password" id="modal-password" placeholder="Password">
-    <button class="btn btn-primary btn-wide" onclick="handleModalAuth()" id="modal-submit-btn" style="margin-top:10px;">Login</button>
-    <p class="switch" onclick="toggleModalMode()" style="text-align: center; color: var(--primary); cursor: pointer; margin-top: 14px; font-size: 13px;">Don't have an account? Register</p>
-    <p id="modal-error" style="color: var(--danger); font-size: 13px; text-align: center; margin-top: 8px;"></p>
-  </div>
-</div>
+<!-- Back to top button -->
+<button class="back-to-top" id="back-to-top" title="Back to top">↑</button>
 
-<div id="ai-options-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-box" style="max-width: 500px;">
-    <span class="modal-close" onclick="closeAIOptions()">&times;</span>
-    <h3 style="margin-top:0; color: var(--primary);">✨ Select AI Model</h3>
-    <div id="ai-question-preview" style="font-weight: 700; font-size: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border);"></div>
-    <div style="display:grid; gap:8px; margin-top:15px;">
-      <button class="btn btn-primary btn-wide" onclick="openMyAIModel()">🤖 QCAB Native AI (600 words)</button>
-      <button class="btn btn-wide" onclick="openExternalAI('perplexity')">🔮 Perplexity</button>
-      <button class="btn btn-wide" onclick="openExternalAI('chatgpt')">💬 ChatGPT</button>
-      <button class="btn btn-wide" onclick="openExternalAI('deepseek')">🧠 DeepSeek</button>
+<!-- NOTE MODAL -->
+<div class="study-modal" id="note-modal">
+  <div class="study-modal-content">
+    <h3>📝 Add Note</h3>
+    <textarea id="note-textarea" placeholder="Write your note here..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary-sm" id="note-save-btn">Save</button>
+      <button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button>
     </div>
   </div>
 </div>
 
 <script>
-  // Global variables (Fixed scoping issues)
-  let presetBank = JSON.parse(localStorage.getItem('qcab_preset_bank')) || [];
-  let studyData = {};
-  let currentQuestionText = "";
-  let isRegisterMode = false;
-
-  // Sidebar Toggle (Fixed: Always accessible)
-  function toggleSidebar() {
-    const sidebar = document.getElementById('main-sidebar');
-    const app = document.getElementById('app-container');
-    const openBtn = document.getElementById('open-sidebar-btn');
-    
-    sidebar.classList.toggle('collapsed');
-    app.classList.toggle('sidebar-hidden');
-    
-    if (sidebar.classList.contains('collapsed')) {
-      openBtn.style.display = 'block';
-    } else {
-      openBtn.style.display = 'none';
-    }
-  }
-
-  // Create Question / Hide Form Toggle
-  function toggleCreateForm() {
-    const form = document.getElementById('create-form-body');
-    const btn = document.getElementById('toggle-create-section-btn');
-    if (form.style.display === 'none') {
-      form.style.display = 'block';
-      btn.innerHTML = 'Hide Form ▾';
-    } else {
-      form.style.display = 'none';
-      btn.innerHTML = 'Show Form ▸';
-    }
-  }
-
-  /* LOGIN & SIDEBAR LOGIC (Moved to top) */
-  function checkLoginStatus() {
-    const token = localStorage.getItem('userToken');
-    const name = localStorage.getItem('userName');
-    if (token) {
-      document.getElementById('login-actions').innerHTML = `
-        <div style="padding: 10px 14px; color: var(--primary); font-weight: 700;">Welcome, ${name}!</div>
-        <button class="nav-btn" onclick="logout()"><span class="nav-icon">🚪</span> Logout</button>
-      `;
-    }
-  }
-  function logout() { localStorage.removeItem('userToken'); localStorage.removeItem('userName'); location.reload(); }
-  function openLogin() { document.getElementById('login-modal').style.display = 'flex'; }
-  function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
-  function toggleModalMode() { isRegisterMode = !isRegisterMode; document.getElementById('modal-title').innerText = isRegisterMode ? 'Register' : 'Login'; document.getElementById('modal-name').classList.toggle('hidden', !isRegisterMode); document.getElementById('modal-submit-btn').innerText = isRegisterMode ? 'Register' : 'Login'; }
-  async function handleModalAuth() { const email = document.getElementById('modal-email').value; const password = document.getElementById('modal-password').value; const name = document.getElementById('modal-name').value; const endpoint = isRegisterMode ? '/api/register' : '/api/login'; const payload = isRegisterMode ? { name, email, password } : { email, password }; const res = await fetch('https://qcap-ai-v2.khokcha9.workers.dev' + endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const data = await res.json(); if (res.ok && data.token) { localStorage.setItem('userToken', data.token); localStorage.setItem('userName', data.name || email); closeLogin(); checkLoginStatus(); loadStudyFromCloud(); } else { alert(data.error); } }
-
-  /* LOADING & SEARCHING (Fixed: Only loads on Search) */
-  async function showAndRenderBank() {
-    if (presetBank.length === 0) {
-      document.getElementById('bank-status-text').innerText = "Fetching Question Bank...";
-      const endpoints = ['./gs1_pyq.json','./gs2_pyq.json','./gs3_pyq.json','./gs4_pyq.json','./opt1_pyq.json','./opt2_pyq.json'];
-      for (let e of endpoints) {
-        const r = await fetch(e + '?t=' + Date.now());
-        if (r.ok) presetBank = presetBank.concat(await r.json());
-      }
-      localStorage.setItem('qcab_preset_bank', JSON.stringify(presetBank));
-      document.getElementById('dashboard-bank-count').innerText = presetBank.length;
-      populateFilters();
-    }
-
-    document.getElementById('bank-results-container').style.display = 'block';
-    const query = document.getElementById('search-input').value.toLowerCase();
-    const paper = document.getElementById('filter-paper').value;
-    const topic = document.getElementById('filter-topic').value;
-    const year = document.getElementById('filter-year').value;
-    
-    let filtered = presetBank.filter(q => {
-      const qText = (q.question + ' ' + q.topic + ' ' + q.paper + ' ' + q.year).toLowerCase();
-      if (query && !qText.includes(query)) return false;
-      if (paper !== 'ALL' && q.paper !== paper) return false;
-      if (year !== 'ALL' && String(q.year).includes(year) === false) return false;
-      if (topic !== 'ALL' && !(q.topic || '').toLowerCase().includes(topic.toLowerCase())) return false;
-      return true;
-    });
-    
-    const container = document.getElementById('bank-results-container');
-    container.innerHTML = `<div style="margin-bottom:10px; font-weight:bold;">Showing ${filtered.length} questions</div>`;
-    
-    filtered.forEach((q, i) => {
-      const div = document.createElement('div');
-      div.className = 'bank-item';
-      const rec = studyData[q.id] || {};
-      div.innerHTML = `
-        <div class="bank-question"><strong>${i+1}.</strong> ${q.question}</div>
-        <div class="bank-bottom">
-            <div class="tags"><span class="tag">${q.paper}</span><span class="tag">${q.topic}</span><span class="tag">${q.marks} M</span></div>
-            <div class="bank-actions">
-                <button class="btn-study ${rec.bookmarked ? 'active-bookmark' : ''}" onclick="toggleBookmark('${q.id}', this)">⭐ ${rec.bookmarked ? 'Bookmarked' : 'Bookmark'}</button>
-                <button class="btn-study ${rec.revised ? 'active-revised' : ''}" onclick="toggleRevised('${q.id}', this)">✅ ${rec.revised ? 'Revised' : 'Mark Revised'}</button>
-                <button class="btn-study btn-add-item" onclick="addToFolder('${q.id}')">+ Add</button>
-                <button class="btn-study btn-direct-pdf" onclick="directPDF('${q.id}')">⚡ PDF</button>
-                <button class="btn-study btn-ai-highlight" onclick="openAI('${q.id}')">✨ AI</button>
-            </div>
-        </div>`;
-      container.appendChild(div);
-    });
-  }
-
-  function populateFilters() {
-    const filterYear = document.getElementById('filter-year');
-    filterYear.innerHTML = '<option value="ALL">All Years</option>';
-    const years = [...new Set(presetBank.map(q => String(q.year).split(' ')[0]))].sort().reverse();
-    years.forEach(y => { const opt = document.createElement('option'); opt.value = y; opt.textContent = y; filterYear.appendChild(opt); });
-  }
-  
-  function clearFilters() {
-    document.getElementById('search-input').value = '';
-    document.getElementById('filter-paper').value = 'ALL';
-    document.getElementById('filter-year').value = 'ALL';
-    document.getElementById('filter-topic').value = 'ALL';
-    showAndRenderBank();
-  }
-
-  /* FOLDER & PDF LOGIC (Restored) */
-  let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: { id: 'root', name: 'General Booklet', parentId: null, subfolders: [], questions: [] } };
-  let activeFolderId = localStorage.getItem('qcab_active_nested_folder') || 'root';
-  function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
-  function saveState() { localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap)); localStorage.setItem('qcab_active_nested_folder', activeFolderId); }
-
-  function addToFolder(id) {
-    const q = presetBank.find(x => x.id === id);
-    if (!q) return;
-    getActiveFolder().questions.push(q);
-    saveState(); renderQuestions();
-  }
-
-  function directPDF(id) {
-    const q = presetBank.find(x => x.id === id);
-    if (!q) return;
-    getActiveFolder().questions.push(q);
-    saveState(); renderQuestions();
-    setTimeout(generatePDF, 100); 
-  }
-
-  function renderQuestions() {
-    const qList = document.getElementById('q-list');
-    const questions = getActiveFolder().questions;
-    qList.innerHTML = '';
-    if (questions.length === 0) { document.getElementById('empty-state').style.display = 'block'; document.getElementById('count-tag').innerText = '0 questions'; return; }
-    document.getElementById('empty-state').style.display = 'none';
-    document.getElementById('count-tag').innerText = questions.length + ' questions';
-    
-    let totalMarks = 0;
-    questions.forEach((q, i) => {
-      totalMarks += q.marks || 10;
-      const li = document.createElement('li');
-      li.className = 'q-item';
-      li.innerHTML = `<div class="q-num">${i+1}.</div><div><div class="q-text">${q.question}</div><div class="q-meta"><span class="tag">${q.marks || 10} M</span></div></div><div class="q-actions"><button class="icon-btn" onclick="removeQuestion(${i})">✕</button></div>`;
-      qList.appendChild(li);
-    });
-    document.getElementById('total-marks').innerText = totalMarks;
-    document.getElementById('total-pages').innerText = Math.ceil(totalMarks / 5);
-    document.getElementById('generate-btn').disabled = false;
-  }
-
-  function removeQuestion(i) { getActiveFolder().questions.splice(i, 1); saveState(); renderQuestions(); }
-
-  /* PDF GENERATION (Restored Full Code) */
-  function generatePDF() {
-    const questions = getActiveFolder().questions;
-    if (questions.length === 0) { alert("No questions added!"); return; }
-    
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
-
-    function dividers() { doc.setDrawColor(0); doc.setLineWidth(0.3); doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM); doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM); }
-
-    let currentPg = 1;
-    const includeIndex = document.getElementById('include-index').checked;
-
-    if (includeIndex) {
-      dividers();
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(16);
-      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W/2, 25, { align: 'center' });
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
-      doc.text('Folder: ' + getActiveFolder().name, PAGE_W/2, 32, { align: 'center' });
-      let y = 45;
-      doc.text('Q#', 28, y); doc.text('Question', 40, y); doc.text('Marks', 170, y);
-      y += 4; doc.line(28, y, 180, y); y += 6;
-      questions.forEach((q, idx) => {
-        if (y > 270) { doc.addPage(); currentPg++; dividers(); y = 25; }
-        doc.text(`${idx+1}`, 28, y);
-        const textLines = doc.splitTextToSize(q.question, 125);
-        doc.text(textLines, 40, y);
-        doc.text(`${q.marks || 10}M`, 170, y);
-        y += textLines.length * 5 + 4;
-      });
-      doc.addPage(); currentPg++;
-    }
-
-    questions.forEach((q, idx) => {
-      const pageCount = (q.marks || 10) <= 10 ? 2 : (q.marks || 10) <= 15 ? 3 : 4;
-      for (let p = 1; p <= pageCount; p++) {
-        dividers();
-        if (p === 1) {
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
-          doc.text(`Q${idx+1}.`, 28, 22);
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
-          const lines = doc.splitTextToSize(q.question, 138);
-          doc.text(lines, 38, 22);
-          let boxY = 22 + lines.length * 5 + 2;
-          doc.setFont('helvetica', 'italic'); doc.setFontSize(9);
-          doc.text(`[ ${q.marks || 10} Marks ]`, 38, boxY);
-          doc.line(28, boxY + 3, RIGHT_DIV - 3, boxY + 3);
-        }
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-        doc.text(`Page ${currentPg}`, PAGE_W/2, PAGE_H - 8, { align: 'center' });
-        if (!(idx === questions.length - 1 && p === pageCount)) { doc.addPage(); currentPg++; }
-      }
-    });
-    doc.save(`${getActiveFolder().name.replace(/[^a-z0-9]/gi, '_')}_qcab.pdf`);
-  }
-
-  document.getElementById('generate-btn').addEventListener('click', generatePDF);
-
-  /* STUDY CLOUD SYNC */
-  async function syncStudyToCloud() { const token = localStorage.getItem('userToken'); if (!token) return; for (let id in studyData) { await fetch('https://qcap-ai-v2.khokcha9.workers.dev/api/study/update', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({ question_id: id, bookmarked: studyData[id].bookmarked ? 1 : 0, revised: studyData[id].revised ? 1 : 0, note: '' }) }); } updateStudyDashboard(); }
-  async function loadStudyFromCloud() { const token = localStorage.getItem('userToken'); if (!token) return; const res = await fetch('https://qcap-ai-v2.khokcha9.workers.dev/api/study/get', { headers: { 'Authorization': 'Bearer ' + token } }); const data = await res.json(); data.forEach(item => studyData[item.question_id] = { bookmarked: item.bookmarked == 1, revised: item.revised == 1 }); updateStudyDashboard(); }
-  function updateStudyDashboard() { let b = 0, r = 0; for (let id in studyData) { if (studyData[id].bookmarked) b++; if (studyData[id].revised) r++; } document.getElementById('study-bookmarked').innerText = b; document.getElementById('study-revised').innerText = r; }
-  function toggleBookmark(id, btn) { if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false }; studyData[id].bookmarked = !studyData[id].bookmarked; btn.innerText = studyData[id].bookmarked ? "⭐ Bookmarked" : "⭐ Bookmark"; btn.classList.toggle('active-bookmark'); updateStudyDashboard(); syncStudyToCloud(); }
-  function toggleRevised(id, btn) { if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false }; studyData[id].revised = !studyData[id].revised; btn.innerText = studyData[id].revised ? "✅ Revised" : "✅ Mark Revised"; btn.classList.toggle('active-revised'); updateStudyDashboard(); syncStudyToCloud(); }
-
-  /* AI FEATURES */
-  function closeAIOptions() { document.getElementById('ai-options-modal').style.display = 'none'; }
-  function openAI(id) {
-    const q = presetBank.find(x => x.id === id);
-    if (!q) return;
-    currentQuestionText = q.question;
-    const token = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
-    if (!token) { openLogin(); return; }
-    document.getElementById('ai-question-preview').innerText = currentQuestionText;
-    document.getElementById('ai-options-modal').style.display = 'flex';
-  }
-  function openMyAIModel() { window.open(`answer.html?q=${encodeURIComponent(currentQuestionText)}`, '_blank'); closeAIOptions(); }
-  function openExternalAI(provider) {
-    let url = '';
-    if (provider === 'perplexity') url = `https://www.perplexity.ai/search/?q=${encodeURIComponent(currentQuestionText)}`;
-    if (provider === 'chatgpt') url = `https://chat.openai.com/?q=${encodeURIComponent(currentQuestionText)}`;
-    if (provider === 'deepseek') url = `https://chat.deepseek.com/?q=${encodeURIComponent(currentQuestionText)}`;
-    window.open(url, '_blank'); closeAIOptions();
-  }
-
-  /* THEME & NAV */
-  function applyTheme(theme) { if (theme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('theme-icon').textContent = '☀️'; document.getElementById('theme-text').textContent = 'Light Mode'; } else { document.documentElement.removeAttribute('data-theme'); document.getElementById('theme-icon').textContent = '🌙'; document.getElementById('theme-text').textContent = 'Dark Mode'; } }
-  function toggleTheme() { const isDark = document.documentElement.getAttribute('data-theme') === 'dark'; applyTheme(isDark ? 'light' : 'dark'); localStorage.setItem('qcab_theme', isDark ? 'light' : 'dark'); }
-  applyTheme(localStorage.getItem('qcab_theme') || 'light');
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-  document.getElementById('sidebar-theme').addEventListener('click', toggleTheme);
-
+  /* NAVIGATION & SCROLL MANAGEMENT */
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const target = document.getElementById(btn.dataset.scroll);
-      if (target) { window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' }); }
+      const id = btn.dataset.scroll;
+      const target = document.getElementById(id);
+      if (target) {
+        const offset = window.innerWidth <= 820 ? 70 : 10;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = target.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+      document.querySelectorAll('.nav-btn[data-scroll]').forEach(n => n.classList.remove('active'));
+      const match = document.querySelector(`.nav-btn[data-scroll="${id}"]`);
+      if(match) match.classList.add('active');
     });
   });
 
-  // Initialize
-  checkLoginStatus();
-  loadStudyFromCloud();
-  populateFormSubtopics();
+  // Scroll to Top behavior
+  const backToTopBtn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopBtn?.classList.add('visible');
+    } else {
+      backToTopBtn?.classList.remove('visible');
+    }
+  });
+  backToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function syncDashboard(){
+    const qList = document.getElementById('q-list');
+    const count = qList ? qList.querySelectorAll('.q-item').length : 0;
+    const pages = document.getElementById('total-pages')?.textContent || '0';
+    const bankStatus = document.getElementById('bank-status-text')?.textContent || '';
+    const nums = bankStatus.match(/\d+/);
+    const bankCount = nums ? nums[0] : '—';
+
+    const qCount = document.getElementById('dashboard-q-count');
+    const pageCount = document.getElementById('dashboard-pages');
+    const bankCountEl = document.getElementById('dashboard-bank-count');
+    if(qCount && qCount.textContent !== String(count)) qCount.textContent = count;
+    if(pageCount && pageCount.textContent !== String(pages)) pageCount.textContent = pages;
+    if(bankCountEl && bankCountEl.textContent !== bankCount) bankCountEl.textContent = bankCount;
+  }
+
+  window.addEventListener('load', () => {
+    syncDashboard();
+    setTimeout(syncDashboard, 700);
+    setTimeout(syncDashboard, 1800);
+  });
+
+  /* MOBILE MENU TOGGLE LOGIC */
+  (function() {
+    const sidebar = document.getElementById('main-sidebar');
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const backdrop = document.getElementById('mobile-backdrop');
+    if (!sidebar || !toggleBtn) return;
+
+    function openMenu() {
+      sidebar.classList.add('mobile-open');
+      if (backdrop) backdrop.classList.add('active');
+      document.body.classList.add('menu-open');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      sidebar.classList.remove('mobile-open');
+      if (backdrop) backdrop.classList.remove('active');
+      document.body.classList.remove('menu-open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+    toggleBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (backdrop) backdrop.addEventListener('click', closeMenu);
+
+    sidebar.addEventListener('click', function(e) {
+      if (e.target.closest('.nav-btn')) closeMenu();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  })();
+
+  /* MAIN APPLICATION LOGIC */
+  (function () {
+    /* THEME TOGGLE */
+    const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebarThemeBtn = document.getElementById('sidebar-theme');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (themeIcon) themeIcon.textContent = '☀️';
+        if (themeText) themeText.textContent = 'Light Mode';
+        if (mobileThemeToggle) mobileThemeToggle.textContent = '☀️';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (themeIcon) themeIcon.textContent = '🌙';
+        if (themeText) themeText.textContent = 'Dark Mode';
+        if (mobileThemeToggle) mobileThemeToggle.textContent = '🌙';
+      }
+    }
+
+    const savedTheme = localStorage.getItem('qcab_theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(savedTheme);
+
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      localStorage.setItem('qcab_theme', nextTheme);
+      applyTheme(nextTheme);
+    }
+
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+    if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
+    if (sidebarThemeBtn) sidebarThemeBtn.addEventListener('click', toggleTheme);
+
+    /* CREATE / BANK COLLAPSE TOGGLES */
+    const toggleCreateBtn = document.getElementById('toggle-create-section-btn');
+    const createFormBody = document.getElementById('create-form-body');
+    function setCreateCollapsed(collapsed) {
+      if (!createFormBody || !toggleCreateBtn) return;
+      createFormBody.style.display = collapsed ? 'none' : 'block';
+      toggleCreateBtn.textContent = collapsed ? 'Show Form ▸' : 'Hide Form ▾';
+    }
+    const createCollapsedSaved = localStorage.getItem('qcab_create_collapsed') === '1';
+    setCreateCollapsed(createCollapsedSaved);
+    if (toggleCreateBtn) {
+      toggleCreateBtn.addEventListener('click', () => {
+        const willCollapse = createFormBody.style.display !== 'none';
+        setCreateCollapsed(willCollapse);
+        localStorage.setItem('qcab_create_collapsed', willCollapse ? '1' : '0');
+      });
+    }
+
+    const toggleBankBtn = document.getElementById('toggle-bank-btn');
+    const toggleBankIcon = document.getElementById('toggle-bank-icon');
+    const toggleBankText = document.getElementById('toggle-bank-text');
+    const bankBody = document.getElementById('pyq-bank-body');
+    function setBankCollapsed(collapsed) {
+      if (!bankBody) return;
+      bankBody.style.display = collapsed ? 'none' : 'block';
+      if (toggleBankIcon) toggleBankIcon.textContent = collapsed ? '▸' : '▾';
+      if (toggleBankText) toggleBankText.textContent = collapsed ? 'Show Bank' : 'Hide Bank';
+    }
+    const bankCollapsedSaved = localStorage.getItem('qcab_bank_collapsed') === '1';
+    setBankCollapsed(bankCollapsedSaved);
+    if (toggleBankBtn) {
+      toggleBankBtn.addEventListener('click', () => {
+        const willCollapse = bankBody.style.display !== 'none';
+        setBankCollapsed(willCollapse);
+        localStorage.setItem('qcab_bank_collapsed', willCollapse ? '1' : '0');
+      });
+    }
+
+    /* SYLLABUS DATA */
+    const SYLLABUS = {
+      GS1: ['Art & Culture','Modern History','Post Independence','World History','Physical Geography','Economic & Human Geography','Indian society'],
+      GS2: ['Polity','Governance','Social Justice','International Relations'],
+      GS3: ['Economy','Agriculture','Internal Security','Environment & Disaster Management','Science & Tech'],
+      GS4: ['Ethics Theory','Case Studies'],
+      OPT1: [
+        '1.1 Meaning, Scope & Development of Anthropology',
+        '1.2 Relationships with Other Disciplines',
+        '1.3 Main Branches of Anthropology (Scope & Relevance)',
+        '1.4 Human Evolution & Emergence of Man (Factors & Theories)',
+        '1.5 Characteristics of Primates & Evolutionary Trends',
+        '1.6 Phylogenetic Status & Distribution of Fossils (Australopithecus to Cro-Magnon)',
+        '1.7 Biological Basis of Life (Cell, DNA, Mutation, Chromosomes)',
+        '1.8 Prehistoric Archaeology & Prehistoric Cultures (Paleolithic to Iron Age)',
+        '2.1 Nature of Culture & Ethnocentrism vs Cultural Relativism',
+        '2.2 Nature of Society, Social Institutions & Stratification',
+        '2.3 Marriage (Types, Laws, Regulations & Payments)',
+        '2.4 Family (Types, Functions & Contemporary Changes)',
+        '2.5 Kinship (Descent, Alliance, Terminology & Groups)',
+        '3.0 Economic Organization & Economic Anthropology',
+        '4.0 Political Organization & Social Control',
+        '5.0 Religion, Magic & Science',
+        '6.0 (a) Classical Evolutionism (Tylor, Morgan, Frazer)',
+        '6.0 (b) Historical Particularism (Boas) & Diffusionism',
+        '6.0 (c) Functionalism (Malinowski) & Structural-Functionalism (Radcliffe-Brown)',
+        '6.0 (d) Structuralism (Levi-Strauss, E. Leach)',
+        '6.0 (e) Culture & Personality (Benedict, Mead, Linton, Kardiner, Cora-du-Bois)',
+        '6.0 (f) Neo-Evolutionism (Childe, White, Steward, Sahlins, Service)',
+        '6.0 (g) Cultural Materialism (Harris)',
+        '6.0 (h) Symbolic & Interpretive Theories (Turner, Schneider, Geertz)',
+        '6.0 (i) Cognitive Theories (Tyler, Conklin)',
+        '6.0 (j) Post-Modernism in Anthropology',
+        '7.0 Culture, Language & Communication',
+        '8.0 Research Methods in Anthropology',
+        '9.1 Human Genetics Methods & Applications',
+        '9.2 Mendelian Genetics in Man',
+        '9.3 Genetic Polymorphism, Selection & Hardy-Weinberg Law',
+        '9.4 Chromosomes & Chromosomal Aberrations',
+        '9.5 Race & Racism',
+        '9.6 Age, Sex & Population Variation as Genetic Marker',
+        '9.7 Ecological Anthropology & Bio-cultural Adaptations',
+        '9.8 Epidemiological Anthropology',
+        '10.0 Concept of Human Growth & Development',
+        '11.1 Bioevents to Fertility & Demographic Patterns',
+        '11.2 Demographic Theories',
+        '11.3 Biological & Socio-ecological Factors in Demography',
+        '12.0 Applications of Anthropology'
+      ],
+      OPT2: [
+        '1.1 Evolution of Indian Culture & Civilization (Prehistoric to Harappan)',
+        '1.2 Palaeo-Anthropological Evidences from India (Siwaliks & Narmada)',
+        '1.3 Ethno-archaeology in India',
+        '2.0 Demographic Profile of India (Ethnic & Linguistic Elements)',
+        '3.1 Traditional Indian Social System (Varnashram, Purushartha, Karma)',
+        '3.2 Caste System in India, Jajmani & Tribe-Caste Continuum',
+        '3.3 Sacred Complex & Nature-Man-Spirit Complex',
+        '3.4 Impact of Buddhism, Jainism, Islam & Christianity on Indian Society',
+        '4.0 Emergence, Growth & Development of Anthropology in India',
+        '5.1 Indian Village & Social Structure',
+        '5.2 Linguistic & Religious Minorities',
+        '5.3 Processes of Socio-Cultural Change (Sanskritization, Westernization, etc.)',
+        '6.1 Tribal Situation in India (Variability & Distribution)',
+        '6.2 Problems of Tribal Communities',
+        '6.3 Developmental Projects, Displacement & Forest Policies',
+        '7.1 Exploitation, Deprivation & Constitutional Safeguards for SC/ST',
+        '7.2 Social Change & Contemporary Tribal Societies',
+        '7.3 Ethnicity, Tribal Unrest & Regionalism',
+        '8.1 Impact of World Religions on Tribal Societies',
+        '8.2 Tribe & Nation State (Comparative Study)',
+        '9.1 History of Tribal Administration, PTGs/PVTGs & Development',
+        '9.2 Role of Anthropology in Tribal & Rural Development',
+        '9.3 Anthropology in Understanding Regionalism, Communalism & Movements'
+      ]
+    };
+
+    function normalizePaperCode(paperVal) {
+      if (!paperVal) return 'GS1';
+      const str = String(paperVal).toUpperCase().trim();
+      if (str === 'GS1' || str === 'GS PAPER 1') return 'GS1';
+      if (str === 'GS2' || str === 'GS PAPER 2') return 'GS2';
+      if (str === 'GS3' || str === 'GS PAPER 3') return 'GS3';
+      if (str === 'GS4' || str === 'GS PAPER 4') return 'GS4';
+      if (str.includes('OPT1') || str.includes('ANTHROPOLOGY OPTIONAL PAPER 1')) return 'OPT1';
+      if (str.includes('OPT2') || str.includes('ANTHROPOLOGY OPTIONAL PAPER 2')) return 'OPT2';
+      if (str.includes('GS1') || str.includes('PAPER 1')) return 'GS1';
+      if (str.includes('GS2') || str.includes('PAPER 2')) return 'GS2';
+      if (str.includes('GS3') || str.includes('PAPER 3')) return 'GS3';
+      if (str.includes('GS4') || str.includes('PAPER 4')) return 'GS4';
+      return 'GS1';
+    }
+
+    function getPaperTagClass(paper) {
+      const norm = normalizePaperCode(paper);
+      if (norm === 'GS1') return 'tag-paper-gs1';
+      if (norm === 'GS2') return 'tag-paper-gs2';
+      if (norm === 'GS3') return 'tag-paper-gs3';
+      if (norm === 'GS4') return 'tag-paper-gs4';
+      return 'tag-paper-opt';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function (m) {
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m];
+      });
+    }
+
+    function generateUniqueId(prefix = 'id') {
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return `${prefix}_${crypto.randomUUID()}`;
+      }
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    }
+
+    /* STORAGE DATA */
+    const PRESET_STORAGE_KEY = 'qcab_preset_bank';
+    // ⚠️ REPLACE THIS WITH YOUR ACTUAL WORKER URL
+const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
+const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
+    const STUDY_DATA_KEY = 'qcab_study_data';
+    const VERSION_KEY = 'qcab_data_version';
+    const CURRENT_VERSION = '2';
+
+    let presetBank = [];
+    if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
+      localStorage.removeItem(PRESET_STORAGE_KEY);
+      localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+      presetBank = [];
+    } else {
+      presetBank = JSON.parse(localStorage.getItem(PRESET_STORAGE_KEY)) || [];
+    }
+
+    let studyData = {};
+
+    async function saveStudyData() {
+    if (!USER_TOKEN) return;
+    
+    // Loop through all changes and send to Cloudflare D1
+    const keys = Object.keys(studyData);
+    for (const question_id of keys) {
+        const rec = studyData[question_id];
+        if (!rec || typeof rec !== 'object') continue;
+        
+        try {
+            await fetch(`${WORKER_URL}/api/study/update`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + USER_TOKEN 
+                },
+                body: JSON.stringify({ 
+                    question_id: question_id, 
+                    bookmarked: rec.bookmarked ? 1 : 0, 
+                    revised: rec.revised ? 1 : 0, 
+                    note: rec.note || '' 
+                })
+            });
+        } catch (e) {
+            console.error('Failed to save to cloud for', question_id, e);
+        }
+    }
+    updateStudyDashboard();
+}
+    async function loadCloudStudy() {
+    if (!USER_TOKEN) return;
+    try {
+        const res = await fetch(`${WORKER_URL}/api/study/get`, {
+            headers: { 'Authorization': 'Bearer ' + USER_TOKEN }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // Convert array from backend to object format
+        data.forEach(item => {
+            studyData[item.question_id] = {
+                bookmarked: item.bookmarked == 1,
+                revised: item.revised == 1,
+                note: item.note || ''
+            };
+        });
+        
+        // Update the dashboard and re-render the bank buttons
+        updateStudyDashboard();
+        renderBankResults(); 
+    } catch (e) {
+        console.error('Failed to load study data from cloud', e);
+    }
+}
+
+    function getStudyRecord(q) {
+      const id = q.id || q.question;
+      if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false, note: '' };
+      return studyData[id];
+    }
+
+    function savePresets() {
+      localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetBank));
+      updateBankStatus();
+    }
+
+    function updateBankStatus() {
+      const statusEl = document.getElementById('bank-status-text');
+      if (statusEl) {
+        statusEl.textContent = `Current Bank Size: ${presetBank.length} question(s) loaded.`;
+      }
+      syncDashboard();
+    }
+
+    async function fetchJSONFile(url) {
+      try {
+        const response = await fetch(url + '?t=' + Date.now());
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data) ? data : data.questions || data.bank || data.data || [];
+      } catch (err) {
+        console.warn(`Could not load file from ${url}:`, err);
+        return [];
+      }
+    }
+
+    async function loadRepositoryJSON() {
+      try {
+        const [gs1Data, gs2Data, gs3Data, gs4Data, opt1Data, opt2Data] = await Promise.all([
+          fetchJSONFile('./gs1_pyq.json'),
+          fetchJSONFile('./gs2_pyq.json'),
+          fetchJSONFile('./gs3_pyq.json'),
+          fetchJSONFile('./gs4_pyq.json'),
+          fetchJSONFile('./opt1_pyq.json'),
+          fetchJSONFile('./opt2_pyq.json')
+        ]);
+
+        const incoming = [...gs1Data, ...gs2Data, ...gs3Data, ...gs4Data, ...opt1Data, ...opt2Data];
+        const newQuestions = [];
+
+        incoming.forEach((q) => {
+          const questionText = (q.question || q.q_text || q.text || q.title || '').trim();
+          if (!questionText || questionText.toLowerCase() === 'year' || questionText.toLowerCase() === 'syllabus') return;
+
+          let rawMarks = q.marks || q.mark || 10;
+          if (typeof rawMarks === 'string') {
+            rawMarks = parseInt(rawMarks.replace(/[^0-9]/g, ''), 10) || 10;
+          }
+
+          const rawYearText = String(q.year || q.exam_year || q.Year || '').trim();
+          const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
+          const rawYear = yearMatch ? yearMatch[1] : 'Other';
+          const yearNumber = rawYear === 'Other' ? NaN : Number(rawYear);
+          const yearGroup = Number.isInteger(yearNumber) && yearNumber >= 2013 && yearNumber <= 2026
+            ? String(yearNumber)
+            : 'Other';
+
+          const rawPaper = q.paper || q.gs || q.subject || 'GS1';
+          const rawTopic = q.topic || q.subtopic || q.category || SYLLABUS[normalizePaperCode(rawPaper)]?.[0] || 'General';
+
+          const item = {
+            id: q.id || generateUniqueId('q'),
+            paper: normalizePaperCode(rawPaper),
+            topic: String(rawTopic).trim(),
+            year: rawYearText || rawYear,
+            yearGroup: yearGroup,
+            marks: Number(rawMarks),
+            question: questionText
+          };
+          newQuestions.push(item);
+        });
+
+        const existingCustom = presetBank.filter(ex => {
+          return !newQuestions.some(nq => nq.question.trim().toLowerCase() === ex.question.trim().toLowerCase());
+        });
+
+        presetBank = [...newQuestions, ...existingCustom];
+        savePresets();
+
+        populateFilterYears();
+        populateFilterTopics();
+        renderBankResults();
+        updateBankStatus();
+        updateStudyDashboard();
+
+      } catch (err) {
+        console.warn('Repository load error:', err);
+        updateBankStatus();
+      }
+    }
+
+    /* FOLDER & BOOKLET STATE */
+    const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
+    const defaultRoot = {
+      id: 'root',
+      name: 'General Booklet',
+      parentId: null,
+      subfolders: [],
+      questions: []
+    };
+    let folderMap = JSON.parse(localStorage.getItem('qcab_nested_folders')) || { root: defaultRoot };
+    let activeFolderId = localStorage.getItem('qcab_active_nested_folder') || 'root';
+    if (!folderMap[activeFolderId]) activeFolderId = 'root';
+    let editingIndex = null;
+
+    function saveState() {
+      localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
+      localStorage.setItem('qcab_active_nested_folder', activeFolderId);
+    }
+    function getActiveFolder() {
+      return folderMap[activeFolderId] || folderMap['root'];
+    }
+
+    /* DOM REFERENCES */
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    const folderBar = document.getElementById('folder-bar');
+    const qPaper = document.getElementById('q-paper');
+    const qTopic = document.getElementById('q-topic');
+    const qText = document.getElementById('q-text');
+    const qYear = document.getElementById('q-year');
+    const addBtn = document.getElementById('add-btn');
+    const addPresetBtn = document.getElementById('add-preset-btn');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+    const marksButtons = document.querySelectorAll('.marks-btn');
+    const qList = document.getElementById('q-list');
+    const emptyState = document.getElementById('empty-state');
+    const countTag = document.getElementById('count-tag');
+    const summaryBar = document.getElementById('summary-bar');
+    const totalMarksEl = document.getElementById('total-marks');
+    const totalPagesEl = document.getElementById('total-pages');
+    const generateBtn = document.getElementById('generate-btn');
+
+    const renameFolderBtn = document.getElementById('rename-folder-btn');
+    const deleteFolderBtn = document.getElementById('delete-folder-btn');
+    const clearQBtn = document.getElementById('clear-q-btn');
+    const clearBankBtn = document.getElementById('clear-bank-btn');
+
+    const searchInput = document.getElementById('search-input');
+    const modeYearRadio = document.getElementById('mode-year');
+    const modeTopicRadio = document.getElementById('mode-topic');
+    const filterPaper = document.getElementById('filter-paper');
+    const filterYear = document.getElementById('filter-year');
+    const filterTopic = document.getElementById('filter-topic');
+    const searchBankBtn = document.getElementById('search-bank-btn');
+    const clearResultsBtn = document.getElementById('clear-results-btn');
+    const bankResultsContainer = document.getElementById('bank-results-container');
+
+    /* STUDY DASHBOARD */
+    function updateStudyDashboard() {
+      let bookmarked = 0, revised = 0, withNotes = 0;
+      const listContainer = document.getElementById('study-list-container');
+      const items = [];
+
+      presetBank.forEach(q => {
+        const id = q.id;
+        if (studyData[id] && studyData[id].bookmarked) {
+          bookmarked++;
+          if (studyData[id].revised) revised++;
+          if (studyData[id].note && studyData[id].note.trim()) withNotes++;
+          items.push(q);
+        }
+      });
+
+      document.getElementById('study-bookmarked').textContent = bookmarked;
+      document.getElementById('study-revised').textContent = revised;
+      document.getElementById('study-notes').textContent = withNotes;
+
+      if (items.length === 0) {
+        listContainer.innerHTML = '<p style="color:var(--muted);font-style:italic;">You haven\'t bookmarked any questions yet. Use the ⭐ button on any question to start.</p>';
+        return;
+      }
+
+      let html = '<div style="display:grid;gap:10px;">';
+      items.forEach(q => {
+        const rec = getStudyRecord(q);
+        const status = rec.revised ? '✅ Revised' : '⏳ Not revised';
+        const notePreview = rec.note ? rec.note.substring(0, 60) + (rec.note.length>60?'…':'') : 'No note';
+        html += `
+          <div style="border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface-2);">
+            <div style="font-weight:700;margin-bottom:4px;">${escapeHtml(q.question)}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
+              <span class="tag">${escapeHtml(q.paper)}</span>
+              <span class="tag tag-topic">${escapeHtml(q.topic)}</span>
+              <span class="tag">${q.year||''}</span>
+              <span class="tag">${status}</span>
+              <span class="tag">📝 ${notePreview}</span>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      listContainer.innerHTML = html;
+    }
+
+    let selectedMarks = 10;
+    if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
+
+    marksButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedMarks = parseInt(btn.dataset.marks, 10);
+        marksButtons.forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      });
+    });
+
+    function populateFormSubtopics() {
+      if (!qTopic || !qPaper) return;
+      qTopic.innerHTML = '';
+      const paper = qPaper.value;
+      const list = SYLLABUS[paper] || ['General'];
+      list.forEach((t) => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        qTopic.appendChild(opt);
+      });
+    }
+    if (qPaper) qPaper.addEventListener('change', populateFormSubtopics);
+
+    function getYearGroup(q) {
+      if (q.yearGroup && q.yearGroup !== 'Other') return q.yearGroup;
+      const raw = String(q.year || '').trim();
+      const match = raw.match(/\b(19\d{2}|20\d{2})\b/);
+      const y = match ? Number(match[1]) : NaN;
+      if (Number.isInteger(y) && y >= 2013 && y <= 2026) return String(y);
+      return 'Other';
+    }
+
+    function populateFilterYears() {
+      if (!filterYear) return;
+      const prevSelected = filterYear.value;
+      filterYear.innerHTML = '<option value="ALL">All Years</option>';
+
+      const years = new Set();
+      presetBank.forEach(q => {
+        const yg = getYearGroup(q);
+        if (yg !== 'Other') years.add(yg);
+      });
+
+      for (let year = 2026; year >= 2013; year--) {
+        const yr = String(year);
+        if (years.has(yr)) {
+          const opt = document.createElement('option');
+          opt.value = yr;
+          opt.textContent = yr;
+          filterYear.appendChild(opt);
+        }
+      }
+
+      const hasOther = presetBank.some(q => getYearGroup(q) === 'Other');
+      if (hasOther) {
+        const opt = document.createElement('option');
+        opt.value = 'Other';
+        opt.textContent = 'Other (Before 2013 / Outside 2013–2026)';
+        filterYear.appendChild(opt);
+      }
+
+      if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
+        filterYear.value = prevSelected;
+      }
+    }
+
+    function updateFilterMode() {
+      if (!filterYear || !filterTopic) return;
+      if (modeYearRadio && modeYearRadio.checked) {
+        filterYear.style.display = 'inline-block';
+        filterTopic.style.display = 'none';
+        filterTopic.value = 'ALL';
+      } else {
+        filterYear.style.display = 'none';
+        filterYear.value = 'ALL';
+        filterTopic.style.display = 'inline-block';
+        populateFilterTopics();
+      }
+    }
+
+    function populateFilterTopics() {
+      if (!filterTopic || !filterPaper) return;
+      filterTopic.innerHTML = '<option value="ALL">All Subtopics</option>';
+      const paper = filterPaper.value;
+      let list = [];
+      if (paper === 'ALL') {
+        Object.values(SYLLABUS).forEach(arr => list.push(...arr));
+        list = [...new Set(list)];
+      } else {
+        list = SYLLABUS[paper] || [];
+      }
+      list.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        filterTopic.appendChild(opt);
+      });
+    }
+
+    if (filterPaper) {
+      filterPaper.addEventListener('change', () => {
+        populateFilterYears();
+        populateFilterTopics();
+      });
+    }
+    if (modeYearRadio) modeYearRadio.addEventListener('change', updateFilterMode);
+    if (modeTopicRadio) modeTopicRadio.addEventListener('change', updateFilterMode);
+
+    if (searchInput) searchInput.addEventListener('input', renderBankResults);
+    if (searchBankBtn) searchBankBtn.addEventListener('click', renderBankResults);
+
+    if (clearResultsBtn) {
+      clearResultsBtn.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        if (filterPaper) filterPaper.value = 'ALL';
+        if (filterYear) filterYear.value = 'ALL';
+        if (filterTopic) filterTopic.value = 'ALL';
+        renderBankResults();
+      });
+    }
+
+    if (clearBankBtn) {
+      clearBankBtn.addEventListener('click', async () => {
+        if (confirm('Reset and reload default questions?')) {
+          presetBank = [];
+          localStorage.removeItem(PRESET_STORAGE_KEY);
+          localStorage.removeItem(VERSION_KEY);
+          updateBankStatus();
+          if (bankResultsContainer)
+            bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--muted); font-style:italic;">Reloading questions...</p>';
+          await loadRepositoryJSON();
+        }
+      });
+    }
+
+    /* RENDER BANK RESULTS */
+    let renderRequestId = 0;
+    async function renderBankResults() {
+      if (!bankResultsContainer) return;
+      const requestId = ++renderRequestId;
+      const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
+
+      // Reset opposite filter based on current mode before filtering
+      if (isYearMode && filterTopic) {
+        filterTopic.value = 'ALL';
+      } else if (!isYearMode && filterYear) {
+        filterYear.value = 'ALL';
+      }
+
+      const selectedP = filterPaper ? filterPaper.value : 'ALL';
+      const selectedY = filterYear ? filterYear.value : 'ALL';
+      const selectedT = filterTopic ? filterTopic.value : 'ALL';
+      const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+      if (requestId !== renderRequestId) return;
+
+      bankResultsContainer.innerHTML = '';
+
+      let filtered = presetBank.filter((q) => {
+        const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
+
+        const matchesQuery = !query || qText.includes(query);
+        if (!matchesQuery) return false;
+        if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
+
+        if (isYearMode) {
+          if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+        } else {
+          if (selectedT !== 'ALL') {
+            const qTopicClean = String(q.topic || '').trim().toLowerCase();
+            const selectedTClean = String(selectedT).trim().toLowerCase();
+            const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+            if (!matchesTopic) return false;
+          }
+        }
+        return true;
+      });
+
+      const total = presetBank.length;
+      const showing = filtered.length;
+      const countMsg = document.createElement('div');
+      countMsg.style.cssText = 'margin-bottom: 12px; font-weight: 600; color: var(--text); font-size: 14px;';
+      countMsg.textContent = `Showing ${showing} of ${total} question${total > 1 ? 's' : ''}`;
+      bankResultsContainer.appendChild(countMsg);
+
+      if (filtered.length === 0) {
+        const noResult = document.createElement('p');
+        noResult.style.cssText = 'font-size:13px; color:var(--muted); font-style:italic;';
+        noResult.textContent = 'No questions found matching this selection.';
+        bankResultsContainer.appendChild(noResult);
+        return;
+      }
+
+      filtered.forEach((q, index) => {
+        const div = document.createElement('div');
+        div.className = 'bank-item';
+        const paperClass = getPaperTagClass(q.paper);
+
+        const rec = getStudyRecord(q);
+        const bookmarked = rec.bookmarked;
+        const revised = rec.revised;
+
+        const numberedQuestion = `<strong>${index + 1}.</strong> ${escapeHtml(q.question)}`;
+
+        div.innerHTML = `
+          <div class="bank-question">${numberedQuestion}</div>
+          <div class="bank-bottom">
+            <div class="tags">
+              <span class="tag ${paperClass}">${escapeHtml(q.paper || 'GS1')}</span>
+              <span class="tag tag-topic">${escapeHtml(q.topic || 'General')}</span>
+              <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
+            </div>
+            <div class="bank-actions" style="flex-wrap:wrap; gap:6px;">
+              <button class="btn-study ${bookmarked ? 'active-bookmark' : ''}" data-action="bookmark" data-id="${q.id}">⭐ ${bookmarked ? 'Bookmarked' : 'Bookmark'}</button>
+              <button class="btn-study ${revised ? 'active-revised' : ''}" data-action="revise" data-id="${q.id}">✅ ${revised ? 'Revised' : 'Mark Revised'}</button>
+              <button class="btn-study note-btn" data-action="note" data-id="${q.id}">📝 Note</button>
+              <button class="btn-secondary-sm btn-add-item">+ Add</button>
+              <button class="btn-secondary-sm btn-direct-pdf">⚡ PDF</button>
+              <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI</button>
+            </div>
+          </div>
+        `;
+
+        div.querySelectorAll('[data-action]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const action = btn.dataset.action;
+            const id = btn.dataset.id;
+            if (action === 'bookmark') {
+              studyData[id] = studyData[id] || { bookmarked: false, revised: false, note: '' };
+              studyData[id].bookmarked = !studyData[id].bookmarked;
+              saveStudyData();
+              renderBankResults();
+            } else if (action === 'revise') {
+              studyData[id] = studyData[id] || { bookmarked: false, revised: false, note: '' };
+              studyData[id].revised = !studyData[id].revised;
+              saveStudyData();
+              renderBankResults();
+            } else if (action === 'note') {
+              openNoteModal(id);
+            }
+          });
+        });
+
+        div.querySelector('.btn-add-item').addEventListener('click', () => {
+          getActiveFolder().questions.push({
+            question: q.question,
+            marks: q.marks,
+            year: q.year,
+            paper: q.paper,
+            topic: q.topic
+          });
+          saveState();
+          renderQuestions();
+        });
+
+        div.querySelector('.btn-direct-pdf').addEventListener('click', () => {
+          getActiveFolder().questions.push({
+            question: q.question,
+            marks: q.marks,
+            year: q.year,
+            paper: q.paper,
+            topic: q.topic
+          });
+          saveState();
+          renderQuestions();
+          generatePDF();
+        });
+
+        bankResultsContainer.appendChild(div);
+      });
+    }
+
+    /* NOTE MODAL */
+    let currentNoteId = null;
+    function openNoteModal(id) {
+      currentNoteId = id;
+      const rec = studyData[id] || { note: '' };
+      document.getElementById('note-textarea').value = rec.note || '';
+      document.getElementById('note-modal').classList.add('open');
+    }
+    function closeNoteModal() {
+      document.getElementById('note-modal').classList.remove('open');
+      currentNoteId = null;
+    }
+    document.getElementById('note-cancel-btn').addEventListener('click', closeNoteModal);
+    document.getElementById('note-save-btn').addEventListener('click', () => {
+      if (currentNoteId) {
+        const note = document.getElementById('note-textarea').value.trim();
+        studyData[currentNoteId] = studyData[currentNoteId] || { bookmarked: false, revised: false, note: '' };
+        studyData[currentNoteId].note = note;
+        saveStudyData();
+        closeNoteModal();
+        renderBankResults();
+      }
+    });
+    document.getElementById('note-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeNoteModal();
+    });
+
+    /* EXPORT/IMPORT STUDY DATA */
+    document.getElementById('export-study-btn').addEventListener('click', () => {
+      const data = JSON.stringify(studyData, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'qcab_study_data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('import-study-btn').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (typeof data === 'object') {
+              studyData = data;
+              saveStudyData();
+              renderBankResults();
+              alert('Study data imported successfully!');
+            } else {
+              alert('Invalid file format.');
+            }
+          } catch(err) { alert('Error reading file.'); }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    });
+
+    /* FOLDER MANAGEMENT UI */
+    if (renameFolderBtn) {
+      renameFolderBtn.addEventListener('click', () => {
+        const current = getActiveFolder();
+        if (current.id === 'root') { alert('Cannot rename root folder.'); return; }
+        const newName = prompt('Rename folder:', current.name);
+        if (newName && newName.trim()) {
+          current.name = newName.trim();
+          saveState();
+          renderAll();
+        }
+      });
+    }
+
+    if (deleteFolderBtn) {
+      deleteFolderBtn.addEventListener('click', () => {
+        const current = getActiveFolder();
+        if (current.id === 'root') { alert('Cannot delete root folder.'); return; }
+        if (confirm(`Delete folder "${current.name}" and its content?`)) {
+          const parent = folderMap[current.parentId];
+          if (parent) {
+            parent.subfolders = parent.subfolders.filter(id => id !== current.id);
+            delete folderMap[current.id];
+            activeFolderId = parent.id;
+            saveState();
+            renderAll();
+          }
+        }
+      });
+    }
+
+    if (clearQBtn) {
+      clearQBtn.addEventListener('click', () => {
+        if (confirm('Clear all questions from active folder?')) {
+          getActiveFolder().questions = [];
+          saveState();
+          renderQuestions();
+        }
+      });
+    }
+
+    function renderBreadcrumbs() {
+      if (!breadcrumbs) return;
+      breadcrumbs.innerHTML = '';
+      const path = [];
+      let curr = getActiveFolder();
+      while (curr) {
+        path.unshift(curr);
+        curr = curr.parentId ? folderMap[curr.parentId] : null;
+      }
+      path.forEach((f, idx) => {
+        if (idx > 0) breadcrumbs.appendChild(document.createTextNode(' / '));
+        const crumb = document.createElement('span');
+        crumb.className = 'crumb';
+        crumb.textContent = f.name;
+        crumb.addEventListener('click', () => {
+          activeFolderId = f.id;
+          saveState();
+          renderAll();
+        });
+        breadcrumbs.appendChild(crumb);
+      });
+    }
+
+    function renderFolders() {
+      if (!folderBar) return;
+      folderBar.innerHTML = '';
+      const current = getActiveFolder();
+      current.subfolders.forEach(subId => {
+        const sub = folderMap[subId];
+        if (!sub) return;
+        const tab = document.createElement('button');
+        tab.className = 'folder-tab';
+        tab.innerHTML = `📁 ${escapeHtml(sub.name)}`;
+        tab.addEventListener('click', () => {
+          activeFolderId = sub.id;
+          saveState();
+          renderAll();
+        });
+        folderBar.appendChild(tab);
+      });
+      const newBtn = document.createElement('button');
+      newBtn.className = 'btn-new-folder';
+      newBtn.textContent = '+ New Folder';
+      newBtn.addEventListener('click', () => {
+        const name = prompt(`Create subfolder under "${current.name}":`);
+        if (name && name.trim()) {
+          const newId = generateUniqueId('folder');
+          folderMap[newId] = {
+            id: newId,
+            name: name.trim(),
+            parentId: current.id,
+            subfolders: [],
+            questions: []
+          };
+          current.subfolders.push(newId);
+          activeFolderId = newId;
+          saveState();
+          renderAll();
+        }
+      });
+      folderBar.appendChild(newBtn);
+    }
+
+    function resetForm() {
+      editingIndex = null;
+      if (qText) qText.value = '';
+      if (qYear) qYear.value = '';
+      const headingEl = document.getElementById('add-heading');
+      if (headingEl) headingEl.textContent = 'Create Custom Question';
+      if (addBtn) addBtn.textContent = 'Add to Active Folder';
+      if (cancelEditBtn) cancelEditBtn.style.display = 'none';
+    }
+    if (cancelEditBtn) cancelEditBtn.addEventListener('click', resetForm);
+
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        const text = qText ? qText.value.trim() : '';
+        if (!text) { if (qText) qText.focus(); return; }
+
+        const item = {
+          question: text,
+          marks: selectedMarks,
+          year: qYear ? qYear.value.trim() : '',
+          yearGroup: getYearGroup({ year: qYear ? qYear.value.trim() : '' }),
+          paper: qPaper ? qPaper.value : 'GS1',
+          topic: qTopic ? qTopic.value : 'General'
+        };
+        const currentFolder = getActiveFolder();
+        if (editingIndex !== null) currentFolder.questions[editingIndex] = item;
+        else currentFolder.questions.push(item);
+        resetForm();
+        saveState();
+        renderQuestions();
+      });
+    }
+
+    if (addPresetBtn) {
+      addPresetBtn.addEventListener('click', () => {
+        const text = qText ? qText.value.trim() : '';
+        if (!text) { if (qText) qText.focus(); return; }
+        const newPreset = {
+          id: generateUniqueId('p'),
+          paper: qPaper ? qPaper.value : 'GS1',
+          topic: qTopic ? qTopic.value : 'General',
+          year: qYear ? qYear.value.trim() || '2025' : '2025',
+          yearGroup: getYearGroup({ year: qYear ? qYear.value.trim() || '2025' : '2025' }),
+          marks: selectedMarks,
+          question: text
+        };
+        presetBank.push(newPreset);
+        savePresets();
+        populateFilterYears();
+        populateFilterTopics();
+        alert('Question saved to Preset Bank!');
+        resetForm();
+        renderBankResults();
+      });
+    }
+
+    function renderQuestions() {
+      if (!qList) return;
+      const questions = getActiveFolder().questions;
+      qList.innerHTML = '';
+      if (questions.length === 0) {
+        if (emptyState) emptyState.style.display = 'block';
+        if (summaryBar) summaryBar.style.display = 'none';
+        if (generateBtn) generateBtn.disabled = true;
+        if (countTag) countTag.textContent = '0 questions';
+        syncDashboard();
+        return;
+      }
+      if (emptyState) emptyState.style.display = 'none';
+      if (summaryBar) summaryBar.style.display = 'grid';
+      if (generateBtn) generateBtn.disabled = false;
+      if (countTag) countTag.textContent = questions.length + ' question(s)';
+
+      let totalMarks = 0, totalPages = 0;
+      questions.forEach((q, i) => {
+        totalMarks += q.marks;
+        totalPages += MARK_RULES[q.marks] || 2;
+        const li = document.createElement('li');
+        li.className = 'q-item';
+        const paperClass = getPaperTagClass(q.paper);
+
+        li.innerHTML = `
+          <div class="q-num">${i+1}.</div>
+          <div>
+            <div class="q-text">${escapeHtml(q.question)}</div>
+            <div class="q-meta">
+              ${q.paper ? `<span class="tag ${paperClass}">${escapeHtml(q.paper)}</span>` : ''}
+              ${q.topic ? `<span class="tag tag-topic">${escapeHtml(q.topic)}</span>` : ''}
+              <span class="tag">${q.marks} M ${q.year ? '/ ' + escapeHtml(q.year) : ''}</span>
+              <span class="tag pages">${MARK_RULES[q.marks] || 2} pages</span>
+            </div>
+          </div>
+          <div class="q-actions">
+            <button class="icon-btn" title="Edit" data-action="edit" data-i="${i}">✏️</button>
+            <button class="icon-btn danger" title="Remove" data-action="remove" data-i="${i}">&#10005;</button>
+          </div>
+        `;
+        qList.appendChild(li);
+      });
+
+      if (totalMarksEl) totalMarksEl.textContent = totalMarks;
+      if (totalPagesEl) totalPagesEl.textContent = totalPages;
+
+      qList.querySelectorAll('.icon-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.i, 10);
+          if (btn.dataset.action === 'edit') {
+            const q = questions[i];
+            editingIndex = i;
+            if (qText) qText.value = q.question;
+            if (qYear) qYear.value = q.year || '';
+            if (qPaper) qPaper.value = q.paper || 'GS1';
+            populateFormSubtopics();
+            if (qTopic) qTopic.value = q.topic || '';
+            selectedMarks = q.marks;
+            marksButtons.forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.marks,10) === q.marks ? 'true' : 'false'));
+            const headingEl = document.getElementById('add-heading');
+            if (headingEl) headingEl.textContent = 'Edit Question #' + (i+1);
+            if (addBtn) addBtn.textContent = 'Update Question';
+            if (cancelEditBtn) cancelEditBtn.style.display = 'block';
+          } else if (btn.dataset.action === 'remove') {
+            questions.splice(i, 1);
+            saveState();
+            renderQuestions();
+          }
+        });
+      });
+
+      syncDashboard();
+    }
+
+    function renderAll() {
+      renderBreadcrumbs();
+      renderFolders();
+      renderQuestions();
+      updateStudyDashboard();
+    }
+
+    /* PDF GENERATOR */
+    function generatePDF() {
+      const questions = getActiveFolder().questions;
+      if (questions.length === 0) return;
+      if (!window.jspdf) { alert('jsPDF library not loaded.'); return; }
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
+
+      function dividers() {
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.3);
+        doc.line(LEFT_DIV, TOP, LEFT_DIV, BOTTOM);
+        doc.line(RIGHT_DIV, TOP, RIGHT_DIV, BOTTOM);
+      }
+
+      let currentPg = 1;
+      const includeIndexEl = document.getElementById('include-index');
+
+      if (includeIndexEl && includeIndexEl.checked) {
+        dividers();
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W/2, 25, { align: 'center' });
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W/2, 32, { align: 'center' });
+
+        let y = 45;
+        doc.setFont('helvetica', 'bold');
+        doc.text('Q#', 28, y);
+        doc.text('Question', 40, y);
+        doc.text('Marks', 170, y);
+        y += 4;
+        doc.line(28, y, 180, y);
+        y += 6;
+        doc.setFont('helvetica', 'normal');
+
+        questions.forEach((q, idx) => {
+          if (y > 270) {
+            doc.addPage();
+            currentPg++;
+            dividers();
+            y = 25;
+          }
+          doc.text(`${idx+1}`, 28, y);
+          const textLines = doc.splitTextToSize(q.question, 125);
+          doc.text(textLines, 40, y);
+          doc.text(`${q.marks}M`, 170, y);
+          y += textLines.length * 5 + 4;
+        });
+        doc.addPage();
+        currentPg++;
+      }
+
+      questions.forEach((q, idx) => {
+        const pageCount = MARK_RULES[q.marks] || 2;
+        for (let p = 1; p <= pageCount; p++) {
+          dividers();
+          if (p === 1) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text(`Q${idx+1}.`, 28, 22);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10.5);
+            const lines = doc.splitTextToSize(q.question, 138);
+            doc.text(lines, 38, 22);
+
+            let boxY = 22 + lines.length * 5 + 2;
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(9);
+            const metaText = q.year ? `[ ${q.marks} Marks / ${q.year} ]` : `[ ${q.marks} Marks ]`;
+            doc.text(metaText, 38, boxY);
+            doc.line(28, boxY + 3, RIGHT_DIV - 3, boxY + 3);
+          }
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.text(`Page ${currentPg}`, PAGE_W/2, PAGE_H - 8, { align: 'center' });
+
+          if (!(idx === questions.length - 1 && p === pageCount)) {
+            doc.addPage();
+            currentPg++;
+          }
+        }
+      });
+
+      doc.save(`${getActiveFolder().name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qcab.pdf`);
+    }
+
+    if (generateBtn) generateBtn.addEventListener('click', generatePDF);
+
+    /* INITIALIZATION */
+    populateFormSubtopics();
+    populateFilterYears();
+    populateFilterTopics();
+    updateFilterMode();
+    renderAll();
+    loadRepositoryJSON();
+    loadCloudStudy();
+        
+
+  })();
 </script>
+
+<script>
+function openAnswerPage(item) {
+    // 1. Check if user is logged in OR if you are the owner
+    const userToken = localStorage.getItem('userToken');
+    const ownerKey = localStorage.getItem('qcab_owner_key');
+
+    // 2. Create the target URL for answer.html
+    const targetUrl = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
+
+    // 3. If NOT logged in and NOT the owner, redirect to login
+    if (!userToken && !ownerKey) {
+        alert("Please login first to view the AI generated answer.");
+        // Redirect the current window to login page, passing where we were going
+        window.location.href = `./login.html?redirect=${encodeURIComponent(targetUrl)}`;
+        return;
+    }
+
+    // 4. If logged in (or owner), open the answer page in a new tab
+    window.open(targetUrl, '_blank');
+}
+
+window.fetchAIAnswer = function(buttonElement) {
+  const card = buttonElement.closest('.bank-item');
+  if (!card) return;
+
+  const questionEl = card.querySelector('.bank-question');
+  let questionText = questionEl ? questionEl.innerText.trim() : '';
+
+  // Remove leading numbers or indices (e.g., "1. ") from the extracted question text
+  questionText = questionText.replace(/^\d+\.\s*/, '');
+
+  const tags = card.querySelectorAll('.tag');
+  let marks = '', year = '';
+
+  tags.forEach(tag => {
+    const text = tag.innerText;
+    if (text.includes('M')) {
+      const parts = text.split('/');
+      marks = parts[0].trim();
+      if (parts[1]) year = parts[1].trim();
+    }
+  });
+
+  const questionItem = {
+    question: questionText,
+    marks: marks,
+    year: year
+  };
+
+  openAnswerPage(questionItem);
+};
+</script>
+<script src="mobile-menu.js"></script>
+<script src="upsc-prep-tools.js"></script>
 </body>
 </html>
