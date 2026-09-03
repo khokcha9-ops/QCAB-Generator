@@ -2336,8 +2336,23 @@
 
 <script>
 function openAnswerPage(item) {
-  const url = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
-  window.open(url, '_blank');
+    // 1. Check if user is logged in OR if you are the owner
+    const userToken = localStorage.getItem('userToken');
+    const ownerKey = localStorage.getItem('qcab_owner_key');
+
+    // 2. Create the target URL for answer.html
+    const targetUrl = `answer.html?q=${encodeURIComponent(item.question)}&y=${encodeURIComponent(item.year || '')}&m=${encodeURIComponent(item.marks || '')}`;
+
+    // 3. If NOT logged in and NOT the owner, redirect to login
+    if (!userToken && !ownerKey) {
+        alert("Please login first to view the AI generated answer.");
+        // Redirect the current window to login page, passing where we were going
+        window.location.href = `./login.html?redirect=${encodeURIComponent(targetUrl)}`;
+        return;
+    }
+
+    // 4. If logged in (or owner), open the answer page in a new tab
+    window.open(targetUrl, '_blank');
 }
 
 window.fetchAIAnswer = function(buttonElement) {
