@@ -1520,44 +1520,66 @@
     if (qPaper) qPaper.addEventListener('change', populateFormSubtopics);
 
     function getYearGroup(q) {
-      const raw = String(q.year || '').trim();
-      const match = raw.match(/\b(19\d{2}|20\d{2})\b/);
-      const y = match ? Number(match[1]) : NaN;
-      return Number.isInteger(y) && y >= 2013 && y <= 2026 ? String(y) : 'Other';
+    // First try to use yearGroup if it exists
+    if (q.yearGroup && q.yearGroup !== 'Other') {
+        return q.yearGroup;
+    }
+    
+    // Otherwise extract from year field
+    const raw = String(q.year || '').trim();
+    const match = raw.match(/\b(19\d{2}|20\d{2})\b/);
+    const y = match ? Number(match[1]) : NaN;
+    
+    // Check if it's a valid year
+    if (Number.isInteger(y) && y >= 2013 && y <= 2026) {
+        return String(y);
+    }
+    
+    return 'Other';
     }
 
     function populateFilterYears() {
-      if (!filterYear) return;
-      const prevSelected = filterYear.value;
-      filterYear.innerHTML = '<option value="ALL">All Years</option>';
+    if (!filterYear) return;
+    const prevSelected = filterYear.value;
+    filterYear.innerHTML = '<option value="ALL">All Years</option>';
 
-      // Get all unique years from presetBank
-      const years = new Set();
-      presetBank.forEach(q => {
+    // Get all unique years from presetBank
+    const years = new Set();
+    presetBank.forEach(q => {
         const yearGroup = getYearGroup(q);
         if (yearGroup !== 'Other') {
-          years.add(yearGroup);
+            years.add(yearGroup);
         }
-      });
+    });
 
-      // Add years from 2013 to 2026 if they exist in the data
-      for (let year = 2026; year >= 2013; year--) {
+    console.log('Found years in data:', years); // Debug line
+
+    // Add years from 2013 to 2026 that exist in data
+    for (let year = 2026; year >= 2013; year--) {
         const yearStr = String(year);
-        // Only add years that actually exist in the data
         if (years.has(yearStr)) {
-          const opt = document.createElement('option');
-          opt.value = yearStr;
-          opt.textContent = yearStr;
-          filterYear.appendChild(opt);
+            const opt = document.createElement('option');
+            opt.value = yearStr;
+            opt.textContent = yearStr;
+            filterYear.appendChild(opt);
         }
-      }
+    }
 
-      const hasOther = presetBank.some((q) => getYearGroup(q) === 'Other');
-      if (hasOther) {
+    // Add "Other" if needed
+    const hasOther = presetBank.some((q) => getYearGroup(q) === 'Other');
+    if (hasOther) {
         const opt = document.createElement('option');
         opt.value = 'Other';
         opt.textContent = 'Other (Before 2013 / Outside 2013–2026)';
         filterYear.appendChild(opt);
+    }
+
+    // Restore previous selection
+    if (prevSelected && filterYear.querySelector(`option[value="${prevSelected}"]`)) {
+        filterYear.value = prevSelected;
+    }
+    
+    console.log('Available years in dropdown:', years);
       }
 
       // If ALL is selected, keep it; otherwise try to restore previous selection
@@ -2126,6 +2148,31 @@
         populateFilterYears();
         renderBankResults();
     }).catch(err => console.warn('Initial load failed:', err));
+    // Add this debug function
+function debugYears() {
+    const years = new Set();
+    presetBank.forEach(q => {
+        const y = getYearGroup(q);
+        years.add(y);
+    });
+    console.log('📊 All years in data:', years);
+    console.log('📊 Total questions:', presetBank.length);
+    
+    // Count questions by year
+    const yearCount = {};
+    presetBank.forEach(q => {
+        const y = getYearGroup(q);
+        yearCount[y] = (yearCount[y] || 0) + 1;
+    });
+    console.log('📊 Questions per year:', yearCount);
+}
+
+// Call it after loading
+loadRepositoryJSON().then(() => {
+    debugYears(); // ← Add this line
+    populateFilterYears();
+    renderBankResults();
+});
     
   })();
 </script>
