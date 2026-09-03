@@ -12,6 +12,24 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
 <style>
+  root {
+      --bg-primary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #111827;
+      /* ... other light variables */
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0a0d14;
+      --bg-card: #182030;
+      --text-primary: #f9fafb;
+      /* ... other dark variables */
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
   :root{
     --bg:#f4f7fc;
     --surface:#ffffff;
@@ -2549,5 +2567,17 @@ async function fetchAIAnswer(btn) {
     }
 }
 </script>
+<script>
+    const themeToggleBtn = document.querySelector('#theme-toggle');
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      themeToggleBtn.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+      localStorage.setItem('theme', newTheme);
+    });
+  </script>
 </body>
 </html>
