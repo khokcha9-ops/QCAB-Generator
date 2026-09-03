@@ -1,5 +1,8 @@
-// js/config.js - All constants and configuration
+// ============================================================
+// js/config.js – Constants & Configuration
+// ============================================================
 
+// Syllabus data – all subtopics preserved
 const SYLLABUS = {
   GS1: ['Art & Culture','Modern History','Post Independence','World History','Physical Geography','Economic & Human Geography','Indian society'],
   GS2: ['Polity','Governance','Social Justice','International Relations'],
@@ -75,10 +78,11 @@ const SYLLABUS = {
   ]
 };
 
+// Your Cloudflare Worker URL
 const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
+
+// Marks to pages mapping
 const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
 
-// Export for use in other files (if using modules)
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { SYLLABUS, WORKER_URL, MARK_RULES };
-}
+// Make them globally available (no import/export needed)
+// These are now accessible anywhere in your scripts
