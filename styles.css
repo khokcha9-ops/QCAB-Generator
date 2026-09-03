@@ -814,7 +814,9 @@
     .bank-actions{width:100%}
     .bank-actions button{flex:1}
   }
-/* Login Modal */
+/* ============================================================
+   LOGIN MODAL STYLES (must be in styles.css)
+   ============================================================ */
 .login-modal {
   position: fixed;
   inset: 0;
@@ -825,7 +827,7 @@
   align-items: center;
   backdrop-filter: blur(6px);
 }
-.login-modal.open { display: flex; }
+.login-modal.open { display: flex !important; }
 .login-modal-content {
   background: var(--surface);
   border-radius: 24px;
