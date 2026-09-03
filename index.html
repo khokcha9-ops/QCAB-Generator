@@ -429,7 +429,10 @@
     grid-template-columns:1fr 1fr 1fr auto auto;
     gap:8px;
     align-items:center;
-  }
+}
+#filter-topic, #filter-year {
+    display: inline-block !important; /* Forces them to ALWAYS show */
+}
   .filters select{min-width:0;height:42px}
   .filters .btn{height:42px;padding:9px 14px}
   #filter-topic{display:none}
@@ -1008,17 +1011,7 @@
             </div>
 
             <div id="pyq-bank-body">
-              <div class="mode-switch">
-                <label>
-                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
-                  <span>Filter by Year</span>
-                </label>
-                <label>
-                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
-                  <span>Filter by Subtopic</span>
-                </label>
-              </div>
-
+              
               <div class="search-main" style="position: relative;">
                 <span class="search-icon">🔍</span>
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
@@ -1771,19 +1764,6 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
       }
     }
 
-    function updateFilterMode() {
-      if (!filterYear || !filterTopic) return;
-      if (modeYearRadio && modeYearRadio.checked) {
-        filterYear.style.display = 'inline-block';
-        filterTopic.style.display = 'none';
-        filterTopic.value = 'ALL';
-      } else {
-        filterYear.style.display = 'none';
-        filterYear.value = 'ALL';
-        filterTopic.style.display = 'inline-block';
-        populateFilterTopics();
-      }
-    }
 
     function populateFilterTopics() {
       if (!filterTopic || !filterPaper) return;
@@ -1845,13 +1825,15 @@ const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qc
     async function renderBankResults() {
       if (!bankResultsContainer) return;
       const requestId = ++renderRequestId;
-      const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
-
-      // Reset opposite filter based on current mode before filtering
-      if (isYearMode && filterTopic) {
-        filterTopic.value = 'ALL';
-      } else if (!isYearMode && filterYear) {
-        filterYear.value = 'ALL';
+            // Check Year filter
+      if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+      
+      // Check Topic filter
+      if (selectedT !== 'ALL') {
+        const qTopicClean = String(q.topic || '').trim().toLowerCase();
+        const selectedTClean = String(selectedT).trim().toLowerCase();
+        const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+        if (!matchesTopic) return false;
       }
 
       const selectedP = filterPaper ? filterPaper.value : 'ALL';
