@@ -718,18 +718,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 .modal-box {
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 16px;
   padding: 30px;
-  width: 90%;
+  width: 100%;
   max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  z-index: 100000; /* THIS makes sure it shows! */
-  display: block; /* Forces it to be visible */
+  z-index: 100000;
+  display: block;
 }
 .modal-close {
   position: absolute;
@@ -746,7 +749,7 @@
 }
 .modal-box input:focus { border-color: #0891b2; outline: none; }
 .modal-box .switch { font-size: 13px; }
-]
+  
   @media(max-width:820px){
     .app{grid-template-columns:1fr}
     .sidebar{
@@ -2411,8 +2414,30 @@ const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev'; // Your Worker URL
 let isRegisterMode = false;
 
 function openLogin() {
-    document.getElementById('login-modal').style.display = 'flex';
-    document.getElementById('modal-error').innerText = '';
+    let modal = document.getElementById('login-modal');
+
+    // If the modal HTML is missing, CREATE IT right now!
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'login-modal';
+        modal.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px;";
+        
+        modal.innerHTML = `
+            <div style="background:#ffffff; padding:30px; border-radius:16px; width:100%; max-width:400px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                <span onclick="closeLogin()" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer; color:#64748b;">&times;</span>
+                <h2 id="modal-title" style="margin-top:0; color:#0f172a;">Login</h2>
+                <input type="text" id="modal-name" placeholder="Your Name" style="display:none; width:100%; padding:12px; margin:8px 0; border:1px solid #cbd5e1; border-radius:8px; background:#eef2f9; color:#0f172a;">
+                <input type="email" id="modal-email" placeholder="Email" style="width:100%; padding:12px; margin:8px 0; border:1px solid #cbd5e1; border-radius:8px; background:#eef2f9; color:#0f172a;">
+                <input type="password" id="modal-password" placeholder="Password" style="width:100%; padding:12px; margin:8px 0; border:1px solid #cbd5e1; border-radius:8px; background:#eef2f9; color:#0f172a;">
+                <button onclick="handleModalAuth()" id="modal-submit-btn" style="width:100%; padding:13px; margin-top:10px; background:linear-gradient(135deg, #7c3aed, #0891b2); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Login</button>
+                <p onclick="toggleModalMode()" style="text-align:center; color:#7c3aed; cursor:pointer; margin-top:10px; font-size:13px;">Don't have an account? Register</p>
+                <p id="modal-error" style="color:red; font-size:13px;"></p>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    modal.style.display = 'flex';
 }
 function closeLogin() {
     document.getElementById('login-modal').style.display = 'none';
