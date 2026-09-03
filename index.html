@@ -13,8 +13,8 @@
 
 <style>
   /* ============================================================
-     CSS – same as your original, plus new styles for login modal,
-     sidebar toggle, AI selector, and countdown.
+     ALL YOUR ORIGINAL CSS IS PRESERVED BELOW.
+     I've only STRENGTHENED the login modal CSS at the end.
      ============================================================ */
   :root {
     --bg:#f4f7fc;
@@ -713,78 +713,97 @@
     visibility: visible;
   }
 
-  /* ---- NEW STYLES FOR LOGIN MODAL, SIDEBAR TOGGLE, AI SELECTOR ---- */
+  /* ---- LOGIN MODAL (FIXED: GUARANTEED VISIBLE) ---- */
   .login-modal {
-    position: fixed;
-    inset: 0;
-    display: none;
-    z-index: 10001;
-    background: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(4px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    display: none !important;
+    z-index: 10001 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    justify-content: center !important;
+    align-items: center !important;
+    backdrop-filter: blur(6px) !important;
   }
-  .login-modal.open { display: flex; }
+  .login-modal.open {
+    display: flex !important;
+  }
   .login-modal-content {
-    background: var(--surface);
-    border-radius: 20px;
-    padding: 32px;
-    max-width: 420px;
-    width: 92%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    position: relative;
+    background: var(--surface) !important;
+    border-radius: 24px !important;
+    padding: 36px 32px !important;
+    max-width: 420px !important;
+    width: 92% !important;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.4) !important;
+    position: relative !important;
+    border: 1px solid var(--border) !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    color: var(--text) !important;
+    display: block !important;
   }
   .login-modal-content h2 {
-    margin: 0 0 8px;
-    font-size: 24px;
-    font-weight: 800;
+    margin: 0 0 8px !important;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    color: var(--text) !important;
   }
   .login-modal-content p.sub {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 20px;
+    color: var(--muted) !important;
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
   }
-  .login-modal-content .field { margin-bottom: 14px; }
+  .login-modal-content .field { margin-bottom: 14px !important; }
+  .login-modal-content .field label {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: var(--text) !important;
+    margin-bottom: 4px !important;
+  }
   .login-modal-content .field input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface-2);
-    color: var(--text);
-    font-size: 14px;
-    outline: none;
-    transition: 0.2s;
+    width: 100% !important;
+    padding: 12px 14px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    background: var(--surface-2) !important;
+    color: var(--text) !important;
+    font-size: 14px !important;
+    outline: none !important;
+    transition: 0.2s !important;
   }
   .login-modal-content .field input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-soft);
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-soft) !important;
   }
-  .login-modal-content .btn-row { display: flex; gap: 10px; margin-top: 16px; }
-  .login-modal-content .btn-row .btn { flex: 1; }
+  .login-modal-content .btn-row { display: flex !important; gap: 10px !important; margin-top: 16px !important; }
+  .login-modal-content .btn-row .btn { flex: 1 !important; }
   .login-modal-content .switch-link {
-    text-align: center;
-    margin-top: 14px;
-    font-size: 13px;
-    color: var(--muted);
+    text-align: center !important;
+    margin-top: 14px !important;
+    font-size: 13px !important;
+    color: var(--muted) !important;
   }
   .login-modal-content .switch-link a {
-    color: var(--primary);
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
   }
-  .login-modal-content .switch-link a:hover { text-decoration: underline; }
+  .login-modal-content .switch-link a:hover { text-decoration: underline !important; }
   .login-modal-close {
-    position: absolute;
-    top: 16px; right: 20px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--muted);
-    cursor: pointer;
+    position: absolute !important;
+    top: 16px !important;
+    right: 20px !important;
+    background: none !important;
+    border: none !important;
+    font-size: 24px !important;
+    color: var(--muted) !important;
+    cursor: pointer !important;
   }
-  .login-modal-close:hover { color: var(--text); }
+  .login-modal-close:hover { color: var(--text) !important; }
 
   .ai-model-selector {
     display: flex;
@@ -831,7 +850,6 @@
     cursor: pointer;
   }
 
-  /* ---- RESPONSIVE ---- */
   @media(max-width:1050px){
     .workspace{grid-template-columns:1fr}
     .sticky-card{position:static}
@@ -1261,7 +1279,7 @@
   </div>
 </div>
 
-<!-- ===== LOGIN MODAL ===== -->
+<!-- ===== LOGIN MODAL (FIXED) ===== -->
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
     <button class="login-modal-close" id="login-modal-close">&times;</button>
@@ -2565,14 +2583,8 @@
         sidebarEl.classList.toggle('closed');
       });
     }
-    // On mobile, the existing menu-toggle handles it; we also want the backdrop to close.
-    // Already handled in the mobile toggle logic above.
 
     // ---- LOGIN SYSTEM (Integrated) ----
-    // We'll use the functions defined in the global scope.
-    // The login modal HTML is already in the page.
-    // We need to attach the login logic.
-
     const loginModal = document.getElementById('login-modal');
     const loginEmail = document.getElementById('login-email');
     const loginPassword = document.getElementById('login-password');
@@ -2608,14 +2620,6 @@
     loginModalClose.addEventListener('click', closeLoginModal);
     loginModal.addEventListener('click', function(e) { if (e.target === this) closeLoginModal(); });
 
-    // Login/Logout buttons
-    function updateAuthUI() {
-      const user = getUser();
-      const isLoggedIn = !!user;
-      const loginTexts = document.querySelectorAll('#sidebar-login-text, #topbar-login-text');
-      loginTexts.forEach(el => el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login');
-    }
-
     function getUser() {
       try {
         const data = JSON.parse(localStorage.getItem('qcab_user'));
@@ -2637,6 +2641,13 @@
       updateAuthUI();
     }
 
+    function updateAuthUI() {
+      const user = getUser();
+      const isLoggedIn = !!user;
+      const loginTexts = document.querySelectorAll('#sidebar-login-text, #topbar-login-text');
+      loginTexts.forEach(el => el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login');
+    }
+
     // Load user on startup
     let currentUser = getUser();
     updateAuthUI();
@@ -2647,7 +2658,6 @@
         if (confirm('Logout from your account?')) {
           setUser(null);
           alert('Logged out.');
-          // Reload study data (clear)
           studyData = {};
           renderBankResults();
           updateStudyDashboard();
@@ -2700,11 +2710,9 @@
         if (!res.ok) {
           throw new Error(data.error || 'Authentication failed.');
         }
-        // Success
         setUser({ email, token: data.token || data.key || 'dummy-token' });
         closeLoginModal();
         alert(isLoginMode ? 'Welcome back!' : 'Account created!');
-        // Reload study data
         loadCloudStudy();
         renderBankResults();
         updateStudyDashboard();
@@ -2717,34 +2725,13 @@
       }
     });
 
-    // Allow Enter key on login fields
     [loginEmail, loginPassword].forEach(field => {
       field.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') loginSubmit.click();
       });
     });
 
-    // ---- OVERRIDE openAnswerPage to check login and pass model ----
-    const originalOpenAnswerPage = window.openAnswerPage;
-    window.openAnswerPage = function(item) {
-      const user = getUser();
-      if (!user) {
-        alert('Please login to access AI answers.');
-        openLoginModal('login');
-        return;
-      }
-      // Get selected model from the dropdown in the bank item
-      // The item may not have a direct reference, so we use the global
-      // We'll read from the event target in fetchAIAnswer.
-      // But we need to pass model. We'll get it from the button's closest bank-item.
-      // Actually fetchAIAnswer will be called with the button, we'll extract model from there.
-      // So we'll keep the logic in fetchAIAnswer to read the dropdown.
-      // We'll just call the original openAnswerPage with the model appended.
-      // But to avoid duplicate code, we'll handle it in fetchAIAnswer.
-      // So we'll override fetchAIAnswer instead.
-    };
-
-    // Override fetchAIAnswer to use the model selector
+    // ---- OVERRIDE fetchAIAnswer to use model selector ----
     window.fetchAIAnswer = function(buttonElement) {
       const card = buttonElement.closest('.bank-item');
       if (!card) return;
@@ -2761,24 +2748,18 @@
           if (parts[1]) year = parts[1].trim();
         }
       });
-      // Get selected model
       const modelSelect = card.querySelector('.ai-model-select');
       const model = modelSelect ? modelSelect.value : 'perplexity';
 
-      const questionItem = { question: questionText, marks, year, model };
-      // Now open the answer page with model
       const user = getUser();
       if (!user) {
         alert('Please login to access AI answers.');
         openLoginModal('login');
         return;
       }
-      const targetUrl = `answer.html?q=${encodeURIComponent(questionItem.question)}&y=${encodeURIComponent(questionItem.year || '')}&m=${encodeURIComponent(questionItem.marks || '')}&model=${encodeURIComponent(questionItem.model)}`;
+      const targetUrl = `answer.html?q=${encodeURIComponent(questionText)}&y=${encodeURIComponent(year)}&m=${encodeURIComponent(marks)}&model=${encodeURIComponent(model)}`;
       window.open(targetUrl, '_blank');
     };
-
-    // Also update the inline onclick in renderBankResults to use the new fetchAIAnswer
-    // We already set it as onclick="fetchAIAnswer(this)" – that will call our new function.
 
     console.log('QCAB Generator with Login, AI Models, Sidebar Toggle, and Countdown – Enhanced version loaded.');
     console.log('All original features preserved. Subtopics intact.');
@@ -2788,6 +2769,8 @@
   // END OF SCRIPT
   // ============================================================
 </script>
+
+<!-- External scripts (if any) -->
 
 </body>
 </html>
