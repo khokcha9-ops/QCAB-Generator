@@ -5,45 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Register - QCAB</title>
     
-    <!-- Add marked.js to convert Markdown to HTML -->
+    <!-- Add marked.js (just in case it's needed later) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; }
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; background-color: #f4f7fc; }
         input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
         .switch { text-align: center; margin-top: 15px; cursor: pointer; color: #007bff; }
         .hidden { display: none; }
-        /* Styling for the HTML tags sent by the AI */
-        .kw-term { color: blue; font-weight: bold; }
-        .kw-example { font-style: italic; }
-        .kw-meta { color: green; }
-        mark.kw-highlight { background-color: yellow; }
-        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-        table, th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        .auth-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <div id="auth-section">
-        <h2 id="formTitle">Login</h2>
+    <div class="auth-box">
+        <div id="auth-section">
+            <h2 id="formTitle" style="margin-top:0;">Login</h2>
 
-        <!-- Name field is hidden by default -->
-        <input type="text" id="name" placeholder="Your Name" class="hidden">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
-        <button id="submitBtn" onclick="handleAuth()">Login</button>
-        
-        <div class="switch" onclick="toggleMode()">Don't have an account? Register</div>
-    </div>
-
-    <div id="generator-section" class="hidden">
-        <h2>Welcome, <span id="user-name-display"></span>!</h2>
-        <textarea id="question" rows="4" placeholder="Ask a question..."></textarea>
-        <button onclick="generate()">Generate Answer</button>
-        <div id="result"></div>
-        <button onclick="logout()" style="background-color: #dc3545; margin-top: 20px;">Logout</button>
+            <!-- Name field is hidden by default -->
+            <input type="text" id="name" placeholder="Your Name" class="hidden">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button id="submitBtn" onclick="handleAuth()">Login</button>
+            
+            <div class="switch" onclick="toggleMode()">Don't have an account? Register</div>
+        </div>
     </div>
 
     <script>
@@ -51,12 +39,20 @@
         const BASE_URL = 'https://qcap-ai-v2.khokcha9.workers.dev'; 
         let isRegister = false;
 
+        // Check for a redirect URL (e.g., index.html/?redirect=answer.html?q=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect');
+
         // Check if user is already logged in when page loads
         window.onload = function() {
             const token = localStorage.getItem('userToken');
-            const name = localStorage.getItem('userName');
             if (token) {
-                showGenerator(name);
+                // If logged in and there was a specific question, go straight to it
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                } else {
+                    window.location.href = "./answer.html";
+                }
             }
         };
 
@@ -99,52 +95,19 @@
                     alert('Registration successful! Please login.');
                     toggleMode(); // Switch to Login mode
                 } else {
-                    // Save token and name to localStorage so answer.html can use it!
+                    // Save token and name to localStorage
                     localStorage.setItem('userToken', data.token);
                     localStorage.setItem('userName', data.name || email);
-                    showGenerator(data.name || email);
+                    
+                    // Redirect to the question they clicked, or to answer.html
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        window.location.href = "./answer.html";
+                    }
                 }
             } else {
                 alert('Error: ' + data.error);
-            }
-        }
-
-        function showGenerator(name) {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('generator-section').classList.remove('hidden');
-            document.getElementById('user-name-display').innerText = name;
-        }
-
-        function logout() {
-            localStorage.removeItem('userToken');
-            localStorage.removeItem('userName');
-            window.location.reload();
-        }
-
-        async function generate() {
-            const userToken = localStorage.getItem('userToken');
-            if (!userToken) { alert('Please login first.'); return; }
-            
-            const question = document.getElementById('question').value;
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = "<p style='color: gray;'>Generating answer...</p>";
-            
-            const res = await fetch(`${BASE_URL}/api/generate-answer`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                },
-                body: JSON.stringify({ question })
-            });
-            
-            const data = await res.json();
-            
-            if (data.error) {
-                resultDiv.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
-            } else {
-                // Use marked.parse() to convert Markdown to HTML
-                resultDiv.innerHTML = marked.parse(data.text);
             }
         }
     </script>
