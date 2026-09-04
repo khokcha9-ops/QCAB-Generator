@@ -1,5 +1,5 @@
 // ============================================================
-// js/auth.js – Authentication (working version)
+// js/auth.js – Authentication (global functions)
 // ============================================================
 
 console.log('🔐 auth.js loaded');
@@ -9,16 +9,21 @@ if (typeof WORKER_URL === 'undefined') {
   var WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
 }
 
-// ----- User session -----
-function getUser() {
+// ----- User session (GLOBAL) -----
+window.getUser = function() {
+  console.log('🔍 getUser() called');
   try {
     const data = JSON.parse(localStorage.getItem('qcab_user'));
-    if (data && data.email) return data;
-  } catch (_) { return null; }
+    if (data && data.email) {
+      console.log('👤 User found:', data.email);
+      return data;
+    }
+  } catch (_) { console.log('⚠️ No user data found'); }
   return null;
-}
+};
 
-function setUser(user) {
+window.setUser = function(user) {
+  console.log('💾 setUser() called with:', user);
   if (user) {
     localStorage.setItem('qcab_user', JSON.stringify(user));
     localStorage.setItem('userToken', user.token || '');
@@ -29,9 +34,10 @@ function setUser(user) {
     localStorage.removeItem('qcab_owner_key');
   }
   updateAuthUI();
-}
+};
 
 function updateAuthUI() {
+  console.log('🔄 updateAuthUI() called');
   const user = getUser();
   const isLoggedIn = !!user;
   document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
@@ -39,14 +45,23 @@ function updateAuthUI() {
   });
 }
 
-// ----- Login Modal -----
-function openLoginModal(mode = 'login') {
-  console.log('🚪 openLoginModal called');
+// ----- Login Modal (GLOBAL) -----
+window.openLoginModal = function(mode = 'login') {
+  console.log('🚪 openLoginModal() called with mode:', mode);
   const modal = document.getElementById('login-modal');
   if (!modal) {
-    console.error('❌ Login modal not found');
+    console.error('❌ Login modal not found!');
+    // Try to find it by class as fallback
+    const fallbackModal = document.querySelector('.login-modal');
+    if (fallbackModal) {
+      console.log('✅ Found modal by class, using it');
+      fallbackModal.classList.add('open');
+      return;
+    }
+    alert('Login modal not found. Please refresh the page.');
     return;
   }
+  console.log('✅ Login modal found, opening...');
 
   const isLogin = mode === 'login';
   const title = document.getElementById('login-modal-title');
@@ -73,16 +88,21 @@ function openLoginModal(mode = 'login') {
   if (nameInput) nameInput.value = '';
 
   modal.classList.add('open');
-}
+  console.log('✅ Modal opened, classList:', modal.classList);
+};
 
-function closeLoginModal() {
+window.closeLoginModal = function() {
+  console.log('🚪 closeLoginModal() called');
   const modal = document.getElementById('login-modal');
   if (modal) modal.classList.remove('open');
-}
+  // Also remove from fallback
+  const fallbackModal = document.querySelector('.login-modal');
+  if (fallbackModal) fallbackModal.classList.remove('open');
+};
 
 // ----- Init Auth (called from app.js) -----
-function initAuth() {
-  console.log('🔧 initAuth called');
+window.initAuth = function() {
+  console.log('🔧 initAuth() called');
   const modal = document.getElementById('login-modal');
   const closeBtn = document.getElementById('login-modal-close');
   const submitBtn = document.getElementById('login-submit-btn');
@@ -91,14 +111,24 @@ function initAuth() {
   const error = document.getElementById('login-error');
 
   if (!modal) {
-    console.warn('⚠️ Login modal not found');
-    return;
+    console.warn('⚠️ Login modal not found by ID, trying class...');
+    const fallbackModal = document.querySelector('.login-modal');
+    if (fallbackModal) {
+      console.log('✅ Found modal by class, using it');
+      // We'll still attach events to ID elements if they exist
+    } else {
+      console.warn('⚠️ Login modal not found at all.');
+      return;
+    }
   }
 
   // Close on backdrop click
-  modal.addEventListener('click', function(e) {
-    if (e.target === this) closeLoginModal();
-  });
+  const targetModal = modal || document.querySelector('.login-modal');
+  if (targetModal) {
+    targetModal.addEventListener('click', function(e) {
+      if (e.target === this) closeLoginModal();
+    });
+  }
 
   // Close button
   if (closeBtn) {
@@ -119,7 +149,11 @@ function initAuth() {
   // Google button
   if (googleBtn) {
     googleBtn.addEventListener('click', function() {
-      showAlert('Google login is not configured yet.', 'Not Available');
+      if (typeof showAlert === 'function') {
+        showAlert('Google login is not configured yet.', 'Not Available');
+      } else {
+        alert('Google login is not configured yet.');
+      }
     });
   }
 
@@ -175,7 +209,11 @@ function initAuth() {
         });
 
         closeLoginModal();
-        showAlert(isLogin ? 'Welcome back!' : 'Account created!', 'Success');
+        if (typeof showAlert === 'function') {
+          showAlert(isLogin ? 'Welcome back!' : 'Account created!', 'Success');
+        } else {
+          alert(isLogin ? 'Welcome back!' : 'Account created!');
+        }
 
         if (typeof loadCloudStudy === 'function') loadCloudStudy();
         if (typeof renderBankResults === 'function') renderBankResults();
@@ -186,7 +224,11 @@ function initAuth() {
         if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
           setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
           closeLoginModal();
-          showAlert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)', 'Mock Mode');
+          if (typeof showAlert === 'function') {
+            showAlert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)', 'Mock Mode');
+          } else {
+            alert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)');
+          }
           if (typeof loadCloudStudy === 'function') loadCloudStudy();
           if (typeof renderBankResults === 'function') renderBankResults();
           if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
@@ -213,4 +255,12 @@ function initAuth() {
 
   updateAuthUI();
   console.log('✅ Auth initialized');
-}
+};
+
+// Make sure functions are also available without window.
+// (window.getUser already exists, but we also want getUser)
+window.getUser = getUser || window.getUser;
+window.setUser = setUser || window.setUser;
+window.openLoginModal = openLoginModal || window.openLoginModal;
+window.closeLoginModal = closeLoginModal || window.closeLoginModal;
+window.initAuth = initAuth || window.initAuth;
