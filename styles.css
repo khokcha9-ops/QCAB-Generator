@@ -1,23 +1,23 @@
 :root {
-  /* Lighter, Vibrant Indigo/Cyan Palette */
-  --primary: #4F46E5;
-  --primary-dark: #4338CA;
+  /* Vibrant Light Gradient Palette (Indigo to Electric Cyan) */
+  --primary: #6366F1;
+  --primary-dark: #4F46E5;
   --primary-hover: #4338CA;
-  --primary-soft: #E0E7FF;
+  --primary-soft: #EEF2FF;
   --accent: #06B6D4;
-  --accent-soft: #CFFAFE;
+  --accent-soft: #E0F2FE;
   --highlight: #F59E0B;
   --highlight-soft: #FFFBEB;
   --warm-sand: #F59E0B;
   --sky-blue: #0EA5E9;
   --warm-sand-soft: #FFFBEB;
   
-  /* Easy-on-the-eyes Backgrounds */
+  /* Modern Vibrant Light Backgrounds */
   --bg: #F8FAFC;
   --surface: #FFFFFF;
   --surface-2: #F1F5F9;
-  --text: #1E293B;
-  --text-soft: #475569;
+  --text: #0F172A;
+  --text-soft: #334155;
   --muted: #64748B;
   --border: #E2E8F0;
   --border-strong: #CBD5E1;
@@ -27,44 +27,55 @@
   --danger: #DC2626;
   --danger-soft: #FEE2E2;
   
-  --shadow: 0 12px 35px -5px rgba(79, 70, 229, 0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
-  --shadow-sm: 0 2px 8px rgba(79, 70, 229, 0.05);
+  /* Richer Gradient Shadows */
+  --shadow: 0 12px 35px -5px rgba(99, 102, 241, 0.18), 0 4px 12px -2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.08);
   --radius: 18px;
   --radius-sm: 10px;
   --sans: 'Plus Jakarta Sans', sans-serif;
   --serif: Georgia, serif;
 }
 
-/* DARK MODE */
+/* VIBRANT DARK MODE (Pattern, Palette & High Contrast Text Refinement) */
 body.dark-mode {
-  --primary: #818CF8;
-  --primary-dark: #111827;
-  --primary-hover: #A5B4FC;
-  --primary-soft: #312E81;
-  --accent: #22D3EE;
-  --accent-soft: #164E63;
+  /* Rich Violet & Emerald Accent Variables */
+  --primary: #A855F7;
+  --primary-dark: #090D16;
+  --primary-hover: #C084FC;
+  --primary-soft: #2E1065;
+  --accent: #10B981;
+  --accent-soft: #064E3B;
   --highlight: #FBBF24;
   --highlight-soft: #451A03;
   --warm-sand: #FBBF24;
   --sky-blue: #38BDF8;
   --warm-sand-soft: #451A03;
   
-  /* Softer, lighter Dark Mode */
-  --bg: #0F172A;
+  /* High Contrast Text */
+  --text: #FFFFFF;       /* Pure white for maximum readability */
+  --text-soft: #E2E8F0;  /* Crisp light gray for secondary text */
+  --muted: #94A3B8;      /* Legible slate gray for metadata */
+  
+  /* Dark Mode Surfaces & Borders */
   --surface: #1E293B;
   --surface-2: #334155;
-  --text: #F8FAFC;
-  --text-soft: #CBD5E1;
-  --muted: #94A3B8;
   --border: #334155;
   --border-strong: #475569;
-  --sidebar-bg: #1E293B;
+  --sidebar-bg: #111827;
   --card-bg: #1E293B;
+  
   --danger: #F87171;
   --danger-soft: #450A0A;
-  --shadow: 0 14px 35px -5px rgba(0,0,0,0.4);
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+  --shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  /* Modern Subtle Dot Grid Pattern in Dark Mode */
+  --bg: #0B0F19;
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(168, 85, 247, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -1109,6 +1120,7 @@ footer{
   pointer-events: auto;
 }
 .toast .toast-icon { font-size: 20px; }
+
 /* ============================================================
    LOGOUT CONFIRM MODAL
    ============================================================ */
@@ -1164,86 +1176,7 @@ footer{
   align-items: center;
   gap: 10px;
 }
-/* ==========================================
-   YOUR EXISTING STYLES (from your old file)
-   ========================================== */
-/* ... your previous body styles, old colors, etc. ... */
 
-
-/* ==========================================
-   NEW FOREST GREEN THEME (ADDED AT THE BOTTOM)
-   ========================================== */
-
-/* Forest Green Body */
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-}
-
-/* Forest Green Sidebar */
-.sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border); }
-.brand { color: var(--primary-dark); }
-.brand-mark { background: var(--primary); color: white; box-shadow: 0 4px 8px rgba(45, 106, 79, 0.3); }
-.nav-title { color: var(--muted); font-weight: 700; letter-spacing: 0.5px; }
-.nav-btn { color: var(--text-soft); transition: all 0.2s; }
-.nav-btn:hover { background: var(--accent-soft); color: var(--primary-dark); }
-.nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 8px rgba(45, 106, 79, 0.3); }
-
-/* Forest Green Topbar */
-.topbar { border-bottom: 1px solid var(--border); background: var(--bg); }
-.topbar-title { color: var(--primary-dark); font-weight: 800; }
-.topbar-sub { color: var(--muted); }
-.theme-toggle { background: var(--accent-soft); color: var(--primary-dark); border: 1px solid transparent; }
-.theme-toggle:hover { border-color: var(--accent); }
-
-/* Forest Green Hero */
-.hero { background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg) 100%); border-radius: 16px; }
-.hero h1 { color: var(--primary-dark); font-weight: 800; }
-.eyebrow { color: var(--primary); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 13px; }
-
-/* Forest Green Stats */
-.stat { background: var(--card-bg); border: 1px solid var(--border); border-top: 4px solid var(--primary); }
-.stat-label { color: var(--muted); font-weight: 700; font-size: 11px; }
-.stat-value { color: var(--primary-dark); font-weight: 800; font-size: 28px; }
-.stat-note { color: var(--muted); font-size: 12px; }
-
-/* Forest Green Buttons */
-.btn-primary { background: var(--primary); color: white; border: none; }
-.btn-primary:hover { background: var(--primary-dark); }
-.btn-secondary, .btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-soft); }
-.btn-secondary:hover, .btn:hover { border-color: var(--primary); color: var(--primary); }
-.btn-danger { background: var(--danger); color: white; border: none; }
-
-/* Forest Green Cards */
-.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
-.card-title { color: var(--primary-dark); font-weight: 700; }
-.card-sub { color: var(--muted); font-size: 14px; }
-
-/* Forest Green Filters & Inputs */
-.marks-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text-soft); }
-.marks-btn[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: white; }
-.search-main input, .field input, .field textarea, .field select { border: 1px solid var(--border); background: var(--bg); color: var(--text); }
-.search-main input:focus, .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
-
-/* Forest Green QCAB Sidebar */
-.sticky-card { background: var(--card-bg); }
-.tag { background: var(--accent-soft); color: var(--primary-dark); font-weight: 700; }
-.btn-generate { background: var(--primary); color: white; }
-.btn-generate:hover { background: var(--primary-dark); }
-.btn-generate:disabled { background: var(--border); color: var(--muted); }
-
-/* Forest Green Footer */
-footer { border-top: 1px solid var(--border); color: var(--muted); text-align: center; padding: 20px; }
-
-/* Forest Green Modals */
-.login-modal-content, .custom-modal, .study-modal-content, .ai-model-modal-content { background: var(--card-bg); border-radius: 16px; }
-.login-brand-icon { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.4); }
-.model-option:hover { border-color: var(--primary); background: var(--accent-soft); }
-
-/* Forest Green Toast */
-.toast { background: var(--primary-dark); color: white; }
 /* ============================================================
    MOBILE NAVIGATION & RESPONSIVE
    ============================================================ */
@@ -1360,6 +1293,7 @@ footer { border-top: 1px solid var(--border); color: var(--muted); text-align: c
   .bank-actions { width: 100%; }
   .bank-actions button { flex: 1; }
 }
+
 /* Smooth Dark Mode Transitions */
 body, .sidebar, .topbar, .card, .stat, .filter-box, .bank-item, .empty-state, input, select, textarea, button {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
