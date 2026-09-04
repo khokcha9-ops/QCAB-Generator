@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UPSC Mains PYQ cum QCAB Generator</title>
+  <title>UPSC Craft | Mains PYQ cum QCAB Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,10 +19,11 @@
       <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
     </div>
     <div class="brand">
+      <!-- Updated Branding -->
       <div class="brand-mark">Q</div>
       <div>
-        <strong>QCAB Generator</strong>
-        <span>UPSC Mains Practice</span>
+        <strong>UPSC CRAFT</strong>
+        <span>Mains Practice</span>
       </div>
     </div>
     <div class="nav-title">Workspace</div>
@@ -61,7 +62,7 @@
 
     <!-- Mobile Bar -->
     <div class="mobile-nav">
-      <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC QCAB</div>
+      <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC CRAFT</div>
       <div class="mobile-actions-right">
         <button class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
         <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
@@ -89,7 +90,8 @@
       <section class="hero" id="dashboard">
         <div>
           <p class="eyebrow">Question-cum-Answer Booklet</p>
-          <h1>UPSC PYQ Bank<br>cum QCAB Generator</h1>
+          <!-- Updated Hero Title -->
+          <h1>UPSC Craft<br>PYQ cum QCAB Generator</h1>
           <p>Find previous year questions, build your custom practice set and generate a print-ready answer booklet.</p>
         </div>
         <div class="hero-actions">
@@ -196,7 +198,7 @@
         </div>
       </section>
 
-      <footer>QCAB Generator · Project by Biswajit Nahak</footer>
+      <footer>UPSC Craft · Project by Biswajit Nahak</footer>
 
     </main>
   </div>
@@ -311,12 +313,8 @@
 
 <!-- ==================== FALLBACK LOGIN FUNCTIONS ==================== -->
 <script>
-  // ============================================================
-  // FALLBACK LOGIN FUNCTIONS (guaranteed to work)
-  // ============================================================
   console.log('🔐 Fallback login functions loaded');
 
-  // ----- User Management -----
   function getUser() {
     try {
       const data = JSON.parse(localStorage.getItem('qcab_user'));
@@ -342,23 +340,19 @@
     const user = getUser();
     const isLoggedIn = !!user;
 
-    // Update login buttons
     document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
       if (el) el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login';
     });
 
-    // Update login button icons
     document.querySelectorAll('#sidebar-login-btn .nav-icon, #topbar-login-btn .nav-icon').forEach(el => {
       if (el) el.textContent = isLoggedIn ? '👤' : '🔑';
     });
 
-    // Show/hide profile
     const profile = document.getElementById('user-profile');
     if (profile) {
       profile.style.display = isLoggedIn ? 'block' : 'none';
     }
 
-    // Update profile info
     if (isLoggedIn) {
       document.getElementById('user-name').textContent = user?.name || 'User';
       document.getElementById('user-email').textContent = user?.email || '';
@@ -366,7 +360,6 @@
     }
   }
 
-  // ----- Custom Toast (replaces alert) -----
   function showToast(message, icon = '✅') {
     const toast = document.getElementById('toast');
     if (!toast) { alert(message); return; }
@@ -377,7 +370,6 @@
     window.toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
   }
 
-  // ----- Custom Modal (replaces confirm) -----
   function showCustomModal(title, message, type = 'alert', callback) {
     const overlay = document.getElementById('customModal');
     if (!overlay) { alert(message); return; }
@@ -394,28 +386,18 @@
       confirmBtn.className = 'btn btn-primary';
       cancelBtn.style.display = 'inline-block';
       cancelBtn.className = 'btn btn-secondary';
-      confirmBtn.onclick = function() {
-        overlay.classList.remove('active');
-        if (callback) callback(true);
-      };
-      cancelBtn.onclick = function() {
-        overlay.classList.remove('active');
-        if (callback) callback(false);
-      };
+      confirmBtn.onclick = function() { overlay.classList.remove('active'); if (callback) callback(true); };
+      cancelBtn.onclick = function() { overlay.classList.remove('active'); if (callback) callback(false); };
     } else {
       confirmBtn.textContent = 'OK';
       confirmBtn.className = 'btn btn-primary';
       cancelBtn.style.display = 'none';
-      confirmBtn.onclick = function() {
-        overlay.classList.remove('active');
-        if (callback) callback();
-      };
+      confirmBtn.onclick = function() { overlay.classList.remove('active'); if (callback) callback(); };
     }
     overlay.classList.add('active');
     confirmBtn.focus();
   }
 
-  // ----- Login Modal -----
   function openLoginModal() {
     const modal = document.getElementById('login-modal');
     if (!modal) { showToast('Login modal not found.', '❌'); return; }
@@ -439,7 +421,6 @@
     document.getElementById('login-error').style.display = 'none';
   }
 
-  // ----- Logout Modal -----
   function showLogoutModal() {
     const modal = document.getElementById('logoutModal');
     if (!modal) {
@@ -459,17 +440,11 @@
     if (typeof renderBankResults === 'function') renderBankResults();
   }
 
-  // ----- Handle Login Button Click -----
   function handleLoginClick() {
     const user = getUser();
-    if (user) {
-      showLogoutModal();
-    } else {
-      openLoginModal();
-    }
+    if (user) { showLogoutModal(); } else { openLoginModal(); }
   }
 
-  // ----- Login Form Submit -----
   document.getElementById('login-submit-btn')?.addEventListener('click', async function() {
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value.trim();
@@ -477,16 +452,8 @@
     const isLogin = this.textContent === 'Sign In';
     const errorEl = document.getElementById('login-error');
 
-    if (!email || !password) {
-      errorEl.textContent = 'Please fill in all fields.';
-      errorEl.style.display = 'block';
-      return;
-    }
-    if (!isLogin && !name) {
-      errorEl.textContent = 'Please enter your name.';
-      errorEl.style.display = 'block';
-      return;
-    }
+    if (!email || !password) { errorEl.textContent = 'Please fill in all fields.'; errorEl.style.display = 'block'; return; }
+    if (!isLogin && !name) { errorEl.textContent = 'Please enter your name.'; errorEl.style.display = 'block'; return; }
     errorEl.style.display = 'none';
 
     const endpoint = isLogin ? '/api/login' : '/api/register';
@@ -516,9 +483,7 @@
       if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
         if (isLogin) {
           setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
-          closeLoginModal();
-          updateUI();
-          showToast('Welcome back! (Mock mode)', '👋');
+          closeLoginModal(); updateUI(); showToast('Welcome back! (Mock mode)', '👋');
           if (typeof loadCloudStudy === 'function') loadCloudStudy();
           if (typeof renderBankResults === 'function') renderBankResults();
         } else {
@@ -531,12 +496,10 @@
     }
   });
 
-  // ----- Google Login Button (no alert) -----
   document.getElementById('google-login-btn')?.addEventListener('click', function() {
     showToast('Google login is coming soon! Use email/password for now.', '🔧');
   });
 
-  // ----- Event Listeners for Logout Modal -----
   document.getElementById('logoutConfirmBtn')?.addEventListener('click', function() {
     document.getElementById('logoutModal').classList.remove('active');
     performLogout();
@@ -554,7 +517,6 @@
     showLogoutModal();
   });
 
-  // ----- Enter key support -----
   document.getElementById('login-email')?.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') document.getElementById('login-submit-btn')?.click();
   });
@@ -562,20 +524,16 @@
     if (e.key === 'Enter') document.getElementById('login-submit-btn')?.click();
   });
 
-  // Close login modal on backdrop click
   document.getElementById('login-modal')?.addEventListener('click', function(e) {
     if (e.target === this) closeLoginModal();
   });
 
-  // Close custom modal on backdrop click
   document.getElementById('customModal')?.addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('active');
   });
 
-  // Update UI on load
   updateUI();
 
-  // Make functions globally accessible
   window.openLoginModal = openLoginModal;
   window.closeLoginModal = closeLoginModal;
   window.getUser = getUser;
@@ -589,7 +547,6 @@
   console.log('✅ Fallback login functions ready');
 </script>
 
-<!-- Load external scripts (if they exist) -->
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
