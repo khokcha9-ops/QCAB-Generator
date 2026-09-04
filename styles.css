@@ -1681,3 +1681,9 @@ body.dark-mode .card-sub {
 body.dark-mode .brand-logo {
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
+.brand-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 10px;
+    object-fit: contain;
+}
