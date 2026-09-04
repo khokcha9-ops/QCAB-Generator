@@ -37,7 +37,7 @@
   --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.08);
   --radius: 18px;
   --radius-sm: 10px;
-  --sans: 'Plus Jakarta Sans', sans-serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --serif: Georgia, serif;
 }
 
