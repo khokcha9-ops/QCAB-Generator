@@ -67,7 +67,6 @@
           <span id="theme-icon">🌙</span>
           <span id="theme-text">Dark Mode</span>
         </button>
-        <!-- Login button with user email if logged in -->
         <button class="theme-toggle" id="topbar-login-btn">🔑 <span id="topbar-login-text">Login</span></button>
       </div>
     </header>
@@ -377,17 +376,33 @@
   </div>
 </div>
 
-<!-- ==================== AI MODEL SELECTION MODAL ==================== -->
+<!-- ==================== AI MODEL SELECTION MODAL (UPDATED) ==================== -->
 <div class="ai-model-modal" id="ai-model-modal">
   <div class="ai-model-modal-content">
     <button class="ai-model-close" id="ai-model-close">&times;</button>
     <h3>🤖 Choose AI Model</h3>
     <p>Select which AI should generate your UPSC answer.</p>
     <div class="model-options">
-      <button class="model-option" data-model="secret">🔐 My AI (Secret) <span class="badge">Groq</span></button>
-      <button class="model-option" data-model="perplexity">🔍 Perplexity AI <span class="badge">External</span></button>
-      <button class="model-option" data-model="chatgpt">💬 ChatGPT <span class="badge">External</span></button>
-      <button class="model-option" data-model="deepseek">🧠 DeepSeek <span class="badge">External</span></button>
+      <!-- Direct (formerly "My AI (Secret)") -->
+      <button class="model-option" data-model="secret">
+        <span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">⚡</span>
+        Direct <span class="badge">Groq</span>
+      </button>
+      <!-- Perplexity -->
+      <button class="model-option" data-model="perplexity">
+        <span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">P</span>
+        Perplexity AI
+      </button>
+      <!-- ChatGPT -->
+      <button class="model-option" data-model="chatgpt">
+        <span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">C</span>
+        ChatGPT
+      </button>
+      <!-- DeepSeek -->
+      <button class="model-option" data-model="deepseek">
+        <span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">D</span>
+        DeepSeek
+      </button>
     </div>
     <button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button>
   </div>
