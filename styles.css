@@ -1631,3 +1631,34 @@ body { font-family: 'Inter', sans-serif !important; }
     background: var(--accent-soft); color: var(--accent);
     border-radius: 999px; padding: 5px 12px; font-weight: 800; font-size: 12px;
 }
+/* ============================================================
+   EMERGENCY DARK MODE TEXT FIX
+   ============================================================ */
+body.dark-mode {
+    --text: #FFFFFF !important;
+    --text-soft: #E2E8F0 !important;
+    --muted: #94A3B8 !important;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode p,
+body.dark-mode li,
+body.dark-mode .stat-value,
+body.dark-mode .stat-label,
+body.dark-mode .nav-btn,
+body.dark-mode .theme-toggle,
+body.dark-mode .brand strong,
+body.dark-mode .brand span,
+body.dark-mode .topbar-title,
+body.dark-mode .topbar-sub {
+    color: var(--text) !important;
+}
+
+body.dark-mode .muted,
+body.dark-mode .nav-title,
+body.dark-mode .card-sub {
+    color: var(--muted) !important;
+}
