@@ -94,7 +94,7 @@
         </div>
         <small id="coverage-text">0% Completed</small>
       </div>
-      
+    </div>
 
     <div class="nav-title">Workspace</div>
     <nav class="nav">
@@ -106,12 +106,21 @@
     </nav>
     
     <div class="sidebar-bottom">
-      <button type="button" class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
+      <!-- REMOVED DUPLICATE DARK MODE TOGGLE HERE -->
     </div>
   </aside>
 
   <!-- ===== CONTENT ===== -->
   <div class="content">
+
+    <!-- Mobile Bar (RESTORED) -->
+    <div class="mobile-nav">
+      <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC CRAFT</div>
+      <div class="mobile-actions-right">
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+      </div>
+    </div>
+    <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
     <!-- Top Bar -->
     <header class="topbar">
@@ -219,10 +228,9 @@
                     <option value="OPT1">Anthropology Optional Paper 1</option>
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
-<select id="filter-topic" class="topic-filter-select">
-    <option value="ALL">All Subtopics</option>
-</select>
-
+                  <select id="filter-topic" class="topic-filter-select">
+                    <option value="ALL">All Subtopics</option>
+                  </select>
                   <select id="filter-year">
                     <option value="ALL">All Years</option>
                   </select>
@@ -293,10 +301,10 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-<script src="js/config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=3"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=3"></script>
 <script src="js/config.js?v=3"></script>
+<script src="js/auth.js?v=3"></script>
 <script src="js/app.js?v=3"></script>
 <script src="js/features.js?v=3"></script>
 
@@ -339,9 +347,27 @@
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
-    // BOTH Year and Subtopic filters are ALWAYS visible, regardless of mode
+    // BOTH Year and Subtopic filters are ALWAYS visible
     yearSel.style.display = 'block';
     topicSel.style.display = 'block';
+
+    // FORCE the Subtopic dropdown to include topics from GS1 to OPT2 if it's empty
+    if (topicSel.options.length <= 1) {
+      var allTopics = [
+        'Indian Heritage and Culture', 'Modern Indian History', 'Freedom Struggle', 'Post-Independence', 'World History', 
+        'Indian Society', 'Social Issues', 'Globalization', 'Social Empowerment', 'Geography', 'Indian Geography', 
+        'World Geography', 'Economic Development', 'Agriculture', 'Food Processing', 'Science and Technology', 
+        'Environment', 'Biodiversity', 'Disaster Management', 'Internal Security', 'Ethics', 'Case Studies', 
+        'General', 'Anthropology Optional'
+      ];
+      topicSel.innerHTML = '<option value="ALL">All Subtopics</option>';
+      allTopics.forEach(topic => {
+        var opt = document.createElement('option');
+        opt.value = topic;
+        opt.textContent = topic;
+        topicSel.appendChild(opt);
+      });
+    }
 
     // Automatically trigger the search to update the results
     document.getElementById('search-bank-btn').click();
