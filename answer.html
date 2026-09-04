@@ -1,102 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Answer Generator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #f4f7fc;
-    color: #0f172a;
-    padding: 40px 20px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .container { background: #fff; border-radius: 20px; padding: 30px; box-shadow: 0 12px 35px rgba(0,0,0,0.05); }
-  .question { font-size: 18px; font-weight: 700; margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #7c3aed; }
-  .answer-box {
-    background: #f1f5f9;
-    border-radius: 12px;
-    padding: 20px;
-    white-space: pre-wrap;
-    font-family: 'Georgia', serif;
-    line-height: 1.7;
-    min-height: 300px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 20px;
-  }
-  .loading { color: #475569; font-style: italic; }
-  .btn {
-    border: none;
-    background: #7c3aed;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 14px;
-  }
-  .btn:hover { background: #6d28d9; transform: scale(1.02); }
-  .btn-secondary { background: #e2e8f0; color: #0f172a; }
-  .btn-secondary:hover { background: #cbd5e1; }
-  .copy-btn { margin-right: 10px; }
-  .prompt-area {
-    background: #fef9e7;
-    border: 1px solid #f59e0b;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 16px 0;
-    white-space: pre-wrap;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  .badge {
-    display: inline-block;
-    background: #7c3aed;
-    color: #fff;
-    padding: 2px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-    margin-left: 8px;
-  }
-  .footer { margin-top: 20px; text-align: center; color: #94a3b8; font-size: 12px; }
-  @media (max-width: 600px) { body { padding: 20px 10px; } .container { padding: 20px; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Answer Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       THEME VARIABLES (same as main)
+       ============================================================ */
+    :root {
+      --bg: #f4f7fc;
+      --surface: #ffffff;
+      --surface-2: #eef2f9;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #cbd5e1;
+      --border-strong: #94a3b8;
+      --primary: #7c3aed;
+      --primary-soft: #f3e8ff;
+      --accent: #0891b2;
+      --accent-soft: #cffafe;
+      --highlight: #f59e0b;
+      --danger: #b91c1c;
+      --shadow: 0 12px 35px rgba(0,0,0,0.05);
+      --radius: 18px;
+      --sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --serif: Georgia, 'Times New Roman', serif;
+    }
+    [data-theme="dark"] {
+      --bg: #07090e;
+      --surface: #111622;
+      --surface-2: #1a2234;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #2a364f;
+      --border-strong: #3b4d71;
+      --primary: #a78bfa;
+      --primary-soft: #2e1065;
+      --accent: #22d3ee;
+      --accent-soft: #083344;
+      --highlight: #fbbf24;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+      padding: 30px 20px;
+      max-width: 960px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .container {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+
+    /* ============================================================
+       TOP BAR (theme toggle & close)
+       ============================================================ */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .top-bar h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin: 0;
+    }
+    .top-bar-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .top-bar-actions button {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .top-bar-actions button:hover {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ============================================================
+       QUESTION DISPLAY
+       ============================================================ */
+    .question-box {
+      background: var(--surface-2);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .question-box .q-text {
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+    .question-box .q-meta {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .question-box .q-meta span {
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-right: 8px;
+      font-size: 12px;
+    }
+
+    /* ============================================================
+       ANSWER DISPLAY (internal)
+       ============================================================ */
+    .answer-box {
+      background: var(--surface-2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      font-family: var(--serif);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      min-height: 300px;
+      margin-bottom: 20px;
+      transition: background 0.25s ease;
+      font-size: 16px;
+    }
+    .answer-box .loading {
+      color: var(--muted);
+      font-style: italic;
+      font-family: var(--sans);
+    }
+    /* Color-coding for tags */
+    .answer-box .kw-term {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .answer-box .kw-example {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .answer-box .kw-meta {
+      font-size: 0.9em;
+      background: #fef3c7;
+      padding: 0 4px;
+      border-radius: 4px;
+      color: #92400e;
+      font-weight: 500;
+    }
+    [data-theme="dark"] .answer-box .kw-meta {
+      background: #451a03;
+      color: #fde68a;
+    }
+    .answer-box .kw-highlight {
+      background: #fbbf24;
+      padding: 0 4px;
+      border-radius: 4px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    [data-theme="dark"] .answer-box .kw-highlight {
+      background: #f59e0b;
+      color: #000;
+    }
+    /* Headings inside answer */
+    .answer-box h1, .answer-box h2, .answer-box h3 {
+      font-weight: 700;
+      margin: 1.2em 0 0.6em;
+      font-family: var(--sans);
+    }
+    .answer-box h1 { font-size: 1.4em; }
+    .answer-box h2 { font-size: 1.2em; }
+    .answer-box h3 { font-size: 1.1em; }
+
+    /* ============================================================
+       EXTERNAL PROMPT AREA
+       ============================================================ */
+    .prompt-area {
+      background: #fef9e7;
+      border: 1px solid var(--highlight);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 16px 0;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      max-height: 400px;
+      overflow-y: auto;
+      color: var(--text);
+      background: var(--surface-2);
+    }
+    [data-theme="dark"] .prompt-area {
+      background: #1e1b2e;
+      border-color: var(--primary);
+    }
+    .prompt-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 20px;
+    }
+    .prompt-actions .btn {
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover, #6d28d9);
+      transform: scale(1.02);
+    }
+    .btn-secondary {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #059669;
+      transform: scale(1.02);
+    }
+    /* Model brand buttons */
+    .btn-model {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-model:hover {
+      transform: scale(1.05);
+      border-color: var(--primary);
+    }
+    .btn-model.perplexity { background: #8B5CF6; color: #fff; border-color: #8B5CF6; }
+    .btn-model.chatgpt { background: #10A37F; color: #fff; border-color: #10A37F; }
+    .btn-model.deepseek { background: #2563EB; color: #fff; border-color: #2563EB; }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 600px) {
+      body { padding: 16px 10px; }
+      .container { padding: 20px 16px; }
+      .top-bar { flex-direction: column; align-items: flex-start; }
+      .top-bar h2 { font-size: 18px; }
+      .question-box .q-text { font-size: 16px; }
+      .answer-box { font-size: 15px; padding: 16px; }
+    }
+  </style>
 </head>
 <body>
 <div class="container" id="app">
-  <h2 style="margin-bottom: 8px;">🤖 AI Model Answer</h2>
-  <div id="questionDisplay" class="question">Loading question...</div>
-  <div id="answerDisplay" class="answer-box"><span class="loading">⏳ Generating answer...</span></div>
-  <div id="promptArea" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <strong>📋 Ready-to-use Prompt:</strong>
-      <button class="btn btn-secondary copy-btn" onclick="copyPrompt()">📄 Copy Prompt</button>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <h2 id="pageTitle">🤖 AI Model Answer</h2>
+    <div class="top-bar-actions">
+      <button id="themeToggle" title="Toggle dark/light mode">🌙 Dark Mode</button>
+      <button onclick="window.close()" title="Close tab">✕ Close</button>
     </div>
-    <div id="promptContent" class="prompt-area"></div>
-    <p style="font-size:13px; color:#475569; margin-top:8px;">
-      Copy the prompt above and paste it into your chosen AI tool (Perplexity, ChatGPT, or DeepSeek) to generate the answer.
+  </div>
+
+  <!-- Question Display -->
+  <div class="question-box" id="questionBox">
+    <div class="q-text" id="questionText">Loading question...</div>
+    <div class="q-meta" id="questionMeta"></div>
+  </div>
+
+  <!-- Answer Display (internal) -->
+  <div id="answerContainer">
+    <div class="answer-box" id="answerDisplay"><span class="loading">⏳ Generating answer...</span></div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+      <button class="btn btn-secondary" id="regenerateBtn" style="display:none;">🔄 Regenerate</button>
+      <button class="btn btn-secondary" id="copyAnswerBtn" style="display:none;">📋 Copy Answer</button>
+    </div>
+  </div>
+
+  <!-- External Prompt Area -->
+  <div id="promptContainer" style="display:none;">
+    <div class="prompt-area" id="promptContent"></div>
+    <div class="prompt-actions">
+      <button class="btn btn-secondary" id="copyPromptBtn">📄 Copy Prompt</button>
+      <!-- Model deep-link buttons -->
+      <button class="btn-model perplexity" id="openPerplexity">🌀 Perplexity</button>
+      <button class="btn-model chatgpt" id="openChatGPT">💬 ChatGPT</button>
+      <button class="btn-model deepseek" id="openDeepSeek">🔬 DeepSeek</button>
+    </div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">
+      Click a model button to open the AI website with the question pre‑filled. 
+      Then press Enter to generate the answer.
     </p>
   </div>
-  <div style="display:flex; gap:10px; flex-wrap:wrap;">
-    <button class="btn" id="regenerateBtn" style="display:none;">🔄 Regenerate</button>
-    <button class="btn btn-secondary" onclick="window.close()">✕ Close</button>
-  </div>
+
   <div class="footer">Powered by your AI Worker</div>
 </div>
 
 <script>
-  // Parse URL parameters
+  // ============================================================
+  // 1. THEME
+  // ============================================================
+  function getPreferredTheme() {
+    return localStorage.getItem('qcab_theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+
+  function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+    localStorage.setItem('qcab_theme', theme);
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  }
+
+  const initialTheme = getPreferredTheme();
+  applyTheme(initialTheme);
+
+  document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  // ============================================================
+  // 2. PARSE URL PARAMETERS
+  // ============================================================
   const params = new URLSearchParams(window.location.search);
   const question = decodeURIComponent(params.get('q') || '');
   const year = decodeURIComponent(params.get('y') || '');
@@ -104,20 +392,34 @@
   const model = decodeURIComponent(params.get('model') || 'secret');
   const mode = decodeURIComponent(params.get('mode') || 'internal'); // 'internal' or 'external'
 
-  const questionDisplay = document.getElementById('questionDisplay');
+  // ============================================================
+  // 3. DOM REFS
+  // ============================================================
+  const questionText = document.getElementById('questionText');
+  const questionMeta = document.getElementById('questionMeta');
   const answerDisplay = document.getElementById('answerDisplay');
-  const promptArea = document.getElementById('promptArea');
-  const promptContent = document.getElementById('promptContent');
   const regenerateBtn = document.getElementById('regenerateBtn');
-
-  // Build question display
-  let meta = '';
-  if (year) meta += ` (${year})`;
-  if (marks) meta += ` — ${marks} Marks`;
-  questionDisplay.textContent = question + meta;
+  const copyAnswerBtn = document.getElementById('copyAnswerBtn');
+  const promptContainer = document.getElementById('promptContainer');
+  const promptContent = document.getElementById('promptContent');
+  const copyPromptBtn = document.getElementById('copyPromptBtn');
+  const pageTitle = document.getElementById('pageTitle');
 
   // ============================================================
-  // Internal mode (Worker API) – for "secret" model
+  // 4. DISPLAY QUESTION
+  // ============================================================
+  let metaParts = [];
+  if (year) metaParts.push(`📅 ${year}`);
+  if (marks) metaParts.push(`📝 ${marks} Marks`);
+  questionText.textContent = question || 'Question not provided';
+  if (metaParts.length) {
+    questionMeta.innerHTML = metaParts.map(p => `<span>${p}</span>`).join(' ');
+  } else {
+    questionMeta.textContent = '';
+  }
+
+  // ============================================================
+  // 5. INTERNAL API (Direct)
   // ============================================================
   async function generateInternal() {
     const userToken = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
@@ -132,15 +434,34 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to generate');
-      answerDisplay.innerHTML = data.text.replace(/\n/g, '<br>');
+      // Process answer: replace newlines with <br> and apply tag classes
+      let html = data.text
+        .replace(/\n/g, '<br>')
+        .replace(/<span class="kw-term">/g, '<span class="kw-term">')
+        .replace(/<span class="kw-example">/g, '<span class="kw-example">')
+        .replace(/<span class="kw-meta">/g, '<span class="kw-meta">')
+        .replace(/<mark class="kw-highlight">/g, '<mark class="kw-highlight">')
+        .replace(/<\/span>/g, '</span>')
+        .replace(/<\/mark>/g, '</mark>');
+      answerDisplay.innerHTML = html;
       regenerateBtn.style.display = 'inline-block';
+      copyAnswerBtn.style.display = 'inline-block';
     } catch (err) {
       answerDisplay.innerHTML = `❌ Error: ${err.message}`;
     }
   }
 
+  // Copy answer
+  copyAnswerBtn?.addEventListener('click', () => {
+    const text = answerDisplay.innerText;
+    navigator.clipboard.writeText(text).then(() => alert('Answer copied!')).catch(() => alert('Failed to copy.'));
+  });
+
+  // Regenerate
+  regenerateBtn?.addEventListener('click', generateInternal);
+
   // ============================================================
-  // External mode – show a prompt for the user to copy
+  // 6. EXTERNAL (Prompt + Deep-links)
   // ============================================================
   function showExternalPrompt() {
     const modelName = model.charAt(0).toUpperCase() + model.slice(1);
@@ -156,50 +477,54 @@ Instructions:
 
 Please generate the answer now.`;
 
-    answerDisplay.style.display = 'none';
-    promptArea.style.display = 'block';
+    pageTitle.textContent = `🤖 ${modelName} AI – Ready Prompt`;
+    document.getElementById('answerContainer').style.display = 'none';
+    promptContainer.style.display = 'block';
     promptContent.textContent = prompt;
-    regenerateBtn.style.display = 'none';
-    // Also show a note about the model
-    document.querySelector('#app h2').textContent = `🤖 ${modelName} AI – Ready Prompt`;
-  }
 
-  // ============================================================
-  // Copy prompt function
-  // ============================================================
-  function copyPrompt() {
-    const text = promptContent.textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Prompt copied to clipboard!');
-    }).catch(() => {
-      // Fallback
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      textarea.remove();
-      alert('Prompt copied!');
+    // Copy prompt
+    copyPromptBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(prompt).then(() => alert('Prompt copied!')).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = prompt;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        alert('Prompt copied!');
+      });
+    });
+
+    // Deep-link buttons
+    const encodedQuestion = encodeURIComponent(question);
+    const encodedPrompt = encodeURIComponent(prompt);
+
+    document.getElementById('openPerplexity')?.addEventListener('click', () => {
+      const url = `https://www.perplexity.ai/search?q=${encodedQuestion}`;
+      window.open(url, '_blank');
+    });
+
+    document.getElementById('openChatGPT')?.addEventListener('click', () => {
+      // ChatGPT deep link – many services use this format
+      const url = `https://chat.openai.com/?q=${encodedPrompt}`;
+      window.open(url, '_blank');
+    });
+
+    document.getElementById('openDeepSeek')?.addEventListener('click', () => {
+      // DeepSeek deep link (if they support; fallback to search)
+      const url = `https://chat.deepseek.com/?q=${encodedPrompt}`;
+      window.open(url, '_blank');
     });
   }
 
   // ============================================================
-  // Regenerate (internal only)
-  // ============================================================
-  regenerateBtn.addEventListener('click', generateInternal);
-
-  // ============================================================
-  // Start
+  // 7. START
   // ============================================================
   if (mode === 'external' || model !== 'secret') {
     showExternalPrompt();
   } else {
-    // Internal – use Worker API
     generateInternal();
   }
-
-  // Make copyPrompt global for onclick
-  window.copyPrompt = copyPrompt;
 </script>
 </body>
 </html>
