@@ -1,5 +1,5 @@
 // ============================================================
-// js/auth.js – Authentication (with fallbacks)
+// js/auth.js – Authentication (working version)
 // ============================================================
 
 console.log('🔐 auth.js loaded');
@@ -39,17 +39,13 @@ function updateAuthUI() {
   });
 }
 
-// ----- Login Modal (GLOBAL) -----
+// ----- Login Modal -----
 window.openLoginModal = function(mode = 'login') {
   console.log('🚪 openLoginModal called with mode:', mode);
   
-  // Try to find modal by ID
   let modal = document.getElementById('login-modal');
-  
-  // If not found, try by class
   if (!modal) {
     modal = document.querySelector('.login-modal');
-    console.log('🔍 Looking for modal by class...');
   }
   
   if (!modal) {
@@ -85,7 +81,7 @@ window.openLoginModal = function(mode = 'login') {
   if (nameInput) nameInput.value = '';
 
   modal.classList.add('open');
-  console.log('✅ Modal opened, classList:', modal.classList);
+  console.log('✅ Modal opened');
 };
 
 window.closeLoginModal = function() {
@@ -94,10 +90,9 @@ window.closeLoginModal = function() {
   if (modal) modal.classList.remove('open');
 };
 
-// ----- Init Auth (GLOBAL) -----
+// ----- Init Auth -----
 window.initAuth = function() {
   console.log('🔧 initAuth called');
-  
   const modal = document.getElementById('login-modal') || document.querySelector('.login-modal');
   const closeBtn = document.getElementById('login-modal-close');
   const submitBtn = document.getElementById('login-submit-btn');
@@ -106,16 +101,14 @@ window.initAuth = function() {
   const error = document.getElementById('login-error');
 
   if (!modal) {
-    console.warn('⚠️ Login modal not found. Skipping auth init.');
+    console.warn('⚠️ Login modal not found.');
     return;
   }
 
-  // Close on backdrop click
   modal.addEventListener('click', function(e) {
     if (e.target === this) window.closeLoginModal();
   });
 
-  // Close button
   if (closeBtn) {
     closeBtn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -123,7 +116,6 @@ window.initAuth = function() {
     });
   }
 
-  // Switch login/register
   if (switchLink) {
     switchLink.addEventListener('click', function() {
       const isLogin = submitBtn?.textContent === 'Sign In';
@@ -131,7 +123,6 @@ window.initAuth = function() {
     });
   }
 
-  // Google button
   if (googleBtn) {
     googleBtn.addEventListener('click', function() {
       if (typeof showAlert === 'function') {
@@ -142,7 +133,6 @@ window.initAuth = function() {
     });
   }
 
-  // Submit login/register
   if (submitBtn) {
     submitBtn.addEventListener('click', async function() {
       const email = document.getElementById('login-email').value.trim();
@@ -205,7 +195,6 @@ window.initAuth = function() {
         if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
 
       } catch (err) {
-        // Mock fallback
         if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
           window.setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
           window.closeLoginModal();
@@ -227,7 +216,6 @@ window.initAuth = function() {
     });
   }
 
-  // Enter key support
   document.getElementById('login-email')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') submitBtn?.click();
   });
@@ -242,10 +230,6 @@ window.initAuth = function() {
   console.log('✅ Auth initialized');
 };
 
-// Self-execute: make sure all functions are registered
 console.log('✅ Auth functions registered:');
-console.log('  - getUser:', typeof window.getUser);
-console.log('  - setUser:', typeof window.setUser);
 console.log('  - openLoginModal:', typeof window.openLoginModal);
-console.log('  - closeLoginModal:', typeof window.closeLoginModal);
-console.log('  - initAuth:', typeof window.initAuth);
+console.log('  - getUser:', typeof window.getUser);
