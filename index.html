@@ -67,6 +67,7 @@
           <span id="theme-icon">🌙</span>
           <span id="theme-text">Dark Mode</span>
         </button>
+        <!-- Login button with user email if logged in -->
         <button class="theme-toggle" id="topbar-login-btn">🔑 <span id="topbar-login-text">Login</span></button>
       </div>
     </header>
@@ -193,7 +194,7 @@
             </div>
 
             <div id="pyq-bank-body">
-              <!-- MODE SWITCH (RESTORED) -->
+              <!-- MODE SWITCH -->
               <div class="mode-switch">
                 <label>
                   <input type="radio" name="bankMode" value="year" checked id="mode-year">
@@ -373,6 +374,22 @@
       <span id="login-switch-text">Don't have an account?</span>
       <a id="login-switch-link">Sign up</a>
     </div>
+  </div>
+</div>
+
+<!-- ==================== AI MODEL SELECTION MODAL ==================== -->
+<div class="ai-model-modal" id="ai-model-modal">
+  <div class="ai-model-modal-content">
+    <button class="ai-model-close" id="ai-model-close">&times;</button>
+    <h3>🤖 Choose AI Model</h3>
+    <p>Select which AI should generate your UPSC answer.</p>
+    <div class="model-options">
+      <button class="model-option" data-model="secret">🔐 My AI (Secret) <span class="badge">Groq</span></button>
+      <button class="model-option" data-model="perplexity">🔍 Perplexity AI <span class="badge">External</span></button>
+      <button class="model-option" data-model="chatgpt">💬 ChatGPT <span class="badge">External</span></button>
+      <button class="model-option" data-model="deepseek">🧠 DeepSeek <span class="badge">External</span></button>
+    </div>
+    <button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button>
   </div>
 </div>
 
