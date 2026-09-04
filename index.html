@@ -9,11 +9,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- Premium UI CSS (Integrated Directly) -->
+  <style>
+    .premium-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    .premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); }
+    .premium-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .premium-header h3 { margin: 0; font-weight: 800; font-size: 18px; }
+    .pill-status { 
+        display: inline-flex; align-items: center; gap: 8px; 
+        background: var(--accent-soft); color: var(--accent);
+        border-radius: 999px; padding: 5px 12px; font-weight: 800; font-size: 12px;
+    }
+    .suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
+    .suggestion-item { display: flex; align-items: center; gap: 8px; }
+    .suggestion-item strong { color: var(--text); }
+    .suggestion-item span { color: var(--muted); }
+  </style>
 </head>
 <body>
 <script>
   // Force clear old data if version mismatches
-  var APP_VERSION = '3.0'; 
+  var APP_VERSION = '4.0'; 
   if (localStorage.getItem('qcab_app_version') !== APP_VERSION) {
     localStorage.removeItem('qcab_user');
     localStorage.removeItem('userToken');
@@ -122,7 +148,6 @@
         <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
       </div>
     </div>
-    <!-- ADDED BACK THE MISSING BACKDROP -->
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
     <!-- Top Bar -->
@@ -211,6 +236,33 @@
                 <div class="pill-switcher" id="search-mode-switcher">
                   <button type="button" class="pill-btn active" id="btn-filter-year" data-mode="basic" onclick="switchFilterMode('year', this)">Filter by Year</button>
                   <button type="button" class="pill-btn" id="btn-filter-subtopic" data-mode="deep" onclick="switchFilterMode('subtopic', this)">Filter by Subtopic</button>
+                </div>
+              </div>
+
+              <!-- ===== PREMIUM ANALYTICS HUB ===== -->
+              <div class="premium-card" id="analytics-hub">
+                <div class="premium-header">
+                  <h3><i data-lucide="trending-up" style="width:20px; vertical-align:middle; color:var(--primary);"></i> Trend & Frequency</h3>
+                  <span class="pill-status">✨ AI Enhanced</span>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                  <div>
+                    <h4 style="font-weight:700; font-size: 14px; color: var(--muted); margin-bottom: 10px;">Topic Frequency</h4>
+                    <div id="frequency-chart" style="height: 80px; background: var(--surface-2); border-radius: 8px; display:flex; align-items:center; justify-content:center; font-weight:600; color: var(--muted);">Select a topic...</div>
+                  </div>
+                  <div>
+                    <h4 style="font-weight:700; font-size: 14px; color: var(--muted); margin-bottom: 10px;">Year Trend</h4>
+                    <div id="trend-chart" style="height: 80px; background: var(--surface-2); border-radius: 8px; display:flex; align-items:center; justify-content:center; font-weight:600; color: var(--muted);">Select a topic...</div>
+                  </div>
+                </div>
+                <div id="suggestions-panel" style="display: none; border-top: 1px solid var(--border); padding-top: 15px;">
+                  <h4 style="font-weight:700; font-size: 14px; color: var(--muted); margin-bottom: 10px;"><i data-lucide="sparkles" style="width:16px; color:var(--primary);"></i> Advanced Suggestions</h4>
+                  <div class="suggestion-grid">
+                    <div class="suggestion-item"><i data-lucide="landmark" style="width:16px; color: var(--primary);"></i> <strong>Articles:</strong> <span id="sugg-articles">-</span></div>
+                    <div class="suggestion-item"><i data-lucide="users" style="width:16px; color: var(--primary);"></i> <strong>Committees:</strong> <span id="sugg-committees">-</span></div>
+                    <div class="suggestion-item"><i data-lucide="book-open" style="width:16px; color: var(--primary);"></i> <strong>Thinkers:</strong> <span id="sugg-thinkers">-</span></div>
+                    <div class="suggestion-item"><i data-lucide="briefcase" style="width:16px; color: var(--primary);"></i> <strong>Case Studies:</strong> <span id="sugg-cases">-</span></div>
+                  </div>
                 </div>
               </div>
 
@@ -303,32 +355,102 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=3"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=3"></script>
-<script src="js/config.js?v=3"></script>
-<script src="js/auth.js?v=3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=4"></script>
+<script src="js/config.js?v=4"></script>
+<script src="js/auth.js?v=4"></script>
+
+<!-- AUTH FIREWALL -->
+<script>
+  if (typeof window.getUser === 'undefined') window.getUser = function() { return JSON.parse(localStorage.getItem('qcab_user') || 'null'); };
+  if (typeof window.setUser === 'undefined') window.setUser = function(user) { if (user) localStorage.setItem('qcab_user', JSON.stringify(user)); else localStorage.removeItem('qcab_user'); };
+  if (typeof window.openLoginModal === 'undefined') window.openLoginModal = function() { window.location.href = 'login.html'; };
+</script>
+
+<script src="js/app.js?v=4"></script>
+<script src="js/features.js?v=4"></script>
 
 <!-- ================================================== -->
-<!-- ADDED: AUTH FIREWALL (Guarantees no errors)      -->
+<!-- PREMIUM FEATURES SCRIPT (Integrated Directly)     -->
 <!-- ================================================== -->
 <script>
-  if (typeof window.getUser === 'undefined') {
-    window.getUser = function() { return JSON.parse(localStorage.getItem('qcab_user') || 'null'); };
-  }
-  if (typeof window.setUser === 'undefined') {
-    window.setUser = function(user) {
-      if (user) localStorage.setItem('qcab_user', JSON.stringify(user));
-      else localStorage.removeItem('qcab_user');
-    };
-  }
-  if (typeof window.openLoginModal === 'undefined') {
-    window.openLoginModal = function() { window.location.href = 'login.html'; };
-  }
-</script>
-<!-- ================================================== -->
+  // Initialize Lucide Icons
+  lucide.createIcons();
 
-<script src="js/app.js?v=3"></script>
-<script src="js/features.js?v=3"></script>
+  // 1. SYLLABUS-WISE MAPPING & FREQUENCY ANALYSIS
+  window.analyzeTopic = function(topic) {
+      const allQ = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]').filter(q => q.topic === topic);
+      const freq = allQ.length;
+      const years = allQ.map(q => q.year).filter(Boolean);
+      
+      document.getElementById('frequency-chart').innerHTML = `<strong>${freq}</strong> Questions asked`;
+      document.getElementById('trend-chart').innerHTML = `<strong>${years.slice(0,5).join(', ') || 'N/A'}</strong>`;
+      
+      fetchSuggestions(topic);
+  };
+
+  // 2. SEMANTIC SEARCH (Fuzzy matching)
+  window.semanticSearch = function(query) {
+      const input = query.toLowerCase();
+      const synonyms = {
+          'governor': ['federalism', 'state', 'executive'],
+          'federalism': ['governor', 'centre-state', 'union'],
+          'money': ['finance', 'budget', 'economic'],
+          'panchayat': ['local government', 'rural']
+      };
+      const expanded = [input];
+      for (let key in synonyms) { if (input.includes(key)) expanded.push(...synonyms[key]); }
+      
+      const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
+      const results = bank.filter(q => {
+          const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
+          return expanded.some(term => text.includes(term));
+      });
+      return results;
+  };
+
+  // 3. ADVANCED SUGGESTIONS (Articles, Committees, Thinkers)
+  function fetchSuggestions(topic) {
+      const map = {
+          'Federalism': { articles: '245, 246, 356', committees: 'Sarkaria, Punchhi', thinkers: 'K.C. Wheare', cases: 'S.R. Bommai' },
+          'Governor': { articles: '153, 161, 163', committees: 'Rajamannar', thinkers: 'Ambedkar', cases: 'Nabam Rebia' },
+          'Parliament': { articles: '79, 83, 105', committees: 'Public Accounts', thinkers: 'Bagehot', cases: 'Kesavananda' }
+      };
+      const data = map[topic] || { articles: 'General', committees: 'N/A', thinkers: 'N/A', cases: 'N/A' };
+      
+      document.getElementById('sugg-articles').textContent = data.articles;
+      document.getElementById('sugg-committees').textContent = data.committees;
+      document.getElementById('sugg-thinkers').textContent = data.thinkers;
+      document.getElementById('sugg-cases').textContent = data.cases;
+      document.getElementById('suggestions-panel').style.display = 'block';
+  }
+
+  // 4. SIMILAR PYQs & RECENTLY VIEWED
+  window.showSimilar = function(questionId) {
+      const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
+      const orig = bank.find(q => q.id === questionId);
+      if (!orig) return;
+      const similar = bank.filter(q => q.topic === orig.topic && q.id !== orig.id).slice(0, 3);
+      console.log('Similar Questions:', similar);
+      
+      let recent = JSON.parse(localStorage.getItem('recent_qs') || '[]');
+      recent = [orig, ...recent.filter(q => q.id !== orig.id)].slice(0, 10);
+      localStorage.setItem('recent_qs', JSON.stringify(recent));
+      if (typeof showToast === 'function') showToast('Question added to Recently Viewed!');
+  };
+
+  // Bind Events
+  document.getElementById('search-input').addEventListener('input', (e) => {
+      if (e.target.value.length > 3) {
+          const results = window.semanticSearch(e.target.value);
+          console.log('Semantic Results:', results);
+      }
+  });
+
+  document.getElementById('filter-topic').addEventListener('change', (e) => {
+      if (e.target.value !== 'ALL') window.analyzeTopic(e.target.value);
+  });
+</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -357,6 +479,7 @@
     }
   });
 </script>
+
 <script>
   function switchFilterMode(mode, btn) {
     var yearBtn = document.getElementById('btn-filter-year');
@@ -364,17 +487,14 @@
     var yearSel = document.getElementById('filter-year');
     var topicSel = document.getElementById('filter-topic');
     
-    // Highlight the active button
     yearBtn.classList.remove('active');
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
-    // FORCE BOTH TO ALWAYS SHOW (Do NOT hide year!)
     yearSel.style.display = 'block';
     yearSel.style.visibility = 'visible';
     topicSel.style.display = 'block';
 
-    // Fill topic dropdown if empty
     if (topicSel.options.length <= 1) {
       var allTopics = [
         'Indian Heritage and Culture', 'Modern Indian History', 'Freedom Struggle', 'Post-Independence', 'World History', 
@@ -392,7 +512,6 @@
       });
     }
 
-    // Automatically trigger the search
     document.getElementById('search-bank-btn').click();
   }
 </script>
