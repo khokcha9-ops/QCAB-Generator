@@ -1422,3 +1422,20 @@ footer{
 body, .sidebar, .topbar, .card, .stat, .filter-box, .bank-item, .empty-state, input, select, textarea, button {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+/* Strong Sidebar Widgets */
+.sidebar-widget {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.widget-header { font-size: 11px; font-weight: 800; color: var(--muted); margin-bottom: 10px; }
+.streak-grid { display: flex; gap: 10px; }
+.stat-box { flex: 1; text-align: center; }
+.stat-box strong { display: block; font-size: 24px; color: var(--primary); }
+.stat-box small { font-size: 10px; color: var(--muted); }
+.coverage-bar { height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+#coverage-fill { height: 100%; background: linear-gradient(135deg, var(--primary), var(--accent)); }
+.brief-link { display: block; font-size: 12px; color: var(--primary); margin-top: 5px; text-decoration: none; }
+.brief-link:hover { text-decoration: underline; }
