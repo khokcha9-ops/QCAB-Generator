@@ -1,29 +1,34 @@
 :root {
-  --primary: #2D6A4F;
-  --primary-dark: #1B4332;
-  --primary-hover: #1B4332;
-  --primary-soft: #D8F3DC;
-  --accent: #74C69D;
-  --accent-soft: #D8F3DC;
-  --highlight: #D4A373;
-  --highlight-soft: #FAEDCD;
-  --warm-sand: #D4A373;
-  --sky-blue: #457B9D;
-  --warm-sand-soft: #FAEDCD;
-  --bg: #F5F7F3;
+  /* Lighter, Vibrant Indigo/Cyan Palette */
+  --primary: #4F46E5;
+  --primary-dark: #4338CA;
+  --primary-hover: #4338CA;
+  --primary-soft: #E0E7FF;
+  --accent: #06B6D4;
+  --accent-soft: #CFFAFE;
+  --highlight: #F59E0B;
+  --highlight-soft: #FFFBEB;
+  --warm-sand: #F59E0B;
+  --sky-blue: #0EA5E9;
+  --warm-sand-soft: #FFFBEB;
+  
+  /* Easy-on-the-eyes Backgrounds */
+  --bg: #F8FAFC;
   --surface: #FFFFFF;
-  --surface-2: #EEF2EE;
-  --text: #2B2B2B;
-  --text-soft: #555555;
-  --muted: #7A7A7A;
-  --border: #DCE3D8;
-  --border-strong: #B8C4B1;
+  --surface-2: #F1F5F9;
+  --text: #1E293B;
+  --text-soft: #475569;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
   --sidebar-bg: #FFFFFF;
   --card-bg: #FFFFFF;
+  
   --danger: #DC2626;
   --danger-soft: #FEE2E2;
-  --shadow: 0 12px 35px -5px rgba(27, 67, 50, 0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
-  --shadow-sm: 0 2px 8px rgba(27, 67, 50, 0.05);
+  
+  --shadow: 0 12px 35px -5px rgba(79, 70, 229, 0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
+  --shadow-sm: 0 2px 8px rgba(79, 70, 229, 0.05);
   --radius: 18px;
   --radius-sm: 10px;
   --sans: 'Plus Jakarta Sans', sans-serif;
@@ -32,29 +37,29 @@
 
 /* DARK MODE */
 body.dark-mode {
-  --primary: #95D5B2;
-  --primary-dark: #08110D;
-  --primary-hover: #74C69D;
-  --primary-soft: #1B4332;
-  --accent: #52B788;
-  --accent-soft: #1B4332;
-  --highlight: #E9C46A;
-  --highlight-soft: #2A241B;
-  --warm-sand: #E9C46A;
-  --sky-blue: #A8DADC;
-  --warm-sand-soft: #2A241B;
+  --primary: #818CF8;
+  --primary-dark: #111827;
+  --primary-hover: #A5B4FC;
+  --primary-soft: #312E81;
+  --accent: #22D3EE;
+  --accent-soft: #164E63;
+  --highlight: #FBBF24;
+  --highlight-soft: #451A03;
+  --warm-sand: #FBBF24;
+  --sky-blue: #38BDF8;
+  --warm-sand-soft: #451A03;
   
-  /* Standard Dark Mode Contrast */
-  --bg: #181818;          /* Slightly lighter, easier on the eyes */
-  --surface: #242424;     /* Cards and Sidebar */
-  --surface-2: #2d2d2d;   /* Inputs and Secondary backgrounds */
-  --text: #F5F5F5;        /* Crisp white text */
-  --text-soft: #CCCCCC;
-  --muted: #9E9E9E;
-  --border: #3a3a3a;      /* Visible borders */
-  --border-strong: #505050;
-  --sidebar-bg: #242424;
-  --card-bg: #242424;
+  /* Softer, lighter Dark Mode */
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-2: #334155;
+  --text: #F8FAFC;
+  --text-soft: #CBD5E1;
+  --muted: #94A3B8;
+  --border: #334155;
+  --border-strong: #475569;
+  --sidebar-bg: #1E293B;
+  --card-bg: #1E293B;
   --danger: #F87171;
   --danger-soft: #450A0A;
   --shadow: 0 14px 35px -5px rgba(0,0,0,0.4);
