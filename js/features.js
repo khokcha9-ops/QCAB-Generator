@@ -53,25 +53,4 @@ document.addEventListener('DOMContentLoaded', function() {
       origUpdate.apply(this, arguments);
       updateCoverage();
     };
-  }
-
-  // 3. ADAPTIVE QUICK TEST GENERATOR (10 Random PYQs)
-  window.generateQuickTest = function() {
-    if (!window.presetBank || window.presetBank.length === 0) {
-      alert('Question bank not loaded yet.');
-      return;
-    }
-    const shuffled = [...window.presetBank].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 10);
-    selected.forEach(q => {
-      window.getActiveFolder().questions.push({
-        question: q.question, marks: q.marks, year: q.year, paper: q.paper, topic: q.topic
-      });
-    });
-    window.saveState();
-    window.renderQuestions();
-    alert('🔥 10 Random Questions added to your QCAB!');
-    document.querySelector('[data-scroll="my-qcab"]')?.click();
-  };
-
 });
