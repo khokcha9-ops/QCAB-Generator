@@ -203,6 +203,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
   }
+    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    applyTheme(isDark ? 'light' : 'dark');
+  });
+  document.getElementById('mobile-theme-toggle')?.addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    applyTheme(isDark ? 'light' : 'dark');
+  });
+  document.getElementById('sidebar-theme')?.addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    applyTheme(isDark ? 'light' : 'dark');
+  });
 
   // ============================================================
   // 3. MOBILE MENU
