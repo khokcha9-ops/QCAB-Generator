@@ -39,7 +39,7 @@
 <body>
 <script>
   // Force clear old data if version mismatches
-  var APP_VERSION = '4.0'; 
+  var APP_VERSION = '5.0'; 
   if (localStorage.getItem('qcab_app_version') !== APP_VERSION) {
     localStorage.removeItem('qcab_user');
     localStorage.removeItem('userToken');
@@ -355,10 +355,10 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=4"></script>
-<script src="js/config.js?v=4"></script>
-<script src="js/auth.js?v=4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=5"></script>
+<script src="js/config.js?v=5"></script>
+<script src="js/auth.js?v=5"></script>
 
 <!-- AUTH FIREWALL -->
 <script>
@@ -367,15 +367,17 @@
   if (typeof window.openLoginModal === 'undefined') window.openLoginModal = function() { window.location.href = 'login.html'; };
 </script>
 
-<script src="js/app.js?v=4"></script>
-<script src="js/features.js?v=4"></script>
+<script src="js/app.js?v=5"></script>
+<script src="js/features.js?v=5"></script>
 
 <!-- ================================================== -->
 <!-- PREMIUM FEATURES SCRIPT (Integrated Directly)     -->
 <!-- ================================================== -->
 <script>
   // Initialize Lucide Icons
-  lucide.createIcons();
+  document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+  });
 
   // 1. SYLLABUS-WISE MAPPING & FREQUENCY ANALYSIS
   window.analyzeTopic = function(topic) {
@@ -409,19 +411,36 @@
       return results;
   };
 
-  // 3. ADVANCED SUGGESTIONS (Articles, Committees, Thinkers)
-  function fetchSuggestions(topic) {
-      const map = {
-          'Federalism': { articles: '245, 246, 356', committees: 'Sarkaria, Punchhi', thinkers: 'K.C. Wheare', cases: 'S.R. Bommai' },
-          'Governor': { articles: '153, 161, 163', committees: 'Rajamannar', thinkers: 'Ambedkar', cases: 'Nabam Rebia' },
-          'Parliament': { articles: '79, 83, 105', committees: 'Public Accounts', thinkers: 'Bagehot', cases: 'Kesavananda' }
-      };
-      const data = map[topic] || { articles: 'General', committees: 'N/A', thinkers: 'N/A', cases: 'N/A' };
-      
-      document.getElementById('sugg-articles').textContent = data.articles;
-      document.getElementById('sugg-committees').textContent = data.committees;
-      document.getElementById('sugg-thinkers').textContent = data.thinkers;
-      document.getElementById('sugg-cases').textContent = data.cases;
+  // 3. ADVANCED SUGGESTIONS (Now connected to Cloudflare Worker with fallback)
+  async function fetchSuggestions(topic) {
+      try {
+          const WORKER_URL = window.WORKER_URL || '';
+          const res = await fetch(`${WORKER_URL}/api/syllabus?topic=${encodeURIComponent(topic)}`);
+          const data = await res.json();
+          
+          if (res.ok && data.length > 0) {
+              const row = data[0];
+              document.getElementById('sugg-articles').textContent = JSON.parse(row.articles).join(', ');
+              document.getElementById('sugg-committees').textContent = JSON.parse(row.committees).join(', ');
+              document.getElementById('sugg-thinkers').textContent = JSON.parse(row.thinkers).join(', ');
+              document.getElementById('sugg-cases').textContent = JSON.parse(row.case_studies).join(', ');
+          } else {
+              // Fallback to local map if API is unreachable or not found
+              throw new Error('Not found or backend down');
+          }
+      } catch (e) {
+          const map = {
+              'Federalism': { articles: '245, 246, 356', committees: 'Sarkaria, Punchhi', thinkers: 'K.C. Wheare', cases: 'S.R. Bommai' },
+              'Governor': { articles: '153, 161, 163', committees: 'Rajamannar', thinkers: 'Ambedkar', cases: 'Nabam Rebia' },
+              'Parliament': { articles: '79, 83, 105', committees: 'Public Accounts', thinkers: 'Bagehot', cases: 'Kesavananda' }
+          };
+          const data = map[topic] || { articles: 'General', committees: 'N/A', thinkers: 'N/A', cases: 'N/A' };
+          
+          document.getElementById('sugg-articles').textContent = data.articles;
+          document.getElementById('sugg-committees').textContent = data.committees;
+          document.getElementById('sugg-thinkers').textContent = data.thinkers;
+          document.getElementById('sugg-cases').textContent = data.cases;
+      }
       document.getElementById('suggestions-panel').style.display = 'block';
   }
 
