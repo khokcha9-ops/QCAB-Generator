@@ -1,3 +1,7 @@
+#filter-year {
+    display: block !important;
+    visibility: visible !important;
+}
 /* Same as your provided CSS, with the addition of .sidebar-progress at the top */
 :root {
   /* Vibrant Light Gradient Palette (Indigo to Electric Cyan) */
