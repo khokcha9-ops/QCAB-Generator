@@ -16,7 +16,7 @@
   <aside class="sidebar" id="main-sidebar">
     <div class="sidebar-header-mobile">
       <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
-      <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+      <button type="button" class="mobile-menu-close" id="mobile-menu-close">✕</button>
     </div>
     
     <!-- TOP SECTION (Brand + Login/Profile) -->
@@ -30,7 +30,7 @@
       </div>
 
       <!-- Login Button -->
-      <button class="nav-btn" id="sidebar-login-btn" onclick="window.location.href='login.html'">
+      <button type="button" class="nav-btn" id="sidebar-login-btn" onclick="window.location.href='login.html'">
         <span class="nav-icon">🔑</span>
         <span id="sidebar-login-text">Login</span>
       </button>
@@ -43,7 +43,7 @@
             <div style="font-weight:700; font-size:14px; color:var(--text);" id="user-name">User</div>
             <div style="font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" id="user-email">user@email.com</div>
           </div>
-          <button class="btn btn-secondary-sm" id="profile-logout-btn" style="padding:4px 10px; font-size:11px; background:var(--danger); color:#fff; border:none; border-radius:6px; cursor:pointer;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button>
+          <button type="button" class="btn btn-secondary-sm" id="profile-logout-btn" style="padding:4px 10px; font-size:11px; background:var(--danger); color:#fff; border:none; border-radius:6px; cursor:pointer;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button>
         </div>
       </div>
       
@@ -60,15 +60,15 @@
 
     <div class="nav-title">Workspace</div>
     <nav class="nav">
-      <button class="nav-btn active" data-scroll="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
-      <button class="nav-btn" data-scroll="pyq-bank"><span class="nav-icon">▤</span>PYQ Bank</button>
-      <button class="nav-btn" data-scroll="create-question"><span class="nav-icon">＋</span>Create Question</button>
-      <button class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
-      <button class="nav-btn" data-scroll="my-study"><span class="nav-icon">📘</span>My Study</button>
+      <button type="button" class="nav-btn active" data-scroll="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
+      <button type="button" class="nav-btn" data-scroll="pyq-bank"><span class="nav-icon">▤</span>PYQ Bank</button>
+      <button type="button" class="nav-btn" data-scroll="create-question"><span class="nav-icon">＋</span>Create Question</button>
+      <button type="button" class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
+      <button type="button" class="nav-btn" data-scroll="my-study"><span class="nav-icon">📘</span>My Study</button>
     </nav>
     
     <div class="sidebar-bottom">
-      <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
+      <button type="button" class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
     </div>
   </aside>
 
@@ -79,8 +79,8 @@
     <div class="mobile-nav">
       <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC CRAFT</div>
       <div class="mobile-actions-right">
-        <button class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+        <button type="button" class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
       </div>
     </div>
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
@@ -92,8 +92,8 @@
         <div class="topbar-sub">Build, organize and print your question-cum-answer booklet</div>
       </div>
       <div class="topbar-actions">
-        <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
-        <button class="theme-toggle" id="topbar-login-btn" onclick="window.location.href='login.html'">
+        <button type="button" class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
+        <button type="button" class="theme-toggle" id="topbar-login-btn" onclick="window.location.href='login.html'">
           🔑 <span id="topbar-login-text">Login</span>
         </button>
       </div>
@@ -108,8 +108,8 @@
           <p>Find previous year questions, build your custom practice set and generate a print-ready answer booklet.</p>
         </div>
         <div class="hero-actions">
-          <button class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
-          <button class="btn" data-scroll="create-question">＋ Create Question</button>
+          <button type="button" class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
+          <button type="button" class="btn" data-scroll="create-question">＋ Create Question</button>
         </div>
       </section>
       
@@ -130,7 +130,7 @@
           <div class="card" id="create-question">
             <div class="card-header">
               <div><h2 class="card-title" id="add-heading">Create Custom Question</h2><p class="card-sub">Add your own question directly to the active booklet.</p></div>
-              <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
+              <button type="button" class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
             </div>
             <div id="create-form-body">
               <div class="field"><label for="q-paper">Paper</label><select id="q-paper"><option value="GS1">GS Paper 1</option><option value="GS2">GS Paper 2</option><option value="GS3">GS Paper 3</option><option value="GS4">GS Paper 4</option><option value="OPT1">Anthropology Optional Paper 1</option><option value="OPT2">Anthropology Optional Paper 2</option></select></div>
@@ -139,7 +139,11 @@
               <div class="field"><label>Marks</label><div class="marks-row"><button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button><button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button><button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button></div></div>
               <div class="field"><label for="q-year">Year <span style="font-weight:500">(optional)</span></label><input type="text" id="q-year" placeholder="e.g. 2025"></div>
               <div class="field checkbox-row"><input type="checkbox" id="include-index" checked><label for="include-index">Include index page in PDF</label></div>
-              <div class="form-actions"><button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button><button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button><button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
+                <button type="button" class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
+                <button type="button" class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
+              </div>
             </div>
           </div>
 
@@ -166,8 +170,8 @@
               <!-- Pill Switcher Bar -->
               <div class="pill-switcher-container">
                 <div class="pill-switcher" id="search-mode-switcher">
-                  <button type="button" class="pill-btn active" id="mode-basic-btn" data-mode="basic">Filter by Year</button>
-                  <button type="button" class="pill-btn" id="mode-deep-btn" data-mode="deep">Filter by Subtopic</button>
+                  <button type="button" class="pill-btn active" id="btn-filter-year" data-mode="basic">Filter by Year</button>
+                  <button type="button" class="pill-btn" id="btn-filter-subtopic" data-mode="deep">Filter by Subtopic</button>
                 </div>
               </div>
 
@@ -202,8 +206,8 @@
                   </select>
 
                   <!-- Full-width Action Buttons -->
-                  <button class="btn btn-primary btn-wide" id="search-bank-btn">Search</button>
-                  <button class="btn btn-wide" id="clear-results-btn">Clear</button>
+                  <button type="button" class="btn btn-primary btn-wide" id="search-bank-btn">Search</button>
+                  <button type="button" class="btn btn-wide" id="clear-results-btn">Clear</button>
                 </div>
               </div>
 
@@ -218,15 +222,18 @@
 
         <aside class="card sticky-card" id="my-qcab">
           <div class="card-header"><div><h2 class="card-title">My QCAB</h2><p class="card-sub">Questions in your active booklet.</p></div><span class="tag" id="count-tag">0 questions</span></div>
-          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;"><button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button><button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button><button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button></div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;">
+            <button type="button" class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button>
+            <button type="button" class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button>
+            <button type="button" class="btn btn-secondary-sm" id="clear-q-btn">Clear</button>
+          </div>
           <div id="empty-state" class="empty-state"><div style="font-size:28px;margin-bottom:8px;">▣</div><strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>Add questions from the PYQ Bank or create a custom question.</div>
           <ol class="q-list" id="q-list"></ol>
           <div class="summary-bar" id="summary-bar" style="display:none;"><div class="summary-stat"><span>TOTAL MARKS</span><strong id="total-marks">0</strong></div><div class="summary-stat"><span>ANSWER PAGES</span><strong id="total-pages">0</strong></div></div>
-          <button class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
+          <button type="button" class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
         </aside>
       </div>
 
-      <!-- Removed JSON Export/Import Buttons -->
       <section id="my-study" style="margin-top:30px;">
         <div class="card">
           <div class="card-header">
@@ -252,19 +259,19 @@
 </div>
 
 <!-- Back to top -->
-<button class="back-to-top" id="back-to-top">↑</button>
+<button type="button" class="back-to-top" id="back-to-top">↑</button>
 
 <!-- Modals -->
-<div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button class="btn btn-secondary-sm" id="note-save-btn">Save</button><button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
+<div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button type="button" class="btn btn-secondary-sm" id="note-save-btn">Save</button><button type="button" class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
 
 <!-- Logout Modal -->
-<div class="custom-modal-overlay" id="logoutModal"><div class="custom-modal" style="max-width:380px; text-align:center;"><div style="font-size:48px; margin-bottom:8px;">👋</div><h3 style="font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;">Logout</h3><p style="font-size:15px; color:var(--muted); margin-bottom:0;">Are you sure you want to logout?</p><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn btn-secondary" id="logoutCancelBtn" style="padding:10px 28px;" onclick="localStorage.clear(); window.location.href='index.html';">Cancel</button><button class="btn btn-danger" id="logoutConfirmBtn" style="padding:10px 28px; background:var(--danger); color:#fff; border:none; border-radius:10px; font-weight:700;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button></div></div></div>
+<div class="custom-modal-overlay" id="logoutModal"><div class="custom-modal" style="max-width:380px; text-align:center;"><div style="font-size:48px; margin-bottom:8px;">👋</div><h3 style="font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;">Logout</h3><p style="font-size:15px; color:var(--muted); margin-bottom:0;">Are you sure you want to logout?</p><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button type="button" class="btn btn-secondary" id="logoutCancelBtn" style="padding:10px 28px;" onclick="localStorage.clear(); window.location.href='index.html';">Cancel</button><button type="button" class="btn btn-danger" id="logoutConfirmBtn" style="padding:10px 28px; background:var(--danger); color:#fff; border:none; border-radius:10px; font-weight:700;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button></div></div></div>
 
 <!-- AI Model Selection Modal -->
-<div class="ai-model-modal" id="ai-model-modal"><div class="ai-model-modal-content"><button class="ai-model-close" id="ai-model-close">&times;</button><h3>⚡ Choose AI Model</h3><p>Select which AI should generate your UPSC answer.</p><div class="model-options"><button class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button><button class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button><button class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button><button class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button></div><button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button></div></div>
+<div class="ai-model-modal" id="ai-model-modal"><div class="ai-model-modal-content"><button type="button" class="ai-model-close" id="ai-model-close">&times;</button><h3>⚡ Choose AI Model</h3><p>Select which AI should generate your UPSC answer.</p><div class="model-options"><button type="button" class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button><button type="button" class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button><button type="button" class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button><button type="button" class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button></div><button type="button" class="btn-cancel-model" id="cancel-ai-modal">Cancel</button></div></div>
 
 <!-- Custom Dynamic Modal -->
-<div class="custom-modal-overlay" id="customModal"><div class="custom-modal"><h3 id="modalTitle">Title</h3><p id="modalMessage">Message</p><div id="modalInputContainer" style="display:none;"><input type="text" class="modal-input" id="modalInput" placeholder="Enter value..."></div><div class="modal-actions"><button class="btn btn-secondary" id="modalCancelBtn">Cancel</button><button class="btn btn-primary" id="modalConfirmBtn">OK</button></div></div></div>
+<div class="custom-modal-overlay" id="customModal"><div class="custom-modal"><h3 id="modalTitle">Title</h3><p id="modalMessage">Message</p><div id="modalInputContainer" style="display:none;"><input type="text" class="modal-input" id="modalInput" placeholder="Enter value..."></div><div class="modal-actions"><button type="button" class="btn btn-secondary" id="modalCancelBtn">Cancel</button><button type="button" class="btn btn-primary" id="modalConfirmBtn">OK</button></div></div></div>
 
 <!-- Toast Notification -->
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
@@ -296,7 +303,6 @@
         if (topbarText) topbarText.textContent = user.email || 'Profile';
         if (profileDiv) profileDiv.style.display = 'block';
         
-        // Show Sidebar Progress Tracker
         const sbProgress = document.getElementById('sidebar-progress');
         if (sbProgress) sbProgress.style.display = 'block';
       } catch (e) {}
