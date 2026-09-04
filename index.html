@@ -21,21 +21,10 @@
       }
       return;
     }
-
-    // Bypass any broken dummy functions. Directly open the modal!
-    var modal = document.getElementById('login-modal');
-    if (!modal) {
-      alert('Login modal not found. Please make sure auth.js is loaded.');
-      return;
-    }
-    
-    // Run the real auth.js function if it exists, otherwise direct DOM open
-    if (typeof window.openLoginModal === 'function') {
-       window.openLoginModal('login');
+    if (window.openLoginModal) {
+      window.openLoginModal('login');
     } else {
-       // Directly add the class to open it (100% guaranteed)
-       modal.classList.add('open');
-       console.log('Login opened via direct DOM method.');
+      alert('Login module still loading...');
     }
   }
 </script>
@@ -60,7 +49,7 @@
       </div>
 
       <!-- Login Button -->
-      <button class="nav-btn" id="sidebar-login-btn">
+      <button class="nav-btn" id="sidebar-login-btn" onclick="handleLoginClick()">
         <span class="nav-icon">🔑</span>
         <span id="sidebar-login-text">Login</span>
       </button>
@@ -113,7 +102,7 @@
       </div>
       <div class="topbar-actions">
         <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
-        <button class="theme-toggle" id="topbar-login-btn">
+        <button class="theme-toggle" id="topbar-login-btn" onclick="handleLoginClick()">
           🔑 <span id="topbar-login-text">Login</span>
         </button>
       </div>
@@ -259,31 +248,5 @@
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
 
-<!-- FIREWALL: Prevents app.js from crashing if auth.js or config.js is missing -->
-<script>
-  if (typeof getUser === 'undefined') { window.getUser = function() { return null; }; }
-  if (typeof setUser === 'undefined') { window.setUser = function() {}; }
-  if (typeof openLoginModal === 'undefined') { window.openLoginModal = function() {}; }
-  if (typeof initAuth === 'undefined') { window.initAuth = function() {}; }
-  if (typeof SYLLABUS === 'undefined') { window.SYLLABUS = { GS1: ['General'], GS2: ['General'], GS3: ['General'], GS4: ['General'], OPT1: ['General'], OPT2: ['General'] }; }
-  if (typeof MARK_RULES === 'undefined') { window.MARK_RULES = { 10: 2, 15: 3, 20: 4 }; }
-  if (typeof WORKER_URL === 'undefined') { window.WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev'; }
-</script>
-
-<script src="js/app.js"></script>
-<script>
-  // Globally defines the missing login button function
-  function handleLoginClick() {
-    const user = window.getUser();
-    if (user) {
-      if (confirm('Logout?')) {
-        window.setUser(null);
-        alert('Logged out.');
-      }
-    } else {
-      window.openLoginModal('login');
-    }
-  }
-</script>
 </body>
 </html>
