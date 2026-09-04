@@ -74,20 +74,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('[data-scroll="my-qcab"]')?.click();
   };
 
-  // 4. AI "DOUBT SOLVER" FLOATING WIDGET
-  // (Links directly to your existing AI Model Modal)
-  const doubltSolverBtn = document.createElement('div');
-  doubltSolverBtn.id = 'ai-solver-btn';
-  doubltSolverBtn.innerHTML = '🤖';
-  doubltSolverBtn.title = 'AI Doubt Solver';
-  doubltSolverBtn.style.cssText = 'position:fixed;bottom:90px;right:20px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
-  
-  doubltSolverBtn.addEventListener('click', () => {
-    // Opens your existing AI Modal logic if present, else goes to the AI modal HTML
-    const modal = document.getElementById('ai-model-modal');
-    if (modal) modal.classList.add('open');
-    else alert('Open the AI Modal from a question to ask a doubt!');
-  });
-  document.body.appendChild(doubltSolverBtn);
-
 });
