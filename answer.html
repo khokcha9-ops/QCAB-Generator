@@ -2,398 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AI Model Answer - QCAB</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Markdown Parser -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+<title>AI Answer Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Modern Slate & Deep Indigo Theme */
-    --accent-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-    --bg-main: #f8fafc;
-    --card-bg: #ffffff;
-    --text-main: #334155;
-    --text-muted: #64748b;
-    --heading-color: #0f172a;
-    --border-color: #e2e8f0;
-    --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-  }
-
-  [data-theme="dark"] {
-    /* Dark Mode Palette */
-    --accent-gradient: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
-    --bg-main: #0f172a;
-    --card-bg: #1e293b;
-    --text-main: #cbd5e1;
-    --text-muted: #94a3b8;
-    --heading-color: #f8fafc;
-    --border-color: #334155;
-    --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-  }
-
-  * { box-sizing: border-box; }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    line-height: 1.85;
-    font-size: 19px;
-    padding-bottom: 60px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  header {
-    background: var(--accent-gradient);
-    color: #ffffff;
-    padding: 48px 24px 72px 24px;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  }
-
-  .header-content {
-    max-width: 860px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #f4f7fc;
+    color: #0f172a;
+    padding: 40px 20px;
+    max-width: 900px;
     margin: 0 auto;
-    padding-right: 70px;
   }
-
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  .container { background: #fff; border-radius: 20px; padding: 30px; box-shadow: 0 12px 35px rgba(0,0,0,0.05); }
+  .question { font-size: 18px; font-weight: 700; margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #7c3aed; }
+  .answer-box { 
+    background: #f1f5f9; 
+    border-radius: 12px; 
+    padding: 20px; 
+    white-space: pre-wrap; 
+    font-family: 'Georgia', serif;
+    line-height: 1.7;
+    min-height: 300px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
   }
-
-  header h1 {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.5;
-    margin: 0 0 16px 0;
-    letter-spacing: -0.02em;
-  }
-
-  .meta-tag {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(4px);
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-
-  .theme-toggle {
-    position: absolute;
-    top: 32px;
-    right: 24px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: all 0.2s ease;
-  }
-
-  .theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-
-  .wrap {
-    max-width: 860px;
-    margin: -36px auto 60px auto;
-    padding: 0 16px;
-  }
-
-  .card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 40px 48px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-
-  .status {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--text-muted);
-    font-style: italic;
-    padding: 20px 0;
-  }
-
-  .spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid var(--border-color);
-    border-top-color: #6366f1;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  #content h1, #content h2, #content h3, #content h4 {
-    color: var(--heading-color);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
-  }
-
-  #content h1 { font-size: 26px; margin-top: 36px; margin-bottom: 16px; }
-  #content h2 { font-size: 22px; margin-top: 32px; margin-bottom: 14px; }
-  #content h3 { font-size: 20px; margin-top: 28px; margin-bottom: 12px; }
-  #content h4 { font-size: 18px; margin-top: 24px; margin-bottom: 10px; }
-
-  #content p {
-    font-size: 19px;
-    margin-bottom: 18px;
-    color: var(--text-main);
-  }
-
-  #content ul, #content ol {
-    font-size: 19px;
-    padding-left: 28px;
-    margin: 16px 0;
-    color: var(--text-main);
-  }
-
-  #content li {
-    margin-bottom: 10px;
-  }
-
-  #content blockquote {
-    border-left: 4px solid #6366f1;
-    background: rgba(99, 102, 241, 0.05);
-    color: var(--text-main);
-    margin: 18px 0;
-    padding: 12px 20px;
-    border-radius: 0 8px 8px 0;
-  }
-
-  #content table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin: 24px 0;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    font-size: 18px;
-  }
-
-  #content th {
-    background: rgba(0, 0, 0, 0.03);
-    color: var(--heading-color);
-    font-weight: 700;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border-color);
-    text-align: left;
-  }
-
-  [data-theme="dark"] #content th {
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  #content td {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  #content strong { color: #e11d48 !important; font-weight: 700 !important; }
-  #content .kw-term { color: #2563eb !important; background: #eff6ff !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
-  #content .kw-example, #content .eg, #content em { color: #059669 !important; background: #ecfdf5 !important; font-style: normal !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
-  #content .kw-meta, #content .tag-meta { color: #7c3aed !important; background: #f5f3ff !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
-  #content .kw-highlight, #content mark.highlight { color: #d97706 !important; background: #fffbe0 !important; font-weight: 700 !important; padding: 2px 6px !important; border-radius: 4px !important; }
-
-  [data-theme="dark"] #content strong { color: #fb7185 !important; }
-  [data-theme="dark"] #content .kw-term { color: #60a5fa !important; background: #1e3a8a !important; }
-  [data-theme="dark"] #content .kw-example, [data-theme="dark"] #content .eg, [data-theme="dark"] #content em { color: #34d399 !important; background: #064e3b !important; }
-  [data-theme="dark"] #content .kw-meta, [data-theme="dark"] #content .tag-meta { color: #a78bfa !important; background: #4c1d95 !important; }
-  [data-theme="dark"] #content .kw-highlight, [data-theme="dark"] #content mark.highlight { color: #fbbf24 !important; background: #78350f !important; }
-
-  .error-box {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #f87171;
-    padding: 16px 20px;
-    border-radius: 10px;
-  }
-
-  .print-btn {
-    display: inline-block;
-    margin-top: 28px;
-    background: var(--accent-gradient);
-    color: #fff;
+  .loading { color: #475569; font-style: italic; }
+  .btn {
     border: none;
+    background: #7c3aed;
+    color: #fff;
     padding: 12px 24px;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 14px;
+    border-radius: 12px;
+    font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: opacity 0.2s ease;
+    transition: 0.2s;
+    font-size: 14px;
   }
-
-  .print-btn:hover {
-    opacity: 0.9;
+  .btn:hover { background: #6d28d9; transform: scale(1.02); }
+  .btn-secondary { background: #e2e8f0; color: #0f172a; }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .copy-btn { margin-right: 10px; }
+  .prompt-area {
+    background: #fef9e7;
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    max-height: 400px;
+    overflow-y: auto;
   }
-
-  @media print {
-    header, .print-btn, .theme-toggle { display: none !important; }
-    body { background: #fff !important; color: #000 !important; }
-    .wrap { margin-top: 0 !important; max-width: 100% !important; padding: 0 !important; }
-    .card { box-shadow: none !important; border: none !important; background: #fff !important; padding: 0 !important; }
+  .badge {
+    display: inline-block;
+    background: #7c3aed;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
   }
+  .footer { margin-top: 20px; text-align: center; color: #94a3b8; font-size: 12px; }
+  @media (max-width: 600px) { body { padding: 20px 10px; } .container { padding: 20px; } }
 </style>
 </head>
 <body>
-
-  <header>
-    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
-    <div class="header-content">
-      <div class="eyebrow">✨ AI Model Answer</div>
-      <h1 id="q-title">Loading Question...</h1>
-      <div id="q-meta" class="meta-tag" style="display:none;"></div>
+<div class="container" id="app">
+  <h2 style="margin-bottom: 8px;">🤖 AI Model Answer</h2>
+  <div id="questionDisplay" class="question">Loading question...</div>
+  <div id="answerDisplay" class="answer-box"><span class="loading">⏳ Generating answer...</span></div>
+  <div id="promptArea" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <strong>📋 Ready-to-use Prompt:</strong>
+      <button class="btn btn-secondary copy-btn" onclick="copyPrompt()">📄 Copy Prompt</button>
     </div>
-  </header>
-
-  <div class="wrap">
-    <div class="card">
-      <div id="status" class="status">
-        <span class="spinner"></span> Synthesizing model answer via AI...
-      </div>
-      <div id="content"></div>
-      <button id="print-btn" class="print-btn" style="display:none;" onclick="window.print()">🖨 Print / Save as PDF</button>
-    </div>
+    <div id="promptContent" class="prompt-area"></div>
+    <p style="font-size:13px; color:#475569; margin-top:8px;">
+      Copy the prompt above and paste it into your chosen AI tool (Perplexity, ChatGPT, or DeepSeek) to generate the answer.
+    </p>
   </div>
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <button class="btn" id="regenerateBtn" style="display:none;">🔄 Regenerate</button>
+    <button class="btn btn-secondary" onclick="window.close()">✕ Close</button>
+  </div>
+  <div class="footer">Powered by your AI Worker</div>
+</div>
 
-  <script>
-    // ⚠️ FINAL CHECK: Make sure this URL matches the Worker you created!
-    const AI_PROXY_URL = "https://qcap-ai-v2.khokcha9.workers.dev/api/generate-answer";
+<script>
+  // Parse URL parameters
+  const params = new URLSearchParams(window.location.search);
+  const question = decodeURIComponent(params.get('q') || '');
+  const year = decodeURIComponent(params.get('y') || '');
+  const marks = decodeURIComponent(params.get('m') || '');
+  const model = decodeURIComponent(params.get('model') || 'secret');
+  const mode = decodeURIComponent(params.get('mode') || 'internal'); // 'internal' or 'external'
 
-    // --- Dark Mode Handler ---
-    const themeBtn = document.getElementById('theme-btn');
-    const currentTheme = localStorage.getItem('qcab_theme') || 'light';
-    
-    if (currentTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      themeBtn.textContent = '☀️ Light';
+  const questionDisplay = document.getElementById('questionDisplay');
+  const answerDisplay = document.getElementById('answerDisplay');
+  const promptArea = document.getElementById('promptArea');
+  const promptContent = document.getElementById('promptContent');
+  const regenerateBtn = document.getElementById('regenerateBtn');
+
+  // Build question display
+  let meta = '';
+  if (year) meta += ` (${year})`;
+  if (marks) meta += ` — ${marks} Marks`;
+  questionDisplay.textContent = question + meta;
+
+  // ============================================================
+  // Internal mode (Worker API) – for "secret" model
+  // ============================================================
+  async function generateInternal() {
+    const userToken = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
+    if (!userToken) {
+      answerDisplay.innerHTML = '❌ Please login first. <a href="#" onclick="window.location.href=\'./login.html\'">Login</a>';
+      return;
     }
 
-    function toggleTheme() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('qcab_theme', 'light');
-        themeBtn.textContent = '🌙 Dark';
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('qcab_theme', 'dark');
-        themeBtn.textContent = '☀️ Light';
-      }
+    try {
+      const res = await fetch(`https://qcap-ai-v2.khokcha9.workers.dev/api/generate-answer?question=${encodeURIComponent(question)}`, {
+        headers: { 'Authorization': 'Bearer ' + userToken }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to generate');
+      answerDisplay.innerHTML = data.text.replace(/\n/g, '<br>');
+      regenerateBtn.style.display = 'inline-block';
+    } catch (err) {
+      answerDisplay.innerHTML = `❌ Error: ${err.message}`;
     }
+  }
 
-    // --- Answer Retrieval Handler ---
-    const urlParams = new URLSearchParams(window.location.search);
-    const questionText = urlParams.get('q');
-    const yearText = urlParams.get('y');
-    const marksText = urlParams.get('m');
+  // ============================================================
+  // External mode – show a prompt for the user to copy
+  // ============================================================
+  function showExternalPrompt() {
+    const modelName = model.charAt(0).toUpperCase() + model.slice(1);
+    const prompt = `You are an expert UPSC Civil Services model answer writer. Generate a high-quality, comprehensive answer of approximately 500–600 words for the following question:
 
-    const titleEl = document.getElementById('q-title');
-    const metaEl = document.getElementById('q-meta');
-    const statusEl = document.getElementById('status');
-    const contentEl = document.getElementById('content');
-    const printBtn = document.getElementById('print-btn');
+"${question}"
 
-    if (!questionText) {
-      statusEl.style.display = 'none';
-      contentEl.innerHTML = `<div class="error-box">❌ No question provided in the URL.</div>`;
-    } else {
-      titleEl.textContent = questionText;
-      
-      if (marksText || yearText) {
-        metaEl.style.display = 'inline-block';
-        metaEl.textContent = `${marksText ? marksText : ''} ${yearText ? '/ ' + yearText : ''}`.trim();
-      }
+Instructions:
+- Provide a well-structured answer with introduction, main body (with subheadings if needed), and conclusion.
+- Use relevant facts, examples, and recent developments (up to ${new Date().toLocaleDateString()}).
+- Write in a formal, academic style suitable for the UPSC Mains examination.
+- Ensure the answer is balanced and covers all dimensions of the question.
 
-      fetchAnswer();
-    }
+Please generate the answer now.`;
 
-    async function fetchAnswer() {
-      // --- SECURITY CHECK: Get the token (or Owner Key) from localStorage ---
-      const userToken = localStorage.getItem('userToken');
-      const ownerKey = localStorage.getItem('qcab_owner_key');
-      
-      // If NOT logged in and NOT the owner, redirect to login page with the return URL
-      if (!userToken && !ownerKey) {
-        const currentURL = window.location.href;
-        window.location.href = "./login.html?redirect=" + encodeURIComponent(currentURL);
-        return;
-      }
+    answerDisplay.style.display = 'none';
+    promptArea.style.display = 'block';
+    promptContent.textContent = prompt;
+    regenerateBtn.style.display = 'none';
+    // Also show a note about the model
+    document.querySelector('#app h2').textContent = `🤖 ${modelName} AI – Ready Prompt`;
+  }
 
-      try {
-        const res = await fetch(AI_PROXY_URL, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            // Use the token or the owner key
-            'Authorization': 'Bearer ' + (userToken || ownerKey)
-          },
-          body: JSON.stringify({ question: questionText })
-        });
+  // ============================================================
+  // Copy prompt function
+  // ============================================================
+  function copyPrompt() {
+    const text = promptContent.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Prompt copied to clipboard!');
+    }).catch(() => {
+      // Fallback
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+      alert('Prompt copied!');
+    });
+  }
 
-        const data = await res.json();
+  // ============================================================
+  // Regenerate (internal only)
+  // ============================================================
+  regenerateBtn.addEventListener('click', generateInternal);
 
-        // Check for expired or invalid tokens
-        if (res.status === 401) {
-          // Only clear and redirect if it wasn't the owner key
-          if (!ownerKey) {
-            localStorage.removeItem('userToken');
-            localStorage.removeItem('userName');
-            alert("Session expired. Please login again.");
-            const currentURL = window.location.href;
-            window.location.href = "./login.html?redirect=" + encodeURIComponent(currentURL);
-            return;
-          } else {
-            throw new Error("Owner key is invalid. Please check your browser console.");
-          }
-        }
+  // ============================================================
+  // Start
+  // ============================================================
+  if (mode === 'external' || model !== 'secret') {
+    showExternalPrompt();
+  } else {
+    // Internal – use Worker API
+    generateInternal();
+  }
 
-        if (!res.ok) {
-          throw new Error(data.error || `Server error (${res.status})`);
-        }
-
-        statusEl.style.display = 'none';
-        
-        const answerMarkdown = data.text || data.candidates?.[0]?.content?.parts?.[0]?.text || 'No answer text returned.';
-        
-        contentEl.innerHTML = window.marked ? marked.parse(answerMarkdown) : answerMarkdown;
-        printBtn.style.display = 'inline-block';
-
-      } catch (err) {
-        console.error(err);
-        statusEl.style.display = 'none';
-        contentEl.innerHTML = `<div class="error-box">❌ ${err.message}</div>`;
-      }
-    }
-  </script>
+  // Make copyPrompt global for onclick
+  window.copyPrompt = copyPrompt;
+</script>
 </body>
 </html>
