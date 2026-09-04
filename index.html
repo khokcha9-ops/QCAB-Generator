@@ -363,13 +363,17 @@
     var yearSel = document.getElementById('filter-year');
     var topicSel = document.getElementById('filter-topic');
     
+    // Highlight the active button
     yearBtn.classList.remove('active');
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
+    // FORCE BOTH TO ALWAYS SHOW (Do NOT hide year!)
     yearSel.style.display = 'block';
+    yearSel.style.visibility = 'visible';
     topicSel.style.display = 'block';
 
+    // Fill topic dropdown if empty
     if (topicSel.options.length <= 1) {
       var allTopics = [
         'Indian Heritage and Culture', 'Modern Indian History', 'Freedom Struggle', 'Post-Independence', 'World History', 
@@ -387,6 +391,7 @@
       });
     }
 
+    // Automatically trigger the search
     document.getElementById('search-bank-btn').click();
   }
 </script>
