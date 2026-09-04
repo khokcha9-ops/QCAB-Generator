@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPSC Mains PYQ cum QCAB Generator by Biswa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPSC Mains PYQ cum QCAB Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
 
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="main-sidebar">
     <div class="sidebar-header-mobile">
       <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
-      <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close Menu">✕</button>
+      <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
     </div>
-
     <div class="brand">
       <div class="brand-mark">Q</div>
       <div>
@@ -25,7 +25,6 @@
         <span>UPSC Mains Practice</span>
       </div>
     </div>
-
     <div class="nav-title">Workspace</div>
     <nav class="nav">
       <button class="nav-btn active" data-scroll="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
@@ -34,7 +33,6 @@
       <button class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
       <button class="nav-btn" data-scroll="my-study"><span class="nav-icon">📘</span>My Study</button>
     </nav>
-
     <div class="sidebar-bottom">
       <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
       <button class="nav-btn" id="sidebar-login-btn"><span class="nav-icon">🔑</span><span id="sidebar-login-text">Login</span></button>
@@ -43,20 +41,20 @@
 
   <div class="content">
 
-    <!-- Mobile Bar -->
+    <!-- MOBILE NAV -->
     <div class="mobile-nav">
       <div class="mobile-brand">
         <div class="brand-mark">Q</div>
         UPSC QCAB
       </div>
       <div class="mobile-actions-right">
-        <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Toggle Theme">🌙</button>
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open Menu">☰</button>
+        <button class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
       </div>
     </div>
-
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
+    <!-- TOPBAR -->
     <header class="topbar">
       <div>
         <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
@@ -126,7 +124,6 @@
               </div>
               <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
             </div>
-
             <div id="create-form-body">
               <div class="field">
                 <label for="q-paper">Paper</label>
@@ -139,17 +136,14 @@
                   <option value="OPT2">Anthropology Optional Paper 2</option>
                 </select>
               </div>
-
               <div class="field">
                 <label for="q-topic">Subtopic</label>
                 <select id="q-topic"></select>
               </div>
-
               <div class="field">
                 <label for="q-text">Question Text</label>
                 <textarea id="q-text" placeholder="Paste or type your question here..."></textarea>
               </div>
-
               <div class="field">
                 <label>Marks</label>
                 <div class="marks-row">
@@ -158,17 +152,14 @@
                   <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button>
                 </div>
               </div>
-
               <div class="field">
                 <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
                 <input type="text" id="q-year" placeholder="e.g. 2025">
               </div>
-
               <div class="field checkbox-row">
                 <input type="checkbox" id="include-index" checked>
                 <label for="include-index">Include index page in PDF</label>
               </div>
-
               <div class="form-actions">
                 <button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
                 <button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
@@ -185,31 +176,18 @@
                 <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
               </div>
               <div style="display:flex; gap:8px;">
-                <button class="btn" id="toggle-bank-btn" title="Collapse to scroll the page more easily">
+                <button class="btn" id="toggle-bank-btn">
                   <span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span>
                 </button>
-                <button class="btn btn-danger" id="clear-bank-btn" title="Reset and reload default questions">Reset Bank</button>
+                <button class="btn btn-danger" id="clear-bank-btn">Reset Bank</button>
               </div>
             </div>
-
             <div id="pyq-bank-body">
-              <!-- MODE SWITCH -->
-              <div class="mode-switch">
-                <label>
-                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
-                  <span>Filter by Year</span>
-                </label>
-                <label>
-                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
-                  <span>Filter by Subtopic</span>
-                </label>
-              </div>
-
-              <div class="search-main" style="position: relative;">
+              <!-- NO MODE SWITCH – both filters always visible -->
+              <div class="search-main">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
+                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
               </div>
-
               <div class="filter-box">
                 <div class="filters">
                   <select id="filter-paper">
@@ -221,33 +199,26 @@
                     <option value="OPT1">Anthropology Optional Paper 1</option>
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
-
-                  <select id="filter-topic">
-                    <option value="ALL">All Subtopics</option>
-                  </select>
-
                   <select id="filter-year">
                     <option value="ALL">All Years</option>
                   </select>
-
+                  <select id="filter-topic">
+                    <option value="ALL">All Subtopics</option>
+                  </select>
                   <button class="btn btn-primary" id="search-bank-btn">Search</button>
                   <button class="btn" id="clear-results-btn">Clear</button>
                 </div>
               </div>
-
               <div id="bank-status-text">Loading question bank...</div>
-
               <div id="bank-results-container">
-                <p style="font-size:13px;color:var(--muted);font-style:italic;">
-                  Loading repository questions...
-                </p>
+                <p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p>
               </div>
             </div>
           </div>
 
         </section>
 
-        <!-- RIGHT: ACTIVE QCAB -->
+        <!-- RIGHT: QCAB -->
         <aside class="card sticky-card" id="my-qcab">
           <div class="card-header">
             <div>
@@ -256,21 +227,17 @@
             </div>
             <span class="tag" id="count-tag">0 questions</span>
           </div>
-
           <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;">
             <button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button>
             <button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button>
             <button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button>
           </div>
-
           <div id="empty-state" class="empty-state">
             <div style="font-size:28px;margin-bottom:8px;">▣</div>
             <strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>
             Add questions from the PYQ Bank or create a custom question.
           </div>
-
           <ol class="q-list" id="q-list"></ol>
-
           <div class="summary-bar" id="summary-bar" style="display:none;">
             <div class="summary-stat">
               <span>TOTAL MARKS</span>
@@ -281,7 +248,6 @@
               <strong id="total-pages">0</strong>
             </div>
           </div>
-
           <button class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
         </aside>
 
@@ -321,8 +287,8 @@
   </div>
 </div>
 
-<!-- Back to top -->
-<button class="back-to-top" id="back-to-top" title="Back to top">↑</button>
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="back-to-top">↑</button>
 
 <!-- NOTE MODAL -->
 <div class="study-modal" id="note-modal">
@@ -336,47 +302,25 @@
   </div>
 </div>
 
-<!-- ==================== LOGIN MODAL ==================== -->
+<!-- LOGIN MODAL -->
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
     <button class="login-modal-close" id="login-modal-close">&times;</button>
     <div class="login-brand-icon">Q</div>
     <h2 id="login-modal-title">Welcome Back</h2>
     <p class="login-sub" id="login-modal-sub">Sign in to access AI answers and sync your study data.</p>
-
     <div id="login-error" style="display:none; color:var(--danger); margin-bottom:10px; padding:8px; background:var(--danger-soft); border-radius:8px;"></div>
-
-    <div class="field">
-      <label for="login-email">Email</label>
-      <input type="email" id="login-email" placeholder="your@email.com">
-    </div>
-
-    <div class="field" id="login-name-field" style="display:none;">
-      <label for="login-name">Full Name</label>
-      <input type="text" id="login-name" placeholder="Your full name">
-    </div>
-
-    <div class="field">
-      <label for="login-password">Password</label>
-      <input type="password" id="login-password" placeholder="••••••••">
-    </div>
-
+    <div class="field"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
+    <div class="field" id="login-name-field" style="display:none;"><label for="login-name">Full Name</label><input type="text" id="login-name" placeholder="Your full name"></div>
+    <div class="field"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
     <button class="btn btn-primary" id="login-submit-btn" style="width:100%;">Sign In</button>
-
     <div class="divider">or</div>
-
-    <button class="btn btn-google" id="google-login-btn">
-      <span style="font-size:18px; margin-right:8px;">G</span> Continue with Google
-    </button>
-
-    <div class="switch-link">
-      <span id="login-switch-text">Don't have an account?</span>
-      <a id="login-switch-link">Sign up</a>
-    </div>
+    <button class="btn btn-google" id="google-login-btn"><span style="font-size:18px; margin-right:8px;">G</span> Continue with Google</button>
+    <div class="switch-link"><span id="login-switch-text">Don't have an account?</span> <a id="login-switch-link">Sign up</a></div>
   </div>
 </div>
 
-<!-- ==================== AI MODEL SELECTION MODAL ==================== -->
+<!-- AI MODAL -->
 <div class="ai-model-modal" id="ai-model-modal">
   <div class="ai-model-modal-content">
     <button class="ai-model-close" id="ai-model-close">&times;</button>
@@ -404,7 +348,7 @@
   </div>
 </div>
 
-<!-- ==================== CUSTOM MODAL ==================== -->
+<!-- CUSTOM MODAL -->
 <div class="custom-modal-overlay" id="customModal">
   <div class="custom-modal">
     <h3 id="modalTitle">Title</h3>
@@ -412,23 +356,22 @@
     <div id="modalInputContainer" style="display:none;">
       <input type="text" class="modal-input" id="modalInput" placeholder="Enter value...">
     </div>
-    <div class="modal-actions" id="modalActions">
+    <div class="modal-actions">
       <button class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
       <button class="btn btn-primary" id="modalConfirmBtn">OK</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== TOAST NOTIFICATION ==================== -->
+<!-- TOAST -->
 <div class="toast" id="toast">
   <span class="toast-icon" id="toastIcon">✅</span>
   <span id="toastMessage">Copied!</span>
 </div>
 
-<!-- ==================== SCRIPTS ==================== -->
+<!-- SCRIPTS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
