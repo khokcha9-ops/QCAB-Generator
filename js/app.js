@@ -142,6 +142,33 @@ console.log('✅ Custom modal + toast system loaded');
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 App.js loaded');
+    // FILTER TAB SWITCHER (Fix for Subtopic)
+  const filterByYearBtn = document.getElementById('btn-filter-year');
+  const filterBySubtopicBtn = document.getElementById('btn-filter-subtopic');
+  const filterYearSelect = document.getElementById('filter-year');
+  const filterTopicSelect = document.getElementById('filter-topic');
+
+  if (filterByYearBtn && filterBySubtopicBtn) {
+    filterByYearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterByYearBtn.classList.add('active');
+      filterBySubtopicBtn.classList.remove('active');
+      if (filterYearSelect) filterYearSelect.style.display = 'block';
+      if (filterTopicSelect) filterTopicSelect.style.display = 'none';
+      if (filterTopicSelect) filterTopicSelect.value = 'ALL';
+      renderBankResults();
+    });
+
+    filterBySubtopicBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterBySubtopicBtn.classList.add('active');
+      filterByYearBtn.classList.remove('active');
+      if (filterTopicSelect) filterTopicSelect.style.display = 'block';
+      if (filterYearSelect) filterYearSelect.style.display = 'none';
+      if (filterYearSelect) filterYearSelect.value = 'ALL';
+      renderBankResults();
+    });
+  }
 
   // Safely define fallbacks for external global variables if missing
   window.SYLLABUS = window.SYLLABUS || { 'GS1': ['General'], 'GS2': ['General'], 'GS3': ['General'], 'GS4': ['General'], 'OPT1': ['General'], 'OPT2': ['General'] };
