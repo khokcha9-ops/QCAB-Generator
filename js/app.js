@@ -473,6 +473,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bmEl) bmEl.textContent = bookmarked;
     if (revEl) revEl.textContent = revised;
     if (notesEl) notesEl.textContent = withNotes;
+        // ==========================================
+    // SIDEBAR PROGRESS TRACKER (FIXED)
+    // ==========================================
+    const sbBookmarked = document.getElementById('sidebar-bookmarked');
+    const sbRevised = document.getElementById('sidebar-revised');
+    const sbNotes = document.getElementById('sidebar-notes');
+    const sbProgress = document.getElementById('sidebar-progress');
+
+    if (sbBookmarked) sbBookmarked.textContent = bookmarked;
+    if (sbRevised) sbRevised.textContent = revised;
+    if (sbNotes) sbNotes.textContent = withNotes;
+
+    // Show the sidebar tracker ONLY if the user is logged in
+    const user = window.getUser ? window.getUser() : null;
+    if (sbProgress && user) {
+        sbProgress.style.display = 'block';
+    } else if (sbProgress) {
+        sbProgress.style.display = 'none';
+    }
 
     if (items.length === 0) {
       listContainer.innerHTML = '<p style="color:var(--muted);font-style:italic;">You haven\'t bookmarked any questions yet. Use the ⭐ button on any question to start.</p>';
