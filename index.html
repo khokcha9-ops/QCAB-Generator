@@ -29,8 +29,8 @@
         </div>
       </div>
 
-      <!-- Login Button -->
-      <button type="button" class="nav-btn" id="sidebar-login-btn" onclick="window.location.href='login.html'">
+      <!-- Login Button (No onclick - app.js handles it now) -->
+      <button type="button" class="nav-btn" id="sidebar-login-btn">
         <span class="nav-icon">🔑</span>
         <span id="sidebar-login-text">Login</span>
       </button>
@@ -93,7 +93,8 @@
       </div>
       <div class="topbar-actions">
         <button type="button" class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
-        <button type="button" class="theme-toggle" id="topbar-login-btn" onclick="window.location.href='login.html'">
+        <!-- Login Button (No onclick - app.js handles it now) -->
+        <button type="button" class="theme-toggle" id="topbar-login-btn">
           🔑 <span id="topbar-login-text">Login</span>
         </button>
       </div>
