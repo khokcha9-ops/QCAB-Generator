@@ -3,63 +3,651 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Answer Generator</title>
+  <title>AI Model Answer - QCAB</title>
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <!-- Markdown Parser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
   <style>
-    /* ... full styles (same as before) ... */
-    /* For brevity, keep your existing styles */
-  </style>
+  /* ============================================================
+     THEME VARIABLES (DARKER TEXT)
+     ============================================================ */
+  :root {
+    --bg: #f4f7fc;
+    --surface: #ffffff;
+    --surface-2: #eef2f9;
+    --surface-3: #e2e8f0;
+    --text: #0f172a;          /* DARKER – was #0f172a (already dark) */
+    --text-secondary: #1e293b; /* NEW – for body text */
+    --text-muted: #475569;
+    --border: #cbd5e1;
+    --border-strong: #94a3b8;
+    --primary: #7c3aed;
+    --primary-light: #ede9fe;
+    --primary-dark: #6d28d9;
+    --accent: #0891b2;
+    --accent-light: #cffafe;
+    --highlight: #f59e0b;
+    --highlight-light: #fef3c7;
+    --success: #047857;
+    --success-light: #ecfdf5;
+    --danger: #b91c1c;
+    --danger-light: #fef2f2;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --serif: Georgia, 'Times New Roman', serif;
+  }
+  [data-theme="dark"] {
+    --bg: #07090e;
+    --surface: #111622;
+    --surface-2: #1a2234;
+    --surface-3: #243049;
+    --text: #f1f5f9;          /* Light text on dark background */
+    --text-secondary: #e2e8f0; /* Slightly lighter for body */
+    --text-muted: #94a3b8;
+    --border: #2a364f;
+    --border-strong: #3b4d71;
+    --primary: #a78bfa;
+    --primary-light: #2e1065;
+    --accent: #22d3ee;
+    --accent-light: #083344;
+    --highlight: #fbbf24;
+    --highlight-light: #422006;
+    --success: #34d399;
+    --success-light: #064e3b;
+    --danger: #f87171;
+    --danger-light: #451a03;
+    --shadow: 0 4px 20px rgba(0,0,0,0.3);
+    --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+  }
+
+  /* ============================================================
+     RESET & BASE
+     ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text-secondary); /* Darker body text */
+    transition: background 0.3s ease, color 0.3s ease;
+    padding: 32px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  .container {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 36px 32px 28px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================================
+     TOP BAR
+     ============================================================ */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-bar h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+  .top-bar h2 .badge {
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 2px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+  }
+  .top-bar-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .top-bar-actions button {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--sans);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .top-bar-actions button:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
+  .top-bar-actions .close-btn:hover {
+    background: var(--danger-light);
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  /* ============================================================
+     QUESTION BOX
+     ============================================================ */
+  .question-box {
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    border-left: 5px solid var(--primary);
+    transition: background 0.3s ease;
+  }
+  .question-box .q-text {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--text);
+    font-family: var(--serif);
+  }
+  .question-box .q-meta {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .question-box .q-meta span {
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 3px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+  }
+  .question-box .q-meta .year-tag { background: var(--highlight-light); color: #92400e; }
+  .question-box .q-meta .marks-tag { background: var(--success-light); color: var(--success); }
+  [data-theme="dark"] .question-box .q-meta .year-tag { background: #451a03; color: #fde68a; }
+  [data-theme="dark"] .question-box .q-meta .marks-tag { background: #064e3b; color: #a7f3d0; }
+
+  /* ============================================================
+     ANSWER DISPLAY
+     ============================================================ */
+  .answer-container {
+    margin-bottom: 20px;
+  }
+  .answer-box {
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 24px 28px;
+    border: 1px solid var(--border);
+    font-family: var(--serif);
+    line-height: 1.9;
+    white-space: pre-wrap;
+    min-height: 280px;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    font-size: 17px;
+    color: var(--text-secondary); /* DARKER BODY TEXT */
+    position: relative;
+  }
+  .answer-box .loading {
+    color: var(--text-muted);
+    font-style: italic;
+    font-family: var(--sans);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    min-height: 200px;
+  }
+  .answer-box .loading .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- Colour-coded elements (DARKER) ---- */
+  .answer-box .kw-term {
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 0 4px;
+    border-radius: 3px;
+  }
+  .answer-box .kw-example {
+    font-style: italic;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 0 4px;
+    border-radius: 3px;
+  }
+  .answer-box .kw-meta {
+    font-weight: 600;
+    background: var(--highlight-light);
+    padding: 0 6px;
+    border-radius: 4px;
+    color: #92400e;
+  }
+  [data-theme="dark"] .answer-box .kw-meta { background: #451a03; color: #fde68a; }
+  .answer-box .kw-highlight {
+    background: var(--highlight);
+    padding: 0 4px;
+    border-radius: 4px;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  [data-theme="dark"] .answer-box .kw-highlight { background: #f59e0b; color: #000; }
+
+  .answer-box .section-intro {
+    border-left: 3px solid var(--primary);
+    padding-left: 16px;
+    margin-bottom: 16px;
+  }
+  .answer-box .section-conclusion {
+    border-left: 3px solid var(--success);
+    padding-left: 16px;
+    margin-top: 16px;
+  }
+  .answer-box h1, .answer-box h2, .answer-box h3 {
+    font-weight: 700;
+    margin: 1.2em 0 0.6em;
+    font-family: var(--sans);
+    color: var(--text);
+  }
+  .answer-box h1 { font-size: 1.4em; }
+  .answer-box h2 { font-size: 1.2em; }
+  .answer-box h3 { font-size: 1.1em; }
+
+  /* ---- Regular paragraphs in answer (DARKER) ---- */
+  .answer-box p {
+    color: var(--text-secondary);
+  }
+
+  /* ============================================================
+     ANSWER ACTION BUTTONS
+     ============================================================ */
+  .answer-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .btn {
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--sans);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
+  .btn-secondary { background: var(--surface-2); color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--surface-3); transform: translateY(-1px); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #065f46; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(4,120,87,0.3); }
+
+  /* ============================================================
+     PROMPT AREA
+     ============================================================ */
+  .prompt-container {
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+  .prompt-container .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .prompt-container .prompt-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--sans);
+  }
+  .prompt-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    max-height: 380px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    color: var(--text-secondary);
+    transition: background 0.3s ease, border-color 0.3s ease;
+    position: relative;
+  }
+  .prompt-box .prompt-label {
+    position: sticky;
+    top: 0;
+    background: var(--surface-2);
+    padding-bottom: 8px;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    display: block;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .prompt-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 16px 0 8px;
+  }
+  .btn-model {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-family: var(--sans);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-model:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .btn-model.perplexity { background: #8B5CF6; color: #fff; border-color: #8B5CF6; }
+  .btn-model.perplexity:hover { background: #7C3AED; box-shadow: 0 4px 16px rgba(139,92,246,0.35); }
+  .btn-model.chatgpt { background: #10A37F; color: #fff; border-color: #10A37F; }
+  .btn-model.chatgpt:hover { background: #0D8B6E; box-shadow: 0 4px 16px rgba(16,163,127,0.35); }
+  .btn-model.deepseek { background: #2563EB; color: #fff; border-color: #2563EB; }
+  .btn-model.deepseek:hover { background: #1D4ED8; box-shadow: 0 4px 16px rgba(37,99,235,0.35); }
+  .btn-model .icon { font-size: 16px; }
+
+  .prompt-hint {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .prompt-hint .key {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--sans);
+  }
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 24px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-secondary);
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .toast .toast-icon { font-size: 20px; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .footer {
+    margin-top: 28px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 640px) {
+    body { padding: 16px 12px; }
+    .container { padding: 20px 16px; }
+    .top-bar { flex-direction: column; align-items: flex-start; }
+    .top-bar h2 { font-size: 17px; }
+    .question-box { padding: 14px 16px; }
+    .question-box .q-text { font-size: 17px; }
+    .answer-box { padding: 16px 18px; font-size: 15px; }
+    .prompt-box { font-size: 13px; padding: 14px 16px; max-height: 280px; }
+    .btn { padding: 8px 14px; font-size: 12px; }
+    .btn-model { padding: 8px 14px; font-size: 12px; }
+    .toast { width: 90%; bottom: 20px; padding: 12px 16px; font-size: 13px; }
+  }
+  @media (max-width: 420px) {
+    .prompt-actions { flex-direction: column; }
+    .prompt-actions .btn-model { justify-content: center; }
+  }
+</style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="top-bar">
-    <h2 id="pageTitle">🤖 AI Model Answer</h2>
-    <div class="top-bar-actions">
-      <button id="themeToggle">🌙 Dark Mode</button>
-      <button onclick="window.close()">✕ Close</button>
+
+  <header>
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+    <div class="header-content">
+      <div class="eyebrow">✨ AI Model Answer</div>
+      <h1 id="q-title">Loading Question...</h1>
+      <div id="q-meta" class="meta-tag" style="display:none;"></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <div id="status" class="status">
+        <span class="spinner"></span> Synthesizing model answer via AI...
+      </div>
+      <div id="content"></div>
+      <div class="action-bar">
+        <button id="print-btn" class="print-btn" style="display:none;" onclick="window.print()">🖨 Print / PDF</button>
+        <button id="copy-btn" class="copy-btn" style="display:none;" onclick="copyContent()">📋 Copy</button>
+      </div>
     </div>
   </div>
 
-  <div class="question-box" id="questionBox">
-    <div class="q-text" id="questionText">Loading question...</div>
-    <div class="q-meta" id="questionMeta"></div>
-  </div>
+  <script>
+    // ================================================================
+    // CONFIG
+    // ================================================================
+    const AI_PROXY_URL = "https://qcap-ai-v2.khokcha9.workers.dev/api/generate-answer";
 
-  <div id="answerContainer">
-    <div class="answer-box" id="answerDisplay"><span class="loading">⏳ Generating answer...</span></div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
-      <button class="btn btn-secondary" id="regenerateBtn" style="display:none;">🔄 Regenerate</button>
-      <button class="btn btn-secondary" id="copyAnswerBtn" style="display:none;">📋 Copy Answer</button>
-    </div>
-  </div>
+    // ================================================================
+    // THEME TOGGLE
+    // ================================================================
+    const themeBtn = document.getElementById('theme-btn');
+    const currentTheme = localStorage.getItem('qcab_theme') || 'light';
+    if (currentTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '☀️ Light';
+    }
 
-  <div id="promptContainer" style="display:none;">
-    <div class="prompt-area" id="promptContent"></div>
-    <div class="prompt-actions">
-      <button class="btn btn-secondary" id="copyPromptBtn">📄 Copy Prompt</button>
-      <button class="btn-model perplexity" id="openPerplexity">🌀 Perplexity</button>
-      <button class="btn-model chatgpt" id="openChatGPT">💬 ChatGPT</button>
-      <button class="btn-model deepseek" id="openDeepSeek">🔬 DeepSeek</button>
-    </div>
-    <p style="font-size:13px; color:var(--muted); margin-top:8px;">
-      Click a model button to open the AI website with the question pre‑filled.
-      Then press Enter to generate the answer.
-    </p>
-  </div>
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('qcab_theme', 'light');
+        themeBtn.textContent = '🌙 Dark';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('qcab_theme', 'dark');
+        themeBtn.textContent = '☀️ Light';
+      }
+    }
 
-  <div class="footer">Powered by your AI Worker</div>
-</div>
+    // ================================================================
+    // URL PARAMETERS
+    // ================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const questionText = urlParams.get('q');
+    const yearText = urlParams.get('y');
+    const marksText = urlParams.get('m');
 
-<!-- Toast Notification -->
-<div class="toast" id="toast">
-  <span class="toast-icon" id="toastIcon">✅</span>
-  <span id="toastMessage">Copied!</span>
-</div>
+    const titleEl = document.getElementById('q-title');
+    const metaEl = document.getElementById('q-meta');
+    const statusEl = document.getElementById('status');
+    const contentEl = document.getElementById('content');
+    const printBtn = document.getElementById('print-btn');
+    const copyBtn = document.getElementById('copy-btn');
 
-<script>
-  // ... full JavaScript (same as before) ...
-</script>
+    if (!questionText) {
+      statusEl.style.display = 'none';
+      contentEl.innerHTML = `<div class="error-box">❌ No question provided in the URL.</div>`;
+    } else {
+      titleEl.textContent = questionText;
+      if (marksText || yearText) {
+        metaEl.style.display = 'inline-block';
+        metaEl.textContent = `${marksText ? marksText : ''} ${yearText ? '/ ' + yearText : ''}`.trim();
+      }
+      fetchAnswer();
+    }
+
+    // ================================================================
+    // FETCH ANSWER
+    // ================================================================
+    async function fetchAnswer() {
+      const userToken = localStorage.getItem('userToken');
+      if (!userToken) {
+        alert("Please login first to view the answer.");
+        window.location.href = "/login.html";
+        return;
+      }
+
+      try {
+        const res = await fetch(AI_PROXY_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + userToken
+          },
+          body: JSON.stringify({ question: questionText })
+        });
+
+        const data = await res.json();
+
+        if (res.status === 401) {
+          localStorage.removeItem('userToken');
+          alert("Session expired. Please login again.");
+          window.location.href = "/login.html";
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(data.error || `Server error (${res.status})`);
+        }
+
+        statusEl.style.display = 'none';
+
+        let answerMarkdown = data.text || data.candidates?.[0]?.content?.parts?.[0]?.text || 'No answer text returned.';
+
+        // --- Render Markdown ---
+        if (window.marked) {
+          // Configure marked for better tables and breaks
+          marked.setOptions({ breaks: true, gfm: true });
+          contentEl.innerHTML = marked.parse(answerMarkdown);
+        } else {
+          contentEl.textContent = answerMarkdown;
+        }
+
+        // --- Apply colour classes to the rendered HTML ---
+        // We'll wrap the content and add classes manually, but marked doesn't add classes.
+        // Instead, we can add a post-processing step: wrap specific patterns.
+        // For now, we rely on the markdown source having the classes already
+        // (e.g., via <span class="kw-term">). If not, we can apply a simple heuristic.
+        // But the user's AI response already contains these classes (they asked to keep colour coding).
+
+        // We'll just ensure the classes are applied from the markdown.
+        // The markdown will be parsed, and the spans will remain.
+
+        printBtn.style.display = 'inline-block';
+        copyBtn.style.display = 'inline-block';
+
+      } catch (err) {
+        console.error(err);
+        statusEl.style.display = 'none';
+        contentEl.innerHTML = `<div class="error-box">❌ ${err.message}</div>`;
+      }
+    }
+
+    // ================================================================
+    // COPY CONTENT
+    // ================================================================
+    function copyContent() {
+      const text = contentEl.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Answer copied to clipboard!');
+      }).catch(() => {
+        alert('Failed to copy. Please try again.');
+      });
+    }
+  </script>
 </body>
 </html>
