@@ -131,7 +131,7 @@ function showToast(message, icon = '✅') {
   toast.classList.add('show');
   window.toastTimeout = setTimeout(() => {
     toast.classList.remove('show');
-  }, 3000);
+  }, 3500);
 }
 
 // Helper to copy text with fallback
@@ -152,19 +152,14 @@ function copyText(text) {
   });
 }
 
-// Generate UPSC prompt
-function generatePrompt(question) {
-  return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality, comprehensive answer of approximately 500–600 words for the following question:
+// Generate UPSC prompt (full version for ChatGPT & DeepSeek)
+function generateFullPrompt(question) {
+  return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}"`;
+}
 
-"${question}"
-
-Instructions:
-- Provide a well-structured answer with introduction, main body (with subheadings if needed), and conclusion.
-- Use relevant facts, examples, and recent developments (up to ${new Date().toLocaleDateString()}).
-- Write in a formal, academic style suitable for the UPSC Mains examination.
-- Ensure the answer is balanced and covers all dimensions of the question.
-
-Please generate the answer now.`;
+// Generate Perplexity-friendly query
+function generatePerplexityQuery(question) {
+  return `UPSC model answer for: "${question}" with introduction, body, conclusion, and recent examples.`;
 }
 
 console.log('✅ Custom modal + toast system loaded');
@@ -453,8 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const clearQBtn = document.getElementById('clear-q-btn');
   const clearBankBtn = document.getElementById('clear-bank-btn');
   const searchInput = document.getElementById('search-input');
-  const modeYearRadio = document.getElementById('mode-year');
-  const modeTopicRadio = document.getElementById('mode-topic');
   const filterPaper = document.getElementById('filter-paper');
   const filterYear = document.getElementById('filter-year');
   const filterTopic = document.getElementById('filter-topic');
@@ -677,21 +670,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
-  // 16. RENDER BANK RESULTS (with mode switch)
+  // 16. RENDER BANK RESULTS (both filters always applied)
   // ============================================================
   let renderRequestId = 0;
 
   async function renderBankResults() {
     if (!bankResultsContainer) return;
     const requestId = ++renderRequestId;
-
-    const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
-
-    if (isYearMode && filterTopic) {
-      filterTopic.value = 'ALL';
-    } else if (!isYearMode && filterYear) {
-      filterYear.value = 'ALL';
-    }
 
     const selectedP = filterPaper ? filterPaper.value : 'ALL';
     const selectedY = filterYear ? filterYear.value : 'ALL';
@@ -705,18 +690,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let filtered = presetBank.filter((q) => {
       const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
+      // Search query
       if (query && !qText.includes(query)) return false;
+
+      // Paper filter
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
 
-      if (isYearMode) {
-        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
-      } else {
-        if (selectedT !== 'ALL') {
-          const qTopicClean = String(q.topic || '').trim().toLowerCase();
-          const selectedTClean = String(selectedT).trim().toLowerCase();
-          const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-          if (!matchesTopic) return false;
-        }
+      // Year filter – ALWAYS applied
+      if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+
+      // Subtopic filter – ALWAYS applied
+      if (selectedT !== 'ALL') {
+        const qTopicClean = String(q.topic || '').trim().toLowerCase();
+        const selectedTClean = String(selectedT).trim().toLowerCase();
+        const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+        if (!matchesTopic) return false;
       }
 
       return true;
@@ -1308,22 +1296,6 @@ document.addEventListener('DOMContentLoaded', function() {
   filterYear?.addEventListener('change', renderBankResults);
   filterTopic?.addEventListener('change', renderBankResults);
 
-  if (modeYearRadio) modeYearRadio.addEventListener('change', () => {
-    updateFilterVisibility();
-    renderBankResults();
-  });
-  if (modeTopicRadio) modeTopicRadio.addEventListener('change', () => {
-    updateFilterVisibility();
-    renderBankResults();
-  });
-
-  function updateFilterVisibility() {
-    const isYearMode = modeYearRadio?.checked;
-    if (filterYear) filterYear.style.display = isYearMode ? 'inline-block' : 'none';
-    if (filterTopic) filterTopic.style.display = isYearMode ? 'none' : 'inline-block';
-  }
-  updateFilterVisibility();
-
   clearResultsBtn?.addEventListener('click', () => {
     if (searchInput) searchInput.value = '';
     if (filterPaper) filterPaper.value = 'ALL';
@@ -1378,108 +1350,82 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
- // ============================================================
-// 27. AI MODEL SELECTION MODAL (FULL PROMPT FOR ALL EXTERNAL MODELS)
-// ============================================================
-const aiModal = document.getElementById('ai-model-modal');
-const aiModalClose = document.getElementById('ai-model-close');
-const cancelAiModal = document.getElementById('cancel-ai-modal');
-let pendingQuestion = null;
+  // ============================================================
+  // 27. AI MODEL SELECTION MODAL (FULL PROMPT FOR ALL)
+  // ============================================================
+  const aiModal = document.getElementById('ai-model-modal');
+  const aiModalClose = document.getElementById('ai-model-close');
+  const cancelAiModal = document.getElementById('cancel-ai-modal');
+  let pendingQuestion = null;
 
-function openAIModal(questionItem) {
-  pendingQuestion = questionItem;
-  if (aiModal) aiModal.classList.add('open');
-}
+  function openAIModal(questionItem) {
+    pendingQuestion = questionItem;
+    if (aiModal) aiModal.classList.add('open');
+  }
 
-function closeAIModal() {
-  if (aiModal) aiModal.classList.remove('open');
-  pendingQuestion = null;
-}
+  function closeAIModal() {
+    if (aiModal) aiModal.classList.remove('open');
+    pendingQuestion = null;
+  }
 
-aiModalClose?.addEventListener('click', closeAIModal);
-cancelAiModal?.addEventListener('click', closeAIModal);
-aiModal?.addEventListener('click', function(e) {
-  if (e.target === this) closeAIModal();
-});
-
-// --- Helper: Generate a concise UPSC prompt ---
-function generateUPSCPrompt(question) {
-  return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}"`;
-}
-
-// --- Handle model selection ---
-document.querySelectorAll('.model-option').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const model = this.dataset.model;
-    if (!pendingQuestion) return;
-
-    const question = pendingQuestion.question;
-    const year = pendingQuestion.year || '';
-    const marks = pendingQuestion.marks || '';
-
-    // --- Direct (Secret) → answer.html ---
-    if (model === 'secret') {
-      const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
-      window.open(`answer.html?${params.toString()}`, '_blank');
-      closeAIModal();
-      return;
-    }
-
-    // --- FULL PROMPT for all external models ---
-    const fullPrompt = generateUPSCPrompt(question);
-
-    // --- Perplexity: Direct search with FULL PROMPT ---
-    if (model === 'perplexity') {
-      const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(fullPrompt)}`;
-      console.log('🔗 Perplexity URL:', searchUrl);
-      window.open(searchUrl, '_blank');
-      showToast('🌀 Perplexity opened with the UPSC prompt!', '🌀');
-      closeAIModal();
-      return;
-    }
-
-    // --- ChatGPT: Copy prompt + open website + toast with clear instructions ---
-    if (model === 'chatgpt') {
-      copyText(fullPrompt).then(() => {
-        window.open('https://chat.openai.com/', '_blank');
-        showToast('✅ Prompt copied! Paste it in ChatGPT and press Enter. (Ctrl+V)', '💬');
-      }).catch(() => {
-        // Fallback copy
-        const textarea = document.createElement('textarea');
-        textarea.value = fullPrompt;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-        window.open('https://chat.openai.com/', '_blank');
-        showToast('✅ Prompt copied! Paste it in ChatGPT and press Enter. (Ctrl+V)', '💬');
-      });
-      closeAIModal();
-      return;
-    }
-
-    // --- DeepSeek: Copy prompt + open website + toast with clear instructions ---
-    if (model === 'deepseek') {
-      copyText(fullPrompt).then(() => {
-        window.open('https://chat.deepseek.com/', '_blank');
-        showToast('✅ Prompt copied! Paste it in DeepSeek and press Enter. (Ctrl+V)', '🔬');
-      }).catch(() => {
-        const textarea = document.createElement('textarea');
-        textarea.value = fullPrompt;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-        window.open('https://chat.deepseek.com/', '_blank');
-        showToast('✅ Prompt copied! Paste it in DeepSeek and press Enter. (Ctrl+V)', '🔬');
-      });
-      closeAIModal();
-      return;
-    }
-
-    closeAIModal();
+  aiModalClose?.addEventListener('click', closeAIModal);
+  cancelAiModal?.addEventListener('click', closeAIModal);
+  aiModal?.addEventListener('click', function(e) {
+    if (e.target === this) closeAIModal();
   });
-});
+
+  // Handle model selection
+  document.querySelectorAll('.model-option').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const model = this.dataset.model;
+      if (!pendingQuestion) return;
+
+      const question = pendingQuestion.question;
+      const year = pendingQuestion.year || '';
+      const marks = pendingQuestion.marks || '';
+
+      // --- Direct (Secret) → answer.html ---
+      if (model === 'secret') {
+        const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
+        window.open(`answer.html?${params.toString()}`, '_blank');
+        closeAIModal();
+        return;
+      }
+
+      // --- Perplexity: use Perplexity-friendly query ---
+      if (model === 'perplexity') {
+        const query = generatePerplexityQuery(question);
+        const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(query)}`;
+        console.log('🔗 Perplexity URL:', searchUrl);
+        window.open(searchUrl, '_blank');
+        showToast('🌀 Opening Perplexity...', '🌀');
+        closeAIModal();
+        return;
+      }
+
+      // --- ChatGPT & DeepSeek: copy full prompt + open website ---
+      const fullPrompt = generateFullPrompt(question);
+      const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
+      const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
+      const icon = model === 'chatgpt' ? '💬' : '🔬';
+
+      copyText(fullPrompt).then(() => {
+        window.open(siteUrl, '_blank');
+        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
+      }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = fullPrompt;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        window.open(siteUrl, '_blank');
+        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
+      });
+
+      closeAIModal();
+    });
+  });
 
   // ============================================================
   // 28. FETCH AI ANSWER (global)
@@ -1517,8 +1463,6 @@ document.querySelectorAll('.model-option').forEach(btn => {
   if (typeof initAuth === 'function') {
     initAuth();
   }
-
-  updateFilterVisibility();
 
   console.log('✅ QCAB Generator loaded successfully!');
   console.log('📋 Subtopics count:', Object.keys(SYLLABUS).length);
