@@ -32,7 +32,45 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+/* MOBILE SIDEBAR TOGGLE */
+function setupMobileMenu() {
+  const sidebar = document.getElementById('main-sidebar');
+  const backdrop = document.getElementById('mobile-backdrop');
+  const openBtn = document.getElementById('mobile-menu-toggle');
+  const closeBtn = document.getElementById('mobile-menu-close');
 
+  if(openBtn) openBtn.addEventListener('click', () => {
+    sidebar.classList.add('mobile-open');
+    backdrop.classList.add('active');
+  });
+
+  if(closeBtn) closeBtn.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('active');
+  });
+
+  if(backdrop) backdrop.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('active');
+  });
+}
+
+// Run this when the page loads
+document.addEventListener('DOMContentLoaded', setupMobileMenu);
+
+// Close mobile menu when a nav button is clicked
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('main-sidebar');
+  const backdrop = document.getElementById('mobile-backdrop');
+  const navButtons = document.querySelectorAll('.nav-btn');
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+    });
+  });
+});
 
 // ==========================================
 // CUSTOM MODAL SYSTEM - at the top (outside DOMContentLoaded)
