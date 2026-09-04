@@ -1,62 +1,4 @@
-:root {
-    /* Forest Green Palette */
-    --deep-canopy: #1B4332;      /* Header/Footer background */
-    --leafy-primary: #2D6A4F;    /* Main Buttons, Selected States */
-    --mossy-accent: #74C69D;     /* Hover states, Links, Highlights */
-    --paper-white: #F8F9FA;      /* Website Background */
-    --ink-black: #1a1a1a;        /* Text for reading questions */
-    
-    /* Fonts */
-    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-:root{
-  --bg:#f4f7fc;
-  --surface:#ffffff;
-  --surface-2:#eef2f9;
-  --text:#0f172a;
-  --muted:#475569;
-  --border:#cbd5e1;
-  --border-strong:#94a3b8;
-  --primary:#7c3aed;
-  --primary-hover:#6d28d9;
-  --primary-soft:#f3e8ff;
-  --accent:#0891b2;
-  --accent-soft:#cffafe;
-  --highlight:#f59e0b;
-  --highlight-soft:#fffbeb;
-  --success:#047857;
-  --success-soft:#ecfdf5;
-  --danger:#b91c1c;
-  --danger-soft:#fef2f2;
-  --shadow:0 12px 35px -5px rgba(8,145,178,0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
-  --shadow-sm:0 2px 8px rgba(15,23,42,0.04);
-  --radius:18px;
-  --radius-sm:10px;
-  --sans:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --serif:Georgia, "Times New Roman", serif;
-}
-[data-theme="dark"]{
-  --bg:#07090e;
-  --surface:#111622;
-  --surface-2:#1a2234;
-  --text:#f1f5f9;
-  --muted:#94a3b8;
-  --border:#2a364f;
-  --border-strong:#3b4d71;
-  --primary:#a78bfa;
-  --primary-hover:#c4b5fd;
-  --primary-soft:#2e1065;
-  --accent:#22d3ee;
-  --accent-soft:#083344;
-  --highlight:#fbbf24;
-  --highlight-soft:#422006;
-  --success:#34d399;
-  --success-soft:#064e3b;
-  --danger:#f87171;
-  --danger-soft:#451a03;
-  --shadow:0 14px 35px -5px rgba(0,0,0,0.4);
-  --shadow-sm:0 2px 8px rgba(0,0,0,0.25);
-}
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -1272,27 +1214,65 @@ footer{
 
 /* 🚨 IMPORTANT: If you had :root elsewhere, delete that old block and keep THIS one. */
 :root {
-  /* Forest Green Palette */
-  --primary: #2D6A4F;        /* Leafy Primary (Buttons, Active) */
-  --primary-dark: #1B4332;   /* Deep Canopy (Header, Footer) */
-  --accent: #74C69D;         /* Mossy Accent (Hover, Highlights) */
-  --accent-soft: #D8F3DC;    /* Very light green for subtle backgrounds */
+  /* Forest Greens */
+  --primary: #2D6A4F;        
+  --primary-dark: #1B4332;   
+  --accent: #74C69D;         
+  --accent-soft: #D8F3DC;    
+
+  /* Added Colors */
+  --warm-sand: #D4A373;      
+  --sky-blue: #457B9D;       
+  --warm-sand-soft: #FAEDCD; 
   
-  /* Base Colors */
-  --bg: #F8F9FA;
-  --text: #1a1a1a;
-  --text-soft: #4a4a4a;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --danger: #dc2626;
-  --danger-soft: #fee2e2;
-  --sidebar-bg: #FFFFFF;
-  --card-bg: #FFFFFF;
-  --shadow: 0 4px 6px rgba(27, 67, 50, 0.1);
+  /* Easy-on-the-eyes Backgrounds */
+  --bg: #F5F7F3;             /* Soft warm off-white */
+  --surface: #FFFFFF;        /* Cards */
+  --surface-2: #EEF2EE;      
+  --text: #2B2B2B;           
+  --text-soft: #555555;
+  --muted: #7A7A7A;
+  --border: #DCE3D8;         
+  --border-strong: #B8C4B1;
+  
+  --danger: #DC2626;
+  --danger-soft: #FEE2E2;
+  
+  --shadow: 0 12px 35px -5px rgba(27, 67, 50, 0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
+  --shadow-sm: 0 2px 8px rgba(27, 67, 50, 0.05);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
 }
 
 /* If your old file had * { box-sizing: border-box; }, you can ignore this next one. If not, keep it. */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+/* DARK MODE VARIABLES */
+body.dark-mode {
+  --primary: #95D5B2;        
+  --primary-dark: #0D1F17;   
+  --accent: #52B788;         
+  --accent-soft: #1B4332;    
+  
+  --warm-sand: #E9C46A;      
+  --sky-blue: #A8DADC;       
+  --warm-sand-soft: #2A241B; 
+  
+  --bg: #0F1210;             
+  --surface: #181C19;        
+  --surface-2: #222824;      
+  --text: #F0F0F0;
+  --text-soft: #B0B0B0;
+  --muted: #808080;
+  --border: #2E3630;         
+  --border-strong: #4D5B50;  
+  --danger: #F87171;
+  --danger-soft: #450A0A;
+  
+  --shadow: 0 14px 35px -5px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+}
 
 /* Forest Green Body */
 body {
