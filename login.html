@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Register - QCAB</title>
+    <title>Login / Register - UPSC Craft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
         .card {
-            background: rgba(255,255,255,0.95);
+            background: #FFFFFF;
             backdrop-filter: blur(10px);
             padding: 40px 36px;
             border-radius: 24px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             width: 90%;
             max-width: 400px;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-4px);
         }
         .brand {
             text-align: center;
@@ -35,29 +34,29 @@
             width: 56px;
             height: 56px;
             border-radius: 16px;
-            background: linear-gradient(135deg, #7c3aed, #0891b2);
+            background: linear-gradient(135deg, #4F46E5, #06B6D4);
             color: #fff;
             font-size: 28px;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 24px rgba(124,58,237,0.25);
+            box-shadow: 0 8px 24px rgba(79,70,229,0.25);
         }
         .brand h1 {
             margin: 12px 0 4px;
             font-size: 24px;
             font-weight: 800;
-            color: #0f172a;
+            color: #1E293B;
             letter-spacing: -0.02em;
         }
         .brand p {
             margin: 0;
-            color: #64748b;
+            color: #64748B;
             font-size: 14px;
         }
         h2 {
-            color: #0f172a;
+            color: #1E293B;
             text-align: center;
             margin: 0 0 4px;
             font-size: 22px;
@@ -65,7 +64,7 @@
         }
         .subtitle {
             text-align: center;
-            color: #64748b;
+            color: #64748B;
             font-size: 14px;
             margin-bottom: 24px;
         }
@@ -73,17 +72,17 @@
             width: 100%;
             padding: 14px 16px;
             margin: 8px 0;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #E2E8F0;
             border-radius: 12px;
             font-size: 15px;
-            background: #f8fafc;
+            background: #F8FAFC;
             transition: all 0.2s;
             box-sizing: border-box;
         }
         input:focus {
             outline: none;
-            border-color: #7c3aed;
-            box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
             background: #fff;
         }
         .hidden {
@@ -94,18 +93,18 @@
             padding: 14px;
             border: none;
             border-radius: 12px;
-            background: linear-gradient(135deg, #7c3aed, #0891b2);
+            background: linear-gradient(135deg, #4F46E5, #06B6D4);
             color: white;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             margin-top: 12px;
-            box-shadow: 0 4px 14px rgba(124,58,237,0.25);
+            box-shadow: 0 4px 14px rgba(79,70,229,0.25);
         }
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(124,58,237,0.35);
+            box-shadow: 0 8px 24px rgba(79,70,229,0.35);
         }
         button:disabled {
             opacity: 0.6;
@@ -114,7 +113,7 @@
         }
         .switch {
             text-align: center;
-            color: #7c3aed;
+            color: #4F46E5;
             cursor: pointer;
             font-weight: 600;
             margin-top: 16px;
@@ -129,7 +128,7 @@
             align-items: center;
             gap: 12px;
             margin: 16px 0;
-            color: #94a3b8;
+            color: #94A3B8;
             font-size: 12px;
         }
         .divider::before,
@@ -137,15 +136,15 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: #e2e8f0;
+            background: #E2E8F0;
         }
         #login-error {
-            color: #dc2626;
+            color: #DC2626;
             text-align: center;
             margin-top: 12px;
             font-size: 14px;
             padding: 8px 12px;
-            background: #fef2f2;
+            background: #FEF2F2;
             border-radius: 8px;
             display: none;
         }
@@ -153,10 +152,10 @@
             text-align: center;
             margin-top: 12px;
             font-size: 13px;
-            color: #94a3b8;
+            color: #94A3B8;
         }
         .guest-link a {
-            color: #7c3aed;
+            color: #4F46E5;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
@@ -184,8 +183,8 @@
     <div class="card">
         <div class="brand">
             <div class="icon">Q</div>
-            <h1>QCAB Generator</h1>
-            <p>UPSC Mains Practice</p>
+            <h1>UPSC Craft</h1>
+            <p>Mains Practice & QCAB</p>
         </div>
 
         <h2 id="formTitle">Welcome Back</h2>
@@ -209,16 +208,12 @@
     </div>
 
     <script>
-        // ============================================================
         // CONFIG
-        // ============================================================
         const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
         let isRegister = false;
         let isLoading = false;
 
-        // ============================================================
         // DOM REFS
-        // ============================================================
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
@@ -228,9 +223,7 @@
         const formSubtitle = document.getElementById('formSubtitle');
         const errorEl = document.getElementById('login-error');
 
-        // ============================================================
         // TOGGLE MODE
-        // ============================================================
         function toggleMode() {
             isRegister = !isRegister;
             nameInput.classList.toggle('hidden');
@@ -246,11 +239,8 @@
 
         toggleBtn.addEventListener('click', toggleMode);
 
-        // ============================================================
         // GUEST MODE
-        // ============================================================
         function goGuest() {
-            // Set a guest flag and redirect
             localStorage.setItem('isGuest', 'true');
             localStorage.setItem('userToken', 'guest-token-' + Date.now());
             localStorage.setItem('qcab_user', JSON.stringify({
@@ -261,9 +251,7 @@
             window.location.href = './index.html';
         }
 
-        // ============================================================
-        // HANDLE AUTH (Login / Register)
-        // ============================================================
+        // HANDLE AUTH
         async function handleAuth() {
             if (isLoading) return;
 
@@ -271,23 +259,10 @@
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
 
-            // Validation
-            if (!email || !password) {
-                showError('Please fill in all fields.');
-                return;
-            }
-            if (!isRegister && !email.includes('@')) {
-                showError('Please enter a valid email address.');
-                return;
-            }
-            if (isRegister && !name) {
-                showError('Please enter your full name.');
-                return;
-            }
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters.');
-                return;
-            }
+            if (!email || !password) { showError('Please fill in all fields.'); return; }
+            if (!isRegister && !email.includes('@')) { showError('Please enter a valid email address.'); return; }
+            if (isRegister && !name) { showError('Please enter your full name.'); return; }
+            if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
 
             hideError();
             isLoading = true;
@@ -306,17 +281,12 @@
 
                 const data = await res.json();
 
-                if (!res.ok) {
-                    throw new Error(data.error || 'Authentication failed.');
-                }
+                if (!res.ok) throw new Error(data.error || 'Authentication failed.');
 
-                // === SUCCESS ===
                 if (isRegister) {
-                    // Registration successful – switch to login
                     showSuccess('Registration successful! Please login.');
                     toggleMode();
                 } else {
-                    // Login successful – store user data
                     const userData = {
                         email: email,
                         token: data.token || 'dummy-token',
@@ -327,15 +297,11 @@
                     localStorage.setItem('userToken', data.token || 'dummy-token');
                     localStorage.setItem('qcab_owner_key', data.token || 'dummy-token');
                     localStorage.removeItem('isGuest');
-
-                    // Redirect to main page
                     window.location.href = './index.html';
                 }
 
             } catch (err) {
-                // Mock fallback if worker is unreachable
                 if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
-                    // Mock success for testing
                     if (!isRegister) {
                         const userData = {
                             email: email,
@@ -362,9 +328,6 @@
 
         submitBtn.addEventListener('click', handleAuth);
 
-        // ============================================================
-        // ENTER KEY SUPPORT
-        // ============================================================
         [nameInput, emailInput, passwordInput].forEach(input => {
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
@@ -374,10 +337,9 @@
             });
         });
 
-        // ============================================================
-        // HELPER FUNCTIONS
-        // ============================================================
         function showError(message) {
+            errorEl.style.color = '#DC2626';
+            errorEl.style.background = '#FEF2F2';
             errorEl.style.display = 'block';
             errorEl.textContent = message;
         }
@@ -388,20 +350,18 @@
         }
 
         function showSuccess(message) {
-            errorEl.style.display = 'block';
             errorEl.style.color = '#059669';
             errorEl.style.background = '#ecfdf5';
+            errorEl.style.display = 'block';
             errorEl.textContent = message;
             setTimeout(() => {
                 errorEl.style.display = 'none';
-                errorEl.style.color = '#dc2626';
-                errorEl.style.background = '#fef2f2';
+                errorEl.style.color = '#DC2626';
+                errorEl.style.background = '#FEF2F2';
             }, 3000);
         }
 
-        // ============================================================
         // CHECK IF ALREADY LOGGED IN
-        // ============================================================
         (function checkAlreadyLoggedIn() {
             try {
                 const user = JSON.parse(localStorage.getItem('qcab_user'));
@@ -412,7 +372,6 @@
         })();
 
         console.log('✅ Login page loaded');
-        console.log('🔗 Worker URL:', WORKER_URL);
     </script>
 </body>
 </html>
