@@ -159,7 +159,7 @@ function generateFullPrompt(question) {
 
 // Generate Perplexity-friendly query
 function generatePerplexityQuery(question) {
-  return `UPSC model answer for: "${question}" with introduction, body, conclusion, and recent examples.`;
+  return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}" with introduction, body, conclusion, and recent examples.`;
 }
 
 console.log('✅ Custom modal + toast system loaded');
