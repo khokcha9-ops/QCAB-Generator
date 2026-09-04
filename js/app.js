@@ -1,5 +1,5 @@
 // ============================================================
-// CUSTOM MODAL SYSTEM – at the top (outside DOMContentLoaded)
+// CUSTOM MODAL SYSTEM
 // ============================================================
 
 async function showAlert(message, title = 'Notice') {
@@ -110,15 +110,8 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Close modal on backdrop click
-document.getElementById('customModal')?.addEventListener('click', function(e) {
-  if (e.target === this) {
-    this.classList.remove('active');
-  }
-});
-
 // ============================================================
-// TOAST NOTIFICATION SYSTEM
+// TOAST & UTILITIES
 // ============================================================
 function showToast(message, icon = '✅') {
   const toast = document.getElementById('toast');
@@ -126,8 +119,8 @@ function showToast(message, icon = '✅') {
   const iconEl = document.getElementById('toastIcon');
   if (!toast) return;
   if (window.toastTimeout) clearTimeout(window.toastTimeout);
-  iconEl.textContent = icon;
-  msgEl.textContent = message;
+  if (iconEl) iconEl.textContent = icon;
+  if (msgEl) msgEl.textContent = message;
   toast.classList.add('show');
   window.toastTimeout = setTimeout(() => {
     toast.classList.remove('show');
@@ -135,29 +128,32 @@ function showToast(message, icon = '✅') {
 }
 
 // Helper to copy text with fallback
-function copyText(text) {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    return navigator.clipboard.writeText(text);
-  }
-  return new Promise((resolve, reject) => {
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
     try {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      textarea.remove();
-      resolve();
-    } catch (err) { reject(err); }
-  });
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch (err) {
+      console.warn('Clipboard API failed, falling back to execCommand:', err);
+    }
+  }
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+  } finally {
+    textarea.remove();
+  }
 }
 
-// Generate UPSC prompt (full version for ChatGPT & DeepSeek)
 function generateFullPrompt(question) {
   return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}"`;
 }
 
-// Generate Perplexity-friendly query
 function generatePerplexityQuery(question) {
   return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}" with introduction, body, conclusion, and recent examples.`;
 }
@@ -165,20 +161,25 @@ function generatePerplexityQuery(question) {
 console.log('✅ Custom modal + toast system loaded');
 
 // ============================================================
-// MAIN APP – inside DOMContentLoaded
+// MAIN APP
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
 
   console.log('🚀 App.js loaded');
+
+  // Bind backdrop click handler safely after DOM is loaded
+  document.getElementById('customModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('active');
+    }
+  });
 
   // Safely define fallbacks for external global variables if missing
   window.SYLLABUS = window.SYLLABUS || { 'GS1': ['General'], 'GS2': ['General'], 'GS3': ['General'], 'GS4': ['General'], 'OPT1': ['General'], 'OPT2': ['General'] };
   window.MARK_RULES = window.MARK_RULES || { 10: 2, 15: 3, 20: 4 };
   window.WORKER_URL = window.WORKER_URL || '';
 
-  // ============================================================
   // 1. NAVIGATION
-  // ============================================================
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.scroll;
@@ -190,13 +191,11 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       document.querySelectorAll('.nav-btn[data-scroll]').forEach(n => n.classList.remove('active'));
       const match = document.querySelector(`.nav-btn[data-scroll="${id}"]`);
-      if(match) match.classList.add('active');
+      if (match) match.classList.add('active');
     });
   });
 
-  // ============================================================
   // 2. THEME
-  // ============================================================
   function applyTheme(theme) {
     const isDark = theme === 'dark';
     document.body.classList.toggle('dark-mode', isDark);
@@ -209,26 +208,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
   }
 
-  // Restore saved theme on page load
   const savedTheme = localStorage.getItem('qcab_theme') || 'light';
   applyTheme(savedTheme);
 
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const isDark = document.body.classList.contains('dark-mode');
-    applyTheme(isDark ? 'light' : 'dark');
-  });
-  document.getElementById('mobile-theme-toggle')?.addEventListener('click', () => {
-    const isDark = document.body.classList.contains('dark-mode');
-    applyTheme(isDark ? 'light' : 'dark');
-  });
-  document.getElementById('sidebar-theme')?.addEventListener('click', () => {
-    const isDark = document.body.classList.contains('dark-mode');
-    applyTheme(isDark ? 'light' : 'dark');
+  ['theme-toggle', 'mobile-theme-toggle', 'sidebar-theme'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', () => {
+      const isDark = document.body.classList.contains('dark-mode');
+      applyTheme(isDark ? 'light' : 'dark');
+    });
   });
 
-  // ============================================================
   // 3. MOBILE MENU
-  // ============================================================
   (function() {
     const sidebar = document.getElementById('main-sidebar');
     const toggleBtn = document.getElementById('mobile-menu-toggle');
@@ -247,13 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body.classList.remove('menu-open');
     }
     toggleBtn.addEventListener('click', openMenu);
-    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
-    if (backdrop) backdrop.addEventListener('click', closeMenu);
+    closeBtn?.addEventListener('click', closeMenu);
+    backdrop?.addEventListener('click', closeMenu);
   })();
 
-  // ============================================================
   // 4. BANK COLLAPSE
-  // ============================================================
   const toggleBankBtn = document.getElementById('toggle-bank-btn');
   const toggleBankIcon = document.getElementById('toggle-bank-icon');
   const toggleBankText = document.getElementById('toggle-bank-text');
@@ -272,9 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ============================================================
   // 5. CREATE FORM COLLAPSE
-  // ============================================================
   const toggleCreateBtn = document.getElementById('toggle-create-section-btn');
   const createFormBody = document.getElementById('create-form-body');
   if (toggleCreateBtn && createFormBody) {
@@ -285,9 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ============================================================
   // 6. POPULATE FORM SUBTOPICS
-  // ============================================================
   function populateFormSubtopics() {
     const qPaper = document.getElementById('q-paper');
     const qTopic = document.getElementById('q-topic');
@@ -305,9 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('q-paper')?.addEventListener('change', populateFormSubtopics);
   populateFormSubtopics();
 
-  // ============================================================
   // 7. DASHBOARD SYNC
-  // ============================================================
   function syncDashboard() {
     const qList = document.getElementById('q-list');
     const count = qList ? qList.querySelectorAll('.q-item').length : 0;
@@ -319,14 +301,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const qCount = document.getElementById('dashboard-q-count');
     const pageCount = document.getElementById('dashboard-pages');
     const bankCountEl = document.getElementById('dashboard-bank-count');
-    if(qCount) qCount.textContent = count;
-    if(pageCount) pageCount.textContent = pages;
-    if(bankCountEl) bankCountEl.textContent = bankCount;
+    if (qCount) qCount.textContent = count;
+    if (pageCount) pageCount.textContent = pages;
+    if (bankCountEl) bankCountEl.textContent = bankCount;
   }
 
-  // ============================================================
   // 8. SCROLL TO TOP
-  // ============================================================
   const backToTopBtn = document.getElementById('back-to-top');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 300) {
@@ -339,9 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // ============================================================
   // 9. HELPER FUNCTIONS
-  // ============================================================
   function normalizePaperCode(paperVal) {
     if (!paperVal) return 'GS1';
     const str = String(paperVal).toUpperCase().trim();
@@ -388,9 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return 'Other';
   }
 
-  // ============================================================
   // 10. STORAGE & STATE
-  // ============================================================
   const PRESET_STORAGE_KEY = 'qcab_preset_bank';
   const VERSION_KEY = 'qcab_data_version';
   const CURRENT_VERSION = '2';
@@ -407,9 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let studyData = {};
   let editingIndex = null;
 
-  // ============================================================
   // 11. FOLDER & BOOKLET STATE
-  // ============================================================
   const defaultRoot = {
     id: 'root',
     name: 'General Booklet',
@@ -430,9 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return folderMap[activeFolderId] || folderMap['root'];
   }
 
-  // ============================================================
   // 12. DOM REFERENCES
-  // ============================================================
   const qPaper = document.getElementById('q-paper');
   const qTopic = document.getElementById('q-topic');
   const qText = document.getElementById('q-text');
@@ -471,9 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // ============================================================
   // 13. STUDY DATA FUNCTIONS
-  // ============================================================
   function getStudyRecord(q) {
     const id = q.id || q.question;
     if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false, note: '' };
@@ -513,14 +483,14 @@ document.addEventListener('DOMContentLoaded', function() {
     items.forEach(q => {
       const rec = getStudyRecord(q);
       const status = rec.revised ? '✅ Revised' : '⏳ Not revised';
-      const notePreview = rec.note ? rec.note.substring(0, 60) + (rec.note.length>60?'…':'') : 'No note';
+      const notePreview = rec.note ? rec.note.substring(0, 60) + (rec.note.length > 60 ? '…' : '') : 'No note';
       html += `
         <div style="border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface-2);">
           <div style="font-weight:700;margin-bottom:4px;">${escapeHtml(q.question)}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
             <span class="tag">${escapeHtml(q.paper)}</span>
             <span class="tag tag-topic">${escapeHtml(q.topic)}</span>
-            <span class="tag">${q.year||''}</span>
+            <span class="tag">${q.year || ''}</span>
             <span class="tag">${status}</span>
             <span class="tag">📝 ${notePreview}</span>
           </div>
@@ -531,9 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
     listContainer.innerHTML = html;
   }
 
-  // ============================================================
   // 14. POPULATE FILTERS
-  // ============================================================
   function populateFilterTopics() {
     if (!filterTopic || !filterPaper) return;
     filterTopic.innerHTML = '<option value="ALL">All Subtopics</option>';
@@ -587,9 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // ============================================================
   // 15. LOAD QUESTIONS FROM JSON
-  // ============================================================
   async function fetchJSONFile(url) {
     try {
       const response = await fetch(url + '?t=' + Date.now());
@@ -679,9 +645,7 @@ document.addEventListener('DOMContentLoaded', function() {
     syncDashboard();
   }
 
-  // ============================================================
-  // 16. RENDER BANK RESULTS (both filters always applied)
-  // ============================================================
+  // 16. RENDER BANK RESULTS
   let renderRequestId = 0;
 
   async function renderBankResults() {
@@ -697,19 +661,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     bankResultsContainer.innerHTML = '';
 
-    let filtered = presetBank.filter((q) => {
+    const filtered = presetBank.filter((q) => {
       const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
-      // Search query
       if (query && !qText.includes(query)) return false;
-
-      // Paper filter
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
-
-      // Year filter – ALWAYS applied
       if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
 
-      // Subtopic filter – ALWAYS applied
       if (selectedT !== 'ALL') {
         const qTopicClean = String(q.topic || '').trim().toLowerCase();
         const selectedTClean = String(selectedT).trim().toLowerCase();
@@ -767,7 +725,7 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
 
       div.querySelectorAll('[data-action]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
           const action = btn.dataset.action;
           const id = btn.dataset.id;
           if (action === 'bookmark') {
@@ -815,9 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ============================================================
   // 17. NOTE MODAL
-  // ============================================================
   let currentNoteId = null;
 
   function openNoteModal(id) {
@@ -849,35 +805,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) closeNoteModal();
   });
 
-  // ============================================================
-  // 18. STUDY SAVE/LOAD (Cloudflare)
-  // ============================================================
+  // 18. STUDY SAVE/LOAD (Concurrent batch optimization)
   async function saveStudyData() {
     const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
     if (!USER_TOKEN || !WORKER_URL) return;
 
     const keys = Object.keys(studyData);
-    for (const question_id of keys) {
+    if (keys.length === 0) return;
+
+    // Concurrently post updates via Promise.all instead of blocking sequential await loop
+    const saveRequests = keys.map(question_id => {
       const rec = studyData[question_id];
-      if (!rec || typeof rec !== 'object') continue;
-      try {
-        await fetch(WORKER_URL + '/api/study/update', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + USER_TOKEN
-          },
-          body: JSON.stringify({
-            question_id: question_id,
-            bookmarked: rec.bookmarked ? 1 : 0,
-            revised: rec.revised ? 1 : 0,
-            note: rec.note || ''
-          })
-        });
-      } catch (e) {
-        console.error('Failed to save to cloud for', question_id, e);
-      }
-    }
+      if (!rec || typeof rec !== 'object') return Promise.resolve();
+
+      return fetch(`${WORKER_URL}/api/study/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + USER_TOKEN
+        },
+        body: JSON.stringify({
+          question_id: question_id,
+          bookmarked: rec.bookmarked ? 1 : 0,
+          revised: rec.revised ? 1 : 0,
+          note: rec.note || ''
+        })
+      }).catch(e => console.error('Failed to save to cloud for', question_id, e));
+    });
+
+    await Promise.all(saveRequests);
     updateStudyDashboard();
   }
 
@@ -904,9 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // ============================================================
   // 19. EXPORT/IMPORT STUDY DATA
-  // ============================================================
   document.getElementById('export-study-btn')?.addEventListener('click', () => {
     const data = JSON.stringify(studyData, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
@@ -944,9 +898,7 @@ document.addEventListener('DOMContentLoaded', function() {
     input.click();
   });
 
-  // ============================================================
   // 20. RENDER QUESTIONS (QCAB)
-  // ============================================================
   function renderQuestions() {
     if (!qList) return;
     const questions = getActiveFolder().questions;
@@ -1007,7 +959,7 @@ document.addEventListener('DOMContentLoaded', function() {
           populateFormSubtopics();
           if (qTopic) qTopic.value = q.topic || '';
           selectedMarks = q.marks;
-          marksButtons.forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.marks,10) === q.marks ? 'true' : 'false'));
+          marksButtons.forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false'));
           const headingEl = document.getElementById('add-heading');
           if (headingEl) headingEl.textContent = 'Edit Question #' + (i+1);
           if (addBtn) addBtn.textContent = 'Update Question';
@@ -1023,9 +975,7 @@ document.addEventListener('DOMContentLoaded', function() {
     syncDashboard();
   }
 
-  // ============================================================
   // 21. ADD/EDIT QUESTION
-  // ============================================================
   function resetForm() {
     editingIndex = null;
     if (qText) qText.value = '';
@@ -1079,9 +1029,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderBankResults();
   });
 
-  // ============================================================
   // 22. FOLDER MANAGEMENT
-  // ============================================================
   function renderBreadcrumbs() {
     const breadcrumbs = document.getElementById('breadcrumbs');
     if (!breadcrumbs) return;
@@ -1187,9 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // ============================================================
   // 23. PDF GENERATOR
-  // ============================================================
   function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
@@ -1215,10 +1161,10 @@ document.addEventListener('DOMContentLoaded', function() {
       dividers();
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W/2, 25, { align: 'center' });
+      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W / 2, 25, { align: 'center' });
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W/2, 32, { align: 'center' });
+      doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W / 2, 32, { align: 'center' });
 
       let y = 45;
       doc.setFont('helvetica', 'bold');
@@ -1237,7 +1183,7 @@ document.addEventListener('DOMContentLoaded', function() {
           dividers();
           y = 25;
         }
-        doc.text(`${idx+1}`, 28, y);
+        doc.text(`${idx + 1}`, 28, y);
         const textLines = doc.splitTextToSize(q.question, 125);
         doc.text(textLines, 40, y);
         doc.text(`${q.marks}M`, 170, y);
@@ -1254,7 +1200,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (p === 1) {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(11);
-          doc.text(`Q${idx+1}.`, 28, 22);
+          doc.text(`Q${idx + 1}.`, 28, 22);
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(10.5);
           const lines = doc.splitTextToSize(q.question, 138);
@@ -1270,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8);
-        doc.text(`Page ${currentPg}`, PAGE_W/2, PAGE_H - 8, { align: 'center' });
+        doc.text(`Page ${currentPg}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
 
         if (!(idx === questions.length - 1 && p === pageCount)) {
           doc.addPage();
@@ -1284,9 +1230,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   generateBtn?.addEventListener('click', generatePDF);
 
-  // ============================================================
   // 24. RENDER ALL
-  // ============================================================
   function renderAll() {
     renderBreadcrumbs();
     renderFolders();
@@ -1294,9 +1238,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateStudyDashboard();
   }
 
-  // ============================================================
-  // 25. SEARCH & FILTER EVENT LISTENERS
-  // ============================================================
+  // 25. SEARCH & FILTER LISTENERS
   let searchTimeout;
   searchInput?.addEventListener('input', () => {
     clearTimeout(searchTimeout);
@@ -1330,16 +1272,15 @@ document.addEventListener('DOMContentLoaded', function() {
       localStorage.removeItem(PRESET_STORAGE_KEY);
       localStorage.removeItem(VERSION_KEY);
       updateBankStatus();
-      if (bankResultsContainer)
+      if (bankResultsContainer) {
         bankResultsContainer.innerHTML = '<p style="font-size:13px; color:var(--muted); font-style:italic;">Reloading questions...</p>';
+      }
       await loadRepositoryJSON();
     }
   });
 
-  // ============================================================
-  // 26. LOGIN BUTTONS
-  // ============================================================
-  document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
+  // 26. AUTH BUTTON LISTENERS
+  async function handleAuthToggle() {
     if (typeof getUser !== 'function' || typeof setUser !== 'function' || typeof openLoginModal !== 'function') {
       showToast('Authentication module not loaded.', '⚠️');
       return;
@@ -1356,30 +1297,12 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       openLoginModal('login');
     }
-  });
+  }
 
-  document.getElementById('sidebar-login-btn')?.addEventListener('click', async () => {
-    if (typeof getUser !== 'function' || typeof setUser !== 'function' || typeof openLoginModal !== 'function') {
-      showToast('Authentication module not loaded.', '⚠️');
-      return;
-    }
-    const user = getUser();
-    if (user) {
-      if (await showConfirm('Logout?', 'Confirm Logout')) {
-        setUser(null);
-        showToast('Logged out.', '👋');
-        studyData = {};
-        renderBankResults();
-        updateStudyDashboard();
-      }
-    } else {
-      openLoginModal('login');
-    }
-  });
+  document.getElementById('topbar-login-btn')?.addEventListener('click', handleAuthToggle);
+  document.getElementById('sidebar-login-btn')?.addEventListener('click', handleAuthToggle);
 
-  // ============================================================
-  // 27. AI MODEL SELECTION MODAL (FULL PROMPT FOR ALL)
-  // ============================================================
+  // 27. AI MODEL SELECTION MODAL
   const aiModal = document.getElementById('ai-model-modal');
   const aiModalClose = document.getElementById('ai-model-close');
   const cancelAiModal = document.getElementById('cancel-ai-modal');
@@ -1401,9 +1324,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) closeAIModal();
   });
 
-  // Handle model selection
   document.querySelectorAll('.model-option').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', async function() {
       const model = this.dataset.model;
       if (!pendingQuestion) return;
 
@@ -1411,7 +1333,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const year = pendingQuestion.year || '';
       const marks = pendingQuestion.marks || '';
 
-      // --- Direct (Secret) → answer.html ---
       if (model === 'secret') {
         const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
         window.open(`answer.html?${params.toString()}`, '_blank');
@@ -1419,7 +1340,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      // --- Perplexity: use Perplexity-friendly query ---
       if (model === 'perplexity') {
         const query = generatePerplexityQuery(question);
         const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(query)}`;
@@ -1430,33 +1350,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      // --- ChatGPT & DeepSeek: copy full prompt + open website ---
       const fullPrompt = generateFullPrompt(question);
       const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
       const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
       const icon = model === 'chatgpt' ? '💬' : '🔬';
 
-      copyText(fullPrompt).then(() => {
-        window.open(siteUrl, '_blank');
-        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
-      }).catch(() => {
-        const textarea = document.createElement('textarea');
-        textarea.value = fullPrompt;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-        window.open(siteUrl, '_blank');
-        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
-      });
-
+      await copyText(fullPrompt);
+      window.open(siteUrl, '_blank');
+      showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
       closeAIModal();
     });
   });
 
-  // ============================================================
-  // 28. FETCH AI ANSWER (global)
-  // ============================================================
+  // 28. FETCH AI ANSWER
   window.fetchAIAnswer = function(buttonElement) {
     const card = buttonElement.closest('.bank-item');
     if (!card) return;
@@ -1480,9 +1386,7 @@ document.addEventListener('DOMContentLoaded', function() {
     openAIModal(questionItem);
   };
 
-  // ============================================================
   // 29. INITIALIZATION
-  // ============================================================
   renderAll();
   loadRepositoryJSON();
   loadCloudStudy();
