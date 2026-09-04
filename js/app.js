@@ -1,15 +1,7 @@
 // ============================================================
-// js/app.js – Complete Application (both filters always visible)
+// CUSTOM MODAL SYSTEM – at the top (outside DOMContentLoaded)
 // ============================================================
 
-// --- Ensure config variables exist (fallback) ---
-if (typeof SYLLABUS === 'undefined') { var SYLLABUS = {}; }
-if (typeof WORKER_URL === 'undefined') { var WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev'; }
-if (typeof MARK_RULES === 'undefined') { var MARK_RULES = { 10: 2, 15: 3, 20: 4 }; }
-
-// ============================================================
-// CUSTOM MODAL SYSTEM (replaces alert, confirm, prompt)
-// ============================================================
 async function showAlert(message, title = 'Notice') {
   return new Promise((resolve) => {
     const overlay = document.getElementById('customModal');
@@ -108,6 +100,7 @@ async function showPrompt(message, title = 'Enter Value', defaultValue = '') {
   });
 }
 
+// Close modal on Escape key
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     const overlay = document.getElementById('customModal');
@@ -117,12 +110,15 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// Close modal on backdrop click
 document.getElementById('customModal')?.addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('active');
+  if (e.target === this) {
+    this.classList.remove('active');
+  }
 });
 
 // ============================================================
-// TOAST NOTIFICATION
+// TOAST NOTIFICATION SYSTEM
 // ============================================================
 function showToast(message, icon = '✅') {
   const toast = document.getElementById('toast');
@@ -133,11 +129,16 @@ function showToast(message, icon = '✅') {
   iconEl.textContent = icon;
   msgEl.textContent = message;
   toast.classList.add('show');
-  window.toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+  window.toastTimeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3500);
 }
 
+// Helper to copy text with fallback
 function copyText(text) {
-  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
   return new Promise((resolve, reject) => {
     try {
       const textarea = document.createElement('textarea');
@@ -151,22 +152,28 @@ function copyText(text) {
   });
 }
 
+// Generate UPSC prompt (full version for ChatGPT & DeepSeek)
 function generateFullPrompt(question) {
   return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}"`;
 }
+
+// Generate Perplexity-friendly query
 function generatePerplexityQuery(question) {
   return `UPSC model answer for: "${question}" with introduction, body, conclusion, and recent examples.`;
 }
 
-console.log('✅ Custom modal + toast loaded');
+console.log('✅ Custom modal + toast system loaded');
 
 // ============================================================
-// MAIN APPLICATION
+// MAIN APP – inside DOMContentLoaded
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
+
   console.log('🚀 App.js loaded');
 
-  // --- NAVIGATION ---
+  // ============================================================
+  // 1. NAVIGATION
+  // ============================================================
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.scroll;
@@ -182,7 +189,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // --- THEME ---
+  // ============================================================
+  // 2. THEME
+  // ============================================================
   function applyTheme(theme) {
     const isDark = theme === 'dark';
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
@@ -194,8 +203,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
   }
-  const savedTheme = localStorage.getItem('qcab_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+  const savedTheme = localStorage.getItem('qcab_theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   applyTheme(savedTheme);
+
   document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     applyTheme(isDark ? 'light' : 'dark');
@@ -209,21 +221,24 @@ document.addEventListener('DOMContentLoaded', function() {
     applyTheme(isDark ? 'light' : 'dark');
   });
 
-  // --- MOBILE MENU ---
+  // ============================================================
+  // 3. MOBILE MENU
+  // ============================================================
   (function() {
     const sidebar = document.getElementById('main-sidebar');
     const toggleBtn = document.getElementById('mobile-menu-toggle');
     const closeBtn = document.getElementById('mobile-menu-close');
     const backdrop = document.getElementById('mobile-backdrop');
     if (!sidebar || !toggleBtn) return;
+
     function openMenu() {
       sidebar.classList.add('mobile-open');
-      backdrop?.classList.add('active');
+      if (backdrop) backdrop.classList.add('active');
       document.body.classList.add('menu-open');
     }
     function closeMenu() {
       sidebar.classList.remove('mobile-open');
-      backdrop?.classList.remove('active');
+      if (backdrop) backdrop.classList.remove('active');
       document.body.classList.remove('menu-open');
     }
     toggleBtn.addEventListener('click', openMenu);
@@ -231,14 +246,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (backdrop) backdrop.addEventListener('click', closeMenu);
   })();
 
-  // --- BANK COLLAPSE ---
+  // ============================================================
+  // 4. BANK COLLAPSE
+  // ============================================================
   const toggleBankBtn = document.getElementById('toggle-bank-btn');
   const toggleBankIcon = document.getElementById('toggle-bank-icon');
   const toggleBankText = document.getElementById('toggle-bank-text');
   const bankBody = document.getElementById('pyq-bank-body');
+
   bankBody.style.display = 'block';
   if (toggleBankIcon) toggleBankIcon.textContent = '▾';
   if (toggleBankText) toggleBankText.textContent = 'Hide Bank';
+
   if (toggleBankBtn) {
     toggleBankBtn.addEventListener('click', () => {
       const isHidden = bankBody.style.display === 'none';
@@ -248,7 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- CREATE FORM COLLAPSE ---
+  // ============================================================
+  // 5. CREATE FORM COLLAPSE
+  // ============================================================
   const toggleCreateBtn = document.getElementById('toggle-create-section-btn');
   const createFormBody = document.getElementById('create-form-body');
   if (toggleCreateBtn && createFormBody) {
@@ -259,7 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- POPULATE FORM SUBTOPICS ---
+  // ============================================================
+  // 6. POPULATE FORM SUBTOPICS
+  // ============================================================
   function populateFormSubtopics() {
     const qPaper = document.getElementById('q-paper');
     const qTopic = document.getElementById('q-topic');
@@ -267,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
     qTopic.innerHTML = '';
     const paper = qPaper.value;
     const list = SYLLABUS[paper] || ['General'];
-    list.forEach(t => {
+    list.forEach((t) => {
       const opt = document.createElement('option');
       opt.value = t;
       opt.textContent = t;
@@ -277,7 +300,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('q-paper')?.addEventListener('change', populateFormSubtopics);
   populateFormSubtopics();
 
-  // --- DASHBOARD SYNC ---
+  // ============================================================
+  // 7. DASHBOARD SYNC
+  // ============================================================
   function syncDashboard() {
     const qList = document.getElementById('q-list');
     const count = qList ? qList.querySelectorAll('.q-item').length : 0;
@@ -294,15 +319,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if(bankCountEl) bankCountEl.textContent = bankCount;
   }
 
-  // --- SCROLL TO TOP ---
+  // ============================================================
+  // 8. SCROLL TO TOP
+  // ============================================================
   const backToTopBtn = document.getElementById('back-to-top');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) backToTopBtn?.classList.add('visible');
-    else backToTopBtn?.classList.remove('visible');
+    if (window.scrollY > 300) {
+      backToTopBtn?.classList.add('visible');
+    } else {
+      backToTopBtn?.classList.remove('visible');
+    }
   });
-  backToTopBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  backToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
-  // --- HELPERS ---
+  // ============================================================
+  // 9. HELPER FUNCTIONS
+  // ============================================================
   function normalizePaperCode(paperVal) {
     if (!paperVal) return 'GS1';
     const str = String(paperVal).toUpperCase().trim();
@@ -317,17 +351,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function getPaperTagClass(paper) {
     const norm = normalizePaperCode(paper);
-    const classes = { 'GS1':'tag-paper-gs1','GS2':'tag-paper-gs2','GS3':'tag-paper-gs3','GS4':'tag-paper-gs4' };
+    const classes = {
+      'GS1': 'tag-paper-gs1',
+      'GS2': 'tag-paper-gs2',
+      'GS3': 'tag-paper-gs3',
+      'GS4': 'tag-paper-gs4'
+    };
     return classes[norm] || 'tag-paper-opt';
   }
 
   function escapeHtml(str) {
     if (!str) return '';
-    return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[m]);
+    return String(str).replace(/[&<>"']/g, function (m) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m];
+    });
   }
 
   function generateUniqueId(prefix = 'id') {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return `${prefix}_${crypto.randomUUID()}`;
+    }
     return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
@@ -340,7 +383,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return 'Other';
   }
 
-  // --- STORAGE ---
+  // ============================================================
+  // 10. STORAGE & STATE
+  // ============================================================
   const PRESET_STORAGE_KEY = 'qcab_preset_bank';
   const VERSION_KEY = 'qcab_data_version';
   const CURRENT_VERSION = '2';
@@ -357,7 +402,9 @@ document.addEventListener('DOMContentLoaded', function() {
   let studyData = {};
   let editingIndex = null;
 
-  // --- FOLDER ---
+  // ============================================================
+  // 11. FOLDER & BOOKLET STATE
+  // ============================================================
   const defaultRoot = {
     id: 'root',
     name: 'General Booklet',
@@ -373,9 +420,14 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
     localStorage.setItem('qcab_active_nested_folder', activeFolderId);
   }
-  function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
 
-  // --- DOM REFS ---
+  function getActiveFolder() {
+    return folderMap[activeFolderId] || folderMap['root'];
+  }
+
+  // ============================================================
+  // 12. DOM REFERENCES
+  // ============================================================
   const qPaper = document.getElementById('q-paper');
   const qTopic = document.getElementById('q-topic');
   const qText = document.getElementById('q-text');
@@ -406,14 +458,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let selectedMarks = 10;
   if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
-  marksButtons.forEach(btn => {
+
+  marksButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       selectedMarks = parseInt(btn.dataset.marks, 10);
-      marksButtons.forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      marksButtons.forEach((b) => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
     });
   });
 
-  // --- STUDY DATA ---
+  // ============================================================
+  // 13. STUDY DATA FUNCTIONS
+  // ============================================================
   function getStudyRecord(q) {
     const id = q.id || q.question;
     if (!studyData[id]) studyData[id] = { bookmarked: false, revised: false, note: '' };
@@ -448,14 +503,14 @@ document.addEventListener('DOMContentLoaded', function() {
     items.forEach(q => {
       const rec = getStudyRecord(q);
       const status = rec.revised ? '✅ Revised' : '⏳ Not revised';
-      const notePreview = rec.note ? rec.note.substring(0, 60) + (rec.note.length > 60 ? '…' : '') : 'No note';
+      const notePreview = rec.note ? rec.note.substring(0, 60) + (rec.note.length>60?'…':'') : 'No note';
       html += `
         <div style="border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface-2);">
           <div style="font-weight:700;margin-bottom:4px;">${escapeHtml(q.question)}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
             <span class="tag">${escapeHtml(q.paper)}</span>
             <span class="tag tag-topic">${escapeHtml(q.topic)}</span>
-            <span class="tag">${q.year || ''}</span>
+            <span class="tag">${q.year||''}</span>
             <span class="tag">${status}</span>
             <span class="tag">📝 ${notePreview}</span>
           </div>
@@ -466,7 +521,9 @@ document.addEventListener('DOMContentLoaded', function() {
     listContainer.innerHTML = html;
   }
 
-  // --- POPULATE FILTER TOPICS (based on paper selection) ---
+  // ============================================================
+  // 14. POPULATE FILTERS
+  // ============================================================
   function populateFilterTopics() {
     if (!filterTopic || !filterPaper) return;
     filterTopic.innerHTML = '<option value="ALL">All Subtopics</option>';
@@ -486,7 +543,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- POPULATE FILTER YEARS (from loaded questions) ---
   function populateFilterYears() {
     if (!filterYear) return;
     const prevSelected = filterYear.value;
@@ -521,7 +577,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- LOAD QUESTIONS FROM JSON ---
+  // ============================================================
+  // 15. LOAD QUESTIONS FROM JSON
+  // ============================================================
   async function fetchJSONFile(url) {
     try {
       const response = await fetch(url + '?t=' + Date.now());
@@ -548,12 +606,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const incoming = [...gs1Data, ...gs2Data, ...gs3Data, ...gs4Data, ...opt1Data, ...opt2Data];
       const newQuestions = [];
 
-      incoming.forEach(q => {
+      incoming.forEach((q) => {
         const questionText = (q.question || q.q_text || q.text || q.title || '').trim();
         if (!questionText || questionText.toLowerCase() === 'year' || questionText.toLowerCase() === 'syllabus') return;
 
         let rawMarks = q.marks || q.mark || 10;
-        if (typeof rawMarks === 'string') rawMarks = parseInt(rawMarks.replace(/[^0-9]/g, ''), 10) || 10;
+        if (typeof rawMarks === 'string') {
+          rawMarks = parseInt(rawMarks.replace(/[^0-9]/g, ''), 10) || 10;
+        }
 
         const rawYearText = String(q.year || q.exam_year || q.Year || '').trim();
         const yearMatch = rawYearText.match(/\b(19\d{2}|20\d{2})\b/);
@@ -610,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
-  // RENDER BANK (both filters always applied)
+  // 16. RENDER BANK RESULTS (both filters always applied)
   // ============================================================
   let renderRequestId = 0;
 
@@ -627,22 +687,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     bankResultsContainer.innerHTML = '';
 
-    let filtered = presetBank.filter(q => {
+    let filtered = presetBank.filter((q) => {
       const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
-      // Search
+      // Search query
       if (query && !qText.includes(query)) return false;
 
-      // Paper
+      // Paper filter
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
 
-      // Year (always applied)
-      if (selectedY !== 'ALL') {
-        const qYear = getYearGroup(q);
-        if (qYear !== selectedY) return false;
-      }
+      // Year filter – ALWAYS applied
+      if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
 
-      // Subtopic (always applied)
+      // Subtopic filter – ALWAYS applied
       if (selectedT !== 'ALL') {
         const qTopicClean = String(q.topic || '').trim().toLowerCase();
         const selectedTClean = String(selectedT).trim().toLowerCase();
@@ -700,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
 
       div.querySelectorAll('[data-action]').forEach(btn => {
-        btn.addEventListener('click', e => {
+        btn.addEventListener('click', (e) => {
           const action = btn.dataset.action;
           const id = btn.dataset.id;
           if (action === 'bookmark') {
@@ -748,7 +805,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- NOTE MODAL ---
+  // ============================================================
+  // 17. NOTE MODAL
+  // ============================================================
   let currentNoteId = null;
 
   function openNoteModal(id) {
@@ -778,7 +837,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) closeNoteModal();
   });
 
-  // --- STUDY SAVE/LOAD ---
+  // ============================================================
+  // 18. STUDY SAVE/LOAD (Cloudflare)
+  // ============================================================
   async function saveStudyData() {
     const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
     if (!USER_TOKEN) return;
@@ -831,7 +892,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- EXPORT/IMPORT ---
+  // ============================================================
+  // 19. EXPORT/IMPORT STUDY DATA
+  // ============================================================
   document.getElementById('export-study-btn')?.addEventListener('click', () => {
     const data = JSON.stringify(studyData, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
@@ -869,7 +932,9 @@ document.addEventListener('DOMContentLoaded', function() {
     input.click();
   });
 
-  // --- RENDER QUESTIONS ---
+  // ============================================================
+  // 20. RENDER QUESTIONS (QCAB)
+  // ============================================================
   function renderQuestions() {
     if (!qList) return;
     const questions = getActiveFolder().questions;
@@ -946,7 +1011,9 @@ document.addEventListener('DOMContentLoaded', function() {
     syncDashboard();
   }
 
-  // --- ADD/EDIT QUESTION ---
+  // ============================================================
+  // 21. ADD/EDIT QUESTION
+  // ============================================================
   function resetForm() {
     editingIndex = null;
     if (qText) qText.value = '';
@@ -1000,7 +1067,9 @@ document.addEventListener('DOMContentLoaded', function() {
     renderBankResults();
   });
 
-  // --- FOLDER MANAGEMENT ---
+  // ============================================================
+  // 22. FOLDER MANAGEMENT
+  // ============================================================
   function renderBreadcrumbs() {
     const breadcrumbs = document.getElementById('breadcrumbs');
     if (!breadcrumbs) return;
@@ -1068,9 +1137,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   renameFolderBtn?.addEventListener('click', async () => {
     const current = getActiveFolder();
-    if (current.id === 'root') {
+    if (current.id === 'root') { 
       showToast('Cannot rename root folder.', '⚠️');
-      return;
+      return; 
     }
     const newName = await showPrompt('Rename folder:', 'Rename Folder', current.name);
     if (newName && newName.trim()) {
@@ -1082,9 +1151,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   deleteFolderBtn?.addEventListener('click', async () => {
     const current = getActiveFolder();
-    if (current.id === 'root') {
+    if (current.id === 'root') { 
       showToast('Cannot delete root folder.', '⚠️');
-      return;
+      return; 
     }
     if (await showConfirm(`Delete folder "${current.name}" and its content?`, 'Delete Folder')) {
       const parent = folderMap[current.parentId];
@@ -1106,13 +1175,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // --- PDF GENERATOR ---
+  // ============================================================
+  // 23. PDF GENERATOR
+  // ============================================================
   function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
-    if (!window.jspdf) {
+    if (!window.jspdf) { 
       showToast('jsPDF library not loaded.', '❌');
-      return;
+      return; 
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -1201,7 +1272,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   generateBtn?.addEventListener('click', generatePDF);
 
-  // --- RENDER ALL ---
+  // ============================================================
+  // 24. RENDER ALL
+  // ============================================================
   function renderAll() {
     renderBreadcrumbs();
     renderFolders();
@@ -1209,7 +1282,9 @@ document.addEventListener('DOMContentLoaded', function() {
     updateStudyDashboard();
   }
 
-  // --- SEARCH & FILTER EVENTS ---
+  // ============================================================
+  // 25. SEARCH & FILTER EVENT LISTENERS
+  // ============================================================
   searchInput?.addEventListener('input', renderBankResults);
   searchBankBtn?.addEventListener('click', renderBankResults);
 
@@ -1242,7 +1317,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // --- LOGIN BUTTONS ---
+  // ============================================================
+  // 26. LOGIN BUTTONS
+  // ============================================================
   document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
     const user = getUser();
     if (user) {
@@ -1273,7 +1350,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // --- AI MODAL ---
+  // ============================================================
+  // 27. AI MODEL SELECTION MODAL (FULL PROMPT FOR ALL)
+  // ============================================================
   const aiModal = document.getElementById('ai-model-modal');
   const aiModalClose = document.getElementById('ai-model-close');
   const cancelAiModal = document.getElementById('cancel-ai-modal');
@@ -1295,6 +1374,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) closeAIModal();
   });
 
+  // Handle model selection
   document.querySelectorAll('.model-option').forEach(btn => {
     btn.addEventListener('click', function() {
       const model = this.dataset.model;
@@ -1304,7 +1384,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const year = pendingQuestion.year || '';
       const marks = pendingQuestion.marks || '';
 
-      // --- Direct (Secret) ---
+      // --- Direct (Secret) → answer.html ---
       if (model === 'secret') {
         const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
         window.open(`answer.html?${params.toString()}`, '_blank');
@@ -1312,16 +1392,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      // --- Perplexity ---
+      // --- Perplexity: use Perplexity-friendly query ---
       if (model === 'perplexity') {
         const query = generatePerplexityQuery(question);
-        window.open(`https://www.perplexity.ai/search?q=${encodeURIComponent(query)}`, '_blank');
+        const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(query)}`;
+        console.log('🔗 Perplexity URL:', searchUrl);
+        window.open(searchUrl, '_blank');
         showToast('🌀 Opening Perplexity...', '🌀');
         closeAIModal();
         return;
       }
 
-      // --- ChatGPT & DeepSeek ---
+      // --- ChatGPT & DeepSeek: copy full prompt + open website ---
       const fullPrompt = generateFullPrompt(question);
       const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
       const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
@@ -1345,7 +1427,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // --- FETCH AI ANSWER ---
+  // ============================================================
+  // 28. FETCH AI ANSWER (global)
+  // ============================================================
   window.fetchAIAnswer = function(buttonElement) {
     const card = buttonElement.closest('.bank-item');
     if (!card) return;
@@ -1369,7 +1453,9 @@ document.addEventListener('DOMContentLoaded', function() {
     openAIModal(questionItem);
   };
 
-  // --- INIT ---
+  // ============================================================
+  // 29. INITIALIZATION
+  // ============================================================
   renderAll();
   loadRepositoryJSON();
   loadCloudStudy();
