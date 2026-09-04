@@ -35,29 +35,17 @@
     </nav>
     <div class="sidebar-bottom">
       <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
-      
-      <!-- Login Button -->
-      <button class="nav-btn" id="sidebar-login-btn" onclick="handleLoginClick()">
+      <button class="nav-btn" id="sidebar-login-btn" onclick="openLoginModal()">
         <span class="nav-icon">🔑</span>
         <span id="sidebar-login-text">Login</span>
       </button>
-
-      <!-- ===== USER PROFILE ===== -->
-      <div id="user-profile" style="display:none; padding:12px 0; border-top:1px solid var(--border); margin-top:8px;">
-        <div style="display:flex; align-items:center; gap:12px; padding:8px 12px;">
-          <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0;" id="user-avatar">U</div>
-          <div style="flex:1; min-width:0;">
-            <div style="font-weight:700; font-size:14px; color:var(--text);" id="user-name">User</div>
-            <div style="font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" id="user-email">user@email.com</div>
-          </div>
-          <button class="btn btn-secondary-sm" id="profile-logout-btn" style="padding:4px 10px; font-size:11px; background:var(--danger); color:#fff; border:none; border-radius:6px; cursor:pointer;">Logout</button>
-        </div>
-      </div>
     </div>
   </aside>
 
   <!-- ===== CONTENT ===== -->
   <div class="content">
+
+    <!-- Mobile Bar -->
     <div class="mobile-nav">
       <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC QCAB</div>
       <div class="mobile-actions-right">
@@ -67,6 +55,7 @@
     </div>
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
+    <!-- Top Bar -->
     <header class="topbar">
       <div>
         <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
@@ -74,14 +63,15 @@
       </div>
       <div class="topbar-actions">
         <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
-        <button class="theme-toggle" id="topbar-login-btn" onclick="handleLoginClick()">
+        <button class="theme-toggle" id="topbar-login-btn" onclick="openLoginModal()">
           🔑 <span id="topbar-login-text">Login</span>
         </button>
       </div>
     </header>
 
     <main class="page">
-      <!-- Hero, Stats, Folders, Workspace, Study (same as before) -->
+
+      <!-- Hero -->
       <section class="hero" id="dashboard">
         <div>
           <p class="eyebrow">Question-cum-Answer Booklet</p>
@@ -94,37 +84,126 @@
         </div>
       </section>
 
+      <!-- Stats -->
       <section class="stats">
         <div class="stat"><div class="stat-label">QUESTION BANK</div><div class="stat-value" id="dashboard-bank-count">—</div><div class="stat-note">PYQs currently loaded</div></div>
         <div class="stat"><div class="stat-label">ACTIVE QCAB</div><div class="stat-value" id="dashboard-q-count">0</div><div class="stat-note">Questions selected</div></div>
         <div class="stat"><div class="stat-label">ANSWER PAGES</div><div class="stat-value" id="dashboard-pages">0</div><div class="stat-note">Based on marks selected</div></div>
       </section>
 
+      <!-- Folders -->
       <div class="folder-wrap">
         <div class="breadcrumbs" id="breadcrumbs"></div>
         <div class="folder-bar" id="folder-bar"></div>
       </div>
 
+      <!-- Workspace -->
       <div class="workspace">
+
+        <!-- Left Column -->
         <section>
-          <div class="card" id="create-question">...</div>
-          <div class="card" id="pyq-bank">...</div>
+
+          <!-- Create Question -->
+          <div class="card" id="create-question">
+            <div class="card-header">
+              <div><h2 class="card-title" id="add-heading">Create Custom Question</h2><p class="card-sub">Add your own question directly to the active booklet.</p></div>
+              <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
+            </div>
+            <div id="create-form-body">
+              <div class="field"><label for="q-paper">Paper</label><select id="q-paper"><option value="GS1">GS Paper 1</option><option value="GS2">GS Paper 2</option><option value="GS3">GS Paper 3</option><option value="GS4">GS Paper 4</option><option value="OPT1">Anthropology Optional Paper 1</option><option value="OPT2">Anthropology Optional Paper 2</option></select></div>
+              <div class="field"><label for="q-topic">Subtopic</label><select id="q-topic"></select></div>
+              <div class="field"><label for="q-text">Question Text</label><textarea id="q-text" placeholder="Paste or type your question here..."></textarea></div>
+              <div class="field"><label>Marks</label><div class="marks-row"><button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button><button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button><button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button></div></div>
+              <div class="field"><label for="q-year">Year <span style="font-weight:500">(optional)</span></label><input type="text" id="q-year" placeholder="e.g. 2025"></div>
+              <div class="field checkbox-row"><input type="checkbox" id="include-index" checked><label for="include-index">Include index page in PDF</label></div>
+              <div class="form-actions"><button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button><button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button><button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button></div>
+            </div>
+          </div>
+
+          <!-- PYQ BANK -->
+          <div class="card" id="pyq-bank">
+            <div class="card-header">
+              <div><h2 class="card-title">PYQ Bank</h2><p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p></div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" id="toggle-bank-btn"><span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span></button>
+                <button class="btn btn-danger" id="clear-bank-btn">Reset Bank</button>
+              </div>
+            </div>
+            <div id="pyq-bank-body">
+              <div class="search-main"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..."></div>
+              <div class="filter-box">
+                <div class="filters">
+                  <select id="filter-paper">
+                    <option value="ALL">All Papers</option>
+                    <option value="GS1">GS Paper 1</option>
+                    <option value="GS2">GS Paper 2</option>
+                    <option value="GS3">GS Paper 3</option>
+                    <option value="GS4">GS Paper 4</option>
+                    <option value="OPT1">Anthropology Optional Paper 1</option>
+                    <option value="OPT2">Anthropology Optional Paper 2</option>
+                  </select>
+                  <select id="filter-year"><option value="ALL">All Years</option></select>
+                  <select id="filter-topic"><option value="ALL">All Subtopics</option></select>
+                  <button class="btn btn-primary" id="search-bank-btn">Search</button>
+                  <button class="btn" id="clear-results-btn">Clear</button>
+                </div>
+              </div>
+              <div id="bank-status-text">Loading question bank...</div>
+              <div id="bank-results-container"><p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p></div>
+            </div>
+          </div>
+
         </section>
-        <aside class="card sticky-card" id="my-qcab">...</aside>
+
+        <!-- Right: QCAB -->
+        <aside class="card sticky-card" id="my-qcab">
+          <div class="card-header"><div><h2 class="card-title">My QCAB</h2><p class="card-sub">Questions in your active booklet.</p></div><span class="tag" id="count-tag">0 questions</span></div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;"><button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button><button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button><button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button></div>
+          <div id="empty-state" class="empty-state"><div style="font-size:28px;margin-bottom:8px;">▣</div><strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>Add questions from the PYQ Bank or create a custom question.</div>
+          <ol class="q-list" id="q-list"></ol>
+          <div class="summary-bar" id="summary-bar" style="display:none;"><div class="summary-stat"><span>TOTAL MARKS</span><strong id="total-marks">0</strong></div><div class="summary-stat"><span>ANSWER PAGES</span><strong id="total-pages">0</strong></div></div>
+          <button class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
+        </aside>
+
       </div>
 
-      <section id="my-study" style="margin-top:30px;">...</section>
+      <!-- My Study -->
+      <section id="my-study" style="margin-top:30px;">
+        <div class="card">
+          <div class="card-header"><div><h2 class="card-title">📘 My Study</h2><p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p></div><div style="display:flex;gap:8px;"><button class="btn btn-secondary-sm" id="export-study-btn">⬇ Export</button><button class="btn btn-secondary-sm" id="import-study-btn">⬆ Import</button></div></div>
+          <div id="study-dashboard">
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;">
+              <div class="stat" style="padding:14px;"><div class="stat-label">📌 Bookmarked</div><div class="stat-value" id="study-bookmarked">0</div></div>
+              <div class="stat" style="padding:14px;"><div class="stat-label">✅ Revised</div><div class="stat-value" id="study-revised">0</div></div>
+              <div class="stat" style="padding:14px;"><div class="stat-label">📝 With Notes</div><div class="stat-value" id="study-notes">0</div></div>
+            </div>
+            <div id="study-list-container"><p style="color:var(--muted);font-style:italic;">Your bookmarked questions will appear here.</p></div>
+          </div>
+        </div>
+      </section>
+
       <footer>QCAB Generator · Project by Biswajit Nahak</footer>
+
     </main>
   </div>
 </div>
 
-<!-- ===== MODALS ===== -->
+<!-- Back to top -->
+<button class="back-to-top" id="back-to-top">↑</button>
 
-<!-- Note Modal -->
-<div class="study-modal" id="note-modal">...</div>
+<!-- NOTE MODAL -->
+<div class="study-modal" id="note-modal">
+  <div class="study-modal-content">
+    <h3>📝 Add Note</h3>
+    <textarea id="note-textarea" placeholder="Write your note here..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary-sm" id="note-save-btn">Save</button>
+      <button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
 
-<!-- ===== LOGIN MODAL ===== -->
+<!-- ==================== LOGIN MODAL ==================== -->
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
     <button class="login-modal-close" id="login-modal-close" onclick="closeLoginModal()">&times;</button>
@@ -151,8 +230,7 @@
 
     <div class="divider">or</div>
 
-    <!-- Google button - now opens a custom toast instead of alert -->
-    <button class="btn btn-google" id="google-login-btn">
+    <button class="btn btn-google" id="google-login-btn" onclick="alert('Google login is not configured yet.')">
       <span style="font-size:18px; margin-right:8px;">G</span> Continue with Google
     </button>
 
@@ -163,20 +241,23 @@
   </div>
 </div>
 
-<!-- ===== LOGOUT CONFIRM MODAL ===== -->
-<div class="custom-modal-overlay" id="logoutModal">
-  <div class="custom-modal" style="max-width:380px; text-align:center;">
-    <div style="font-size:48px; margin-bottom:8px;">👋</div>
-    <h3 style="font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;">Logout</h3>
-    <p style="font-size:15px; color:var(--muted); margin-bottom:0;">Are you sure you want to logout?</p>
-    <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
-      <button class="btn btn-secondary" id="logoutCancelBtn" style="padding:10px 28px;">Cancel</button>
-      <button class="btn btn-danger" id="logoutConfirmBtn" style="padding:10px 28px; background:var(--danger); color:#fff; border:none; border-radius:10px; font-weight:700;">Logout</button>
+<!-- AI MODAL -->
+<div class="ai-model-modal" id="ai-model-modal">
+  <div class="ai-model-modal-content">
+    <button class="ai-model-close" id="ai-model-close">&times;</button>
+    <h3>⚡ Choose AI Model</h3>
+    <p>Select which AI should generate your UPSC answer.</p>
+    <div class="model-options">
+      <button class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button>
+      <button class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button>
+      <button class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button>
+      <button class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button>
     </div>
+    <button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button>
   </div>
 </div>
 
-<!-- ===== CUSTOM MODAL (General purpose) ===== -->
+<!-- CUSTOM MODAL -->
 <div class="custom-modal-overlay" id="customModal">
   <div class="custom-modal">
     <h3 id="modalTitle">Title</h3>
@@ -191,10 +272,7 @@
   </div>
 </div>
 
-<!-- AI Modal -->
-<div class="ai-model-modal" id="ai-model-modal">...</div>
-
-<!-- Toast -->
+<!-- TOAST -->
 <div class="toast" id="toast">
   <span class="toast-icon" id="toastIcon">✅</span>
   <span id="toastMessage">Copied!</span>
@@ -204,115 +282,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
+<!-- ==================== FALLBACK LOGIN FUNCTIONS ==================== -->
 <script>
   // ============================================================
   // FALLBACK LOGIN FUNCTIONS (guaranteed to work)
   // ============================================================
   console.log('🔐 Fallback login functions loaded');
 
-  // ----- User Management -----
-  function getUser() {
-    try {
-      const data = JSON.parse(localStorage.getItem('qcab_user'));
-      if (data && data.email) return data;
-    } catch (_) { return null; }
-    return null;
-  }
-
-  function setUser(user) {
-    if (user) {
-      localStorage.setItem('qcab_user', JSON.stringify(user));
-      localStorage.setItem('userToken', user.token || '');
-      localStorage.setItem('qcab_owner_key', user.token || '');
-    } else {
-      localStorage.removeItem('qcab_user');
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('qcab_owner_key');
-    }
-    updateUI();
-  }
-
-  function updateUI() {
-    const user = getUser();
-    const isLoggedIn = !!user;
-
-    // Update login buttons
-    document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
-      if (el) el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login';
-    });
-
-    // Update login button icons
-    document.querySelectorAll('#sidebar-login-btn .nav-icon, #topbar-login-btn .nav-icon').forEach(el => {
-      if (el) el.textContent = isLoggedIn ? '👤' : '🔑';
-    });
-
-    // Show/hide profile
-    const profile = document.getElementById('user-profile');
-    if (profile) {
-      profile.style.display = isLoggedIn ? 'block' : 'none';
-    }
-
-    // Update profile info
-    if (isLoggedIn) {
-      document.getElementById('user-name').textContent = user?.name || 'User';
-      document.getElementById('user-email').textContent = user?.email || '';
-      document.getElementById('user-avatar').textContent = (user?.name || 'U')[0].toUpperCase();
-    }
-  }
-
-  // ----- Show Custom Toast (replaces alert) -----
-  function showToast(message, icon = '✅') {
-    const toast = document.getElementById('toast');
-    if (!toast) { alert(message); return; }
-    if (window.toastTimeout) clearTimeout(window.toastTimeout);
-    document.getElementById('toastIcon').textContent = icon;
-    document.getElementById('toastMessage').textContent = message;
-    toast.classList.add('show');
-    window.toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
-  }
-
-  // ----- Show Custom Modal (replaces alert/confirm) -----
-  function showCustomModal(title, message, type = 'alert', callback) {
-    const overlay = document.getElementById('customModal');
-    if (!overlay) { alert(message); return; }
-
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalMessage').textContent = message;
-    document.getElementById('modalInputContainer').style.display = 'none';
-
-    const confirmBtn = document.getElementById('modalConfirmBtn');
-    const cancelBtn = document.getElementById('modalCancelBtn');
-
-    if (type === 'confirm') {
-      confirmBtn.textContent = 'Yes';
-      confirmBtn.className = 'btn btn-primary';
-      cancelBtn.style.display = 'inline-block';
-      cancelBtn.className = 'btn btn-secondary';
-      confirmBtn.onclick = function() {
-        overlay.classList.remove('active');
-        if (callback) callback(true);
-      };
-      cancelBtn.onclick = function() {
-        overlay.classList.remove('active');
-        if (callback) callback(false);
-      };
-    } else {
-      confirmBtn.textContent = 'OK';
-      confirmBtn.className = 'btn btn-primary';
-      cancelBtn.style.display = 'none';
-      confirmBtn.onclick = function() {
-        overlay.classList.remove('active');
-        if (callback) callback();
-      };
-    }
-    overlay.classList.add('active');
-    confirmBtn.focus();
-  }
-
-  // ----- Login Modal -----
   function openLoginModal() {
+    console.log('🚪 openLoginModal called');
     const modal = document.getElementById('login-modal');
-    if (!modal) { showToast('Login modal not found.', '❌'); return; }
+    if (!modal) {
+      alert('Login modal not found. Please refresh.');
+      return;
+    }
     modal.classList.add('open');
   }
 
@@ -333,37 +316,36 @@
     document.getElementById('login-error').style.display = 'none';
   }
 
-  // ----- Logout Modal -----
-  function showLogoutModal() {
-    const modal = document.getElementById('logoutModal');
-    if (!modal) {
-      showCustomModal('Logout', 'Are you sure you want to logout?', 'confirm', (confirmed) => {
-        if (confirmed) performLogout();
-      });
-      return;
-    }
-    modal.classList.add('active');
+  function getUser() {
+    try {
+      const data = JSON.parse(localStorage.getItem('qcab_user'));
+      if (data && data.email) return data;
+    } catch (_) { return null; }
+    return null;
   }
 
-  function performLogout() {
-    setUser(null);
-    updateUI();
-    showToast('Logged out successfully.', '👋');
-    if (typeof loadCloudStudy === 'function') loadCloudStudy();
-    if (typeof renderBankResults === 'function') renderBankResults();
-  }
-
-  // ----- Handle Login Button Click -----
-  function handleLoginClick() {
-    const user = getUser();
+  function setUser(user) {
     if (user) {
-      showLogoutModal();
+      localStorage.setItem('qcab_user', JSON.stringify(user));
+      localStorage.setItem('userToken', user.token || '');
+      localStorage.setItem('qcab_owner_key', user.token || '');
     } else {
-      openLoginModal();
+      localStorage.removeItem('qcab_user');
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('qcab_owner_key');
     }
+    updateLoginUI();
   }
 
-  // ----- Login Form Submit -----
+  function updateLoginUI() {
+    const user = getUser();
+    const isLoggedIn = !!user;
+    document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
+      if (el) el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login';
+    });
+  }
+
+  // Handle login/register submission
   document.getElementById('login-submit-btn')?.addEventListener('click', async function() {
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value.trim();
@@ -398,12 +380,12 @@
       if (isLogin) {
         setUser({ email, token: data.token || 'dummy-token', name: data.name || name });
         closeLoginModal();
-        updateUI();
-        showToast('Welcome back, ' + (data.name || name) + '!', '👋');
+        updateLoginUI();
+        alert('Welcome back!');
         if (typeof loadCloudStudy === 'function') loadCloudStudy();
         if (typeof renderBankResults === 'function') renderBankResults();
       } else {
-        showToast('Registration successful! Please login.', '✅');
+        alert('Registration successful! Please login.');
         toggleLoginMode();
       }
     } catch (err) {
@@ -411,12 +393,12 @@
         if (isLogin) {
           setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
           closeLoginModal();
-          updateUI();
-          showToast('Welcome back! (Mock mode)', '👋');
+          updateLoginUI();
+          alert('Welcome back! (Mock mode)');
           if (typeof loadCloudStudy === 'function') loadCloudStudy();
           if (typeof renderBankResults === 'function') renderBankResults();
         } else {
-          showToast('Registration failed (Worker unreachable).', '❌');
+          alert('Registration failed (Worker unreachable). Please try again.');
         }
       } else {
         errorEl.textContent = err.message || 'Something went wrong.';
@@ -425,30 +407,7 @@
     }
   });
 
-  // ----- Google Login Button (no alert) -----
-  document.getElementById('google-login-btn')?.addEventListener('click', function() {
-    showToast('Google login is coming soon! Use email/password for now.', '🔧');
-  });
-
-  // ----- Event Listeners for Logout Modal -----
-  document.getElementById('logoutConfirmBtn')?.addEventListener('click', function() {
-    document.getElementById('logoutModal').classList.remove('active');
-    performLogout();
-  });
-
-  document.getElementById('logoutCancelBtn')?.addEventListener('click', function() {
-    document.getElementById('logoutModal').classList.remove('active');
-  });
-
-  document.getElementById('logoutModal')?.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('active');
-  });
-
-  document.getElementById('profile-logout-btn')?.addEventListener('click', function() {
-    showLogoutModal();
-  });
-
-  // ----- Enter key support -----
+  // Enter key support for login
   document.getElementById('login-email')?.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') document.getElementById('login-submit-btn')?.click();
   });
@@ -456,34 +415,25 @@
     if (e.key === 'Enter') document.getElementById('login-submit-btn')?.click();
   });
 
-  // Close login modal on backdrop click
+  // Close modal on backdrop click
   document.getElementById('login-modal')?.addEventListener('click', function(e) {
     if (e.target === this) closeLoginModal();
   });
 
-  // Close custom modal on backdrop click
-  document.getElementById('customModal')?.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('active');
-  });
+  // Update login UI on load
+  updateLoginUI();
 
-  // Update UI on load
-  updateUI();
-
-  // Make functions globally accessible
+  // Make functions global
   window.openLoginModal = openLoginModal;
   window.closeLoginModal = closeLoginModal;
   window.getUser = getUser;
   window.setUser = setUser;
   window.toggleLoginMode = toggleLoginMode;
-  window.showLogoutModal = showLogoutModal;
-  window.handleLoginClick = handleLoginClick;
-  window.showToast = showToast;
-  window.showCustomModal = showCustomModal;
 
   console.log('✅ Fallback login functions ready');
 </script>
 
-<!-- Load external scripts -->
+<!-- Load external scripts (if they exist) -->
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
