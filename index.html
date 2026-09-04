@@ -133,26 +133,31 @@
             </div>
           </div>
 
-          <!-- ===== DUAL-STYLE PYQ BANK SEARCH ===== -->
+          <!-- ===== PYQ BANK SEARCH ===== -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
               <div>
                 <h2 class="card-title">PYQ Bank</h2>
                 <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
               </div>
-              <div style="display:flex; gap:8px;">
-                <button class="btn" id="toggle-bank-btn"><span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span></button>
-                <button class="btn btn-danger" id="clear-bank-btn">Reset Bank</button>
+              <!-- Vertical Pill Action Buttons -->
+              <div class="bank-top-actions">
+                <button type="button" class="btn-bank-action" id="toggle-bank-btn">
+                  <span class="action-arrow" id="toggle-bank-icon">▼</span>
+                  <span id="toggle-bank-text">Hide<br>Bank</span>
+                </button>
+                <button type="button" class="btn-bank-action reset-btn" id="clear-bank-btn">
+                  <span>Reset<br>Bank</span>
+                </button>
               </div>
             </div>
             
             <div id="pyq-bank-body">
-              <!-- Dual-Style Mode Switcher Bar -->
-              <div class="search-mode-bar">
-                <span class="mode-label">Filter Mode:</span>
-                <div class="search-mode-switcher" id="search-mode-switcher">
-                  <button type="button" class="mode-btn active" id="mode-basic-btn" data-mode="basic">Quick Filter (Paper + Year)</button>
-                  <button type="button" class="mode-btn" id="mode-deep-btn" data-mode="deep">Detailed Filter (Paper + Subtopic + Year)</button>
+              <!-- Pill Switcher Bar -->
+              <div class="pill-switcher-container">
+                <div class="pill-switcher" id="search-mode-switcher">
+                  <button type="button" class="pill-btn active" id="mode-basic-btn" data-mode="basic">Filter by Year</button>
+                  <button type="button" class="pill-btn" id="mode-deep-btn" data-mode="deep">Filter by Subtopic</button>
                 </div>
               </div>
 
@@ -162,9 +167,9 @@
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
               </div>
 
-              <!-- Filter Dropdowns Container -->
+              <!-- Stacked Filter Dropdowns Box -->
               <div class="filter-box">
-                <div class="filters">
+                <div class="filter-controls-stack">
                   <!-- Paper Filter -->
                   <select id="filter-paper">
                     <option value="ALL">All Papers</option>
@@ -176,19 +181,19 @@
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
 
-                  <!-- Subtopic Filter (Shown in Detailed Mode, hidden in Quick Mode) -->
+                  <!-- Subtopic Filter (Visible in Detailed/Subtopic mode) -->
                   <select id="filter-topic" class="topic-filter-select hidden">
                     <option value="ALL">All Subtopics</option>
                   </select>
 
-                  <!-- Year Filter -->
+                  <!-- Year Filter (Always accessible) -->
                   <select id="filter-year">
                     <option value="ALL">All Years</option>
                   </select>
 
-                  <!-- Filter Action Buttons -->
-                  <button class="btn btn-primary" id="search-bank-btn">Search</button>
-                  <button class="btn" id="clear-results-btn">Clear</button>
+                  <!-- Full-width Action Buttons -->
+                  <button class="btn btn-primary btn-wide" id="search-bank-btn">Search</button>
+                  <button class="btn btn-wide" id="clear-results-btn">Clear</button>
                 </div>
               </div>
 
