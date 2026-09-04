@@ -1,29 +1,24 @@
 // ============================================================
-// js/auth.js – Authentication (debug version)
+// js/auth.js – Authentication (working version)
 // ============================================================
 
 console.log('🔐 auth.js loaded');
 
-// Make sure WORKER_URL exists (fallback)
+// Fallback for WORKER_URL
 if (typeof WORKER_URL === 'undefined') {
   var WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
 }
 
 // ----- User session -----
 function getUser() {
-  console.log('🔍 getUser() called');
   try {
     const data = JSON.parse(localStorage.getItem('qcab_user'));
-    if (data && data.email) {
-      console.log('👤 User found:', data.email);
-      return data;
-    }
-  } catch (_) { console.log('⚠️ No user data found'); }
+    if (data && data.email) return data;
+  } catch (_) { return null; }
   return null;
 }
 
 function setUser(user) {
-  console.log('💾 setUser() called with:', user);
   if (user) {
     localStorage.setItem('qcab_user', JSON.stringify(user));
     localStorage.setItem('userToken', user.token || '');
@@ -37,7 +32,6 @@ function setUser(user) {
 }
 
 function updateAuthUI() {
-  console.log('🔄 updateAuthUI() called');
   const user = getUser();
   const isLoggedIn = !!user;
   document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
@@ -47,15 +41,14 @@ function updateAuthUI() {
 
 // ----- Login Modal -----
 function openLoginModal(mode = 'login') {
-  console.log('🚪 openLoginModal() called with mode:', mode);
+  console.log('🚪 openLoginModal called');
   const modal = document.getElementById('login-modal');
   if (!modal) {
-    console.error('❌ Login modal not found! Check HTML for #login-modal');
-    alert('Login modal not found. Please refresh the page.');
+    console.error('❌ Login modal not found');
     return;
   }
-  console.log('✅ Login modal found, opening...');
 
+  const isLogin = mode === 'login';
   const title = document.getElementById('login-modal-title');
   const sub = document.getElementById('login-modal-sub');
   const submitBtn = document.getElementById('login-submit-btn');
@@ -64,17 +57,13 @@ function openLoginModal(mode = 'login') {
   const error = document.getElementById('login-error');
   const nameField = document.getElementById('login-name-field');
 
-  const isLogin = mode === 'login';
   if (title) title.textContent = isLogin ? 'Welcome Back' : 'Create Account';
   if (sub) sub.textContent = isLogin ? 'Sign in to access AI answers.' : 'Register to save your bookmarks.';
   if (submitBtn) submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
   if (switchText) switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
   if (switchLink) switchLink.textContent = isLogin ? 'Sign up' : 'Sign In';
   if (error) error.style.display = 'none';
-
-  if (nameField) {
-    nameField.style.display = isLogin ? 'none' : 'block';
-  }
+  if (nameField) nameField.style.display = isLogin ? 'none' : 'block';
 
   const email = document.getElementById('login-email');
   const password = document.getElementById('login-password');
@@ -84,18 +73,16 @@ function openLoginModal(mode = 'login') {
   if (nameInput) nameInput.value = '';
 
   modal.classList.add('open');
-  console.log('✅ Modal opened, classList:', modal.classList);
 }
 
 function closeLoginModal() {
-  console.log('🚪 closeLoginModal() called');
   const modal = document.getElementById('login-modal');
   if (modal) modal.classList.remove('open');
 }
 
-// ----- Initialize auth -----
+// ----- Init Auth (called from app.js) -----
 function initAuth() {
-  console.log('🔧 initAuth() called');
+  console.log('🔧 initAuth called');
   const modal = document.getElementById('login-modal');
   const closeBtn = document.getElementById('login-modal-close');
   const submitBtn = document.getElementById('login-submit-btn');
@@ -104,7 +91,7 @@ function initAuth() {
   const error = document.getElementById('login-error');
 
   if (!modal) {
-    console.warn('⚠️ Login modal not found. Skipping auth init.');
+    console.warn('⚠️ Login modal not found');
     return;
   }
 
@@ -121,7 +108,7 @@ function initAuth() {
     });
   }
 
-  // Switch between login/register
+  // Switch login/register
   if (switchLink) {
     switchLink.addEventListener('click', function() {
       const isLogin = submitBtn?.textContent === 'Sign In';
@@ -129,7 +116,7 @@ function initAuth() {
     });
   }
 
-  // Google button (placeholder)
+  // Google button
   if (googleBtn) {
     googleBtn.addEventListener('click', function() {
       showAlert('Google login is not configured yet.', 'Not Available');
@@ -195,7 +182,7 @@ function initAuth() {
         if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
 
       } catch (err) {
-        // Mock fallback if worker is unreachable
+        // Mock fallback
         if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
           setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
           closeLoginModal();
