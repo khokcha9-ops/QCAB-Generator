@@ -46,6 +46,16 @@
           <button class="btn btn-secondary-sm" id="profile-logout-btn" style="padding:4px 10px; font-size:11px; background:var(--danger); color:#fff; border:none; border-radius:6px; cursor:pointer;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button>
         </div>
       </div>
+      
+      <!-- SIDEBAR PROGRESS TRACKER (Shows only when logged in) -->
+      <div class="sidebar-progress" id="sidebar-progress" style="display:none; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid var(--border);">
+          <div style="font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 8px;">MY PROGRESS</div>
+          <div style="display: flex; gap: 10px; justify-content: space-between; font-size: 12px; color: var(--text);">
+              <span>⭐ <strong id="sidebar-bookmarked">0</strong> Saved</span>
+              <span>✅ <strong id="sidebar-revised">0</strong> Revised</span>
+              <span>📝 <strong id="sidebar-notes">0</strong> Notes</span>
+          </div>
+      </div>
     </div>
 
     <div class="nav-title">Workspace</div>
@@ -216,9 +226,15 @@
         </aside>
       </div>
 
+      <!-- Removed JSON Export/Import Buttons -->
       <section id="my-study" style="margin-top:30px;">
         <div class="card">
-          <div class="card-header"><div><h2 class="card-title">📘 My Study</h2><p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p></div><div style="display:flex;gap:8px;"><button class="btn btn-secondary-sm" id="export-study-btn">⬇ Export</button><button class="btn btn-secondary-sm" id="import-study-btn">⬆ Import</button></div></div>
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📘 My Study</h2>
+              <p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p>
+            </div>
+          </div>
           <div id="study-dashboard">
             <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;">
               <div class="stat" style="padding:14px;"><div class="stat-label">📌 Bookmarked</div><div class="stat-value" id="study-bookmarked">0</div></div>
@@ -279,6 +295,10 @@
         if (sidebarText) sidebarText.textContent = user.email || 'Profile';
         if (topbarText) topbarText.textContent = user.email || 'Profile';
         if (profileDiv) profileDiv.style.display = 'block';
+        
+        // Show Sidebar Progress Tracker
+        const sbProgress = document.getElementById('sidebar-progress');
+        if (sbProgress) sbProgress.style.display = 'block';
       } catch (e) {}
     }
   });
