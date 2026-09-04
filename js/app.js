@@ -1,5 +1,5 @@
 // ============================================================
-// js/app.js - Complete Application Logic
+// js/app.js – Complete Application Logic
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const toggleBankText = document.getElementById('toggle-bank-text');
   const bankBody = document.getElementById('pyq-bank-body');
 
-  // Force bank visible on load
   bankBody.style.display = 'block';
   if (toggleBankIcon) toggleBankIcon.textContent = '▾';
   if (toggleBankText) toggleBankText.textContent = 'Hide Bank';
@@ -282,6 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const clearQBtn = document.getElementById('clear-q-btn');
   const clearBankBtn = document.getElementById('clear-bank-btn');
   const searchInput = document.getElementById('search-input');
+  const modeYearRadio = document.getElementById('mode-year');
+  const modeTopicRadio = document.getElementById('mode-topic');
   const filterPaper = document.getElementById('filter-paper');
   const filterYear = document.getElementById('filter-year');
   const filterTopic = document.getElementById('filter-topic');
@@ -504,13 +505,22 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
-  // 16. RENDER BANK RESULTS (with combined filters)
+  // 16. RENDER BANK RESULTS (with mode switch)
   // ============================================================
   let renderRequestId = 0;
 
   async function renderBankResults() {
     if (!bankResultsContainer) return;
     const requestId = ++renderRequestId;
+
+    const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
+
+    // Reset the opposite filter
+    if (isYearMode && filterTopic) {
+      filterTopic.value = 'ALL';
+    } else if (!isYearMode && filterYear) {
+      filterYear.value = 'ALL';
+    }
 
     const selectedP = filterPaper ? filterPaper.value : 'ALL';
     const selectedY = filterYear ? filterYear.value : 'ALL';
@@ -530,15 +540,17 @@ document.addEventListener('DOMContentLoaded', function() {
       // Paper filter
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
 
-      // Year filter
-      if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
-
-      // Topic filter
-      if (selectedT !== 'ALL') {
-        const qTopicClean = String(q.topic || '').trim().toLowerCase();
-        const selectedTClean = String(selectedT).trim().toLowerCase();
-        const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
-        if (!matchesTopic) return false;
+      if (isYearMode) {
+        // Year filter
+        if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+      } else {
+        // Topic filter
+        if (selectedT !== 'ALL') {
+          const qTopicClean = String(q.topic || '').trim().toLowerCase();
+          const selectedTClean = String(selectedT).trim().toLowerCase();
+          const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
+          if (!matchesTopic) return false;
+        }
       }
 
       return true;
@@ -585,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="btn-study note-btn" data-action="note" data-id="${q.id}">📝 Note</button>
             <button class="btn-secondary-sm btn-add-item">+ Add</button>
             <button class="btn-secondary-sm btn-direct-pdf">⚡ PDF</button>
-            <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="fetchAIAnswer(this)">✨ AI</button>
+            <button class="btn-secondary-sm btn-ai-answer btn-ai-highlight" onclick="window.fetchAIAnswer(this)">✨ AI</button>
           </div>
         </div>
       `;
@@ -683,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const rec = studyData[question_id];
       if (!rec || typeof rec !== 'object') continue;
       try {
-        await fetch(`${WORKER_URL}/api/study/update`, {
+        await fetch(WORKER_URL + '/api/study/update', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -707,7 +719,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
     if (!USER_TOKEN) return;
     try {
-      const res = await fetch(`${WORKER_URL}/api/study/get`, {
+      const res = await fetch(WORKER_URL + '/api/study/get', {
         headers: { 'Authorization': 'Bearer ' + USER_TOKEN }
       });
       if (!res.ok) return;
@@ -787,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (countTag) countTag.textContent = questions.length + ' question(s)';
 
     let totalMarks = 0, totalPages = 0;
-    const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
 
     questions.forEach((q, i) => {
       totalMarks += q.marks;
@@ -1014,7 +1025,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
-    const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
 
     function dividers() {
       doc.setDrawColor(0);
@@ -1123,6 +1133,22 @@ document.addEventListener('DOMContentLoaded', function() {
   filterYear?.addEventListener('change', renderBankResults);
   filterTopic?.addEventListener('change', renderBankResults);
 
+  if (modeYearRadio) modeYearRadio.addEventListener('change', () => {
+    updateFilterVisibility();
+    renderBankResults();
+  });
+  if (modeTopicRadio) modeTopicRadio.addEventListener('change', () => {
+    updateFilterVisibility();
+    renderBankResults();
+  });
+
+  function updateFilterVisibility() {
+    const isYearMode = modeYearRadio?.checked;
+    if (filterYear) filterYear.style.display = isYearMode ? 'inline-block' : 'none';
+    if (filterTopic) filterTopic.style.display = isYearMode ? 'none' : 'inline-block';
+  }
+  updateFilterVisibility();
+
   clearResultsBtn?.addEventListener('click', () => {
     if (searchInput) searchInput.value = '';
     if (filterPaper) filterPaper.value = 'ALL';
@@ -1153,7 +1179,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (confirm('Logout?')) {
         setUser(null);
         alert('Logged out.');
-        // Clear study data
         studyData = {};
         renderBankResults();
         updateStudyDashboard();
@@ -1179,7 +1204,87 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ============================================================
-  // 27. INITIALIZATION
+  // 27. AI MODEL SELECTION MODAL
+  // ============================================================
+  const aiModal = document.getElementById('ai-model-modal');
+  const aiModalClose = document.getElementById('ai-model-close');
+  const cancelAiModal = document.getElementById('cancel-ai-modal');
+  let pendingQuestion = null;
+
+  function openAIModal(questionItem) {
+    pendingQuestion = questionItem;
+    if (aiModal) aiModal.classList.add('open');
+  }
+
+  function closeAIModal() {
+    if (aiModal) aiModal.classList.remove('open');
+    pendingQuestion = null;
+  }
+
+  aiModalClose?.addEventListener('click', closeAIModal);
+  cancelAiModal?.addEventListener('click', closeAIModal);
+  aiModal?.addEventListener('click', function(e) {
+    if (e.target === this) closeAIModal();
+  });
+
+  // Handle model selection
+  document.querySelectorAll('.model-option').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const model = this.dataset.model;
+      if (!pendingQuestion) return;
+
+      const params = new URLSearchParams({
+        q: pendingQuestion.question,
+        y: pendingQuestion.year || '',
+        m: pendingQuestion.marks || '',
+        model: model
+      });
+
+      if (model === 'secret') {
+        // Use your Worker API – open answer.html with internal mode
+        const url = `answer.html?${params.toString()}`;
+        window.open(url, '_blank');
+      } else {
+        // External models – open answer.html with external mode
+        const url = `answer.html?${params.toString()}&mode=external`;
+        window.open(url, '_blank');
+      }
+
+      closeAIModal();
+    });
+  });
+
+  // ============================================================
+  // 28. FETCH AI ANSWER (overrides the global function)
+  // ============================================================
+  window.fetchAIAnswer = function(buttonElement) {
+    const card = buttonElement.closest('.bank-item');
+    if (!card) return;
+
+    const questionEl = card.querySelector('.bank-question');
+    let questionText = questionEl ? questionEl.innerText.trim() : '';
+    questionText = questionText.replace(/^\d+\.\s*/, '');
+
+    const tags = card.querySelectorAll('.tag');
+    let marks = '', year = '';
+    tags.forEach(tag => {
+      const text = tag.innerText;
+      if (text.includes('M')) {
+        const parts = text.split('/');
+        marks = parts[0].trim();
+        if (parts[1]) year = parts[1].trim();
+      }
+    });
+
+    const questionItem = { question: questionText, marks, year };
+
+    // Check if user is logged in for Secret AI (optional – can allow guest)
+    // We'll just open the modal and let answer.html handle auth.
+    openAIModal(questionItem);
+  };
+
+  // ============================================================
+  // 29. INITIALIZATION
   // ============================================================
   renderAll();
   loadRepositoryJSON();
@@ -1190,7 +1295,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initAuth();
   }
 
+  // Force update filter visibility after load
+  updateFilterVisibility();
+
   console.log('✅ QCAB Generator loaded successfully!');
   console.log('📋 Subtopics count:', Object.keys(SYLLABUS).length);
+  console.log('📚 Bank size:', presetBank.length);
 
 }); // End DOMContentLoaded
