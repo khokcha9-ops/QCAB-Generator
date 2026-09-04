@@ -103,7 +103,6 @@
         </div>
       </section>
       
-      <!-- (Rest of your Dashboard, Create Question, PYQ Bank, My QCAB, My Study HTML remains exactly the same as you provided) -->
       <!-- Stats, Folders, Workspace, etc. -->
       <section class="stats">
         <div class="stat"><div class="stat-label">QUESTION BANK</div><div class="stat-value" id="dashboard-bank-count">—</div><div class="stat-note">PYQs currently loaded</div></div>
@@ -199,7 +198,7 @@
 <!-- Back to top -->
 <button class="back-to-top" id="back-to-top">↑</button>
 
-<!-- Modals (Keep your same Modals from your original file) -->
+<!-- Modals -->
 <div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button class="btn btn-secondary-sm" id="note-save-btn">Save</button><button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
@@ -223,11 +222,12 @@
 <div class="custom-modal-overlay" id="customModal"><div class="custom-modal"><h3 id="modalTitle">Title</h3><p id="modalMessage">Message</p><div id="modalInputContainer" style="display:none;"><input type="text" class="modal-input" id="modalInput" placeholder="Enter value..."></div><div class="modal-actions"><button class="btn btn-secondary" id="modalCancelBtn">Cancel</button><button class="btn btn-primary" id="modalConfirmBtn">OK</button></div></div></div>
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
+<!-- ==================== SCRIPTS (FIXED ORDER) ==================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
-<script src="js/app.js"></script>
+
 <!-- FIREWALL: Prevents app.js from crashing if auth.js or config.js is missing -->
 <script>
   if (typeof getUser === 'undefined') { window.getUser = function() { return null; }; }
@@ -240,6 +240,5 @@
 </script>
 
 <script src="js/app.js"></script>
-</script>
 </body>
 </html>
