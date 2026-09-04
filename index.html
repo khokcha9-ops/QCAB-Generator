@@ -149,7 +149,6 @@
         <div class="hero-actions">
           <button type="button" class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
           <button type="button" class="btn" data-scroll="create-question">＋ Create Question</button>
-          <!-- ===== NEW: QUICK TEST BUTTON ===== -->
           <button type="button" class="btn btn-primary" onclick="generateQuickTest()">🎲 Quick Test (10 Qs)</button>
         </div>
       </section>
@@ -307,6 +306,26 @@
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=3"></script>
 <script src="js/config.js?v=3"></script>
 <script src="js/auth.js?v=3"></script>
+
+<!-- ================================================== -->
+<!-- ADDED: AUTH FIREWALL (Guarantees no errors)      -->
+<!-- ================================================== -->
+<script>
+  if (typeof window.getUser === 'undefined') {
+    window.getUser = function() { return JSON.parse(localStorage.getItem('qcab_user') || 'null'); };
+  }
+  if (typeof window.setUser === 'undefined') {
+    window.setUser = function(user) {
+      if (user) localStorage.setItem('qcab_user', JSON.stringify(user));
+      else localStorage.removeItem('qcab_user');
+    };
+  }
+  if (typeof window.openLoginModal === 'undefined') {
+    window.openLoginModal = function() { window.location.href = 'login.html'; };
+  }
+</script>
+<!-- ================================================== -->
+
 <script src="js/app.js?v=3"></script>
 <script src="js/features.js?v=3"></script>
 
@@ -344,16 +363,13 @@
     var yearSel = document.getElementById('filter-year');
     var topicSel = document.getElementById('filter-topic');
     
-    // Toggle active class (highlight)
     yearBtn.classList.remove('active');
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
-    // BOTH Year and Subtopic filters are ALWAYS visible
     yearSel.style.display = 'block';
     topicSel.style.display = 'block';
 
-    // FORCE the Subtopic dropdown to include topics from GS1 to OPT2 if it's empty
     if (topicSel.options.length <= 1) {
       var allTopics = [
         'Indian Heritage and Culture', 'Modern Indian History', 'Freedom Struggle', 'Post-Independence', 'World History', 
@@ -371,7 +387,6 @@
       });
     }
 
-    // Automatically trigger the search to update the results
     document.getElementById('search-bank-btn').click();
   }
 </script>
