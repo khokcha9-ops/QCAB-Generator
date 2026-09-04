@@ -1518,3 +1518,95 @@ body, .sidebar, .topbar, .card, .stat, .filter-box, .bank-item, .empty-state, in
   .stats { grid-template-columns: 1fr 1fr; }
   .stats .stat:last-child { grid-column: 1 / -1; }
 }
+/* ==========================================================
+   PREMIUM UI & TYPOGRAPHY UPGRADE (PASTE AT BOTTOM)
+   ========================================================== */
+
+/* 1. Make Base Font Slightly Bigger & Bolder */
+body {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* 2. Make Headings Super Bold & Bigger */
+h1, h2, h3 {
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* Make the Hero Title Massive */
+.hero h1 {
+    font-weight: 900 !important;
+    font-size: clamp(42px, 6vw, 64px) !important;
+    line-height: 1.05 !important;
+}
+
+/* 3. Improve Sidebar Widgets (Add Shadows & Bolder Headers) */
+.sidebar-widget {
+    border-radius: 14px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.widget-header {
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+    color: var(--text) !important;
+}
+
+/* 4. Make Buttons Bolder & More Premium */
+.btn, .btn-primary, .btn-secondary, .btn-secondary-sm {
+    font-weight: 800 !important;
+    border-radius: 12px !important;
+    letter-spacing: 0.2px !important;
+}
+
+.btn {
+    padding: 13px 22px !important;
+    font-size: 15px !important;
+}
+
+/* Premium Button Hover Effect */
+.btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 5. Make Search Bar & Dropdowns Bigger & Cleaner */
+#search-input, select, textarea, input[type="text"] {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+}
+
+#search-input {
+    height: 50px !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border-strong) !important;
+}
+
+/* 6. Make Cards Look Premium with Softer Shadows */
+.card {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 7. Improve Question Card Meta Tags */
+.bank-question {
+    font-weight: 750 !important;
+    line-height: 1.6 !important;
+}
+
+.tag {
+    font-weight: 800 !important;
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+}
+
+/* 8. Make the Stats Numbers Pop */
+.stat-value {
+    font-size: 36px !important;
+    font-weight: 900 !important;
+}
