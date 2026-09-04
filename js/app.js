@@ -1402,7 +1402,7 @@ aiModal?.addEventListener('click', function(e) {
   if (e.target === this) closeAIModal();
 });
 
-// --- Helper: Generate a concise UPSC prompt (fits in URL) ---
+// --- Helper: Generate a concise UPSC prompt ---
 function generateUPSCPrompt(question) {
   return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}"`;
 }
@@ -1433,16 +1433,16 @@ document.querySelectorAll('.model-option').forEach(btn => {
       const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(fullPrompt)}`;
       console.log('🔗 Perplexity URL:', searchUrl);
       window.open(searchUrl, '_blank');
-      showToast('🌀 Opening Perplexity with UPSC prompt...', '🌀');
+      showToast('🌀 Perplexity opened with the UPSC prompt!', '🌀');
       closeAIModal();
       return;
     }
 
-    // --- ChatGPT: Copy the SAME full prompt + open website ---
+    // --- ChatGPT: Copy prompt + open website + toast with clear instructions ---
     if (model === 'chatgpt') {
       copyText(fullPrompt).then(() => {
         window.open('https://chat.openai.com/', '_blank');
-        showToast('✅ Prompt copied! Paste in ChatGPT and press Enter.', '💬');
+        showToast('✅ Prompt copied! Paste it in ChatGPT and press Enter. (Ctrl+V)', '💬');
       }).catch(() => {
         // Fallback copy
         const textarea = document.createElement('textarea');
@@ -1452,17 +1452,17 @@ document.querySelectorAll('.model-option').forEach(btn => {
         document.execCommand('copy');
         textarea.remove();
         window.open('https://chat.openai.com/', '_blank');
-        showToast('✅ Prompt copied! Paste in ChatGPT and press Enter.', '💬');
+        showToast('✅ Prompt copied! Paste it in ChatGPT and press Enter. (Ctrl+V)', '💬');
       });
       closeAIModal();
       return;
     }
 
-    // --- DeepSeek: Copy the SAME full prompt + open website ---
+    // --- DeepSeek: Copy prompt + open website + toast with clear instructions ---
     if (model === 'deepseek') {
       copyText(fullPrompt).then(() => {
         window.open('https://chat.deepseek.com/', '_blank');
-        showToast('✅ Prompt copied! Paste in DeepSeek and press Enter.', '🔬');
+        showToast('✅ Prompt copied! Paste it in DeepSeek and press Enter. (Ctrl+V)', '🔬');
       }).catch(() => {
         const textarea = document.createElement('textarea');
         textarea.value = fullPrompt;
@@ -1471,13 +1471,12 @@ document.querySelectorAll('.model-option').forEach(btn => {
         document.execCommand('copy');
         textarea.remove();
         window.open('https://chat.deepseek.com/', '_blank');
-        showToast('✅ Prompt copied! Paste in DeepSeek and press Enter.', '🔬');
+        showToast('✅ Prompt copied! Paste it in DeepSeek and press Enter. (Ctrl+V)', '🔬');
       });
       closeAIModal();
       return;
     }
 
-    // Fallback (should never reach)
     closeAIModal();
   });
 });
