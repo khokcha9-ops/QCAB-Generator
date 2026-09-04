@@ -166,6 +166,67 @@ console.log('✅ Custom modal + toast system loaded');
 document.addEventListener('DOMContentLoaded', function() {
 
   console.log('🚀 App.js loaded');
+  // ============================================================
+  // FILTER TAB SWITCHER & SEARCH REPAIR
+  // ============================================================
+  const filterByYearBtn = document.getElementById('btn-filter-year');
+  const filterBySubtopicBtn = document.getElementById('btn-filter-subtopic');
+  const filterYearSelect = document.getElementById('filter-year');
+  const filterTopicSelect = document.getElementById('filter-topic');
+
+  // Tab Switcher Logic
+  if (filterByYearBtn && filterBySubtopicBtn) {
+    filterByYearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterByYearBtn.classList.add('active');
+      filterBySubtopicBtn.classList.remove('active');
+      if (filterYearSelect) filterYearSelect.style.display = 'block';
+      if (filterTopicSelect) filterTopicSelect.style.display = 'none';
+      if (filterTopicSelect) filterTopicSelect.value = 'ALL';
+      renderBankResults();
+    });
+
+    filterBySubtopicBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterBySubtopicBtn.classList.add('active');
+      filterByYearBtn.classList.remove('active');
+      if (filterTopicSelect) filterTopicSelect.style.display = 'block';
+      if (filterYearSelect) filterYearSelect.style.display = 'none';
+      if (filterYearSelect) filterYearSelect.value = 'ALL';
+      renderBankResults();
+    });
+  }
+
+  // Prevent Form Reload on Search Button Click
+  if (searchBankBtn) {
+    searchBankBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      renderBankResults();
+    });
+  }
+
+  // Prevent Enter Key Reload on Input Field
+  if (searchInput) {
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        renderBankResults();
+      }
+    });
+  }
+
+  // Clear Results Handler
+  if (clearResultsBtn) {
+    clearResultsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (searchInput) searchInput.value = '';
+      if (filterPaper) filterPaper.value = 'ALL';
+      if (filterYearSelect) filterYearSelect.value = 'ALL';
+      if (filterTopicSelect) filterTopicSelect.value = 'ALL';
+      populateFilterTopics();
+      renderBankResults();
+    });
+  }
 
   // Bind backdrop click handler safely after DOM is loaded
   document.getElementById('customModal')?.addEventListener('click', function(e) {
