@@ -1610,3 +1610,24 @@ h1, h2, h3 {
     font-size: 36px !important;
     font-weight: 900 !important;
 }
+/* Premium Glass Effect Cards */
+.premium-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+.premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); }
+
+/* Premium Font (Inter) */
+body { font-family: 'Inter', sans-serif !important; }
+
+/* Premium Status Pills */
+.pill-status { 
+    display: inline-flex; align-items: center; gap: 8px; 
+    background: var(--accent-soft); color: var(--accent);
+    border-radius: 999px; padding: 5px 12px; font-weight: 800; font-size: 12px;
+}
