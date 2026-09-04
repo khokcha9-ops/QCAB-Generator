@@ -1194,3 +1194,58 @@ footer{
   pointer-events: auto;
 }
 .toast .toast-icon { font-size: 20px; }
+/* ============================================================
+   LOGOUT CONFIRM MODAL
+   ============================================================ */
+#logoutModal .custom-modal {
+  max-width: 380px;
+  text-align: center;
+}
+#logoutModal .custom-modal h3 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+#logoutModal .custom-modal p {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 0;
+}
+#logoutModal .modal-actions .btn-danger {
+  background: var(--danger, #dc2626);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+#logoutModal .modal-actions .btn-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220,38,38,0.3);
+}
+#logoutModal .modal-actions .btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+#logoutModal .modal-actions .btn-secondary:hover {
+  background: var(--border);
+  transform: translateY(-2px);
+}
+
+/* User Profile */
+#user-profile {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+#user-profile .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
