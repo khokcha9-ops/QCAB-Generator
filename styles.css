@@ -1260,3 +1260,107 @@ footer{
   align-items: center;
   gap: 10px;
 }
+/* ==========================================
+   YOUR EXISTING STYLES (from your old file)
+   ========================================== */
+/* ... your previous body styles, old colors, etc. ... */
+
+
+/* ==========================================
+   NEW FOREST GREEN THEME (ADDED AT THE BOTTOM)
+   ========================================== */
+
+/* 🚨 IMPORTANT: If you had :root elsewhere, delete that old block and keep THIS one. */
+:root {
+  /* Forest Green Palette */
+  --primary: #2D6A4F;        /* Leafy Primary (Buttons, Active) */
+  --primary-dark: #1B4332;   /* Deep Canopy (Header, Footer) */
+  --accent: #74C69D;         /* Mossy Accent (Hover, Highlights) */
+  --accent-soft: #D8F3DC;    /* Very light green for subtle backgrounds */
+  
+  /* Base Colors */
+  --bg: #F8F9FA;
+  --text: #1a1a1a;
+  --text-soft: #4a4a4a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+  --sidebar-bg: #FFFFFF;
+  --card-bg: #FFFFFF;
+  --shadow: 0 4px 6px rgba(27, 67, 50, 0.1);
+}
+
+/* If your old file had * { box-sizing: border-box; }, you can ignore this next one. If not, keep it. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Forest Green Body */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Forest Green Sidebar */
+.sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border); }
+.brand { color: var(--primary-dark); }
+.brand-mark { background: var(--primary); color: white; box-shadow: 0 4px 8px rgba(45, 106, 79, 0.3); }
+.nav-title { color: var(--muted); font-weight: 700; letter-spacing: 0.5px; }
+.nav-btn { color: var(--text-soft); transition: all 0.2s; }
+.nav-btn:hover { background: var(--accent-soft); color: var(--primary-dark); }
+.nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 8px rgba(45, 106, 79, 0.3); }
+
+/* Forest Green Topbar */
+.topbar { border-bottom: 1px solid var(--border); background: var(--bg); }
+.topbar-title { color: var(--primary-dark); font-weight: 800; }
+.topbar-sub { color: var(--muted); }
+.theme-toggle { background: var(--accent-soft); color: var(--primary-dark); border: 1px solid transparent; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* Forest Green Hero */
+.hero { background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg) 100%); border-radius: 16px; }
+.hero h1 { color: var(--primary-dark); font-weight: 800; }
+.eyebrow { color: var(--primary); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 13px; }
+
+/* Forest Green Stats */
+.stat { background: var(--card-bg); border: 1px solid var(--border); border-top: 4px solid var(--primary); }
+.stat-label { color: var(--muted); font-weight: 700; font-size: 11px; }
+.stat-value { color: var(--primary-dark); font-weight: 800; font-size: 28px; }
+.stat-note { color: var(--muted); font-size: 12px; }
+
+/* Forest Green Buttons */
+.btn-primary { background: var(--primary); color: white; border: none; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary, .btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-soft); }
+.btn-secondary:hover, .btn:hover { border-color: var(--primary); color: var(--primary); }
+.btn-danger { background: var(--danger); color: white; border: none; }
+
+/* Forest Green Cards */
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
+.card-title { color: var(--primary-dark); font-weight: 700; }
+.card-sub { color: var(--muted); font-size: 14px; }
+
+/* Forest Green Filters & Inputs */
+.marks-btn { background: var(--bg); border: 1px solid var(--border); color: var(--text-soft); }
+.marks-btn[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: white; }
+.search-main input, .field input, .field textarea, .field select { border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+.search-main input:focus, .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+
+/* Forest Green QCAB Sidebar */
+.sticky-card { background: var(--card-bg); }
+.tag { background: var(--accent-soft); color: var(--primary-dark); font-weight: 700; }
+.btn-generate { background: var(--primary); color: white; }
+.btn-generate:hover { background: var(--primary-dark); }
+.btn-generate:disabled { background: var(--border); color: var(--muted); }
+
+/* Forest Green Footer */
+footer { border-top: 1px solid var(--border); color: var(--muted); text-align: center; padding: 20px; }
+
+/* Forest Green Modals */
+.login-modal-content, .custom-modal, .study-modal-content, .ai-model-modal-content { background: var(--card-bg); border-radius: 16px; }
+.login-brand-icon { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.4); }
+.model-option:hover { border-color: var(--primary); background: var(--accent-soft); }
+
+/* Forest Green Toast */
+.toast { background: var(--primary-dark); color: white; }
