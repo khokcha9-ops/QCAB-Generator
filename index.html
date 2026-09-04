@@ -133,18 +133,39 @@
             </div>
           </div>
 
+          <!-- ===== DUAL-STYLE PYQ BANK SEARCH ===== -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
-              <div><h2 class="card-title">PYQ Bank</h2><p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p></div>
+              <div>
+                <h2 class="card-title">PYQ Bank</h2>
+                <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
+              </div>
               <div style="display:flex; gap:8px;">
                 <button class="btn" id="toggle-bank-btn"><span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span></button>
                 <button class="btn btn-danger" id="clear-bank-btn">Reset Bank</button>
               </div>
             </div>
+            
             <div id="pyq-bank-body">
-              <div class="search-main"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..."></div>
+              <!-- Dual-Style Mode Switcher Bar -->
+              <div class="search-mode-bar">
+                <span class="mode-label">Filter Mode:</span>
+                <div class="search-mode-switcher" id="search-mode-switcher">
+                  <button type="button" class="mode-btn active" id="mode-basic-btn" data-mode="basic">Quick Filter (Paper + Year)</button>
+                  <button type="button" class="mode-btn" id="mode-deep-btn" data-mode="deep">Detailed Filter (Paper + Subtopic + Year)</button>
+                </div>
+              </div>
+
+              <!-- Main Keyword Search Bar -->
+              <div class="search-main">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
+              </div>
+
+              <!-- Filter Dropdowns Container -->
               <div class="filter-box">
                 <div class="filters">
+                  <!-- Paper Filter -->
                   <select id="filter-paper">
                     <option value="ALL">All Papers</option>
                     <option value="GS1">GS Paper 1</option>
@@ -154,14 +175,28 @@
                     <option value="OPT1">Anthropology Optional Paper 1</option>
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
-                  <select id="filter-year"><option value="ALL">All Years</option></select>
-                  <select id="filter-topic"><option value="ALL">All Subtopics</option></select>
+
+                  <!-- Subtopic Filter (Shown in Detailed Mode, hidden in Quick Mode) -->
+                  <select id="filter-topic" class="topic-filter-select hidden">
+                    <option value="ALL">All Subtopics</option>
+                  </select>
+
+                  <!-- Year Filter -->
+                  <select id="filter-year">
+                    <option value="ALL">All Years</option>
+                  </select>
+
+                  <!-- Filter Action Buttons -->
                   <button class="btn btn-primary" id="search-bank-btn">Search</button>
                   <button class="btn" id="clear-results-btn">Clear</button>
                 </div>
               </div>
+
+              <!-- Bank Status & Results -->
               <div id="bank-status-text">Loading question bank...</div>
-              <div id="bank-results-container"><p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p></div>
+              <div id="bank-results-container">
+                <p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p>
+              </div>
             </div>
           </div>
         </section>
@@ -200,13 +235,20 @@
 
 <!-- Modals -->
 <div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button class="btn btn-secondary-sm" id="note-save-btn">Save</button><button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
-<!-- Logout, AI, Custom Modals and Toast... -->
+
+<!-- Logout Modal -->
 <div class="custom-modal-overlay" id="logoutModal"><div class="custom-modal" style="max-width:380px; text-align:center;"><div style="font-size:48px; margin-bottom:8px;">👋</div><h3 style="font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;">Logout</h3><p style="font-size:15px; color:var(--muted); margin-bottom:0;">Are you sure you want to logout?</p><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="btn btn-secondary" id="logoutCancelBtn" style="padding:10px 28px;" onclick="localStorage.clear(); window.location.href='index.html';">Cancel</button><button class="btn btn-danger" id="logoutConfirmBtn" style="padding:10px 28px; background:var(--danger); color:#fff; border:none; border-radius:10px; font-weight:700;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button></div></div></div>
+
+<!-- AI Model Selection Modal -->
 <div class="ai-model-modal" id="ai-model-modal"><div class="ai-model-modal-content"><button class="ai-model-close" id="ai-model-close">&times;</button><h3>⚡ Choose AI Model</h3><p>Select which AI should generate your UPSC answer.</p><div class="model-options"><button class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button><button class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button><button class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button><button class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button></div><button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button></div></div>
+
+<!-- Custom Dynamic Modal -->
 <div class="custom-modal-overlay" id="customModal"><div class="custom-modal"><h3 id="modalTitle">Title</h3><p id="modalMessage">Message</p><div id="modalInputContainer" style="display:none;"><input type="text" class="modal-input" id="modalInput" placeholder="Enter value..."></div><div class="modal-actions"><button class="btn btn-secondary" id="modalCancelBtn">Cancel</button><button class="btn btn-primary" id="modalConfirmBtn">OK</button></div></div></div>
+
+<!-- Toast Notification -->
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
-<!-- ==================== SCRIPTS (FIXED ORDER - ONLY ONCE!) ==================== -->
+<!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 <script src="js/config.js"></script>
