@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Register - UPSC Craft</title>
-    
-    <!-- FIXED: Favicon moved INSIDE head -->
-    <link rel="icon" type="image/png" href="favicon.png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -72,7 +69,7 @@
         button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,70,229,0.35); }
         button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        /* ADDED: Premium Google Button Styles */
+        /* ADDED: Premium Google Button */
         .btn-google {
             background: #ffffff;
             color: #1E293B;
@@ -129,7 +126,7 @@
         <button id="submitBtn">Sign In</button>
 
         <div class="divider">or</div>
-        
+
         <!-- ADDED: Premium Google Login Button -->
         <button type="button" class="btn-google" onclick="alert('Google Login API not configured yet!')">
             <span class="g-icon">G</span> Continue with Google
@@ -231,6 +228,7 @@
             } catch (err) {
                 if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
                     if (!isRegister) {
+                        // Mock fallback for testing
                         const userData = { email: email, token: 'mock-token-' + Date.now(), userId: 999, name: name || 'User' };
                         localStorage.setItem('qcab_user', JSON.stringify(userData));
                         localStorage.setItem('userToken', 'mock-token-' + Date.now());
