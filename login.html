@@ -26,157 +26,76 @@
             width: 90%;
             max-width: 400px;
         }
-        .brand {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+        .brand { text-align: center; margin-bottom: 24px; }
         .brand .icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
+            width: 56px; height: 56px; border-radius: 16px;
             background: linear-gradient(135deg, #4F46E5, #06B6D4);
-            color: #fff;
-            font-size: 28px;
-            font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            color: #fff; font-size: 28px; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 24px rgba(79,70,229,0.25);
         }
-        .brand h1 {
-            margin: 12px 0 4px;
-            font-size: 24px;
-            font-weight: 800;
-            color: #1E293B;
-            letter-spacing: -0.02em;
-        }
-        .brand p {
-            margin: 0;
-            color: #64748B;
-            font-size: 14px;
-        }
-        h2 {
-            color: #1E293B;
-            text-align: center;
-            margin: 0 0 4px;
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .subtitle {
-            text-align: center;
-            color: #64748B;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
+        .brand h1 { margin: 12px 0 4px; font-size: 24px; font-weight: 800; color: #1E293B; }
+        .brand p { margin: 0; color: #64748B; font-size: 14px; }
+        
+        h2 { color: #1E293B; text-align: center; margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+        .subtitle { text-align: center; color: #64748B; font-size: 14px; margin-bottom: 24px; }
+
+        .input-group { position: relative; margin: 8px 0; }
         input {
-            width: 100%;
-            padding: 14px 16px;
-            margin: 8px 0;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            font-size: 15px;
-            background: #F8FAFC;
-            transition: all 0.2s;
-            box-sizing: border-box;
+            width: 100%; padding: 14px 16px; border: 1px solid #E2E8F0;
+            border-radius: 12px; font-size: 15px; background: #F8FAFC;
+            transition: all 0.2s; box-sizing: border-box;
         }
-        input:focus {
-            outline: none;
-            border-color: #4F46E5;
-            box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
-            background: #fff;
+        input:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,0.15); background: #fff; }
+
+        /* Show/Hide Password Toggle */
+        .toggle-password {
+            position: absolute; top: 50%; right: 14px; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: #64748B;
+            font-size: 18px; padding: 5px; line-height: 1;
         }
-        .hidden {
-            display: none !important;
-        }
+        .toggle-password:hover { color: #4F46E5; }
+
+        /* Strength Meter */
+        .strength-meter { height: 4px; background: #E2E8F0; border-radius: 4px; margin: 8px 0; overflow: hidden; }
+        .strength-bar { height: 100%; width: 0; background: #DC2626; transition: width 0.3s; }
+        .strength-text { font-size: 12px; color: #64748B; text-align: right; margin-bottom: 8px; }
+
+        .hidden { display: none !important; }
         button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
             background: linear-gradient(135deg, #4F46E5, #06B6D4);
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 12px;
+            color: white; font-size: 16px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; margin-top: 12px;
             box-shadow: 0 4px 14px rgba(79,70,229,0.25);
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(79,70,229,0.35);
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,70,229,0.35); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Google Button */
+        .btn-google {
+            background: #ffffff; color: #1E293B; border: 1px solid #E2E8F0;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-top: 10px;
         }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .switch {
-            text-align: center;
-            color: #4F46E5;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 16px;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .switch:hover {
-            text-decoration: underline;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 16px 0;
-            color: #94A3B8;
-            font-size: 12px;
-        }
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #E2E8F0;
-        }
-        #login-error {
-            color: #DC2626;
-            text-align: center;
-            margin-top: 12px;
-            font-size: 14px;
-            padding: 8px 12px;
-            background: #FEF2F2;
-            border-radius: 8px;
-            display: none;
-        }
-        .guest-link {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 13px;
-            color: #94A3B8;
-        }
-        .guest-link a {
-            color: #4F46E5;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .guest-link a:hover {
-            text-decoration: underline;
-        }
-        .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .btn-google:hover { background: #F8FAFC; border-color: #4F46E5; }
+        .g-icon { font-weight: 800; color: #EA4335; font-size: 20px; }
+
+        .switch { text-align: center; color: #4F46E5; cursor: pointer; font-weight: 600; margin-top: 16px; font-size: 14px; }
+        .switch:hover { text-decoration: underline; }
+        .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: #94A3B8; font-size: 12px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #E2E8F0; }
+        
+        .remember-row { display: flex; align-items: center; gap: 8px; margin: 12px 0; font-size: 14px; color: #475569; }
+        .remember-row input { width: auto; margin: 0; }
+        .forgot-link { margin-left: auto; color: #4F46E5; text-decoration: none; font-weight: 600; }
+        .forgot-link:hover { text-decoration: underline; }
+
+        .guest-link { text-align: center; margin-top: 12px; font-size: 13px; color: #94A3B8; }
+        .guest-link a { color: #4F46E5; font-weight: 600; text-decoration: none; cursor: pointer; }
+        #login-error { color: #DC2626; text-align: center; margin-top: 12px; font-size: 14px; padding: 8px 12px; background: #FEF2F2; border-radius: 8px; display: none; }
+        .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -191,12 +110,35 @@
         <p class="subtitle" id="formSubtitle">Sign in to access AI answers and sync your study data.</p>
 
         <input type="text" id="name" placeholder="Full Name" class="hidden">
-        <input type="email" id="email" placeholder="Email address">
-        <input type="password" id="password" placeholder="Password">
+        
+        <div class="input-group">
+            <input type="email" id="email" placeholder="Email address">
+        </div>
+        
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password">
+            <button type="button" class="toggle-password" onclick="togglePassword()" id="eyeBtn">👁️</button>
+        </div>
+
+        <!-- Strength Meter (Only visible on Register) -->
+        <div id="strengthWrapper" class="hidden">
+            <div class="strength-meter"><div class="strength-bar" id="strengthBar"></div></div>
+            <div class="strength-text" id="strengthText"></div>
+        </div>
+
+        <div class="remember-row">
+            <input type="checkbox" id="rememberMe" checked> <label for="rememberMe">Remember me</label>
+            <a href="#" class="forgot-link" onclick="alert('Please contact support to reset your password!')">Forgot password?</a>
+        </div>
 
         <button id="submitBtn">Sign In</button>
 
         <div class="divider">or</div>
+
+        <!-- Google Login Button -->
+        <button class="btn-google" id="googleLoginBtn">
+            <span class="g-icon">G</span> Continue with Google
+        </button>
 
         <p class="switch" id="toggleBtn">Don't have an account? <strong>Sign up</strong></p>
 
@@ -210,10 +152,12 @@
     <script>
         // CONFIG
         const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
+        // IMPORTANT: If you want real Google Login, you must put your Google Client ID here
+        const GOOGLE_CLIENT_ID = ''; 
+
         let isRegister = false;
         let isLoading = false;
 
-        // DOM REFS
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
@@ -222,42 +166,73 @@
         const formTitle = document.getElementById('formTitle');
         const formSubtitle = document.getElementById('formSubtitle');
         const errorEl = document.getElementById('login-error');
+        const strengthWrapper = document.getElementById('strengthWrapper');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
 
-        // TOGGLE MODE
+        // Toggle Password Visibility
+        function togglePassword() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            document.getElementById('eyeBtn').innerText = type === 'password' ? '👁️' : '🙈';
+        }
+
+        // Password Strength Indicator
+        passwordInput.addEventListener('input', () => {
+            if (!isRegister) return;
+            const val = passwordInput.value;
+            let strength = 0;
+            if (val.length >= 6) strength++;
+            if (val.length >= 10) strength++;
+            if (/[A-Z]/.test(val) && /[a-z]/.test(val)) strength++;
+            if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) strength++;
+
+            const colors = ['#DC2626', '#F59E0B', '#4F46E5', '#059669'];
+            const labels = ['Weak', 'Fair', 'Good', 'Excellent'];
+
+            strengthBar.style.width = (strength * 25) + '%';
+            strengthBar.style.backgroundColor = colors[strength - 1] || '#DC2626';
+            strengthText.textContent = val ? 'Strength: ' + labels[strength - 1] : '';
+        });
+
         function toggleMode() {
             isRegister = !isRegister;
             nameInput.classList.toggle('hidden');
+            strengthWrapper.classList.toggle('hidden');
             formTitle.textContent = isRegister ? 'Create Account' : 'Welcome Back';
             formSubtitle.textContent = isRegister ? 'Register to save your bookmarks.' : 'Sign in to access AI answers.';
             submitBtn.textContent = isRegister ? 'Create Account' : 'Sign In';
-            toggleBtn.innerHTML = isRegister
-                ? 'Already have an account? <strong>Sign in</strong>'
-                : 'Don\'t have an account? <strong>Sign up</strong>';
+            toggleBtn.innerHTML = isRegister ? 'Already have an account? <strong>Sign in</strong>' : 'Don\'t have an account? <strong>Sign up</strong>';
             errorEl.style.display = 'none';
             errorEl.textContent = '';
         }
 
         toggleBtn.addEventListener('click', toggleMode);
 
-        // GUEST MODE
+        // Google Login (Placeholder - Requires Backend Implementation)
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            if (!GOOGLE_CLIENT_ID) {
+                showError('Google Login is not fully configured yet. Please use Email/Password.');
+                return;
+            }
+            // If you have a Client ID, you would initialize Google Identity Services here.
+            window.location.href = WORKER_URL + '/auth/google';
+        });
+
         function goGuest() {
             localStorage.setItem('isGuest', 'true');
             localStorage.setItem('userToken', 'guest-token-' + Date.now());
-            localStorage.setItem('qcab_user', JSON.stringify({
-                email: 'guest@example.com',
-                token: 'guest-token-' + Date.now(),
-                name: 'Guest'
-            }));
+            localStorage.setItem('qcab_user', JSON.stringify({ email: 'guest@example.com', token: 'guest-token-' + Date.now(), name: 'Guest' }));
             window.location.href = './index.html';
         }
 
-        // HANDLE AUTH
         async function handleAuth() {
             if (isLoading) return;
 
             const name = nameInput.value.trim();
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
 
             if (!email || !password) { showError('Please fill in all fields.'); return; }
             if (!isRegister && !email.includes('@')) { showError('Please enter a valid email address.'); return; }
@@ -280,7 +255,6 @@
                 });
 
                 const data = await res.json();
-
                 if (!res.ok) throw new Error(data.error || 'Authentication failed.');
 
                 if (isRegister) {
@@ -288,14 +262,13 @@
                     toggleMode();
                 } else {
                     const userData = {
-                        email: email,
-                        token: data.token || 'dummy-token',
-                        userId: data.userId || data.id,
-                        name: data.name || name || 'User'
+                        email: email, token: data.token || 'dummy-token',
+                        userId: data.userId || data.id, name: data.name || name || 'User'
                     };
-                    localStorage.setItem('qcab_user', JSON.stringify(userData));
-                    localStorage.setItem('userToken', data.token || 'dummy-token');
-                    localStorage.setItem('qcab_owner_key', data.token || 'dummy-token');
+                    // If remember me is unchecked, use sessionStorage for security
+                    const storage = rememberMe ? localStorage : sessionStorage;
+                    storage.setItem('qcab_user', JSON.stringify(userData));
+                    storage.setItem('userToken', data.token || 'dummy-token');
                     localStorage.removeItem('isGuest');
                     window.location.href = './index.html';
                 }
@@ -304,10 +277,8 @@
                 if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
                     if (!isRegister) {
                         const userData = {
-                            email: email,
-                            token: 'mock-token-' + Date.now(),
-                            userId: 999,
-                            name: name || 'User'
+                            email: email, token: 'mock-token-' + Date.now(),
+                            userId: 999, name: name || 'User'
                         };
                         localStorage.setItem('qcab_user', JSON.stringify(userData));
                         localStorage.setItem('userToken', 'mock-token-' + Date.now());
@@ -329,49 +300,28 @@
         submitBtn.addEventListener('click', handleAuth);
 
         [nameInput, emailInput, passwordInput].forEach(input => {
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAuth();
-                }
-            });
+            input.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); handleAuth(); } });
         });
 
         function showError(message) {
-            errorEl.style.color = '#DC2626';
-            errorEl.style.background = '#FEF2F2';
-            errorEl.style.display = 'block';
-            errorEl.textContent = message;
+            errorEl.style.color = '#DC2626'; errorEl.style.background = '#FEF2F2';
+            errorEl.style.display = 'block'; errorEl.textContent = message;
         }
-
-        function hideError() {
-            errorEl.style.display = 'none';
-            errorEl.textContent = '';
-        }
-
+        function hideError() { errorEl.style.display = 'none'; errorEl.textContent = ''; }
         function showSuccess(message) {
-            errorEl.style.color = '#059669';
-            errorEl.style.background = '#ecfdf5';
-            errorEl.style.display = 'block';
-            errorEl.textContent = message;
-            setTimeout(() => {
-                errorEl.style.display = 'none';
-                errorEl.style.color = '#DC2626';
-                errorEl.style.background = '#FEF2F2';
-            }, 3000);
+            errorEl.style.color = '#059669'; errorEl.style.background = '#ecfdf5';
+            errorEl.style.display = 'block'; errorEl.textContent = message;
+            setTimeout(() => { hideError(); }, 3000);
         }
 
-        // CHECK IF ALREADY LOGGED IN
         (function checkAlreadyLoggedIn() {
             try {
-                const user = JSON.parse(localStorage.getItem('qcab_user'));
-                if (user && user.email) {
-                    window.location.href = './index.html';
-                }
-            } catch (_) { /* ignore */ }
+                const user = JSON.parse(localStorage.getItem('qcab_user') || sessionStorage.getItem('qcab_user'));
+                if (user && user.email) window.location.href = './index.html';
+            } catch (_) {}
         })();
 
-        console.log('✅ Login page loaded');
+        console.log('✅ Advanced Login page loaded');
     </script>
 </body>
 </html>
