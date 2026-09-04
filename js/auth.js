@@ -1,5 +1,5 @@
 // ============================================================
-// js/auth.js – Authentication & Login Modal
+// js/auth.js – Authentication (with mock fallback)
 // ============================================================
 
 function getUser() {
@@ -33,10 +33,7 @@ function updateAuthUI() {
 
 function openLoginModal(mode = 'login') {
   const modal = document.getElementById('login-modal');
-  if (!modal) {
-    console.error('Login modal not found');
-    return;
-  }
+  if (!modal) return;
 
   const title = document.getElementById('login-modal-title');
   const sub = document.getElementById('login-modal-sub');
@@ -47,7 +44,7 @@ function openLoginModal(mode = 'login') {
 
   const isLogin = mode === 'login';
   if (title) title.textContent = isLogin ? 'Welcome Back' : 'Create Account';
-  if (sub) sub.textContent = isLogin ? 'Sign in to access AI answers and sync your study data.' : 'Register to save your bookmarks and access AI answers.';
+  if (sub) sub.textContent = isLogin ? 'Sign in to access AI answers.' : 'Register to save your bookmarks.';
   if (submitBtn) submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
   if (switchText) switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
   if (switchLink) switchLink.textContent = isLogin ? 'Sign up' : 'Sign In';
@@ -74,10 +71,7 @@ function initAuth() {
   const googleBtn = document.getElementById('google-login-btn');
   const error = document.getElementById('login-error');
 
-  if (!modal) {
-    console.warn('Login modal not found – skipping initAuth');
-    return;
-  }
+  if (!modal) return;
 
   // Close on backdrop click
   modal.addEventListener('click', function(e) {
@@ -90,8 +84,6 @@ function initAuth() {
       e.stopPropagation();
       closeLoginModal();
     });
-  } else {
-    console.warn('Close button not found');
   }
 
   // Switch between login/register
@@ -105,11 +97,11 @@ function initAuth() {
   // Google button placeholder
   if (googleBtn) {
     googleBtn.addEventListener('click', function() {
-      alert('Google login is not configured yet. Use email/password or continue as guest.');
+      alert('Google login is not configured yet. Use email/password.');
     });
   }
 
-  // Submit login/register
+  // Submit login/register with MOCK FALLBACK
   if (submitBtn) {
     submitBtn.addEventListener('click', async function() {
       const email = document.getElementById('login-email').value.trim();
@@ -127,46 +119,57 @@ function initAuth() {
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
 
       try {
+        // Try real API first
         const res = await fetch(WORKER_URL + endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+
+        if (!res.ok) {
+          // If endpoint not found, fallback to mock login
+          if (res.status === 404) {
+            throw new Error('Endpoint not found – using mock login.');
+          }
+          const data = await res.json();
+          throw new Error(data.error || 'Authentication failed.');
+        }
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Authentication failed.');
-
-        setUser({ email, token: data.token || data.key || 'dummy-token' });
+        setUser({ email, token: data.token || 'dummy-token' });
         closeLoginModal();
-        alert(isLogin ? 'Welcome back!' : 'Account created!');
-
-        // Reload study data and refresh UI
-        if (typeof loadCloudStudy === 'function') loadCloudStudy();
-        if (typeof renderBankResults === 'function') renderBankResults();
-        if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
+        alert(isLogin ? 'Welcome back!' : 'Account created! (Real API)');
 
       } catch (err) {
-        if (error) {
-          error.textContent = err.message || 'Something went wrong. Please try again.';
-          error.style.display = 'block';
+        // MOCK FALLBACK – allow any email/password
+        if (err.message.includes('mock') || err.message.includes('Endpoint not found')) {
+          // Mock success
+          setUser({ email, token: 'mock-token-' + Date.now() });
+          closeLoginModal();
+          alert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)');
+        } else {
+          if (error) {
+            error.textContent = err.message || 'Something went wrong.';
+            error.style.display = 'block';
+          }
         }
       }
+
+      // Refresh UI after login
+      if (typeof loadCloudStudy === 'function') loadCloudStudy();
+      if (typeof renderBankResults === 'function') renderBankResults();
+      if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
     });
   }
 
-  // Allow Enter key on login fields
-  const emailInput = document.getElementById('login-email');
-  const passwordInput = document.getElementById('login-password');
-  if (emailInput) {
-    emailInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') submitBtn?.click();
-    });
-  }
-  if (passwordInput) {
-    passwordInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') submitBtn?.click();
-    });
-  }
+  // Enter key support
+  document.getElementById('login-email')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitBtn?.click();
+  });
+  document.getElementById('login-password')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitBtn?.click();
+  });
 
   updateAuthUI();
-  console.log('✅ Auth initialized');
+  console.log('✅ Auth initialized (with mock fallback)');
 }
