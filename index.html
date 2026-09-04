@@ -69,7 +69,7 @@
     <div class="mobile-nav">
       <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC CRAFT</div>
       <div class="mobile-actions-right">
-        <button class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
+        <button class="mobile-theme-toggle" id="mobile-theme-toggle" onclick="toggleThemeMobile()">🌙</button>
         <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
       </div>
     </div>
@@ -240,5 +240,22 @@
 </script>
 
 <script src="js/app.js"></script>
+<script>
+  /* GLOBAL MOBILE THEME FIX - Bypasses all app.js conflicts */
+  function toggleThemeMobile() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('qcab_theme', isDark ? 'dark' : 'light');
+
+    // Update all icons and text
+    const desktopIcon = document.getElementById('theme-icon');
+    const desktopText = document.getElementById('theme-text');
+    const mobileIcon = document.getElementById('mobile-theme-toggle');
+
+    if (desktopIcon) desktopIcon.textContent = isDark ? '☀️' : '🌙';
+    if (desktopText) desktopText.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
+  }
+</script>
 </body>
 </html>
