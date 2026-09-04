@@ -1,3 +1,4 @@
+/* Same as your provided CSS, with the addition of .sidebar-progress at the top */
 :root {
   /* Vibrant Light Gradient Palette (Indigo to Electric Cyan) */
   --primary: #6366F1;
@@ -38,7 +39,6 @@
 
 /* VIBRANT DARK MODE */
 body.dark-mode {
-  /* Rich Violet & Emerald Accent Variables */
   --primary: #A855F7;
   --primary-dark: #090D16;
   --primary-hover: #C084FC;
@@ -51,12 +51,10 @@ body.dark-mode {
   --sky-blue: #38BDF8;
   --warm-sand-soft: #451A03;
   
-  /* High Contrast Text */
   --text: #FFFFFF;
   --text-soft: #E2E8F0;
   --muted: #94A3B8;
   
-  /* Dark Mode Surfaces & Borders */
   --surface: #1E293B;
   --surface-2: #334155;
   --border: #334155;
@@ -73,6 +71,15 @@ body.dark-mode {
   background-color: var(--bg);
   background-image: radial-gradient(rgba(168, 85, 247, 0.12) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/* NEW: SIDEBAR PROGRESS */
+.sidebar-progress {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 12px;
 }
 
 *{box-sizing:border-box}
