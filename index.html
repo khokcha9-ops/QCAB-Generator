@@ -186,8 +186,8 @@
             <div id="pyq-bank-body">
               <div class="pill-switcher-container">
                 <div class="pill-switcher" id="search-mode-switcher">
-                  <button type="button" class="pill-btn active" id="btn-filter-year" data-mode="basic">Filter by Year</button>
-                  <button type="button" class="pill-btn" id="btn-filter-subtopic" data-mode="deep">Filter by Subtopic</button>
+                  <button type="button" class="pill-btn active" id="btn-filter-year" data-mode="basic" onclick="switchFilterMode('year', this)">Filter by Year</button>
+                  <button type="button" class="pill-btn" id="btn-filter-subtopic" data-mode="deep" onclick="switchFilterMode('subtopic', this)">Filter by Subtopic</button>
                 </div>
               </div>
 
@@ -316,6 +316,33 @@
     }
   });
 </script>
-
+<script>
+  function switchFilterMode(mode, btn) {
+    var yearBtn = document.getElementById('btn-filter-year');
+    var subBtn = document.getElementById('btn-filter-subtopic');
+    var yearSel = document.getElementById('filter-year');
+    var topicSel = document.getElementById('filter-topic');
+    
+    // Toggle active class (highlight)
+    yearBtn.classList.remove('active');
+    subBtn.classList.remove('active');
+    btn.classList.add('active');
+    
+    // Toggle visibility of the dropdowns
+    if (mode === 'year') {
+      yearSel.style.display = 'block';
+      topicSel.style.display = 'none';
+      topicSel.value = 'ALL'; // Clear topic so it doesn't block results
+    } else {
+      topicSel.style.display = 'block';
+      yearSel.style.display = 'none';
+      yearSel.value = 'ALL'; // Clear year so it doesn't block results
+    }
+    
+    // Automatically trigger the search so results update immediately
+    var searchBtn = document.getElementById('search-bank-btn');
+    if (searchBtn) searchBtn.click();
+  }
+</script>
 </body>
 </html>
