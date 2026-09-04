@@ -1337,3 +1337,7 @@ footer { border-top: 1px solid var(--border); color: var(--muted); text-align: c
   .bank-actions { width: 100%; }
   .bank-actions button { flex: 1; }
 }
+/* Smooth Dark Mode Transitions */
+body, .sidebar, .topbar, .card, .stat, .filter-box, .bank-item, .empty-state, input, select, textarea, button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
