@@ -1,4 +1,47 @@
+:root {
+  --primary: #2D6A4F;
+  --primary-dark: #1B4332;
+  --primary-hover: #1B4332;
+  --primary-soft: #D8F3DC;
+  --accent: #74C69D;
+  --accent-soft: #D8F3DC;
+  --highlight: #D4A373;
+  --highlight-soft: #FAEDCD;
+  --warm-sand: #D4A373;
+  --sky-blue: #457B9D;
+  --warm-sand-soft: #FAEDCD;
+  --bg: #F5F7F3;
+  --surface: #FFFFFF;
+  --surface-2: #EEF2EE;
+  --text: #2B2B2B;
+  --text-soft: #555555;
+  --muted: #7A7A7A;
+  --border: #DCE3D8;
+  --border-strong: #B8C4B1;
+  --sidebar-bg: #FFFFFF;
+  --card-bg: #FFFFFF;
+  --danger: #DC2626;
+  --danger-soft: #FEE2E2;
+  --shadow: 0 12px 35px -5px rgba(27, 67, 50, 0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
+  --shadow-sm: 0 2px 8px rgba(27, 67, 50, 0.05);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --sans: 'Plus Jakarta Sans', sans-serif;
+  --serif: Georgia, serif;
+}
 
+/* DARK MODE */
+body.dark-mode {
+  --primary: #95D5B2; --primary-dark: #0D1F17; --primary-hover: #74C69D; --primary-soft: #1B4332;
+  --accent: #52B788; --accent-soft: #1B4332; --highlight: #E9C46A; --highlight-soft: #2A241B;
+  --warm-sand: #E9C46A; --sky-blue: #A8DADC; --warm-sand-soft: #2A241B;
+  --bg: #0F1210; --surface: #181C19; --surface-2: #222824;
+  --text: #F0F0F0; --text-soft: #B0B0B0; --muted: #808080;
+  --border: #2E3630; --border-strong: #4D5B50;
+  --sidebar-bg: #181C19; --card-bg: #181C19;
+  --danger: #F87171; --danger-soft: #450A0A;
+  --shadow: 0 14px 35px -5px rgba(0,0,0,0.4); --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -92,7 +135,7 @@ button{cursor:pointer}
   color:#fff;
   box-shadow:0 6px 16px rgba(124,58,237,0.25);
 }
-[data-theme="dark"] .nav-btn.active {
+body.dark-mode .nav-btn.active {
   background:linear-gradient(135deg, var(--primary), var(--accent));
   box-shadow:0 6px 16px rgba(167,139,250,0.3);
 }
@@ -415,11 +458,11 @@ textarea:focus,input[type=text]:focus,select:focus{
 .tag-paper-gs3{background:#e0e7ff;color:#3730a3}
 .tag-paper-gs4{background:#fae8ff;color:#86198f}
 .tag-paper-opt{background:#fdf2f8;color:#a21caf}
-[data-theme="dark"] .tag-paper-gs1{background:#451a03;color:#fde68a}
-[data-theme="dark"] .tag-paper-gs2{background:#064e3b;color:#a7f3d0}
-[data-theme="dark"] .tag-paper-gs3{background:#1e1b4b;color:#c7d2fe}
-[data-theme="dark"] .tag-paper-gs4{background:#701a75;color:#f5d0fe}
-[data-theme="dark"] .tag-paper-opt{background:#4a044e;color:#f5d0fe}
+body.dark-mode .tag-paper-gs1{background:#451a03;color:#fde68a}
+body.dark-mode .tag-paper-gs2{background:#064e3b;color:#a7f3d0}
+body.dark-mode .tag-paper-gs3{background:#1e1b4b;color:#c7d2fe}
+body.dark-mode .tag-paper-gs4{background:#701a75;color:#f5d0fe}
+body.dark-mode .tag-paper-opt{background:#4a044e;color:#f5d0fe}
 .bank-actions{display:flex;gap:8px;flex-wrap:wrap}
 .btn-secondary-sm{
   border:1px solid var(--border);
@@ -490,29 +533,29 @@ textarea:focus,input[type=text]:focus,select:focus{
   box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6) !important;
   transform: translateY(-2px);
 }
-[data-theme="dark"] .btn-add-item {
+body.dark-mode .btn-add-item {
   background: #064e3b !important;
   border-color: #34d399 !important;
   color: #a7f3d0 !important;
 }
-[data-theme="dark"] .btn-add-item:hover {
+body.dark-mode .btn-add-item:hover {
   background: #10b981 !important;
   color: #ffffff !important;
 }
-[data-theme="dark"] .btn-direct-pdf {
+body.dark-mode .btn-direct-pdf {
   background: #451a03 !important;
   border-color: #fbbf24 !important;
   color: #fde68a !important;
 }
-[data-theme="dark"] .btn-direct-pdf:hover {
+body.dark-mode .btn-direct-pdf:hover {
   background: #f59e0b !important;
   color: #ffffff !important;
 }
-[data-theme="dark"] .btn-ai-highlight {
+body.dark-mode .btn-ai-highlight {
   background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
 }
-[data-theme="dark"] .btn-ai-highlight:hover {
+body.dark-mode .btn-ai-highlight:hover {
   background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
   box-shadow: 0 8px 25px rgba(139, 92, 246, 0.65) !important;
 }
@@ -1108,68 +1151,6 @@ footer{
    NEW FOREST GREEN THEME (ADDED AT THE BOTTOM)
    ========================================== */
 
-/* 🚨 IMPORTANT: If you had :root elsewhere, delete that old block and keep THIS one. */
-:root {
-  /* Forest Greens */
-  --primary: #2D6A4F;        
-  --primary-dark: #1B4332;   
-  --accent: #74C69D;         
-  --accent-soft: #D8F3DC;    
-
-  /* Added Colors */
-  --warm-sand: #D4A373;      
-  --sky-blue: #457B9D;       
-  --warm-sand-soft: #FAEDCD; 
-  
-  /* Easy-on-the-eyes Backgrounds */
-  --bg: #F5F7F3;             /* Soft warm off-white */
-  --surface: #FFFFFF;        /* Cards */
-  --surface-2: #EEF2EE;      
-  --text: #2B2B2B;           
-  --text-soft: #555555;
-  --muted: #7A7A7A;
-  --border: #DCE3D8;         
-  --border-strong: #B8C4B1;
-  
-  --danger: #DC2626;
-  --danger-soft: #FEE2E2;
-  
-  --shadow: 0 12px 35px -5px rgba(27, 67, 50, 0.1), 0 4px 12px -2px rgba(0,0,0,0.03);
-  --shadow-sm: 0 2px 8px rgba(27, 67, 50, 0.05);
-  --radius: 18px;
-  --radius-sm: 10px;
-  --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --serif: Georgia, "Times New Roman", serif;
-}
-
-/* If your old file had * { box-sizing: border-box; }, you can ignore this next one. If not, keep it. */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-/* DARK MODE VARIABLES */
-body.dark-mode {
-  --primary: #95D5B2;        
-  --primary-dark: #0D1F17;   
-  --accent: #52B788;         
-  --accent-soft: #1B4332;    
-  
-  --warm-sand: #E9C46A;      
-  --sky-blue: #A8DADC;       
-  --warm-sand-soft: #2A241B; 
-  
-  --bg: #0F1210;             
-  --surface: #181C19;        
-  --surface-2: #222824;      
-  --text: #F0F0F0;
-  --text-soft: #B0B0B0;
-  --muted: #808080;
-  --border: #2E3630;         
-  --border-strong: #4D5B50;  
-  --danger: #F87171;
-  --danger-soft: #450A0A;
-  
-  --shadow: 0 14px 35px -5px rgba(0,0,0,0.4);
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
-}
-
 /* Forest Green Body */
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1273,7 +1254,7 @@ footer { border-top: 1px solid var(--border); color: var(--muted); text-align: c
 
   /* Mobile Sidebar Close Button */
   .sidebar-header-mobile { display: flex; }
-  .mobile-menu-close { display: block; }
+  .mobile-menu-close { display: block; background: none; border: none; font-size: 22px; color: var(--muted); }
 
   /* Backdrop behind menu */
   .mobile-menu-backdrop {
@@ -1315,19 +1296,7 @@ footer { border-top: 1px solid var(--border); color: var(--muted); text-align: c
   
   /* Mobile Action Buttons */
   .mobile-actions-right { display: flex; align-items: center; gap: 8px; }
-  .mobile-theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface-2);
-    color: var(--text);
-    font-size: 16px;
-    cursor: pointer;
-  }
+  .mobile-theme-toggle { border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); color: var(--text); width: 38px; height: 38px; font-size: 16px; }
   .mobile-menu-toggle {
     display: inline-flex !important;
     align-items: center;
