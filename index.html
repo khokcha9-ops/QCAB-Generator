@@ -207,10 +207,9 @@
                     <option value="OPT1">Anthropology Optional Paper 1</option>
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
-
-                  <select id="filter-topic" class="topic-filter-select hidden">
-                    <option value="ALL">All Subtopics</option>
-                  </select>
+<select id="filter-topic" class="topic-filter-select">
+    <option value="ALL">All Subtopics</option>
+</select>
 
                   <select id="filter-year">
                     <option value="ALL">All Years</option>
@@ -328,15 +327,18 @@
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
-    // Toggle visibility of the dropdowns
-    if (mode === 'year') {
-      yearSel.style.display = 'block';
-      topicSel.style.display = 'none';
-      topicSel.value = 'ALL'; // Clear topic so it doesn't block results
+    // KEEP BOTH FILTERS VISIBLE (Year and Topic)
+    yearSel.style.display = 'block';
+    topicSel.style.display = 'block';
+
+    // If Subtopic mode is selected, force app.js to load ALL subtopics
+    if (mode === 'subtopic') {
+      var paperSel = document.getElementById('filter-paper');
+      // This triggers the existing 'change' listener in app.js, which fills the dropdown with all GS1 to OPT2 topics
+      paperSel.dispatchEvent(new Event('change'));
     } else {
-      topicSel.style.display = 'block';
-      yearSel.style.display = 'none';
-      yearSel.value = 'ALL'; // Clear year so it doesn't block results
+      // If Year mode is selected, clear the topic so it doesn't block results
+      topicSel.value = 'ALL';
     }
     
     // Automatically trigger the search so results update immediately
