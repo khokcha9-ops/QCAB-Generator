@@ -414,34 +414,21 @@
     }
 
     // ================================================================
-    // FETCH ANSWER
+    // FETCH ANSWER (LOGIN CHECK REMOVED)
     // ================================================================
     async function fetchAnswer() {
-      const userToken = localStorage.getItem('userToken');
-      if (!userToken) {
-        alert("Please login first to view the answer.");
-        window.location.href = "/login.html";
-        return;
-      }
+      // LOGIN CHECK HAS BEEN REMOVED. No userToken needed, no redirects.
 
       try {
         const res = await fetch(AI_PROXY_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + userToken
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ question: questionText })
         });
 
         const data = await res.json();
-
-        if (res.status === 401) {
-          localStorage.removeItem('userToken');
-          alert("Session expired. Please login again.");
-          window.location.href = "/login.html";
-          return;
-        }
 
         if (!res.ok) {
           throw new Error(data.error || `Server error (${res.status})`);
@@ -453,22 +440,11 @@
 
         // --- Render Markdown ---
         if (window.marked) {
-          // Configure marked for better tables and breaks
           marked.setOptions({ breaks: true, gfm: true });
           contentEl.innerHTML = marked.parse(answerMarkdown);
         } else {
           contentEl.textContent = answerMarkdown;
         }
-
-        // --- Apply colour classes to the rendered HTML ---
-        // We'll wrap the content and add classes manually, but marked doesn't add classes.
-        // Instead, we can add a post-processing step: wrap specific patterns.
-        // For now, we rely on the markdown source having the classes already
-        // (e.g., via <span class="kw-term">). If not, we can apply a simple heuristic.
-        // But the user's AI response already contains these classes (they asked to keep colour coding).
-
-        // We'll just ensure the classes are applied from the markdown.
-        // The markdown will be parsed, and the spans will remain.
 
         printBtn.style.display = 'inline-block';
         copyBtn.style.display = 'inline-block';
