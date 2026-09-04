@@ -848,7 +848,7 @@ footer{
 .login-modal-close:hover { color: var(--text); }
 
 /* ============================================================
-   AI MODEL MODAL (with brand icons)
+   AI MODEL MODAL
    ============================================================ */
 .ai-model-modal {
   position: fixed;
@@ -944,6 +944,110 @@ footer{
   padding: 8px;
 }
 .btn-cancel-model:hover { color: var(--text); }
+
+/* ============================================================
+   CUSTOM MODAL
+   ============================================================ */
+.custom-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10003;
+  animation: fadeIn 0.25s ease;
+}
+.custom-modal-overlay.active { display: flex; }
+
+.custom-modal {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 32px 28px;
+  max-width: 460px;
+  width: 92%;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  border: 1px solid var(--border);
+  animation: slideUp 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.custom-modal h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.custom-modal p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+.custom-modal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.custom-modal .modal-actions .btn {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.custom-modal .modal-actions .btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.custom-modal .modal-actions .btn-primary:hover {
+  background: var(--primary-hover, #6d28d9);
+  transform: scale(1.02);
+}
+.custom-modal .modal-actions .btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.custom-modal .modal-actions .btn-secondary:hover {
+  background: var(--border);
+}
+.custom-modal .modal-actions .btn-danger {
+  background: var(--danger, #b91c1c);
+  color: #fff;
+}
+.custom-modal .modal-actions .btn-danger:hover {
+  background: #991b1b;
+  transform: scale(1.02);
+}
+.custom-modal .modal-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 16px;
+}
+.custom-modal .modal-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
 /* ============================================================
    RESPONSIVE
