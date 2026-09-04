@@ -1,21 +1,29 @@
 // ============================================================
-// js/auth.js – Authentication (with custom modal)
+// js/auth.js – Authentication (debug version)
 // ============================================================
 
+console.log('🔐 auth.js loaded');
+
+// Make sure WORKER_URL exists (fallback)
 if (typeof WORKER_URL === 'undefined') {
   var WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
-  console.warn('WORKER_URL not found – using default.');
 }
 
+// ----- User session -----
 function getUser() {
+  console.log('🔍 getUser() called');
   try {
     const data = JSON.parse(localStorage.getItem('qcab_user'));
-    if (data && data.email) return data;
-  } catch (_) { return null; }
+    if (data && data.email) {
+      console.log('👤 User found:', data.email);
+      return data;
+    }
+  } catch (_) { console.log('⚠️ No user data found'); }
   return null;
 }
 
 function setUser(user) {
+  console.log('💾 setUser() called with:', user);
   if (user) {
     localStorage.setItem('qcab_user', JSON.stringify(user));
     localStorage.setItem('userToken', user.token || '');
@@ -29,6 +37,7 @@ function setUser(user) {
 }
 
 function updateAuthUI() {
+  console.log('🔄 updateAuthUI() called');
   const user = getUser();
   const isLoggedIn = !!user;
   document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
@@ -36,9 +45,16 @@ function updateAuthUI() {
   });
 }
 
+// ----- Login Modal -----
 function openLoginModal(mode = 'login') {
+  console.log('🚪 openLoginModal() called with mode:', mode);
   const modal = document.getElementById('login-modal');
-  if (!modal) return;
+  if (!modal) {
+    console.error('❌ Login modal not found! Check HTML for #login-modal');
+    alert('Login modal not found. Please refresh the page.');
+    return;
+  }
+  console.log('✅ Login modal found, opening...');
 
   const title = document.getElementById('login-modal-title');
   const sub = document.getElementById('login-modal-sub');
@@ -68,14 +84,18 @@ function openLoginModal(mode = 'login') {
   if (nameInput) nameInput.value = '';
 
   modal.classList.add('open');
+  console.log('✅ Modal opened, classList:', modal.classList);
 }
 
 function closeLoginModal() {
+  console.log('🚪 closeLoginModal() called');
   const modal = document.getElementById('login-modal');
   if (modal) modal.classList.remove('open');
 }
 
+// ----- Initialize auth -----
 function initAuth() {
+  console.log('🔧 initAuth() called');
   const modal = document.getElementById('login-modal');
   const closeBtn = document.getElementById('login-modal-close');
   const submitBtn = document.getElementById('login-submit-btn');
@@ -83,12 +103,17 @@ function initAuth() {
   const googleBtn = document.getElementById('google-login-btn');
   const error = document.getElementById('login-error');
 
-  if (!modal) return;
+  if (!modal) {
+    console.warn('⚠️ Login modal not found. Skipping auth init.');
+    return;
+  }
 
+  // Close on backdrop click
   modal.addEventListener('click', function(e) {
     if (e.target === this) closeLoginModal();
   });
 
+  // Close button
   if (closeBtn) {
     closeBtn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -96,6 +121,7 @@ function initAuth() {
     });
   }
 
+  // Switch between login/register
   if (switchLink) {
     switchLink.addEventListener('click', function() {
       const isLogin = submitBtn?.textContent === 'Sign In';
@@ -103,12 +129,14 @@ function initAuth() {
     });
   }
 
+  // Google button (placeholder)
   if (googleBtn) {
     googleBtn.addEventListener('click', function() {
-      showAlert('Google login is not configured yet. Use email/password.', 'Not Available');
+      showAlert('Google login is not configured yet.', 'Not Available');
     });
   }
 
+  // Submit login/register
   if (submitBtn) {
     submitBtn.addEventListener('click', async function() {
       const email = document.getElementById('login-email').value.trim();
@@ -137,7 +165,7 @@ function initAuth() {
       const endpoint = isLogin ? '/api/login' : '/api/register';
 
       try {
-        let body = { email, password };
+        const body = { email, password };
         if (!isLogin) body.name = name;
 
         const res = await fetch(WORKER_URL + endpoint, {
@@ -158,18 +186,20 @@ function initAuth() {
           userId: data.userId,
           name: data.name || name
         });
+
         closeLoginModal();
-        await showAlert(isLogin ? 'Welcome back!' : 'Account created!', 'Success');
+        showAlert(isLogin ? 'Welcome back!' : 'Account created!', 'Success');
 
         if (typeof loadCloudStudy === 'function') loadCloudStudy();
         if (typeof renderBankResults === 'function') renderBankResults();
         if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
 
       } catch (err) {
+        // Mock fallback if worker is unreachable
         if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
           setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
           closeLoginModal();
-          await showAlert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)', 'Mock Mode');
+          showAlert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)', 'Mock Mode');
           if (typeof loadCloudStudy === 'function') loadCloudStudy();
           if (typeof renderBankResults === 'function') renderBankResults();
           if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
@@ -183,6 +213,7 @@ function initAuth() {
     });
   }
 
+  // Enter key support
   document.getElementById('login-email')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') submitBtn?.click();
   });
