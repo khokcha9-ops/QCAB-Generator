@@ -1,83 +1,3 @@
-/* ==========================================
-   THEME TOGGLE (DARK MODE)
-   ========================================== */
-function toggleTheme() {
-  document.body.classList.toggle('dark-mode');
-  const isDark = document.body.classList.contains('dark-mode');
-  localStorage.setItem('qcab-theme', isDark ? 'dark' : 'light');
-  
-  const themeIcon = document.getElementById('theme-icon');
-  const themeText = document.getElementById('theme-text');
-  if(themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
-  if(themeText) themeText.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-}
-
-// Attach the event to ALL theme buttons (Topbar, Sidebar, Mobile)
-document.addEventListener('DOMContentLoaded', () => {
-  const desktopBtn = document.getElementById('theme-toggle');
-  const sidebarBtn = document.getElementById('sidebar-theme');
-  const mobileBtn = document.getElementById('mobile-theme-toggle');
-
-  if(desktopBtn) desktopBtn.addEventListener('click', toggleTheme);
-  if(sidebarBtn) sidebarBtn.addEventListener('click', toggleTheme);
-  if(mobileBtn) mobileBtn.addEventListener('click', toggleTheme);
-
-  // Apply saved theme on page load
-  if (localStorage.getItem('qcab-theme') === 'dark') {
-    document.body.classList.add('dark-mode');
-    const icon = document.getElementById('theme-icon');
-    const text = document.getElementById('theme-text');
-    if(icon) icon.textContent = '☀️';
-    if(text) text.textContent = 'Light Mode';
-  }
-});
-
-/* MOBILE SIDEBAR TOGGLE */
-function setupMobileMenu() {
-  const sidebar = document.getElementById('main-sidebar');
-  const backdrop = document.getElementById('mobile-backdrop');
-  const openBtn = document.getElementById('mobile-menu-toggle');
-  const closeBtn = document.getElementById('mobile-menu-close');
-
-  if(openBtn) openBtn.addEventListener('click', () => {
-    sidebar.classList.add('mobile-open');
-    backdrop.classList.add('active');
-  });
-
-  if(closeBtn) closeBtn.addEventListener('click', () => {
-    sidebar.classList.remove('mobile-open');
-    backdrop.classList.remove('active');
-  });
-
-  if(backdrop) backdrop.addEventListener('click', () => {
-    sidebar.classList.remove('mobile-open');
-    backdrop.classList.remove('active');
-  });
-}
-
-// Run this when the page loads
-document.addEventListener('DOMContentLoaded', setupMobileMenu);
-
-// Close mobile menu when a nav button is clicked
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebar = document.getElementById('main-sidebar');
-  const backdrop = document.getElementById('mobile-backdrop');
-  const navButtons = document.querySelectorAll('.nav-btn');
-
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      sidebar.classList.remove('mobile-open');
-      backdrop.classList.remove('active');
-    });
-  });
-});
-
-// ==========================================
-// CUSTOM MODAL SYSTEM - at the top (outside DOMContentLoaded)
-// ==========================================
-
-async function showAlert(message, title = 'Notice') {
-  // ... (rest of your code)
 // ============================================================
 // CUSTOM MODAL SYSTEM – at the top (outside DOMContentLoaded)
 // ============================================================
@@ -272,9 +192,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   // 2. THEME
   // ============================================================
-  function applyTheme(theme) {
+    function applyTheme(theme) {
     const isDark = theme === 'dark';
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+    document.body.classList.toggle('dark-mode', isDark); // Changed to body.dark-mode
     localStorage.setItem('qcab_theme', theme);
     const icon = document.getElementById('theme-icon');
     const text = document.getElementById('theme-text');
@@ -283,23 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
   }
-
-  const savedTheme = localStorage.getItem('qcab_theme') ||
-    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  applyTheme(savedTheme);
-
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(isDark ? 'light' : 'dark');
-  });
-  document.getElementById('mobile-theme-toggle')?.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(isDark ? 'light' : 'dark');
-  });
-  document.getElementById('sidebar-theme')?.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(isDark ? 'light' : 'dark');
-  });
 
   // ============================================================
   // 3. MOBILE MENU
@@ -1397,38 +1300,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
- // --- LOGIN BUTTONS ---
-document.getElementById('topbar-login-btn')?.addEventListener('click', function(e) {
-  console.log('👆 Topbar login button clicked');
-  const user = window.getUser();
-  if (user) {
-    if (confirm('Logout?')) {
-      window.setUser(null);
-      if (typeof showToast === 'function') showToast('Logged out.', '👋');
-      studyData = {};
-      renderBankResults();
-      updateStudyDashboard();
+  // ============================================================
+  // 26. LOGIN BUTTONS
+  // ============================================================
+  document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
+    const user = getUser();
+    if (user) {
+      if (await showConfirm('Logout?', 'Confirm Logout')) {
+        setUser(null);
+        showToast('Logged out.', '👋');
+        studyData = {};
+        renderBankResults();
+        updateStudyDashboard();
+      }
+    } else {
+      openLoginModal('login');
     }
-  } else {
-    window.openLoginModal('login');
-  }
-});
+  });
 
-document.getElementById('sidebar-login-btn')?.addEventListener('click', function(e) {
-  console.log('👆 Sidebar login button clicked');
-  const user = window.getUser();
-  if (user) {
-    if (confirm('Logout?')) {
-      window.setUser(null);
-      if (typeof showToast === 'function') showToast('Logged out.', '👋');
-      studyData = {};
-      renderBankResults();
-      updateStudyDashboard();
+  document.getElementById('sidebar-login-btn')?.addEventListener('click', async () => {
+    const user = getUser();
+    if (user) {
+      if (await showConfirm('Logout?', 'Confirm Logout')) {
+        setUser(null);
+        showToast('Logged out.', '👋');
+        studyData = {};
+        renderBankResults();
+        updateStudyDashboard();
+      }
+    } else {
+      openLoginModal('login');
     }
-  } else {
-    window.openLoginModal('login');
-  }
-});
+  });
 
   // ============================================================
   // 27. AI MODEL SELECTION MODAL (FULL PROMPT FOR ALL)
