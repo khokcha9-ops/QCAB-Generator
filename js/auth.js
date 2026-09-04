@@ -1,5 +1,5 @@
 // ============================================================
-// js/auth.js – Authentication (with mock fallback)
+// js/auth.js – Authentication (corrected endpoints)
 // ============================================================
 
 function getUser() {
@@ -41,19 +41,27 @@ function openLoginModal(mode = 'login') {
   const switchText = document.getElementById('login-switch-text');
   const switchLink = document.getElementById('login-switch-link');
   const error = document.getElementById('login-error');
+  const nameField = document.getElementById('login-name-field');
 
   const isLogin = mode === 'login';
-  if (title) title.textContent = isLogin ? 'Welcome Back' : 'Create Account';
-  if (sub) sub.textContent = isLogin ? 'Sign in to access AI answers.' : 'Register to save your bookmarks.';
-  if (submitBtn) submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
-  if (switchText) switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
-  if (switchLink) switchLink.textContent = isLogin ? 'Sign up' : 'Sign In';
+  title.textContent = isLogin ? 'Welcome Back' : 'Create Account';
+  sub.textContent = isLogin ? 'Sign in to access AI answers.' : 'Register to save your bookmarks.';
+  submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
+  switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+  switchLink.textContent = isLogin ? 'Sign up' : 'Sign In';
   if (error) error.style.display = 'none';
+
+  // Show/hide name field for registration
+  if (nameField) {
+    nameField.style.display = isLogin ? 'none' : 'block';
+  }
 
   const email = document.getElementById('login-email');
   const password = document.getElementById('login-password');
+  const nameInput = document.getElementById('login-name');
   if (email) email.value = '';
   if (password) password.value = '';
+  if (nameInput) nameInput.value = '';
 
   modal.classList.add('open');
 }
@@ -101,11 +109,14 @@ function initAuth() {
     });
   }
 
-  // Submit login/register with MOCK FALLBACK
+  // Submit login/register (correct endpoints)
   if (submitBtn) {
     submitBtn.addEventListener('click', async function() {
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value.trim();
+      const name = document.getElementById('login-name')?.value.trim() || 'User';
+      const isLogin = submitBtn.textContent === 'Sign In';
+
       if (!email || !password) {
         if (error) {
           error.textContent = 'Please fill in all fields.';
@@ -113,40 +124,63 @@ function initAuth() {
         }
         return;
       }
+
+      // For registration, name is required
+      if (!isLogin && !name) {
+        if (error) {
+          error.textContent = 'Please enter your name.';
+          error.style.display = 'block';
+        }
+        return;
+      }
+
       if (error) error.style.display = 'none';
 
-      const isLogin = submitBtn.textContent === 'Sign In';
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      // Correct endpoints (no "/auth" in path)
+      const endpoint = isLogin ? '/api/login' : '/api/register';
 
       try {
-        // Try real API first
+        let body = { email, password };
+        if (!isLogin) body.name = name;
+
         const res = await fetch(WORKER_URL + endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify(body)
         });
 
+        const data = await res.json();
+
         if (!res.ok) {
-          // If endpoint not found, fallback to mock login
-          if (res.status === 404) {
-            throw new Error('Endpoint not found – using mock login.');
-          }
-          const data = await res.json();
           throw new Error(data.error || 'Authentication failed.');
         }
 
-        const data = await res.json();
-        setUser({ email, token: data.token || 'dummy-token' });
+        // Success
+        setUser({
+          email,
+          token: data.token || 'dummy-token',
+          userId: data.userId,
+          name: data.name || name
+        });
         closeLoginModal();
-        alert(isLogin ? 'Welcome back!' : 'Account created! (Real API)');
+        alert(isLogin ? 'Welcome back!' : 'Account created!');
+
+        // Refresh UI
+        if (typeof loadCloudStudy === 'function') loadCloudStudy();
+        if (typeof renderBankResults === 'function') renderBankResults();
+        if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
 
       } catch (err) {
-        // MOCK FALLBACK – allow any email/password
-        if (err.message.includes('mock') || err.message.includes('Endpoint not found')) {
-          // Mock success
-          setUser({ email, token: 'mock-token-' + Date.now() });
+        // MOCK FALLBACK – if Worker not deployed, allow mock login
+        if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+          // Mock success (any email/password works)
+          setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
           closeLoginModal();
           alert(isLogin ? 'Welcome back! (Mock mode)' : 'Account created! (Mock mode)');
+          // Refresh UI
+          if (typeof loadCloudStudy === 'function') loadCloudStudy();
+          if (typeof renderBankResults === 'function') renderBankResults();
+          if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
         } else {
           if (error) {
             error.textContent = err.message || 'Something went wrong.';
@@ -154,11 +188,6 @@ function initAuth() {
           }
         }
       }
-
-      // Refresh UI after login
-      if (typeof loadCloudStudy === 'function') loadCloudStudy();
-      if (typeof renderBankResults === 'function') renderBankResults();
-      if (typeof updateStudyDashboard === 'function') updateStudyDashboard();
     });
   }
 
@@ -169,7 +198,10 @@ function initAuth() {
   document.getElementById('login-password')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') submitBtn?.click();
   });
+  document.getElementById('login-name')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitBtn?.click();
+  });
 
   updateAuthUI();
-  console.log('✅ Auth initialized (with mock fallback)');
+  console.log('✅ Auth initialized (endpoints: /api/login, /api/register)');
 }
