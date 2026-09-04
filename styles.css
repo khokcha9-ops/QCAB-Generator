@@ -1,3 +1,14 @@
+:root {
+    /* Forest Green Palette */
+    --deep-canopy: #1B4332;      /* Header/Footer background */
+    --leafy-primary: #2D6A4F;    /* Main Buttons, Selected States */
+    --mossy-accent: #74C69D;     /* Hover states, Links, Highlights */
+    --paper-white: #F8F9FA;      /* Website Background */
+    --ink-black: #1a1a1a;        /* Text for reading questions */
+    
+    /* Fonts */
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 :root{
   --bg:#f4f7fc;
   --surface:#ffffff;
