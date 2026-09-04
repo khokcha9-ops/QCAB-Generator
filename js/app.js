@@ -1,7 +1,127 @@
 // ============================================================
-// js/app.js – Complete Application Logic (with debug logs)
+// CUSTOM MODAL SYSTEM – at the top (outside DOMContentLoaded)
 // ============================================================
 
+async function showAlert(message, title = 'Notice') {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('customModal');
+    if (!overlay) { alert(message); resolve(); return; }
+    const titleEl = document.getElementById('modalTitle');
+    const messageEl = document.getElementById('modalMessage');
+    const inputContainer = document.getElementById('modalInputContainer');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+
+    if (titleEl) titleEl.textContent = title;
+    if (messageEl) messageEl.textContent = message;
+    if (inputContainer) inputContainer.style.display = 'none';
+    if (confirmBtn) {
+      confirmBtn.textContent = 'OK';
+      confirmBtn.className = 'btn btn-primary';
+      confirmBtn.onclick = function() {
+        overlay.classList.remove('active');
+        resolve();
+      };
+    }
+    if (cancelBtn) cancelBtn.style.display = 'none';
+    overlay.classList.add('active');
+    confirmBtn?.focus();
+  });
+}
+
+async function showConfirm(message, title = 'Confirm') {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('customModal');
+    if (!overlay) { resolve(confirm(message)); return; }
+    const titleEl = document.getElementById('modalTitle');
+    const messageEl = document.getElementById('modalMessage');
+    const inputContainer = document.getElementById('modalInputContainer');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+
+    if (titleEl) titleEl.textContent = title;
+    if (messageEl) messageEl.textContent = message;
+    if (inputContainer) inputContainer.style.display = 'none';
+    if (confirmBtn) {
+      confirmBtn.textContent = 'OK';
+      confirmBtn.className = 'btn btn-primary';
+      confirmBtn.onclick = function() {
+        overlay.classList.remove('active');
+        resolve(true);
+      };
+    }
+    if (cancelBtn) {
+      cancelBtn.style.display = 'inline-block';
+      cancelBtn.className = 'btn btn-secondary';
+      cancelBtn.onclick = function() {
+        overlay.classList.remove('active');
+        resolve(false);
+      };
+    }
+    overlay.classList.add('active');
+    confirmBtn?.focus();
+  });
+}
+
+async function showPrompt(message, title = 'Enter Value', defaultValue = '') {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('customModal');
+    if (!overlay) { resolve(prompt(message, defaultValue)); return; }
+    const titleEl = document.getElementById('modalTitle');
+    const messageEl = document.getElementById('modalMessage');
+    const inputContainer = document.getElementById('modalInputContainer');
+    const inputEl = document.getElementById('modalInput');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+
+    if (titleEl) titleEl.textContent = title;
+    if (messageEl) messageEl.textContent = message;
+    if (inputContainer) inputContainer.style.display = 'block';
+    if (inputEl) inputEl.value = defaultValue || '';
+    if (confirmBtn) {
+      confirmBtn.textContent = 'OK';
+      confirmBtn.className = 'btn btn-primary';
+      confirmBtn.onclick = function() {
+        overlay.classList.remove('active');
+        resolve(inputEl ? inputEl.value : '');
+      };
+    }
+    if (cancelBtn) {
+      cancelBtn.style.display = 'inline-block';
+      cancelBtn.className = 'btn btn-secondary';
+      cancelBtn.onclick = function() {
+        overlay.classList.remove('active');
+        resolve(null);
+      };
+    }
+    overlay.classList.add('active');
+    inputEl?.focus();
+    inputEl?.select();
+  });
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('customModal');
+    if (overlay?.classList.contains('active')) {
+      overlay.classList.remove('active');
+    }
+  }
+});
+
+// Close modal on backdrop click
+document.getElementById('customModal')?.addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.classList.remove('active');
+  }
+});
+
+console.log('✅ Custom modal system loaded');
+
+// ============================================================
+// MAIN APP – inside DOMContentLoaded
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
 
   console.log('🚀 App.js loaded');
@@ -517,7 +637,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const isYearMode = modeYearRadio ? modeYearRadio.checked : true;
 
-    // Reset the opposite filter
     if (isYearMode && filterTopic) {
       filterTopic.value = 'ALL';
     } else if (!isYearMode && filterYear) {
@@ -536,17 +655,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let filtered = presetBank.filter((q) => {
       const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
-      // Search query
       if (query && !qText.includes(query)) return false;
-
-      // Paper filter
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
 
       if (isYearMode) {
-        // Year filter
         if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
       } else {
-        // Topic filter
         if (selectedT !== 'ALL') {
           const qTopicClean = String(q.topic || '').trim().toLowerCase();
           const selectedTClean = String(selectedT).trim().toLowerCase();
@@ -769,11 +883,11 @@ document.addEventListener('DOMContentLoaded', function() {
             studyData = data;
             saveStudyData();
             renderBankResults();
-            alert('Study data imported successfully!');
+            showAlert('Study data imported successfully!', 'Import Complete');
           } else {
-            alert('Invalid file format.');
+            showAlert('Invalid file format.', 'Error');
           }
-        } catch(err) { alert('Error reading file.'); }
+        } catch(err) { showAlert('Error reading file.', 'Error'); }
       };
       reader.readAsText(file);
     };
@@ -910,7 +1024,7 @@ document.addEventListener('DOMContentLoaded', function() {
     savePresets();
     populateFilterYears();
     populateFilterTopics();
-    alert('Question saved to Preset Bank!');
+    showAlert('Question saved to Preset Bank!', 'Success');
     resetForm();
     renderBankResults();
   });
@@ -963,8 +1077,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const newBtn = document.createElement('button');
     newBtn.className = 'btn-new-folder';
     newBtn.textContent = '+ New Folder';
-    newBtn.addEventListener('click', () => {
-      const name = prompt(`Create subfolder under "${current.name}":`);
+    newBtn.addEventListener('click', async () => {
+      const name = await showPrompt(`Create subfolder under "${current.name}":`, 'Create Folder');
       if (name && name.trim()) {
         const newId = generateUniqueId('folder');
         folderMap[newId] = {
@@ -983,10 +1097,13 @@ document.addEventListener('DOMContentLoaded', function() {
     folderBar.appendChild(newBtn);
   }
 
-  renameFolderBtn?.addEventListener('click', () => {
+  renameFolderBtn?.addEventListener('click', async () => {
     const current = getActiveFolder();
-    if (current.id === 'root') { alert('Cannot rename root folder.'); return; }
-    const newName = prompt('Rename folder:', current.name);
+    if (current.id === 'root') { 
+      showAlert('Cannot rename root folder.', 'Error');
+      return; 
+    }
+    const newName = await showPrompt('Rename folder:', 'Rename Folder', current.name);
     if (newName && newName.trim()) {
       current.name = newName.trim();
       saveState();
@@ -994,10 +1111,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  deleteFolderBtn?.addEventListener('click', () => {
+  deleteFolderBtn?.addEventListener('click', async () => {
     const current = getActiveFolder();
-    if (current.id === 'root') { alert('Cannot delete root folder.'); return; }
-    if (confirm(`Delete folder "${current.name}" and its content?`)) {
+    if (current.id === 'root') { 
+      showAlert('Cannot delete root folder.', 'Error');
+      return; 
+    }
+    if (await showConfirm(`Delete folder "${current.name}" and its content?`, 'Delete Folder')) {
       const parent = folderMap[current.parentId];
       if (parent) {
         parent.subfolders = parent.subfolders.filter(id => id !== current.id);
@@ -1009,8 +1129,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  clearQBtn?.addEventListener('click', () => {
-    if (confirm('Clear all questions from active folder?')) {
+  clearQBtn?.addEventListener('click', async () => {
+    if (await showConfirm('Clear all questions from active folder?', 'Confirm Clear')) {
       getActiveFolder().questions = [];
       saveState();
       renderQuestions();
@@ -1023,7 +1143,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
-    if (!window.jspdf) { alert('jsPDF library not loaded.'); return; }
+    if (!window.jspdf) { 
+      showAlert('jsPDF library not loaded. Please check your internet connection.', 'Library Error');
+      return; 
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
@@ -1161,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   clearBankBtn?.addEventListener('click', async () => {
-    if (confirm('Reset and reload default questions?')) {
+    if (await showConfirm('Reset and reload default questions?', 'Confirm Reset')) {
       presetBank = [];
       localStorage.removeItem(PRESET_STORAGE_KEY);
       localStorage.removeItem(VERSION_KEY);
@@ -1175,12 +1298,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   // 26. LOGIN BUTTONS
   // ============================================================
-  document.getElementById('topbar-login-btn')?.addEventListener('click', () => {
+  document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
     const user = getUser();
     if (user) {
-      if (confirm('Logout?')) {
+      if (await showConfirm('Logout?', 'Confirm Logout')) {
         setUser(null);
-        alert('Logged out.');
+        showAlert('Logged out.', 'Success');
         studyData = {};
         renderBankResults();
         updateStudyDashboard();
@@ -1190,12 +1313,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  document.getElementById('sidebar-login-btn')?.addEventListener('click', () => {
+  document.getElementById('sidebar-login-btn')?.addEventListener('click', async () => {
     const user = getUser();
     if (user) {
-      if (confirm('Logout?')) {
+      if (await showConfirm('Logout?', 'Confirm Logout')) {
         setUser(null);
-        alert('Logged out.');
+        showAlert('Logged out.', 'Success');
         studyData = {};
         renderBankResults();
         updateStudyDashboard();
@@ -1206,25 +1329,16 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ============================================================
-  // 27. AI MODEL SELECTION MODAL (with debug logs)
+  // 27. AI MODEL SELECTION MODAL
   // ============================================================
   const aiModal = document.getElementById('ai-model-modal');
   const aiModalClose = document.getElementById('ai-model-close');
   const cancelAiModal = document.getElementById('cancel-ai-modal');
   let pendingQuestion = null;
 
-  console.log('🔍 AI Modal element:', aiModal);
-
   function openAIModal(questionItem) {
-    console.log('📂 Opening AI modal with question:', questionItem);
     pendingQuestion = questionItem;
-    if (aiModal) {
-      aiModal.classList.add('open');
-      console.log('✅ Modal opened');
-    } else {
-      console.error('❌ AI modal element not found!');
-      alert('AI modal not found. Please check your HTML.');
-    }
+    if (aiModal) aiModal.classList.add('open');
   }
 
   function closeAIModal() {
@@ -1238,15 +1352,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) closeAIModal();
   });
 
-  // Handle model selection
   document.querySelectorAll('.model-option').forEach(btn => {
     btn.addEventListener('click', function() {
       const model = this.dataset.model;
-      console.log('🔘 Model selected:', model);
-      if (!pendingQuestion) {
-        console.warn('⚠️ No pending question');
-        return;
-      }
+      if (!pendingQuestion) return;
 
       const params = new URLSearchParams({
         q: pendingQuestion.question,
@@ -1257,11 +1366,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (model === 'secret') {
         const url = `answer.html?${params.toString()}`;
-        console.log('🚀 Opening internal answer page:', url);
         window.open(url, '_blank');
       } else {
         const url = `answer.html?${params.toString()}&mode=external`;
-        console.log('🚀 Opening external answer page (prompt):', url);
         window.open(url, '_blank');
       }
 
@@ -1270,20 +1377,15 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ============================================================
-  // 28. FETCH AI ANSWER (overrides the global function)
+  // 28. FETCH AI ANSWER (global)
   // ============================================================
   window.fetchAIAnswer = function(buttonElement) {
-    console.log('🔥 AI button clicked!', buttonElement);
     const card = buttonElement.closest('.bank-item');
-    if (!card) {
-      console.warn('⚠️ No bank-item found');
-      return;
-    }
+    if (!card) return;
 
     const questionEl = card.querySelector('.bank-question');
     let questionText = questionEl ? questionEl.innerText.trim() : '';
     questionText = questionText.replace(/^\d+\.\s*/, '');
-    console.log('📝 Extracted question text:', questionText);
 
     const tags = card.querySelectorAll('.tag');
     let marks = '', year = '';
@@ -1297,15 +1399,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const questionItem = { question: questionText, marks, year };
-    console.log('📦 Question item:', questionItem);
-
-    // Open the modal
     openAIModal(questionItem);
-  };
-
-  // Test: also expose a manual trigger for debugging
-  window.debugOpenAI = function() {
-    window.fetchAIAnswer(document.querySelector('.btn-ai-answer'));
   };
 
   // ============================================================
@@ -1315,16 +1409,14 @@ document.addEventListener('DOMContentLoaded', function() {
   loadRepositoryJSON();
   loadCloudStudy();
 
-  // Initialize auth (login modal)
   if (typeof initAuth === 'function') {
     initAuth();
   }
 
-  // Force update filter visibility after load
   updateFilterVisibility();
 
   console.log('✅ QCAB Generator loaded successfully!');
   console.log('📋 Subtopics count:', Object.keys(SYLLABUS).length);
   console.log('📚 Bank size:', presetBank.length);
 
-}); // End DOMContentLoaded
+});
