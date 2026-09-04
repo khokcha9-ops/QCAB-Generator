@@ -1662,3 +1662,22 @@ body.dark-mode .nav-title,
 body.dark-mode .card-sub {
     color: var(--muted) !important;
 }
+/* Professional Logo Styling */
+.brand-logo {
+    width: 140px; /* Adjust to your preference */
+    height: auto;
+    max-height: 50px;
+    object-fit: contain;
+    display: block;
+}
+
+/* For Mobile Bar Logo */
+.mobile-brand .brand-logo {
+    width: 100px;
+    height: auto;
+}
+
+/* Extra touch: Add a slight drop shadow for depth */
+body.dark-mode .brand-logo {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
