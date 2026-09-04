@@ -1317,38 +1317,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // ============================================================
-  // 26. LOGIN BUTTONS
-  // ============================================================
-  document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
-    const user = getUser();
-    if (user) {
-      if (await showConfirm('Logout?', 'Confirm Logout')) {
-        setUser(null);
-        showToast('Logged out.', '👋');
-        studyData = {};
-        renderBankResults();
-        updateStudyDashboard();
-      }
-    } else {
-      openLoginModal('login');
+ // --- LOGIN BUTTONS ---
+document.getElementById('topbar-login-btn')?.addEventListener('click', function(e) {
+  console.log('👆 Topbar login button clicked');
+  const user = getUser();
+  if (user) {
+    if (confirm('Logout?')) {
+      setUser(null);
+      showToast('Logged out.', '👋');
+      studyData = {};
+      renderBankResults();
+      updateStudyDashboard();
     }
-  });
+  } else {
+    openLoginModal('login');
+  }
+});
 
-  document.getElementById('sidebar-login-btn')?.addEventListener('click', async () => {
-    const user = getUser();
-    if (user) {
-      if (await showConfirm('Logout?', 'Confirm Logout')) {
-        setUser(null);
-        showToast('Logged out.', '👋');
-        studyData = {};
-        renderBankResults();
-        updateStudyDashboard();
-      }
-    } else {
-      openLoginModal('login');
+document.getElementById('sidebar-login-btn')?.addEventListener('click', function(e) {
+  console.log('👆 Sidebar login button clicked');
+  const user = getUser();
+  if (user) {
+    if (confirm('Logout?')) {
+      setUser(null);
+      showToast('Logged out.', '👋');
+      studyData = {};
+      renderBankResults();
+      updateStudyDashboard();
     }
-  });
+  } else {
+    openLoginModal('login');
+  }
+});
 
   // ============================================================
   // 27. AI MODEL SELECTION MODAL (FULL PROMPT FOR ALL)
