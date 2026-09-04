@@ -1,277 +1,565 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Register - UPSC Craft</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .card {
-            background: #FFFFFF;
-            padding: 40px 36px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            width: 90%;
-            max-width: 400px;
-        }
-        .brand { text-align: center; margin-bottom: 24px; }
-        
-        /* FIXED: Added CSS for the brand logo */
-        .brand-logo {
-            width: 150px;
-            height: auto;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-        
-        .brand h1 { margin: 12px 0 4px; font-size: 24px; font-weight: 900; color: #1E293B; }
-        .brand p { margin: 0; color: #64748B; font-size: 14px; }
-        
-        h2 { color: #1E293B; text-align: center; margin: 0 0 4px; font-size: 22px; font-weight: 800; }
-        .subtitle { text-align: center; color: #64748B; font-size: 14px; margin-bottom: 24px; }
+<script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>UPSC Craft | Mains PYQ cum QCAB Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Premium UI CSS (Integrated Directly) -->
+  <style>
+    .premium-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    .premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); }
+    .premium-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .premium-header h3 { margin: 0; font-weight: 800; font-size: 18px; }
+    .pill-status { 
+        display: inline-flex; align-items: center; gap: 8px; 
+        background: var(--accent-soft); color: var(--accent);
+        border-radius: 999px; padding: 5px 12px; font-weight: 800; font-size: 12px;
+    }
+    .suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
+    .suggestion-item { display: flex; align-items: center; gap: 8px; }
+    .suggestion-item strong { color: var(--text); }
+    .suggestion-item span { color: var(--muted); }
 
-        .input-group { position: relative; margin: 8px 0; }
-        input {
-            width: 100%; padding: 14px 16px; border: 1px solid #E2E8F0;
-            border-radius: 12px; font-size: 15px; background: #F8FAFC;
-            transition: all 0.2s; box-sizing: border-box;
-        }
-        input:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,0.15); background: #fff; }
-
-        .toggle-password {
-            position: absolute; top: 50%; right: 14px; transform: translateY(-50%);
-            background: none; border: none; cursor: pointer; color: #64748B;
-            font-size: 18px; padding: 5px; line-height: 1;
-        }
-        .toggle-password:hover { color: #4F46E5; }
-
-        .hidden { display: none !important; }
-        button {
-            width: 100%; padding: 14px; border: none; border-radius: 12px;
-            background: linear-gradient(135deg, #4F46E5, #06B6D4);
-            color: white; font-size: 16px; font-weight: 800; cursor: pointer;
-            transition: all 0.2s; margin-top: 12px;
-            box-shadow: 0 4px 14px rgba(79,70,229,0.25);
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,70,229,0.35); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        /* ADDED: Premium Google Button */
-        .btn-google {
-            background: #ffffff;
-            color: #1E293B;
-            border: 1px solid #E2E8F0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .btn-google:hover {
-            background: #f9fafb;
-            transform: translateY(-1px);
-        }
-        .g-icon { font-size: 20px; font-weight: 800; color: #EA4335; }
-
-        .switch { text-align: center; color: #4F46E5; cursor: pointer; font-weight: 700; margin-top: 16px; font-size: 14px; }
-        .switch:hover { text-decoration: underline; }
-        .divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: #94A3B8; font-size: 12px; }
-        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #E2E8F0; }
-        
-        .guest-link { text-align: center; margin-top: 12px; font-size: 13px; color: #94A3B8; }
-        .guest-link a { color: #4F46E5; font-weight: 700; text-decoration: none; cursor: pointer; }
-        
-        #login-error { color: #DC2626; text-align: center; margin-top: 12px; font-size: 14px; padding: 8px 12px; background: #FEF2F2; border-radius: 8px; display: none; }
-        
-        .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
+    /* NEW: Professional Logo Styling */
+    .brand-logo {
+        width: 160px;
+        height: auto;
+        object-fit: contain;
+        margin-bottom: 8px;
+        display: block;
+    }
+    .brand-logo-mobile {
+        width: 30px;
+        height: auto;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <div class="brand">
-            <img src="logo.png" alt="UPSC Craft Logo" class="brand-logo">
-            <h1>UPSC Craft</h1>
-            <p>Mains Practice & QCAB</p>
+<script>
+  // Force clear old data if version mismatches
+  var APP_VERSION = '6.0'; 
+  if (localStorage.getItem('qcab_app_version') !== APP_VERSION) {
+    localStorage.removeItem('qcab_user');
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('qcab_nested_folders');
+    localStorage.removeItem('qcab_preset_bank'); 
+    localStorage.removeItem('user_progress');
+    localStorage.setItem('qcab_app_version', APP_VERSION);
+  }
+</script>
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="main-sidebar">
+    <div class="sidebar-header-mobile">
+      <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
+      <button type="button" class="mobile-menu-close" id="mobile-menu-close">✕</button>
+    </div>
+    
+    <!-- TOP SECTION (Brand + Login/Profile + Strong Sidebar) -->
+    <div class="sidebar-top-section">
+      <div class="brand">
+        <!-- REPLACED "Q" WITH YOUR LOGO -->
+        <img src="logo.png" alt="UPSC Craft Logo" class="brand-logo">
+      </div>
+
+      <!-- Login Button -->
+      <button type="button" class="nav-btn" id="sidebar-login-btn">
+        <span class="nav-icon">🔑</span>
+        <span id="sidebar-login-text">Login</span>
+      </button>
+
+      <!-- ===== USER PROFILE ===== -->
+      <div id="user-profile" style="display:none; padding:12px 0; border-top:1px solid var(--border); margin-top:8px;">
+        <div style="display:flex; align-items:center; gap:12px; padding:8px 12px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0;" id="user-avatar">U</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:700; font-size:14px; color:var(--text);" id="user-name">User</div>
+            <div style="font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" id="user-email">user@email.com</div>
+          </div>
+          <button type="button" class="btn btn-secondary-sm" id="profile-logout-btn" style="padding:4px 10px; font-size:11px; background:var(--danger); color:#fff; border:none; border-radius:6px; cursor:pointer;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button>
         </div>
+      </div>
+      
+      <!-- SIDEBAR PROGRESS TRACKER (Shows only when logged in) -->
+      <div class="sidebar-progress" id="sidebar-progress" style="display:none; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid var(--border);">
+          <div style="font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 8px;">MY PROGRESS</div>
+          <div style="display: flex; gap: 10px; justify-content: space-between; font-size: 12px; color: var(--text);">
+              <span>⭐ <strong id="sidebar-bookmarked">0</strong> Saved</span>
+              <span>✅ <strong id="sidebar-revised">0</strong> Revised</span>
+              <span>📝 <strong id="sidebar-notes">0</strong> Notes</span>
+          </div>
+      </div>
 
-        <h2 id="formTitle">Welcome Back</h2>
-        <p class="subtitle" id="formSubtitle">Sign in to access AI answers and sync your study data.</p>
-
-        <input type="text" id="name" placeholder="Full Name" class="hidden">
-        
-        <div class="input-group">
-            <input type="email" id="email" placeholder="Email address">
+      <!-- ===== NEW: GAMIFICATION HUB ===== -->
+      <div id="gamification-hub" class="sidebar-widget">
+        <div class="widget-header">MY PROGRESS</div>
+        <div class="streak-grid">
+          <div class="stat-box">
+            <span>🔥</span>
+            <strong id="sidebar-streak">0</strong>
+            <small>Day Streak</small>
+          </div>
+          <div class="stat-box">
+            <span>⚡</span>
+            <strong id="sidebar-xp">0</strong>
+            <small>Total XP</small>
+          </div>
         </div>
-        
-        <div class="input-group">
-            <input type="password" id="password" placeholder="Password">
-            <button type="button" class="toggle-password" onclick="togglePassword()" id="eyeBtn">👁️</button>
+      </div>
+
+      <!-- ===== NEW: SYLLABUS COVERAGE ===== -->
+      <div id="coverage-hub" class="sidebar-widget">
+        <div class="widget-header">SYLLABUS COVERAGE</div>
+        <div class="coverage-bar">
+          <div id="coverage-fill" style="width: 0%;"></div>
         </div>
-
-        <button id="submitBtn">Sign In</button>
-
-        <div class="divider">or</div>
-
-        <!-- ADDED: Premium Google Login Button -->
-        <button type="button" class="btn-google" onclick="alert('Google Login API not configured yet!')">
-            <span class="g-icon">G</span> Continue with Google
-        </button>
-
-        <p class="switch" id="toggleBtn">Don't have an account? <strong>Sign up</strong></p>
-
-        <div class="guest-link">
-            <a onclick="goGuest()">Continue as Guest</a>
-        </div>
-
-        <div id="login-error"></div>
+        <small id="coverage-text">0% Completed</small>
+      </div>
     </div>
 
-    <script>
-        // CONFIG
-        const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
-        let isRegister = false;
-        let isLoading = false;
+    <div class="nav-title">Workspace</div>
+    <nav class="nav">
+      <button type="button" class="nav-btn active" data-scroll="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
+      <button type="button" class="nav-btn" data-scroll="pyq-bank"><span class="nav-icon">▤</span>PYQ Bank</button>
+      <button type="button" class="nav-btn" data-scroll="create-question"><span class="nav-icon">＋</span>Create Question</button>
+      <button type="button" class="nav-btn" data-scroll="my-qcab"><span class="nav-icon">▣</span>My QCAB</button>
+      <button type="button" class="nav-btn" data-scroll="my-study"><span class="nav-icon">📘</span>My Study</button>
+    </nav>
+    
+    <div class="sidebar-bottom">
+      <!-- REMOVED DUPLICATE DARK MODE TOGGLE HERE -->
+    </div>
+  </aside>
 
-        const nameInput = document.getElementById('name');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const submitBtn = document.getElementById('submitBtn');
-        const toggleBtn = document.getElementById('toggleBtn');
-        const formTitle = document.getElementById('formTitle');
-        const formSubtitle = document.getElementById('formSubtitle');
-        const errorEl = document.getElementById('login-error');
+  <!-- ===== CONTENT ===== -->
+  <div class="content">
 
-        function togglePassword() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            document.getElementById('eyeBtn').innerText = type === 'password' ? '👁️' : '🙈';
+    <!-- Mobile Bar -->
+    <div class="mobile-nav">
+      <div class="mobile-brand">
+        <img src="logo.png" alt="UPSC Craft Logo" class="brand-logo-mobile"> UPSC CRAFT
+      </div>
+      <div class="mobile-actions-right">
+        <button type="button" class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
+      </div>
+    </div>
+    <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
+        <div class="topbar-sub">Build, organize and print your question-cum-answer booklet</div>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
+        <button type="button" class="theme-toggle" id="topbar-login-btn">
+          🔑 <span id="topbar-login-text">Login</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page">
+      <!-- Hero -->
+      <section class="hero" id="dashboard">
+        <div>
+          <p class="eyebrow">Question-cum-Answer Booklet</p>
+          <h1>UPSC Craft<br>PYQ cum QCAB Generator</h1>
+          <p>Find previous year questions, build your custom practice set and generate a print-ready answer booklet.</p>
+        </div>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
+          <button type="button" class="btn" data-scroll="create-question">＋ Create Question</button>
+          <button type="button" class="btn btn-primary" onclick="generateQuickTest()">🎲 Quick Test (10 Qs)</button>
+        </div>
+      </section>
+      
+      <!-- Stats, Folders, Workspace, etc. -->
+      <section class="stats">
+        <div class="stat"><div class="stat-label">QUESTION BANK</div><div class="stat-value" id="dashboard-bank-count">—</div><div class="stat-note">PYQs currently loaded</div></div>
+        <div class="stat"><div class="stat-label">ACTIVE QCAB</div><div class="stat-value" id="dashboard-q-count">0</div><div class="stat-note">Questions selected</div></div>
+        <div class="stat"><div class="stat-label">ANSWER PAGES</div><div class="stat-value" id="dashboard-pages">0</div><div class="stat-note">Based on marks selected</div></div>
+      </section>
+
+      <div class="folder-wrap">
+        <div class="breadcrumbs" id="breadcrumbs"></div>
+        <div class="folder-bar" id="folder-bar"></div>
+      </div>
+
+      <div class="workspace">
+        <section>
+          <div class="card" id="create-question">
+            <div class="card-header">
+              <div><h2 class="card-title" id="add-heading">Create Custom Question</h2><p class="card-sub">Add your own question directly to the active booklet.</p></div>
+              <button type="button" class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
+            </div>
+            <div id="create-form-body">
+              <div class="field"><label for="q-paper">Paper</label><select id="q-paper"><option value="GS1">GS Paper 1</option><option value="GS2">GS Paper 2</option><option value="GS3">GS Paper 3</option><option value="GS4">GS Paper 4</option><option value="OPT1">Anthropology Optional Paper 1</option><option value="OPT2">Anthropology Optional Paper 2</option></select></div>
+              <div class="field"><label for="q-topic">Subtopic</label><select id="q-topic"></select></div>
+              <div class="field"><label for="q-text">Question Text</label><textarea id="q-text" placeholder="Paste or type your question here..."></textarea></div>
+              <div class="field"><label>Marks</label><div class="marks-row"><button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button><button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button><button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button></div></div>
+              <div class="field"><label for="q-year">Year <span style="font-weight:500">(optional)</span></label><input type="text" id="q-year" placeholder="e.g. 2025"></div>
+              <div class="field checkbox-row"><input type="checkbox" id="include-index" checked><label for="include-index">Include index page in PDF</label></div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
+                <button type="button" class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
+                <button type="button" class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== PYQ BANK SEARCH ===== -->
+          <div class="card" id="pyq-bank">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">PYQ Bank</h2>
+                <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
+              </div>
+              <div class="bank-top-actions">
+                <button type="button" class="btn-bank-action" id="toggle-bank-btn">
+                  <span class="action-arrow" id="toggle-bank-icon">▼</span>
+                  <span id="toggle-bank-text">Hide<br>Bank</span>
+                </button>
+                <button type="button" class="btn-bank-action reset-btn" id="clear-bank-btn">
+                  <span>Reset<br>Bank</span>
+                </button>
+              </div>
+            </div>
+            
+            <div id="pyq-bank-body">
+              <div class="pill-switcher-container">
+                <div class="pill-switcher" id="search-mode-switcher">
+                  <button type="button" class="pill-btn active" id="btn-filter-year" data-mode="basic" onclick="switchFilterMode('year', this)">Filter by Year</button>
+                  <button type="button" class="pill-btn" id="btn-filter-subtopic" data-mode="deep" onclick="switchFilterMode('subtopic', this)">Filter by Subtopic</button>
+                </div>
+              </div>
+
+              <!-- ===== PREMIUM ANALYTICS HUB ===== -->
+              <div class="premium-card" id="analytics-hub">
+                <div class="premium-header">
+                  <h3><i data-lucide="trending-up" style="width:20px; vertical-align:middle; color:var(--primary);"></i> Trend & Frequency</h3>
+                  <span class="pill-status">✨ AI Enhanced</span>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                  <div>
+                    <h4 style="font-weight:700; font-size: 14px; color: var(--muted); margin-bottom: 10px;">Topic Frequency</h4>
+                    <div id="frequency-chart" style="height: 80px; background: var(--surface-2); border-radius: 8px; display:flex; align-items:center; justify-content:center; font-weight:600; color: var(--muted);">Select a topic...</div>
+                  </div>
+                  <div>
+                    <h4 style="font-weight:700; font-size: 14px; color: var(--muted); margin-bottom: 10px;">Year Trend</h4>
+                    <div id="trend-chart" style="height: 80px; background: var(--surface-2); border-radius: 8px; display:flex; align-items:center; justify-content:center; font-weight:600; color: var(--muted);">Select a topic...</div>
+                  </div>
+                </div>
+                <div id="suggestions-panel" style="display: none; border-top: 1px solid var(--border); padding-top: 15px;">
+                  <h4 style="font-weight:700; font-size: 14px; color: var(--muted); margin-bottom: 10px;"><i data-lucide="sparkles" style="width:16px; color:var(--primary);"></i> Advanced Suggestions</h4>
+                  <div class="suggestion-grid">
+                    <div class="suggestion-item"><i data-lucide="landmark" style="width:16px; color: var(--primary);"></i> <strong>Articles:</strong> <span id="sugg-articles">-</span></div>
+                    <div class="suggestion-item"><i data-lucide="users" style="width:16px; color: var(--primary);"></i> <strong>Committees:</strong> <span id="sugg-committees">-</span></div>
+                    <div class="suggestion-item"><i data-lucide="book-open" style="width:16px; color: var(--primary);"></i> <strong>Thinkers:</strong> <span id="sugg-thinkers">-</span></div>
+                    <div class="suggestion-item"><i data-lucide="briefcase" style="width:16px; color: var(--primary);"></i> <strong>Case Studies:</strong> <span id="sugg-cases">-</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="search-main">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
+              </div>
+
+              <div class="filter-box">
+                <div class="filter-controls-stack">
+                  <select id="filter-paper">
+                    <option value="ALL">All Papers</option>
+                    <option value="GS1">GS Paper 1</option>
+                    <option value="GS2">GS Paper 2</option>
+                    <option value="GS3">GS Paper 3</option>
+                    <option value="GS4">GS Paper 4</option>
+                    <option value="OPT1">Anthropology Optional Paper 1</option>
+                    <option value="OPT2">Anthropology Optional Paper 2</option>
+                  </select>
+                  <select id="filter-topic" class="topic-filter-select">
+                    <option value="ALL">All Subtopics</option>
+                  </select>
+                  <select id="filter-year">
+                    <option value="ALL">All Years</option>
+                  </select>
+
+                  <button type="button" class="btn btn-primary btn-wide" id="search-bank-btn">Search</button>
+                  <button type="button" class="btn btn-wide" id="clear-results-btn">Clear</button>
+                </div>
+              </div>
+
+              <div id="bank-status-text">Loading question bank...</div>
+              <div id="bank-results-container">
+                <p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card sticky-card" id="my-qcab">
+          <div class="card-header"><div><h2 class="card-title">My QCAB</h2><p class="card-sub">Questions in your active booklet.</p></div><span class="tag" id="count-tag">0 questions</span></div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;">
+            <button type="button" class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button>
+            <button type="button" class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button>
+            <button type="button" class="btn btn-secondary-sm" id="clear-q-btn">Clear</button>
+          </div>
+          <div id="empty-state" class="empty-state"><div style="font-size:28px;margin-bottom:8px;">▣</div><strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>Add questions from the PYQ Bank or create a custom question.</div>
+          <ol class="q-list" id="q-list"></ol>
+          <div class="summary-bar" id="summary-bar" style="display:none;"><div class="summary-stat"><span>TOTAL MARKS</span><strong id="total-marks">0</strong></div><div class="summary-stat"><span>ANSWER PAGES</span><strong id="total-pages">0</strong></div></div>
+          <button type="button" class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
+        </aside>
+      </div>
+
+      <section id="my-study" style="margin-top:30px;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📘 My Study</h2>
+              <p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p>
+            </div>
+          </div>
+          <div id="study-dashboard">
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;">
+              <div class="stat" style="padding:14px;"><div class="stat-label">📌 Bookmarked</div><div class="stat-value" id="study-bookmarked">0</div></div>
+              <div class="stat" style="padding:14px;"><div class="stat-label">✅ Revised</div><div class="stat-value" id="study-revised">0</div></div>
+              <div class="stat" style="padding:14px;"><div class="stat-label">📝 With Notes</div><div class="stat-value" id="study-notes">0</div></div>
+            </div>
+            <div id="study-list-container"><p style="color:var(--muted);font-style:italic;">Your bookmarked questions will appear here.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <footer>UPSC Craft · Project by Biswajit Nahak</footer>
+    </main>
+  </div>
+</div>
+
+<!-- Back to top -->
+<button type="button" class="back-to-top" id="back-to-top">↑</button>
+
+<!-- Modals -->
+<div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button type="button" class="btn btn-secondary-sm" id="note-save-btn">Save</button><button type="button" class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
+
+<div class="custom-modal-overlay" id="logoutModal"><div class="custom-modal" style="max-width:380px; text-align:center;"><div style="font-size:48px; margin-bottom:8px;">👋</div><h3 style="font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;">Logout</h3><p style="font-size:15px; color:var(--muted); margin-bottom:0;">Are you sure you want to logout?</p><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button type="button" class="btn btn-secondary" id="logoutCancelBtn" style="padding:10px 28px;" onclick="localStorage.clear(); window.location.href='index.html';">Cancel</button><button type="button" class="btn btn-danger" id="logoutConfirmBtn" style="padding:10px 28px; background:var(--danger); color:#fff; border:none; border-radius:10px; font-weight:700;" onclick="localStorage.clear(); window.location.href='index.html';">Logout</button></div></div></div>
+
+<div class="ai-model-modal" id="ai-model-modal"><div class="ai-model-modal-content"><button type="button" class="ai-model-close" id="ai-model-close">&times;</button><h3>⚡ Choose AI Model</h3><p>Select which AI should generate your UPSC answer.</p><div class="model-options"><button type="button" class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button><button type="button" class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button><button type="button" class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button><button type="button" class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button></div><button type="button" class="btn-cancel-model" id="cancel-ai-modal">Cancel</button></div></div>
+
+<div class="custom-modal-overlay" id="customModal"><div class="custom-modal"><h3 id="modalTitle">Title</h3><p id="modalMessage">Message</p><div id="modalInputContainer" style="display:none;"><input type="text" class="modal-input" id="modalInput" placeholder="Enter value..."></div><div class="modal-actions"><button type="button" class="btn btn-secondary" id="modalCancelBtn">Cancel</button><button type="button" class="btn btn-primary" id="modalConfirmBtn">OK</button></div></div></div>
+
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=6"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=6"></script>
+<script src="js/config.js?v=6"></script>
+<script src="js/auth.js?v=6"></script>
+
+<!-- AUTH FIREWALL -->
+<script>
+  if (typeof window.getUser === 'undefined') window.getUser = function() { return JSON.parse(localStorage.getItem('qcab_user') || 'null'); };
+  if (typeof window.setUser === 'undefined') window.setUser = function(user) { if (user) localStorage.setItem('qcab_user', JSON.stringify(user)); else localStorage.removeItem('qcab_user'); };
+  if (typeof window.openLoginModal === 'undefined') window.openLoginModal = function() { window.location.href = 'login.html'; };
+</script>
+
+<script src="js/app.js?v=6"></script>
+<script src="js/features.js?v=6"></script>
+
+<!-- ================================================== -->
+<!-- PREMIUM FEATURES SCRIPT (Integrated Directly)     -->
+<!-- ================================================== -->
+<script>
+  // Initialize Lucide Icons
+  document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+  });
+
+  // 1. SYLLABUS-WISE MAPPING & FREQUENCY ANALYSIS
+  window.analyzeTopic = function(topic) {
+      const allQ = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]').filter(q => q.topic === topic);
+      const freq = allQ.length;
+      const years = allQ.map(q => q.year).filter(Boolean);
+      
+      document.getElementById('frequency-chart').innerHTML = `<strong>${freq}</strong> Questions asked`;
+      document.getElementById('trend-chart').innerHTML = `<strong>${years.slice(0,5).join(', ') || 'N/A'}</strong>`;
+      
+      fetchSuggestions(topic);
+  };
+
+    // 2. SEMANTIC SEARCH (Fuzzy matching + Topic Mapping)
+  window.semanticSearch = function(query) {
+      const input = query.toLowerCase().trim();
+      
+      const topicMap = {
+        'sarkaria': 'federalism', 'punchhi': 'federalism', 'bommai': 'federalism',
+        'wheare': 'federalism', 'governor': 'federalism', 
+        'ambedkar': 'governor', 'rajamannar': 'governor',
+        'budget': 'economic', 'money': 'economic', 'finance': 'economic',
+        'panchayat': 'local government', 'rural': 'local government'
+      };
+
+      let mappedTopic = '';
+      for (let key in topicMap) {
+        if (input.includes(key)) {
+          mappedTopic = topicMap[key];
+          break;
         }
+      }
 
-        function toggleMode() {
-            isRegister = !isRegister;
-            nameInput.classList.toggle('hidden');
-            formTitle.textContent = isRegister ? 'Create Account' : 'Welcome Back';
-            formSubtitle.textContent = isRegister ? 'Register to save your bookmarks.' : 'Sign in to access AI answers.';
-            submitBtn.textContent = isRegister ? 'Create Account' : 'Sign In';
-            toggleBtn.innerHTML = isRegister ? 'Already have an account? <strong>Sign in</strong>' : 'Don\'t have an account? <strong>Sign up</strong>';
-            errorEl.style.display = 'none';
-            errorEl.textContent = '';
+      const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
+      const results = bank.filter(q => {
+        const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
+        
+        if (mappedTopic) {
+           return q.topic.toLowerCase().includes(mappedTopic) || q.topic.toLowerCase().includes(input);
         }
+        return text.includes(input);
+      });
+      
+      return results;
+  };
 
-        toggleBtn.addEventListener('click', toggleMode);
+  // 3. ADVANCED SUGGESTIONS (Now connected to Cloudflare Worker with fallback)
+  async function fetchSuggestions(topic) {
+      try {
+          const WORKER_URL = window.WORKER_URL || '';
+          const res = await fetch(`${WORKER_URL}/api/syllabus?topic=${encodeURIComponent(topic)}`);
+          const data = await res.json();
+          
+          if (res.ok && data.length > 0) {
+              const row = data[0];
+              document.getElementById('sugg-articles').textContent = JSON.parse(row.articles).join(', ');
+              document.getElementById('sugg-committees').textContent = JSON.parse(row.committees).join(', ');
+              document.getElementById('sugg-thinkers').textContent = JSON.parse(row.thinkers).join(', ');
+              document.getElementById('sugg-cases').textContent = JSON.parse(row.case_studies).join(', ');
+          } else {
+              throw new Error('Not found or backend down');
+          }
+      } catch (e) {
+          const map = {
+              'Federalism': { articles: '245, 246, 356', committees: 'Sarkaria, Punchhi', thinkers: 'K.C. Wheare', cases: 'S.R. Bommai' },
+              'Governor': { articles: '153, 161, 163', committees: 'Rajamannar', thinkers: 'Ambedkar', cases: 'Nabam Rebia' },
+              'Parliament': { articles: '79, 83, 105', committees: 'Public Accounts', thinkers: 'Bagehot', cases: 'Kesavananda' }
+          };
+          const data = map[topic] || { articles: 'General', committees: 'N/A', thinkers: 'N/A', cases: 'N/A' };
+          
+          document.getElementById('sugg-articles').textContent = data.articles;
+          document.getElementById('sugg-committees').textContent = data.committees;
+          document.getElementById('sugg-thinkers').textContent = data.thinkers;
+          document.getElementById('sugg-cases').textContent = data.cases;
+      }
+      document.getElementById('suggestions-panel').style.display = 'block';
+  }
 
-        function goGuest() {
-            localStorage.setItem('isGuest', 'true');
-            localStorage.setItem('userToken', 'guest-token-' + Date.now());
-            localStorage.setItem('qcab_user', JSON.stringify({ email: 'guest@example.com', token: 'guest-token-' + Date.now(), name: 'Guest' }));
-            window.location.href = './index.html';
-        }
+  // 4. SIMILAR PYQs & RECENTLY VIEWED
+  window.showSimilar = function(questionId) {
+      const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
+      const orig = bank.find(q => q.id === questionId);
+      if (!orig) return;
+      const similar = bank.filter(q => q.topic === orig.topic && q.id !== orig.id).slice(0, 3);
+      console.log('Similar Questions:', similar);
+      
+      let recent = JSON.parse(localStorage.getItem('recent_qs') || '[]');
+      recent = [orig, ...recent.filter(q => q.id !== orig.id)].slice(0, 10);
+      localStorage.setItem('recent_qs', JSON.stringify(recent));
+      if (typeof showToast === 'function') showToast('Question added to Recently Viewed!');
+  };
 
-        async function handleAuth() {
-            if (isLoading) return;
+  // Bind Events
+  document.getElementById('search-input').addEventListener('input', (e) => {
+      if (e.target.value.length > 3) {
+          const results = window.semanticSearch(e.target.value);
+          console.log('Semantic Results:', results);
+      }
+  });
 
-            const name = nameInput.value.trim();
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
+  document.getElementById('filter-topic').addEventListener('change', (e) => {
+      if (e.target.value !== 'ALL') window.analyzeTopic(e.target.value);
+  });
+</script>
 
-            if (!email || !password) { showError('Please fill in all fields.'); return; }
-            if (isRegister && !name) { showError('Please enter your full name.'); return; }
-            if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const storedUser = localStorage.getItem('qcab_user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const sidebarText = document.getElementById('sidebar-login-text');
+        const topbarText = document.getElementById('topbar-login-text');
+        const profileDiv = document.getElementById('user-profile');
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        const userEmail = document.getElementById('user-email');
 
-            hideError();
-            isLoading = true;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loading-spinner"></span> Processing...';
+        if(userEmail) userEmail.textContent = user.email || '';
+        if(userName) userName.textContent = user.name || 'User';
+        if(userAvatar) userAvatar.textContent = (user.name || 'U')[0].toUpperCase();
+        
+        if (sidebarText) sidebarText.textContent = user.email || 'Profile';
+        if (topbarText) topbarText.textContent = user.email || 'Profile';
+        if (profileDiv) profileDiv.style.display = 'block';
+        
+        const sbProgress = document.getElementById('sidebar-progress');
+        if (sbProgress) sbProgress.style.display = 'block';
+      } catch (e) {}
+    }
+  });
+</script>
 
-            const endpoint = isRegister ? '/api/register' : '/api/login';
-            const payload = isRegister ? { name, email, password } : { email, password };
+<script>
+  function switchFilterMode(mode, btn) {
+    var yearBtn = document.getElementById('btn-filter-year');
+    var subBtn = document.getElementById('btn-filter-subtopic');
+    var yearSel = document.getElementById('filter-year');
+    var topicSel = document.getElementById('filter-topic');
+    
+    yearBtn.classList.remove('active');
+    subBtn.classList.remove('active');
+    btn.classList.add('active');
+    
+    yearSel.style.display = 'block';
+    yearSel.style.visibility = 'visible';
+    topicSel.style.display = 'block';
 
-            try {
-                const res = await fetch(WORKER_URL + endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+    if (topicSel.options.length <= 1) {
+      var allTopics = [
+        'Indian Heritage and Culture', 'Modern Indian History', 'Freedom Struggle', 'Post-Independence', 'World History', 
+        'Indian Society', 'Social Issues', 'Globalization', 'Social Empowerment', 'Geography', 'Indian Geography', 
+        'World Geography', 'Economic Development', 'Agriculture', 'Food Processing', 'Science and Technology', 
+        'Environment', 'Biodiversity', 'Disaster Management', 'Internal Security', 'Ethics', 'Case Studies', 
+        'General', 'Anthropology Optional'
+      ];
+      topicSel.innerHTML = '<option value="ALL">All Subtopics</option>';
+      allTopics.forEach(topic => {
+        var opt = document.createElement('option');
+        opt.value = topic;
+        opt.textContent = topic;
+        topicSel.appendChild(opt);
+      });
+    }
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Authentication failed.');
-
-                if (isRegister) {
-                    showSuccess('Registration successful! Please login.');
-                    toggleMode();
-                } else {
-                    const userData = {
-                        email: email, token: data.token || 'dummy-token',
-                        userId: data.userId || data.id, name: data.name || name || 'User'
-                    };
-                    localStorage.setItem('qcab_user', JSON.stringify(userData));
-                    localStorage.setItem('userToken', data.token || 'dummy-token');
-                    localStorage.removeItem('isGuest');
-                    window.location.href = './index.html';
-                }
-
-            } catch (err) {
-                if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
-                    if (!isRegister) {
-                        // Mock fallback for testing
-                        const userData = { email: email, token: 'mock-token-' + Date.now(), userId: 999, name: name || 'User' };
-                        localStorage.setItem('qcab_user', JSON.stringify(userData));
-                        localStorage.setItem('userToken', 'mock-token-' + Date.now());
-                        localStorage.removeItem('isGuest');
-                        window.location.href = './index.html';
-                    } else {
-                        showError('Registration failed (Worker unreachable). Please try again.');
-                    }
-                } else {
-                    showError(err.message || 'Something went wrong.');
-                }
-            }
-
-            isLoading = false;
-            submitBtn.disabled = false;
-            submitBtn.textContent = isRegister ? 'Create Account' : 'Sign In';
-        }
-
-        submitBtn.addEventListener('click', handleAuth);
-
-        [nameInput, emailInput, passwordInput].forEach(input => {
-            input.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); handleAuth(); } });
-        });
-
-        function showError(message) {
-            errorEl.style.color = '#DC2626'; errorEl.style.background = '#FEF2F2';
-            errorEl.style.display = 'block'; errorEl.textContent = message;
-        }
-        function hideError() { errorEl.style.display = 'none'; errorEl.textContent = ''; }
-        function showSuccess(message) {
-            errorEl.style.color = '#059669'; errorEl.style.background = '#ecfdf5';
-            errorEl.style.display = 'block'; errorEl.textContent = message;
-            setTimeout(() => { hideError(); }, 3000);
-        }
-
-        (function checkAlreadyLoggedIn() {
-            try {
-                const user = JSON.parse(localStorage.getItem('qcab_user'));
-                if (user && user.email) window.location.href = './index.html';
-            } catch (_) {}
-        })();
-
-        console.log('✅ Login page loaded');
-    </script>
+    document.getElementById('search-bank-btn').click();
+  }
+</script>
 </body>
 </html>
