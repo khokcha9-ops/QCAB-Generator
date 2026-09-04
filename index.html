@@ -355,10 +355,10 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=5"></script>
-<script src="js/config.js?v=5"></script>
-<script src="js/auth.js?v=5"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=6"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=6"></script>
+<script src="js/config.js?v=6"></script>
+<script src="js/auth.js?v=6"></script>
 
 <!-- AUTH FIREWALL -->
 <script>
@@ -367,8 +367,8 @@
   if (typeof window.openLoginModal === 'undefined') window.openLoginModal = function() { window.location.href = 'login.html'; };
 </script>
 
-<script src="js/app.js?v=5"></script>
-<script src="js/features.js?v=5"></script>
+<script src="js/app.js?v=6"></script>
+<script src="js/features.js?v=6"></script>
 
 <!-- ================================================== -->
 <!-- PREMIUM FEATURES SCRIPT (Integrated Directly)     -->
@@ -391,23 +391,38 @@
       fetchSuggestions(topic);
   };
 
-  // 2. SEMANTIC SEARCH (Fuzzy matching)
+    // 2. SEMANTIC SEARCH (Fuzzy matching + Topic Mapping)
   window.semanticSearch = function(query) {
-      const input = query.toLowerCase();
-      const synonyms = {
-          'governor': ['federalism', 'state', 'executive'],
-          'federalism': ['governor', 'centre-state', 'union'],
-          'money': ['finance', 'budget', 'economic'],
-          'panchayat': ['local government', 'rural']
-      };
-      const expanded = [input];
-      for (let key in synonyms) { if (input.includes(key)) expanded.push(...synonyms[key]); }
+      const input = query.toLowerCase().trim();
       
+      // The "master" map: If user types a suggestion, it maps to the topic
+      const topicMap = {
+        'sarkaria': 'federalism', 'punchhi': 'federalism', 'bommai': 'federalism',
+        'wheare': 'federalism', 'governor': 'federalism', 
+        'ambedkar': 'governor', 'rajamannar': 'governor',
+        'budget': 'economic', 'money': 'economic', 'finance': 'economic',
+        'panchayat': 'local government', 'rural': 'local government'
+      };
+
+      let mappedTopic = '';
+      for (let key in topicMap) {
+        if (input.includes(key)) {
+          mappedTopic = topicMap[key];
+          break;
+        }
+      }
+
       const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
       const results = bank.filter(q => {
-          const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
-          return expanded.some(term => text.includes(term));
+        const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
+        
+        // Search by exact text OR mapped topic
+        if (mappedTopic) {
+           return q.topic.toLowerCase().includes(mappedTopic) || q.topic.toLowerCase().includes(input);
+        }
+        return text.includes(input);
       });
+      
       return results;
   };
 
