@@ -171,6 +171,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log('🚀 App.js loaded');
 
+  // Safely define fallbacks for external global variables if missing
+  window.SYLLABUS = window.SYLLABUS || { 'GS1': ['General'], 'GS2': ['General'], 'GS3': ['General'], 'GS4': ['General'], 'OPT1': ['General'], 'OPT2': ['General'] };
+  window.MARK_RULES = window.MARK_RULES || { 10: 2, 15: 3, 20: 4 };
+  window.WORKER_URL = window.WORKER_URL || '';
+
   // ============================================================
   // 1. NAVIGATION
   // ============================================================
@@ -192,9 +197,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   // 2. THEME
   // ============================================================
-    function applyTheme(theme) {
+  function applyTheme(theme) {
     const isDark = theme === 'dark';
-    document.body.classList.toggle('dark-mode', isDark); // Changed to body.dark-mode
+    document.body.classList.toggle('dark-mode', isDark);
     localStorage.setItem('qcab_theme', theme);
     const icon = document.getElementById('theme-icon');
     const text = document.getElementById('theme-text');
@@ -203,7 +208,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
   }
-    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+
+  // Restore saved theme on page load
+  const savedTheme = localStorage.getItem('qcab_theme') || 'light';
+  applyTheme(savedTheme);
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const isDark = document.body.classList.contains('dark-mode');
     applyTheme(isDark ? 'light' : 'dark');
   });
@@ -249,11 +259,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const toggleBankText = document.getElementById('toggle-bank-text');
   const bankBody = document.getElementById('pyq-bank-body');
 
-  bankBody.style.display = 'block';
+  if (bankBody) bankBody.style.display = 'block';
   if (toggleBankIcon) toggleBankIcon.textContent = '▾';
   if (toggleBankText) toggleBankText.textContent = 'Hide Bank';
 
-  if (toggleBankBtn) {
+  if (toggleBankBtn && bankBody) {
     toggleBankBtn.addEventListener('click', () => {
       const isHidden = bankBody.style.display === 'none';
       bankBody.style.display = isHidden ? 'block' : 'none';
@@ -473,6 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateStudyDashboard() {
     let bookmarked = 0, revised = 0, withNotes = 0;
     const listContainer = document.getElementById('study-list-container');
+    if (!listContainer) return;
     const items = [];
 
     presetBank.forEach(q => {
@@ -485,9 +496,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    document.getElementById('study-bookmarked').textContent = bookmarked;
-    document.getElementById('study-revised').textContent = revised;
-    document.getElementById('study-notes').textContent = withNotes;
+    const bmEl = document.getElementById('study-bookmarked');
+    const revEl = document.getElementById('study-revised');
+    const notesEl = document.getElementById('study-notes');
+
+    if (bmEl) bmEl.textContent = bookmarked;
+    if (revEl) revEl.textContent = revised;
+    if (notesEl) notesEl.textContent = withNotes;
 
     if (items.length === 0) {
       listContainer.innerHTML = '<p style="color:var(--muted);font-style:italic;">You haven\'t bookmarked any questions yet. Use the ⭐ button on any question to start.</p>';
@@ -808,19 +823,21 @@ document.addEventListener('DOMContentLoaded', function() {
   function openNoteModal(id) {
     currentNoteId = id;
     const rec = studyData[id] || { note: '' };
-    document.getElementById('note-textarea').value = rec.note || '';
-    document.getElementById('note-modal').classList.add('open');
+    const textEl = document.getElementById('note-textarea');
+    if (textEl) textEl.value = rec.note || '';
+    document.getElementById('note-modal')?.classList.add('open');
   }
 
   function closeNoteModal() {
-    document.getElementById('note-modal').classList.remove('open');
+    document.getElementById('note-modal')?.classList.remove('open');
     currentNoteId = null;
   }
 
   document.getElementById('note-cancel-btn')?.addEventListener('click', closeNoteModal);
   document.getElementById('note-save-btn')?.addEventListener('click', () => {
     if (currentNoteId) {
-      const note = document.getElementById('note-textarea').value.trim();
+      const textEl = document.getElementById('note-textarea');
+      const note = textEl ? textEl.value.trim() : '';
       studyData[currentNoteId] = studyData[currentNoteId] || { bookmarked: false, revised: false, note: '' };
       studyData[currentNoteId].note = note;
       saveStudyData();
@@ -837,7 +854,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   async function saveStudyData() {
     const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
-    if (!USER_TOKEN) return;
+    if (!USER_TOKEN || !WORKER_URL) return;
 
     const keys = Object.keys(studyData);
     for (const question_id of keys) {
@@ -866,7 +883,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function loadCloudStudy() {
     const USER_TOKEN = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
-    if (!USER_TOKEN) return;
+    if (!USER_TOKEN || !WORKER_URL) return;
     try {
       const res = await fetch(WORKER_URL + '/api/study/get', {
         headers: { 'Authorization': 'Bearer ' + USER_TOKEN }
@@ -1280,7 +1297,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   // 25. SEARCH & FILTER EVENT LISTENERS
   // ============================================================
-  searchInput?.addEventListener('input', renderBankResults);
+  let searchTimeout;
+  searchInput?.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      renderBankResults();
+    }, 300);
+  });
+
   searchBankBtn?.addEventListener('click', renderBankResults);
 
   filterPaper?.addEventListener('change', () => {
@@ -1316,6 +1340,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // 26. LOGIN BUTTONS
   // ============================================================
   document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
+    if (typeof getUser !== 'function' || typeof setUser !== 'function' || typeof openLoginModal !== 'function') {
+      showToast('Authentication module not loaded.', '⚠️');
+      return;
+    }
     const user = getUser();
     if (user) {
       if (await showConfirm('Logout?', 'Confirm Logout')) {
@@ -1331,6 +1359,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.getElementById('sidebar-login-btn')?.addEventListener('click', async () => {
+    if (typeof getUser !== 'function' || typeof setUser !== 'function' || typeof openLoginModal !== 'function') {
+      showToast('Authentication module not loaded.', '⚠️');
+      return;
+    }
     const user = getUser();
     if (user) {
       if (await showConfirm('Logout?', 'Confirm Logout')) {
