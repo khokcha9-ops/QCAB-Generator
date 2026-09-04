@@ -79,5 +79,3 @@ const SYLLABUS = {
 
 const WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
 const MARK_RULES = { 10: 2, 15: 3, 20: 4 };
-
-// Make globally available
