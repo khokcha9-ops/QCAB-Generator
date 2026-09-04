@@ -1320,33 +1320,33 @@ document.addEventListener('DOMContentLoaded', function() {
  // --- LOGIN BUTTONS ---
 document.getElementById('topbar-login-btn')?.addEventListener('click', function(e) {
   console.log('👆 Topbar login button clicked');
-  const user = getUser();
+  const user = window.getUser();
   if (user) {
     if (confirm('Logout?')) {
-      setUser(null);
-      showToast('Logged out.', '👋');
+      window.setUser(null);
+      if (typeof showToast === 'function') showToast('Logged out.', '👋');
       studyData = {};
       renderBankResults();
       updateStudyDashboard();
     }
   } else {
-    openLoginModal('login');
+    window.openLoginModal('login');
   }
 });
 
 document.getElementById('sidebar-login-btn')?.addEventListener('click', function(e) {
   console.log('👆 Sidebar login button clicked');
-  const user = getUser();
+  const user = window.getUser();
   if (user) {
     if (confirm('Logout?')) {
-      setUser(null);
-      showToast('Logged out.', '👋');
+      window.setUser(null);
+      if (typeof showToast === 'function') showToast('Logged out.', '👋');
       studyData = {};
       renderBankResults();
       updateStudyDashboard();
     }
   } else {
-    openLoginModal('login');
+    window.openLoginModal('login');
   }
 });
 
