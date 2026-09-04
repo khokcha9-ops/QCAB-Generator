@@ -351,17 +351,6 @@
     lucide.createIcons();
   });
 
-  // 1. SYLLABUS-WISE MAPPING & FREQUENCY ANALYSIS
-  window.analyzeTopic = function(topic) {
-      const allQ = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]').filter(q => q.topic === topic);
-      const freq = allQ.length;
-      const years = allQ.map(q => q.year).filter(Boolean);
-      
-      document.getElementById('frequency-chart').innerHTML = `<strong>${freq}</strong> Questions asked`;
-      document.getElementById('trend-chart').innerHTML = `<strong>${years.slice(0,5).join(', ') || 'N/A'}</strong>`;
-      
-      fetchSuggestions(topic);
-  };
 
     // 2. SEMANTIC SEARCH (Fuzzy matching + Topic Mapping)
   window.semanticSearch = function(query) {
