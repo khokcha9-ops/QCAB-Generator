@@ -327,23 +327,12 @@
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
-    // KEEP BOTH FILTERS VISIBLE (Year and Topic)
+    // BOTH Year and Subtopic filters are ALWAYS visible, regardless of mode
     yearSel.style.display = 'block';
     topicSel.style.display = 'block';
 
-    // If Subtopic mode is selected, force app.js to load ALL subtopics
-    if (mode === 'subtopic') {
-      var paperSel = document.getElementById('filter-paper');
-      // This triggers the existing 'change' listener in app.js, which fills the dropdown with all GS1 to OPT2 topics
-      paperSel.dispatchEvent(new Event('change'));
-    } else {
-      // If Year mode is selected, clear the topic so it doesn't block results
-      topicSel.value = 'ALL';
-    }
-    
-    // Automatically trigger the search so results update immediately
-    var searchBtn = document.getElementById('search-bank-btn');
-    if (searchBtn) searchBtn.click();
+    // Automatically trigger the search to update the results
+    document.getElementById('search-bank-btn').click();
   }
 </script>
 </body>
