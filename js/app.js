@@ -1,3 +1,45 @@
+/* ==========================================
+   THEME TOGGLE (DARK MODE)
+   ========================================== */
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  localStorage.setItem('qcab-theme', isDark ? 'dark' : 'light');
+  
+  const themeIcon = document.getElementById('theme-icon');
+  const themeText = document.getElementById('theme-text');
+  if(themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
+  if(themeText) themeText.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+}
+
+// Attach the event to ALL theme buttons (Topbar, Sidebar, Mobile)
+document.addEventListener('DOMContentLoaded', () => {
+  const desktopBtn = document.getElementById('theme-toggle');
+  const sidebarBtn = document.getElementById('sidebar-theme');
+  const mobileBtn = document.getElementById('mobile-theme-toggle');
+
+  if(desktopBtn) desktopBtn.addEventListener('click', toggleTheme);
+  if(sidebarBtn) sidebarBtn.addEventListener('click', toggleTheme);
+  if(mobileBtn) mobileBtn.addEventListener('click', toggleTheme);
+
+  // Apply saved theme on page load
+  if (localStorage.getItem('qcab-theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    const icon = document.getElementById('theme-icon');
+    const text = document.getElementById('theme-text');
+    if(icon) icon.textContent = '☀️';
+    if(text) text.textContent = 'Light Mode';
+  }
+});
+
+
+
+// ==========================================
+// CUSTOM MODAL SYSTEM - at the top (outside DOMContentLoaded)
+// ==========================================
+
+async function showAlert(message, title = 'Notice') {
+  // ... (rest of your code)
 // ============================================================
 // CUSTOM MODAL SYSTEM – at the top (outside DOMContentLoaded)
 // ============================================================
