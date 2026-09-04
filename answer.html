@@ -6,262 +6,563 @@
   <title>AI Answer Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
+    /* ============================================================
+       THEME VARIABLES
+       ============================================================ */
     :root {
-      --bg: #f4f7fc;
+      --bg: #f6f8fc;
       --surface: #ffffff;
-      --surface-2: #eef2f9;
+      --surface-2: #f0f2f7;
+      --surface-3: #e8ebf2;
       --text: #0f172a;
-      --muted: #475569;
-      --border: #cbd5e1;
-      --border-strong: #94a3b8;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      /* Brand colors */
       --primary: #7c3aed;
-      --primary-soft: #f3e8ff;
+      --primary-light: #ede9fe;
+      --primary-dark: #6d28d9;
       --accent: #0891b2;
-      --accent-soft: #cffafe;
+      --accent-light: #cffafe;
       --highlight: #f59e0b;
+      --highlight-light: #fef3c7;
+      --success: #047857;
+      --success-light: #ecfdf5;
       --danger: #b91c1c;
-      --shadow: 0 12px 35px rgba(0,0,0,0.05);
-      --radius: 18px;
-      --sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --danger-light: #fef2f2;
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow: 0 4px 20px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+      /* Radius */
+      --radius: 16px;
+      --radius-sm: 10px;
+      /* Fonts */
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --serif: Georgia, 'Times New Roman', serif;
     }
     [data-theme="dark"] {
       --bg: #07090e;
       --surface: #111622;
       --surface-2: #1a2234;
+      --surface-3: #243049;
       --text: #f1f5f9;
-      --muted: #94a3b8;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
       --border: #2a364f;
       --border-strong: #3b4d71;
       --primary: #a78bfa;
-      --primary-soft: #2e1065;
+      --primary-light: #2e1065;
       --accent: #22d3ee;
-      --accent-soft: #083344;
+      --accent-light: #083344;
       --highlight: #fbbf24;
+      --highlight-light: #422006;
+      --success: #34d399;
+      --success-light: #064e3b;
+      --danger: #f87171;
+      --danger-light: #451a03;
+      --shadow: 0 4px 20px rgba(0,0,0,0.3);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
     }
 
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: var(--sans);
       background: var(--bg);
       color: var(--text);
-      transition: background 0.25s ease, color 0.25s ease;
-      padding: 30px 20px;
+      transition: background 0.3s ease, color 0.3s ease;
+      padding: 32px 24px;
       max-width: 960px;
       margin: 0 auto;
       line-height: 1.6;
+      min-height: 100vh;
     }
     .container {
       background: var(--surface);
       border-radius: var(--radius);
-      padding: 32px 28px;
-      box-shadow: var(--shadow);
+      padding: 36px 32px 28px;
+      box-shadow: var(--shadow-lg);
       border: 1px solid var(--border);
-      transition: background 0.25s ease, border-color 0.25s ease;
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeUp 0.4s ease;
     }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       TOP BAR
+       ============================================================ */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
       gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
     }
-    .top-bar h2 { font-size: 22px; font-weight: 800; margin: 0; }
-    .top-bar-actions { display: flex; gap: 10px; }
+    .top-bar h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+    }
+    .top-bar h2 .badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 2px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+    .top-bar-actions {
+      display: flex;
+      gap: 8px;
+    }
     .top-bar-actions button {
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       padding: 8px 14px;
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s ease;
+      font-family: var(--sans);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .top-bar-actions button:hover {
-      background: var(--primary-soft);
+      background: var(--primary-light);
       border-color: var(--primary);
       color: var(--primary);
+      transform: translateY(-1px);
     }
+    .top-bar-actions .close-btn:hover {
+      background: var(--danger-light);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* ============================================================
+       QUESTION BOX
+       ============================================================ */
     .question-box {
       background: var(--surface-2);
-      border-left: 4px solid var(--primary);
-      padding: 16px 20px;
-      border-radius: 12px;
-      margin-bottom: 24px;
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      border-left: 5px solid var(--primary);
+      transition: background 0.3s ease;
     }
-    .question-box .q-text { font-weight: 700; font-size: 18px; line-height: 1.4; }
-    .question-box .q-meta { margin-top: 6px; font-size: 14px; color: var(--muted); font-weight: 500; }
+    .question-box .q-text {
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--text);
+      font-family: var(--serif);
+    }
+    .question-box .q-meta {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
     .question-box .q-meta span {
-      background: var(--primary-soft);
-      color: var(--primary);
-      padding: 2px 10px;
-      border-radius: 999px;
-      margin-right: 8px;
       font-size: 12px;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 3px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+    .question-box .q-meta .year-tag { background: var(--highlight-light); color: #92400e; }
+    .question-box .q-meta .marks-tag { background: var(--success-light); color: var(--success); }
+    [data-theme="dark"] .question-box .q-meta .year-tag { background: #451a03; color: #fde68a; }
+    [data-theme="dark"] .question-box .q-meta .marks-tag { background: #064e3b; color: #a7f3d0; }
+
+    /* ============================================================
+       ANSWER DISPLAY (Internal)
+       ============================================================ */
+    .answer-container {
+      margin-bottom: 20px;
     }
     .answer-box {
       background: var(--surface-2);
-      border-radius: 12px;
-      padding: 20px 24px;
+      border-radius: var(--radius-sm);
+      padding: 24px 28px;
       border: 1px solid var(--border);
       font-family: var(--serif);
-      line-height: 1.8;
+      line-height: 1.9;
       white-space: pre-wrap;
-      min-height: 300px;
-      margin-bottom: 20px;
-      transition: background 0.25s ease;
-      font-size: 16px;
+      min-height: 280px;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      font-size: 17px;
+      color: var(--text);
+      position: relative;
     }
-    .answer-box .loading { color: var(--muted); font-style: italic; font-family: var(--sans); }
-    .answer-box .kw-term { font-weight: 700; color: var(--primary); }
-    .answer-box .kw-example { font-style: italic; color: var(--accent); }
-    .answer-box .kw-meta {
-      font-size: 0.9em;
-      background: #fef3c7;
+    .answer-box .loading {
+      color: var(--text-muted);
+      font-style: italic;
+      font-family: var(--sans);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      min-height: 200px;
+    }
+    .answer-box .loading .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Colour-coded elements */
+    .answer-box .kw-term {
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
       padding: 0 4px;
+      border-radius: 3px;
+    }
+    .answer-box .kw-example {
+      font-style: italic;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0 4px;
+      border-radius: 3px;
+    }
+    .answer-box .kw-meta {
+      font-weight: 600;
+      background: var(--highlight-light);
+      padding: 0 6px;
       border-radius: 4px;
       color: #92400e;
-      font-weight: 500;
     }
     [data-theme="dark"] .answer-box .kw-meta { background: #451a03; color: #fde68a; }
     .answer-box .kw-highlight {
-      background: #fbbf24;
+      background: var(--highlight);
       padding: 0 4px;
       border-radius: 4px;
       color: #0f172a;
       font-weight: 600;
     }
     [data-theme="dark"] .answer-box .kw-highlight { background: #f59e0b; color: #000; }
+
+    /* Introduction / Conclusion sections */
+    .answer-box .section-intro {
+      border-left: 3px solid var(--primary);
+      padding-left: 16px;
+      margin-bottom: 16px;
+    }
+    .answer-box .section-conclusion {
+      border-left: 3px solid var(--success);
+      padding-left: 16px;
+      margin-top: 16px;
+    }
     .answer-box h1, .answer-box h2, .answer-box h3 {
       font-weight: 700;
       margin: 1.2em 0 0.6em;
       font-family: var(--sans);
+      color: var(--text);
     }
     .answer-box h1 { font-size: 1.4em; }
     .answer-box h2 { font-size: 1.2em; }
     .answer-box h3 { font-size: 1.1em; }
 
-    .prompt-area {
-      background: #fef9e7;
-      border: 1px solid var(--highlight);
-      border-radius: 12px;
-      padding: 18px 20px;
-      margin: 16px 0;
-      white-space: pre-wrap;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      line-height: 1.7;
-      max-height: 400px;
-      overflow-y: auto;
-      color: var(--text);
-      background: var(--surface-2);
-    }
-    [data-theme="dark"] .prompt-area { background: #1e1b2e; border-color: var(--primary); }
-    .prompt-actions {
+    /* ============================================================
+       ANSWER ACTION BUTTONS
+       ============================================================ */
+    .answer-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin: 12px 0 20px;
+      margin-top: 12px;
     }
-    .prompt-actions .btn {
+    .btn {
       border: none;
       padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 13px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s ease;
+      font-family: var(--sans);
       display: inline-flex;
       align-items: center;
       gap: 8px;
     }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-hover, #6d28d9); transform: scale(1.02); }
-    .btn-secondary { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
-    .btn-secondary:hover { background: var(--border); }
-    .btn-success { background: #10b981; color: #fff; }
-    .btn-success:hover { background: #059669; transform: scale(1.02); }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
+    .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--surface-3); transform: translateY(-1px); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #065f46; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(4,120,87,0.3); }
+
+    /* ============================================================
+       PROMPT AREA (External)
+       ============================================================ */
+    .prompt-container {
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+    .prompt-container .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .prompt-container .prompt-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      font-family: var(--sans);
+    }
+    .prompt-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      max-height: 380px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      color: var(--text);
+      transition: background 0.3s ease, border-color 0.3s ease;
+      position: relative;
+    }
+    .prompt-box .prompt-label {
+      position: sticky;
+      top: 0;
+      background: var(--surface-2);
+      padding-bottom: 8px;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      display: block;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .prompt-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 16px 0 8px;
+    }
     .btn-model {
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text);
       font-weight: 700;
+      font-family: var(--sans);
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
       font-size: 13px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s ease;
     }
-    .btn-model:hover { transform: scale(1.05); border-color: var(--primary); }
+    .btn-model:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
     .btn-model.perplexity { background: #8B5CF6; color: #fff; border-color: #8B5CF6; }
+    .btn-model.perplexity:hover { background: #7C3AED; box-shadow: 0 4px 16px rgba(139,92,246,0.35); }
     .btn-model.chatgpt { background: #10A37F; color: #fff; border-color: #10A37F; }
+    .btn-model.chatgpt:hover { background: #0D8B6E; box-shadow: 0 4px 16px rgba(16,163,127,0.35); }
     .btn-model.deepseek { background: #2563EB; color: #fff; border-color: #2563EB; }
+    .btn-model.deepseek:hover { background: #1D4ED8; box-shadow: 0 4px 16px rgba(37,99,235,0.35); }
+    .btn-model .icon { font-size: 16px; }
 
+    .prompt-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .prompt-hint .key {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 1px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--sans);
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 14px 24px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      z-index: 999;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+    .toast .toast-icon { font-size: 20px; }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
     .footer {
-      margin-top: 24px;
+      margin-top: 28px;
       text-align: center;
-      color: var(--muted);
+      color: var(--text-muted);
       font-size: 12px;
       border-top: 1px solid var(--border);
-      padding-top: 16px;
+      padding-top: 18px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
     }
-    @media (max-width: 600px) {
-      body { padding: 16px 10px; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 640px) {
+      body { padding: 16px 12px; }
       .container { padding: 20px 16px; }
       .top-bar { flex-direction: column; align-items: flex-start; }
-      .top-bar h2 { font-size: 18px; }
-      .question-box .q-text { font-size: 16px; }
-      .answer-box { font-size: 15px; padding: 16px; }
+      .top-bar h2 { font-size: 17px; }
+      .question-box { padding: 14px 16px; }
+      .question-box .q-text { font-size: 17px; }
+      .answer-box { padding: 16px 18px; font-size: 15px; }
+      .prompt-box { font-size: 13px; padding: 14px 16px; max-height: 280px; }
+      .btn { padding: 8px 14px; font-size: 12px; }
+      .btn-model { padding: 8px 14px; font-size: 12px; }
+      .toast { width: 90%; bottom: 20px; padding: 12px 16px; font-size: 13px; }
+    }
+    @media (max-width: 420px) {
+      .prompt-actions { flex-direction: column; }
+      .prompt-actions .btn-model { justify-content: center; }
     }
   </style>
 </head>
 <body>
+
 <div class="container" id="app">
+
+  <!-- Top Bar -->
   <div class="top-bar">
-    <h2 id="pageTitle">🤖 AI Model Answer</h2>
+    <h2>
+      🤖 AI Answer
+      <span class="badge" id="modelBadge">Direct</span>
+    </h2>
     <div class="top-bar-actions">
-      <button id="themeToggle">🌙 Dark Mode</button>
-      <button onclick="window.close()">✕ Close</button>
+      <button id="themeToggle" title="Toggle dark/light mode">🌙</button>
+      <button class="close-btn" onclick="window.close()" title="Close tab">✕</button>
     </div>
   </div>
+
+  <!-- Question -->
   <div class="question-box" id="questionBox">
     <div class="q-text" id="questionText">Loading question...</div>
     <div class="q-meta" id="questionMeta"></div>
   </div>
-  <div id="answerContainer">
-    <div class="answer-box" id="answerDisplay"><span class="loading">⏳ Generating answer...</span></div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+
+  <!-- Answer (Internal) -->
+  <div class="answer-container" id="answerContainer">
+    <div class="answer-box" id="answerDisplay">
+      <div class="loading">
+        <div class="spinner"></div>
+        Generating answer...
+      </div>
+    </div>
+    <div class="answer-actions">
       <button class="btn btn-secondary" id="regenerateBtn" style="display:none;">🔄 Regenerate</button>
-      <button class="btn btn-secondary" id="copyAnswerBtn" style="display:none;">📋 Copy Answer</button>
+      <button class="btn btn-secondary" id="copyAnswerBtn" style="display:none;">📋 Copy</button>
     </div>
   </div>
-  <div id="promptContainer" style="display:none;">
-    <div class="prompt-area" id="promptContent"></div>
+
+  <!-- Prompt (External) -->
+  <div class="prompt-container" id="promptContainer">
+    <div class="prompt-header">
+      <h3>📝 Ready-to-use Prompt</h3>
+    </div>
+    <div class="prompt-box" id="promptContent">
+      <span class="prompt-label">📋 Prompt</span>
+      <span id="promptText"></span>
+    </div>
     <div class="prompt-actions">
-      <button class="btn btn-secondary" id="copyPromptBtn">📄 Copy Prompt</button>
-      <button class="btn-model perplexity" id="openPerplexity">🌀 Perplexity</button>
-      <button class="btn-model chatgpt" id="openChatGPT">💬 ChatGPT</button>
-      <button class="btn-model deepseek" id="openDeepSeek">🔬 DeepSeek</button>
+      <button class="btn btn-secondary" id="copyPromptBtn">📄 Copy</button>
+      <button class="btn-model perplexity" id="openPerplexity">
+        <span class="icon">🌀</span> Perplexity
+        <span style="font-size:10px; opacity:0.8; font-weight:400;">→ Direct</span>
+      </button>
+      <button class="btn-model chatgpt" id="openChatGPT">
+        <span class="icon">💬</span> ChatGPT
+        <span style="font-size:10px; opacity:0.8; font-weight:400;">→ Paste & Go</span>
+      </button>
+      <button class="btn-model deepseek" id="openDeepSeek">
+        <span class="icon">🔬</span> DeepSeek
+        <span style="font-size:10px; opacity:0.8; font-weight:400;">→ Paste & Go</span>
+      </button>
     </div>
-    <p style="font-size:13px; color:var(--muted); margin-top:8px;">
-      Click a model button to open the AI website with the question pre‑filled. 
-      Then press Enter to generate the answer.
-    </p>
+    <div class="prompt-hint">
+      <span>💡</span>
+      <span id="promptHintText">Click a model button to open the AI website with the question pre‑filled.</span>
+    </div>
   </div>
+
   <div class="footer">Powered by your AI Worker</div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMessage">Copied!</span>
 </div>
 
 <script>
   // ============================================================
-  // THEME
+  // 1. THEME
   // ============================================================
   function getPreferredTheme() {
     return localStorage.getItem('qcab_theme') ||
@@ -272,17 +573,33 @@
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
     localStorage.setItem('qcab_theme', theme);
     const btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
   }
-  const initialTheme = getPreferredTheme();
-  applyTheme(initialTheme);
+  applyTheme(getPreferredTheme());
   document.getElementById('themeToggle')?.addEventListener('click', () => {
     const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
   // ============================================================
-  // PARSE URL
+  // 2. TOAST
+  // ============================================================
+  let toastTimeout = null;
+  function showToast(message, icon = '✅') {
+    const toast = document.getElementById('toast');
+    const msgEl = document.getElementById('toastMessage');
+    const iconEl = toast.querySelector('.toast-icon');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    iconEl.textContent = icon;
+    msgEl.textContent = message;
+    toast.classList.add('show');
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // ============================================================
+  // 3. PARSE URL PARAMETERS
   // ============================================================
   const params = new URLSearchParams(window.location.search);
   const question = decodeURIComponent(params.get('q') || '');
@@ -291,59 +608,111 @@
   const model = decodeURIComponent(params.get('model') || 'secret');
   const mode = decodeURIComponent(params.get('mode') || 'internal');
 
+  // ============================================================
+  // 4. DOM REFS
+  // ============================================================
   const questionText = document.getElementById('questionText');
   const questionMeta = document.getElementById('questionMeta');
   const answerDisplay = document.getElementById('answerDisplay');
   const regenerateBtn = document.getElementById('regenerateBtn');
   const copyAnswerBtn = document.getElementById('copyAnswerBtn');
   const promptContainer = document.getElementById('promptContainer');
-  const promptContent = document.getElementById('promptContent');
+  const promptText = document.getElementById('promptText');
   const copyPromptBtn = document.getElementById('copyPromptBtn');
-  const pageTitle = document.getElementById('pageTitle');
-
-  let metaParts = [];
-  if (year) metaParts.push(`📅 ${year}`);
-  if (marks) metaParts.push(`📝 ${marks} Marks`);
-  questionText.textContent = question || 'Question not provided';
-  if (metaParts.length) {
-    questionMeta.innerHTML = metaParts.map(p => `<span>${p}</span>`).join(' ');
-  }
+  const modelBadge = document.getElementById('modelBadge');
 
   // ============================================================
-  // INTERNAL
+  // 5. DISPLAY QUESTION
+  // ============================================================
+  let metaParts = [];
+  if (year) metaParts.push(`<span class="year-tag">📅 ${year}</span>`);
+  if (marks) metaParts.push(`<span class="marks-tag">📝 ${marks} Marks</span>`);
+  questionText.textContent = question || 'Question not provided';
+  questionMeta.innerHTML = metaParts.join(' ');
+
+  // ============================================================
+  // 6. INTERNAL (Direct / Secret)
   // ============================================================
   async function generateInternal() {
     const userToken = localStorage.getItem('userToken') || localStorage.getItem('qcab_owner_key');
     if (!userToken) {
-      answerDisplay.innerHTML = '❌ Please login first. <a href="#" onclick="window.location.href=\'./login.html\'">Login</a>';
+      answerDisplay.innerHTML = `
+        <div style="text-align:center; padding:40px 20px; font-family:var(--sans);">
+          <div style="font-size:48px; margin-bottom:16px;">🔒</div>
+          <p style="font-size:18px; font-weight:600; color:var(--text);">Please Login First</p>
+          <p style="color:var(--text-secondary); margin-bottom:20px;">You need to be logged in to access AI answers.</p>
+          <a href="./login.html" style="background:var(--primary); color:#fff; padding:10px 24px; border-radius:8px; text-decoration:none; font-weight:600; display:inline-block;">Go to Login</a>
+        </div>
+      `;
       return;
     }
+
     try {
+      answerDisplay.innerHTML = `<div class="loading"><div class="spinner"></div>Generating answer...</div>`;
       const res = await fetch(`https://qcap-ai-v2.khokcha9.workers.dev/api/generate-answer?question=${encodeURIComponent(question)}`, {
         headers: { 'Authorization': 'Bearer ' + userToken }
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to generate');
-      let html = data.text.replace(/\n/g, '<br>');
+
+      // Process the answer with colour coding
+      let html = data.text
+        .replace(/\n/g, '<br>')
+        // Apply colour classes to known tags
+        .replace(/<span class="kw-term">/g, '<span class="kw-term">')
+        .replace(/<span class="kw-example">/g, '<span class="kw-example">')
+        .replace(/<span class="kw-meta">/g, '<span class="kw-meta">')
+        .replace(/<mark class="kw-highlight">/g, '<mark class="kw-highlight">')
+        // Also try to auto-detect Introduction / Conclusion sections
+        .replace(/(<br>)?(Introduction|Intro)(:)/gi, '<div class="section-intro"><strong>$2:</strong>')
+        .replace(/(<br>)?(Conclusion)(:)/gi, '<div class="section-conclusion"><strong>$2:</strong>')
+        .replace(/<\/div>/g, '')
+        // Close any unclosed divs (simple approach)
+        .replace(/<div class="section-intro">/g, '<div class="section-intro">')
+        .replace(/<div class="section-conclusion">/g, '<div class="section-conclusion">');
+
+      // If the answer starts with Introduction or Conclusion, wrap it
+      if (!html.includes('<div class="section-intro">') && !html.includes('<div class="section-conclusion">')) {
+        // Try to find patterns like "Introduction:" or "Conclusion:"
+        html = html.replace(/(Introduction|Intro)(:)/gi, '<div class="section-intro"><strong>$1:</strong>');
+        html = html.replace(/(Conclusion)(:)/gi, '<div class="section-conclusion"><strong>$1:</strong>');
+      }
+
       answerDisplay.innerHTML = html;
-      regenerateBtn.style.display = 'inline-block';
-      copyAnswerBtn.style.display = 'inline-block';
+      regenerateBtn.style.display = 'inline-flex';
+      copyAnswerBtn.style.display = 'inline-flex';
+      modelBadge.textContent = 'Direct';
     } catch (err) {
-      answerDisplay.innerHTML = `❌ Error: ${err.message}`;
+      answerDisplay.innerHTML = `
+        <div style="text-align:center; padding:30px 20px; color:var(--danger); font-family:var(--sans);">
+          <div style="font-size:36px; margin-bottom:12px;">❌</div>
+          <p style="font-weight:600;">${err.message}</p>
+          <p style="font-size:14px; color:var(--text-secondary);">Please try again or check your connection.</p>
+        </div>
+      `;
     }
   }
 
+  // Copy answer
   copyAnswerBtn?.addEventListener('click', () => {
     const text = answerDisplay.innerText;
-    navigator.clipboard.writeText(text).then(() => alert('Answer copied!')).catch(() => alert('Failed to copy.'));
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Answer copied to clipboard!', '📋');
+    }).catch(() => {
+      showToast('Failed to copy. Please try again.', '❌');
+    });
   });
+
+  // Regenerate
   regenerateBtn?.addEventListener('click', generateInternal);
 
   // ============================================================
-  // EXTERNAL
+  // 7. EXTERNAL (Prompt + Deep Links)
   // ============================================================
   function showExternalPrompt() {
     const modelName = model.charAt(0).toUpperCase() + model.slice(1);
+    modelBadge.textContent = modelName;
+
     const prompt = `You are an expert UPSC Civil Services model answer writer. Generate a high-quality, comprehensive answer of approximately 500–600 words for the following question:
 
 "${question}"
@@ -356,37 +725,75 @@ Instructions:
 
 Please generate the answer now.`;
 
-    pageTitle.textContent = `🤖 ${modelName} AI – Ready Prompt`;
     document.getElementById('answerContainer').style.display = 'none';
     promptContainer.style.display = 'block';
-    promptContent.textContent = prompt;
+    promptText.textContent = prompt;
 
+    // Copy prompt
     copyPromptBtn?.addEventListener('click', () => {
-      navigator.clipboard.writeText(prompt).then(() => alert('Prompt copied!')).catch(() => {
+      navigator.clipboard.writeText(prompt).then(() => {
+        showToast('Prompt copied to clipboard!', '📋');
+      }).catch(() => {
+        // Fallback
         const textarea = document.createElement('textarea');
         textarea.value = prompt;
         document.body.appendChild(textarea);
         textarea.select();
         document.execCommand('copy');
         textarea.remove();
-        alert('Prompt copied!');
+        showToast('Prompt copied to clipboard!', '📋');
       });
     });
 
-    const encodedPrompt = encodeURIComponent(prompt);
+    // ----- Perplexity: Direct search (opens and auto-generates) -----
     document.getElementById('openPerplexity')?.addEventListener('click', () => {
-      window.open(`https://www.perplexity.ai/search?q=${encodeURIComponent(question)}`, '_blank');
+      const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(question)}`;
+      window.open(searchUrl, '_blank');
+      showToast('Opening Perplexity with your question...', '🌀');
     });
+
+    // ----- ChatGPT: Copy prompt + open website -----
     document.getElementById('openChatGPT')?.addEventListener('click', () => {
-      window.open(`https://chat.openai.com/?q=${encodedPrompt}`, '_blank');
+      navigator.clipboard.writeText(prompt).then(() => {
+        window.open('https://chat.openai.com/', '_blank');
+        showToast('✅ Prompt copied! Paste it in ChatGPT and press Enter.', '💬');
+      }).catch(() => {
+        // Fallback copy
+        const textarea = document.createElement('textarea');
+        textarea.value = prompt;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        window.open('https://chat.openai.com/', '_blank');
+        showToast('✅ Prompt copied! Paste it in ChatGPT and press Enter.', '💬');
+      });
     });
+
+    // ----- DeepSeek: Copy prompt + open website -----
     document.getElementById('openDeepSeek')?.addEventListener('click', () => {
-      window.open(`https://chat.deepseek.com/?q=${encodedPrompt}`, '_blank');
+      navigator.clipboard.writeText(prompt).then(() => {
+        window.open('https://chat.deepseek.com/', '_blank');
+        showToast('✅ Prompt copied! Paste it in DeepSeek and press Enter.', '🔬');
+      }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = prompt;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        window.open('https://chat.deepseek.com/', '_blank');
+        showToast('✅ Prompt copied! Paste it in DeepSeek and press Enter.', '🔬');
+      });
     });
+
+    // Update hint
+    const hintEl = document.getElementById('promptHintText');
+    hintEl.textContent = 'Perplexity opens directly with your question. For ChatGPT and DeepSeek, the prompt is copied to your clipboard – just paste and press Enter.';
   }
 
   // ============================================================
-  // START
+  // 8. START
   // ============================================================
   if (mode === 'external' || model !== 'secret') {
     showExternalPrompt();
