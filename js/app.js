@@ -117,7 +117,57 @@ document.getElementById('customModal')?.addEventListener('click', function(e) {
   }
 });
 
-console.log('✅ Custom modal system loaded');
+// ============================================================
+// TOAST NOTIFICATION SYSTEM
+// ============================================================
+function showToast(message, icon = '✅') {
+  const toast = document.getElementById('toast');
+  const msgEl = document.getElementById('toastMessage');
+  const iconEl = document.getElementById('toastIcon');
+  if (!toast) return;
+  if (window.toastTimeout) clearTimeout(window.toastTimeout);
+  iconEl.textContent = icon;
+  msgEl.textContent = message;
+  toast.classList.add('show');
+  window.toastTimeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// Helper to copy text with fallback
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve, reject) => {
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+      resolve();
+    } catch (err) { reject(err); }
+  });
+}
+
+// Generate UPSC prompt
+function generatePrompt(question) {
+  return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality, comprehensive answer of approximately 500–600 words for the following question:
+
+"${question}"
+
+Instructions:
+- Provide a well-structured answer with introduction, main body (with subheadings if needed), and conclusion.
+- Use relevant facts, examples, and recent developments (up to ${new Date().toLocaleDateString()}).
+- Write in a formal, academic style suitable for the UPSC Mains examination.
+- Ensure the answer is balanced and covers all dimensions of the question.
+
+Please generate the answer now.`;
+}
+
+console.log('✅ Custom modal + toast system loaded');
 
 // ============================================================
 // MAIN APP – inside DOMContentLoaded
@@ -883,11 +933,11 @@ document.addEventListener('DOMContentLoaded', function() {
             studyData = data;
             saveStudyData();
             renderBankResults();
-            showAlert('Study data imported successfully!', 'Import Complete');
+            showToast('Study data imported successfully!', '📥');
           } else {
-            showAlert('Invalid file format.', 'Error');
+            showToast('Invalid file format.', '❌');
           }
-        } catch(err) { showAlert('Error reading file.', 'Error'); }
+        } catch(err) { showToast('Error reading file.', '❌'); }
       };
       reader.readAsText(file);
     };
@@ -1024,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function() {
     savePresets();
     populateFilterYears();
     populateFilterTopics();
-    showAlert('Question saved to Preset Bank!', 'Success');
+    showToast('Question saved to Preset Bank!', '📥');
     resetForm();
     renderBankResults();
   });
@@ -1100,7 +1150,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renameFolderBtn?.addEventListener('click', async () => {
     const current = getActiveFolder();
     if (current.id === 'root') { 
-      showAlert('Cannot rename root folder.', 'Error');
+      showToast('Cannot rename root folder.', '⚠️');
       return; 
     }
     const newName = await showPrompt('Rename folder:', 'Rename Folder', current.name);
@@ -1114,7 +1164,7 @@ document.addEventListener('DOMContentLoaded', function() {
   deleteFolderBtn?.addEventListener('click', async () => {
     const current = getActiveFolder();
     if (current.id === 'root') { 
-      showAlert('Cannot delete root folder.', 'Error');
+      showToast('Cannot delete root folder.', '⚠️');
       return; 
     }
     if (await showConfirm(`Delete folder "${current.name}" and its content?`, 'Delete Folder')) {
@@ -1144,7 +1194,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
     if (!window.jspdf) { 
-      showAlert('jsPDF library not loaded. Please check your internet connection.', 'Library Error');
+      showToast('jsPDF library not loaded.', '❌');
       return; 
     }
     const { jsPDF } = window.jspdf;
@@ -1303,7 +1353,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user) {
       if (await showConfirm('Logout?', 'Confirm Logout')) {
         setUser(null);
-        showAlert('Logged out.', 'Success');
+        showToast('Logged out.', '👋');
         studyData = {};
         renderBankResults();
         updateStudyDashboard();
@@ -1318,7 +1368,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user) {
       if (await showConfirm('Logout?', 'Confirm Logout')) {
         setUser(null);
-        showAlert('Logged out.', 'Success');
+        showToast('Logged out.', '👋');
         studyData = {};
         renderBankResults();
         updateStudyDashboard();
@@ -1329,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ============================================================
-  // 27. AI MODEL SELECTION MODAL
+  // 27. AI MODEL SELECTION MODAL (DIRECT REDIRECT FOR EXTERNAL)
   // ============================================================
   const aiModal = document.getElementById('ai-model-modal');
   const aiModalClose = document.getElementById('ai-model-close');
@@ -1352,25 +1402,53 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) closeAIModal();
   });
 
+  // Handle model selection – DIRECT REDIRECT + PROMPT COPY
   document.querySelectorAll('.model-option').forEach(btn => {
     btn.addEventListener('click', function() {
       const model = this.dataset.model;
       if (!pendingQuestion) return;
 
-      const params = new URLSearchParams({
-        q: pendingQuestion.question,
-        y: pendingQuestion.year || '',
-        m: pendingQuestion.marks || '',
-        model: model
-      });
+      const question = pendingQuestion.question;
+      const year = pendingQuestion.year || '';
+      const marks = pendingQuestion.marks || '';
 
+      // --- Direct (Secret) → answer.html ---
       if (model === 'secret') {
-        const url = `answer.html?${params.toString()}`;
-        window.open(url, '_blank');
-      } else {
-        const url = `answer.html?${params.toString()}&mode=external`;
-        window.open(url, '_blank');
+        const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
+        window.open(`answer.html?${params.toString()}`, '_blank');
+        closeAIModal();
+        return;
       }
+
+      // --- Perplexity → Direct search (auto-generates) ---
+      if (model === 'perplexity') {
+        const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(question)}`;
+        window.open(searchUrl, '_blank');
+        showToast('🌀 Opening Perplexity with your question...', '🌀');
+        closeAIModal();
+        return;
+      }
+
+      // --- ChatGPT & DeepSeek → Copy prompt + open website ---
+      const prompt = generatePrompt(question);
+      const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
+      const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
+      const icon = model === 'chatgpt' ? '💬' : '🔬';
+
+      copyText(prompt).then(() => {
+        window.open(siteUrl, '_blank');
+        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
+      }).catch(() => {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = prompt;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        window.open(siteUrl, '_blank');
+        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
+      });
 
       closeAIModal();
     });
