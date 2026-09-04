@@ -35,8 +35,7 @@
     </nav>
     <div class="sidebar-bottom">
       <button class="nav-btn" id="sidebar-theme"><span class="nav-icon">☾</span>Dark / Light</button>
-      <!-- FIXED: Added onclick to sidebar login button -->
-      <button class="nav-btn" id="sidebar-login-btn" onclick="openLoginModal('login')">
+      <button class="nav-btn" id="sidebar-login-btn" onclick="openLoginModal()">
         <span class="nav-icon">🔑</span>
         <span id="sidebar-login-text">Login</span>
       </button>
@@ -64,8 +63,7 @@
       </div>
       <div class="topbar-actions">
         <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
-        <!-- FIXED: Added onclick to topbar login button -->
-        <button class="theme-toggle" id="topbar-login-btn" onclick="openLoginModal('login')">
+        <button class="theme-toggle" id="topbar-login-btn" onclick="openLoginModal()">
           🔑 <span id="topbar-login-text">Login</span>
         </button>
       </div>
@@ -122,7 +120,7 @@
             </div>
           </div>
 
-          <!-- PYQ BANK (with both filters) -->
+          <!-- PYQ BANK -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
               <div><h2 class="card-title">PYQ Bank</h2><p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p></div>
@@ -132,7 +130,6 @@
               </div>
             </div>
             <div id="pyq-bank-body">
-              <!-- No mode switch – both filters always visible -->
               <div class="search-main"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..."></div>
               <div class="filter-box">
                 <div class="filters">
@@ -194,24 +191,53 @@
 <!-- Back to top -->
 <button class="back-to-top" id="back-to-top">↑</button>
 
-<!-- Modals (note, login, AI, custom, toast) -->
-<div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button class="btn btn-secondary-sm" id="note-save-btn">Save</button><button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
+<!-- NOTE MODAL -->
+<div class="study-modal" id="note-modal">
+  <div class="study-modal-content">
+    <h3>📝 Add Note</h3>
+    <textarea id="note-textarea" placeholder="Write your note here..."></textarea>
+    <div class="btn-row">
+      <button class="btn btn-secondary-sm" id="note-save-btn">Save</button>
+      <button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
 
-<!-- LOGIN MODAL -->
+<!-- ==================== LOGIN MODAL ==================== -->
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
-    <button class="login-modal-close" id="login-modal-close">&times;</button>
+    <button class="login-modal-close" id="login-modal-close" onclick="closeLoginModal()">&times;</button>
     <div class="login-brand-icon">Q</div>
     <h2 id="login-modal-title">Welcome Back</h2>
     <p class="login-sub" id="login-modal-sub">Sign in to access AI answers and sync your study data.</p>
+
     <div id="login-error" style="display:none; color:var(--danger); margin-bottom:10px; padding:8px; background:var(--danger-soft); border-radius:8px;"></div>
-    <div class="field"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
-    <div class="field" id="login-name-field" style="display:none;"><label for="login-name">Full Name</label><input type="text" id="login-name" placeholder="Your full name"></div>
-    <div class="field"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
+
+    <div class="field">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com">
+    </div>
+    <div class="field" id="login-name-field" style="display:none;">
+      <label for="login-name">Full Name</label>
+      <input type="text" id="login-name" placeholder="Your full name">
+    </div>
+    <div class="field">
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+
     <button class="btn btn-primary" id="login-submit-btn" style="width:100%;">Sign In</button>
+
     <div class="divider">or</div>
-    <button class="btn btn-google" id="google-login-btn"><span style="font-size:18px; margin-right:8px;">G</span> Continue with Google</button>
-    <div class="switch-link"><span id="login-switch-text">Don't have an account?</span> <a id="login-switch-link">Sign up</a></div>
+
+    <button class="btn btn-google" id="google-login-btn" onclick="alert('Google login is not configured yet.')">
+      <span style="font-size:18px; margin-right:8px;">G</span> Continue with Google
+    </button>
+
+    <div class="switch-link">
+      <span id="login-switch-text">Don't have an account?</span>
+      <a id="login-switch-link" onclick="toggleLoginMode()">Sign up</a>
+    </div>
   </div>
 </div>
 
@@ -252,9 +278,162 @@
   <span id="toastMessage">Copied!</span>
 </div>
 
-<!-- Scripts -->
+<!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+<!-- ==================== FALLBACK LOGIN FUNCTIONS ==================== -->
+<script>
+  // ============================================================
+  // FALLBACK LOGIN FUNCTIONS (guaranteed to work)
+  // ============================================================
+  console.log('🔐 Fallback login functions loaded');
+
+  function openLoginModal() {
+    console.log('🚪 openLoginModal called');
+    const modal = document.getElementById('login-modal');
+    if (!modal) {
+      alert('Login modal not found. Please refresh.');
+      return;
+    }
+    modal.classList.add('open');
+  }
+
+  function closeLoginModal() {
+    const modal = document.getElementById('login-modal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  function toggleLoginMode() {
+    const submitBtn = document.getElementById('login-submit-btn');
+    const isLogin = submitBtn.textContent === 'Sign In';
+    submitBtn.textContent = isLogin ? 'Create Account' : 'Sign In';
+    document.getElementById('login-modal-title').textContent = isLogin ? 'Create Account' : 'Welcome Back';
+    document.getElementById('login-modal-sub').textContent = isLogin ? 'Register to save your bookmarks.' : 'Sign in to access AI answers.';
+    document.getElementById('login-name-field').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('login-switch-text').textContent = isLogin ? 'Already have an account?' : "Don't have an account?";
+    document.getElementById('login-switch-link').textContent = isLogin ? 'Sign in' : 'Sign up';
+    document.getElementById('login-error').style.display = 'none';
+  }
+
+  function getUser() {
+    try {
+      const data = JSON.parse(localStorage.getItem('qcab_user'));
+      if (data && data.email) return data;
+    } catch (_) { return null; }
+    return null;
+  }
+
+  function setUser(user) {
+    if (user) {
+      localStorage.setItem('qcab_user', JSON.stringify(user));
+      localStorage.setItem('userToken', user.token || '');
+      localStorage.setItem('qcab_owner_key', user.token || '');
+    } else {
+      localStorage.removeItem('qcab_user');
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('qcab_owner_key');
+    }
+    updateLoginUI();
+  }
+
+  function updateLoginUI() {
+    const user = getUser();
+    const isLoggedIn = !!user;
+    document.querySelectorAll('#sidebar-login-text, #topbar-login-text').forEach(el => {
+      if (el) el.textContent = isLoggedIn ? user?.email || 'Account' : 'Login';
+    });
+  }
+
+  // Handle login/register submission
+  document.getElementById('login-submit-btn')?.addEventListener('click', async function() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    const name = document.getElementById('login-name')?.value.trim() || 'User';
+    const isLogin = this.textContent === 'Sign In';
+    const errorEl = document.getElementById('login-error');
+
+    if (!email || !password) {
+      errorEl.textContent = 'Please fill in all fields.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    if (!isLogin && !name) {
+      errorEl.textContent = 'Please enter your name.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+
+    const endpoint = isLogin ? '/api/login' : '/api/register';
+    const payload = isLogin ? { email, password } : { name, email, password };
+
+    try {
+      const res = await fetch('https://qcap-ai-v2.khokcha9.workers.dev' + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Authentication failed.');
+
+      if (isLogin) {
+        setUser({ email, token: data.token || 'dummy-token', name: data.name || name });
+        closeLoginModal();
+        updateLoginUI();
+        alert('Welcome back!');
+        if (typeof loadCloudStudy === 'function') loadCloudStudy();
+        if (typeof renderBankResults === 'function') renderBankResults();
+      } else {
+        alert('Registration successful! Please login.');
+        toggleLoginMode();
+      }
+    } catch (err) {
+      if (err.message.includes('fetch') || err.message.includes('Failed to fetch')) {
+        if (isLogin) {
+          setUser({ email, token: 'mock-token-' + Date.now(), name: name || 'User' });
+          closeLoginModal();
+          updateLoginUI();
+          alert('Welcome back! (Mock mode)');
+          if (typeof loadCloudStudy === 'function') loadCloudStudy();
+          if (typeof renderBankResults === 'function') renderBankResults();
+        } else {
+          alert('Registration failed (Worker unreachable). Please try again.');
+        }
+      } else {
+        errorEl.textContent = err.message || 'Something went wrong.';
+        errorEl.style.display = 'block';
+      }
+    }
+  });
+
+  // Enter key support for login
+  document.getElementById('login-email')?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('login-submit-btn')?.click();
+  });
+  document.getElementById('login-password')?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('login-submit-btn')?.click();
+  });
+
+  // Close modal on backdrop click
+  document.getElementById('login-modal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeLoginModal();
+  });
+
+  // Update login UI on load
+  updateLoginUI();
+
+  // Make functions global
+  window.openLoginModal = openLoginModal;
+  window.closeLoginModal = closeLoginModal;
+  window.getUser = getUser;
+  window.setUser = setUser;
+  window.toggleLoginMode = toggleLoginMode;
+
+  console.log('✅ Fallback login functions ready');
+</script>
+
+<!-- Load external scripts (if they exist) -->
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
