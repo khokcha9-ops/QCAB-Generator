@@ -1,7 +1,14 @@
 // ============================================================
-// js/auth.js – Authentication (with correct endpoints)
+// js/auth.js – Authentication (robust version)
 // ============================================================
 
+// Ensure WORKER_URL is defined (fallback)
+if (typeof WORKER_URL === 'undefined') {
+  var WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev';
+  console.warn('WORKER_URL not found in config.js – using default.');
+}
+
+// ----- User session management -----
 function getUser() {
   try {
     const data = JSON.parse(localStorage.getItem('qcab_user'));
@@ -31,9 +38,13 @@ function updateAuthUI() {
   });
 }
 
+// ----- Login Modal controls -----
 function openLoginModal(mode = 'login') {
   const modal = document.getElementById('login-modal');
-  if (!modal) return;
+  if (!modal) {
+    console.error('Login modal element (#login-modal) not found.');
+    return;
+  }
 
   const title = document.getElementById('login-modal-title');
   const sub = document.getElementById('login-modal-sub');
@@ -44,11 +55,11 @@ function openLoginModal(mode = 'login') {
   const nameField = document.getElementById('login-name-field');
 
   const isLogin = mode === 'login';
-  title.textContent = isLogin ? 'Welcome Back' : 'Create Account';
-  sub.textContent = isLogin ? 'Sign in to access AI answers.' : 'Register to save your bookmarks.';
-  submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
-  switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
-  switchLink.textContent = isLogin ? 'Sign up' : 'Sign In';
+  if (title) title.textContent = isLogin ? 'Welcome Back' : 'Create Account';
+  if (sub) sub.textContent = isLogin ? 'Sign in to access AI answers.' : 'Register to save your bookmarks.';
+  if (submitBtn) submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
+  if (switchText) switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+  if (switchLink) switchLink.textContent = isLogin ? 'Sign up' : 'Sign In';
   if (error) error.style.display = 'none';
 
   // Show/hide name field for registration
@@ -71,6 +82,7 @@ function closeLoginModal() {
   if (modal) modal.classList.remove('open');
 }
 
+// ----- Initialization: attach event listeners -----
 function initAuth() {
   const modal = document.getElementById('login-modal');
   const closeBtn = document.getElementById('login-modal-close');
@@ -79,7 +91,10 @@ function initAuth() {
   const googleBtn = document.getElementById('google-login-btn');
   const error = document.getElementById('login-error');
 
-  if (!modal) return;
+  if (!modal) {
+    console.warn('Login modal not found – check HTML for #login-modal');
+    return;
+  }
 
   // Close on backdrop click
   modal.addEventListener('click', function(e) {
@@ -92,6 +107,8 @@ function initAuth() {
       e.stopPropagation();
       closeLoginModal();
     });
+  } else {
+    console.warn('Close button #login-modal-close not found');
   }
 
   // Switch between login/register
@@ -109,7 +126,7 @@ function initAuth() {
     });
   }
 
-  // Submit login/register (correct endpoints)
+  // Submit login/register
   if (submitBtn) {
     submitBtn.addEventListener('click', async function() {
       const email = document.getElementById('login-email').value.trim();
