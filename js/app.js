@@ -1,8 +1,10 @@
 // ============================================================
-// js/app.js – Complete Application Logic
+// js/app.js – Complete Application Logic (with debug logs)
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  console.log('🚀 App.js loaded');
 
   // ============================================================
   // 1. NAVIGATION
@@ -1204,16 +1206,25 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ============================================================
-  // 27. AI MODEL SELECTION MODAL
+  // 27. AI MODEL SELECTION MODAL (with debug logs)
   // ============================================================
   const aiModal = document.getElementById('ai-model-modal');
   const aiModalClose = document.getElementById('ai-model-close');
   const cancelAiModal = document.getElementById('cancel-ai-modal');
   let pendingQuestion = null;
 
+  console.log('🔍 AI Modal element:', aiModal);
+
   function openAIModal(questionItem) {
+    console.log('📂 Opening AI modal with question:', questionItem);
     pendingQuestion = questionItem;
-    if (aiModal) aiModal.classList.add('open');
+    if (aiModal) {
+      aiModal.classList.add('open');
+      console.log('✅ Modal opened');
+    } else {
+      console.error('❌ AI modal element not found!');
+      alert('AI modal not found. Please check your HTML.');
+    }
   }
 
   function closeAIModal() {
@@ -1231,7 +1242,11 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.model-option').forEach(btn => {
     btn.addEventListener('click', function() {
       const model = this.dataset.model;
-      if (!pendingQuestion) return;
+      console.log('🔘 Model selected:', model);
+      if (!pendingQuestion) {
+        console.warn('⚠️ No pending question');
+        return;
+      }
 
       const params = new URLSearchParams({
         q: pendingQuestion.question,
@@ -1241,12 +1256,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (model === 'secret') {
-        // Use your Worker API – open answer.html with internal mode
         const url = `answer.html?${params.toString()}`;
+        console.log('🚀 Opening internal answer page:', url);
         window.open(url, '_blank');
       } else {
-        // External models – open answer.html with external mode
         const url = `answer.html?${params.toString()}&mode=external`;
+        console.log('🚀 Opening external answer page (prompt):', url);
         window.open(url, '_blank');
       }
 
@@ -1258,12 +1273,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // 28. FETCH AI ANSWER (overrides the global function)
   // ============================================================
   window.fetchAIAnswer = function(buttonElement) {
+    console.log('🔥 AI button clicked!', buttonElement);
     const card = buttonElement.closest('.bank-item');
-    if (!card) return;
+    if (!card) {
+      console.warn('⚠️ No bank-item found');
+      return;
+    }
 
     const questionEl = card.querySelector('.bank-question');
     let questionText = questionEl ? questionEl.innerText.trim() : '';
     questionText = questionText.replace(/^\d+\.\s*/, '');
+    console.log('📝 Extracted question text:', questionText);
 
     const tags = card.querySelectorAll('.tag');
     let marks = '', year = '';
@@ -1277,10 +1297,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const questionItem = { question: questionText, marks, year };
+    console.log('📦 Question item:', questionItem);
 
-    // Check if user is logged in for Secret AI (optional – can allow guest)
-    // We'll just open the modal and let answer.html handle auth.
+    // Open the modal
     openAIModal(questionItem);
+  };
+
+  // Test: also expose a manual trigger for debugging
+  window.debugOpenAI = function() {
+    window.fetchAIAnswer(document.querySelector('.btn-ai-answer'));
   };
 
   // ============================================================
