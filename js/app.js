@@ -2,13 +2,13 @@
 // js/app.js – Complete Application (both filters always visible)
 // ============================================================
 
-// Ensure SYLLABUS, WORKER_URL, MARK_RULES exist (fallback to window)
+// --- Ensure config variables exist (fallback) ---
 if (typeof SYLLABUS === 'undefined') { var SYLLABUS = {}; }
 if (typeof WORKER_URL === 'undefined') { var WORKER_URL = 'https://qcap-ai-v2.khokcha9.workers.dev'; }
 if (typeof MARK_RULES === 'undefined') { var MARK_RULES = { 10: 2, 15: 3, 20: 4 }; }
 
 // ============================================================
-// CUSTOM MODAL SYSTEM
+// CUSTOM MODAL SYSTEM (replaces alert, confirm, prompt)
 // ============================================================
 async function showAlert(message, title = 'Notice') {
   return new Promise((resolve) => {
@@ -122,7 +122,7 @@ document.getElementById('customModal')?.addEventListener('click', function(e) {
 });
 
 // ============================================================
-// TOAST
+// TOAST NOTIFICATION
 // ============================================================
 function showToast(message, icon = '✅') {
   const toast = document.getElementById('toast');
@@ -154,7 +154,6 @@ function copyText(text) {
 function generateFullPrompt(question) {
   return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality answer of about 500 words for the following question with introduction, body, and conclusion. Use recent facts and examples. Question: "${question}"`;
 }
-
 function generatePerplexityQuery(question) {
   return `UPSC model answer for: "${question}" with introduction, body, conclusion, and recent examples.`;
 }
@@ -162,7 +161,7 @@ function generatePerplexityQuery(question) {
 console.log('✅ Custom modal + toast loaded');
 
 // ============================================================
-// MAIN APP
+// MAIN APPLICATION
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 App.js loaded');
@@ -195,10 +194,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
   }
-
   const savedTheme = localStorage.getItem('qcab_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   applyTheme(savedTheme);
-
   document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     applyTheme(isDark ? 'light' : 'dark');
@@ -219,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeBtn = document.getElementById('mobile-menu-close');
     const backdrop = document.getElementById('mobile-backdrop');
     if (!sidebar || !toggleBtn) return;
-
     function openMenu() {
       sidebar.classList.add('mobile-open');
       backdrop?.classList.add('active');
@@ -240,11 +236,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const toggleBankIcon = document.getElementById('toggle-bank-icon');
   const toggleBankText = document.getElementById('toggle-bank-text');
   const bankBody = document.getElementById('pyq-bank-body');
-
   bankBody.style.display = 'block';
   if (toggleBankIcon) toggleBankIcon.textContent = '▾';
   if (toggleBankText) toggleBankText.textContent = 'Hide Bank';
-
   if (toggleBankBtn) {
     toggleBankBtn.addEventListener('click', () => {
       const isHidden = bankBody.style.display === 'none';
@@ -323,24 +317,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function getPaperTagClass(paper) {
     const norm = normalizePaperCode(paper);
-    const classes = {
-      'GS1': 'tag-paper-gs1',
-      'GS2': 'tag-paper-gs2',
-      'GS3': 'tag-paper-gs3',
-      'GS4': 'tag-paper-gs4'
-    };
+    const classes = { 'GS1':'tag-paper-gs1','GS2':'tag-paper-gs2','GS3':'tag-paper-gs3','GS4':'tag-paper-gs4' };
     return classes[norm] || 'tag-paper-opt';
   }
 
   function escapeHtml(str) {
     if (!str) return '';
-    return String(str).replace(/[&<>"']/g, m => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;'
-    })[m]);
+    return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[m]);
   }
 
   function generateUniqueId(prefix = 'id') {
@@ -390,10 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('qcab_nested_folders', JSON.stringify(folderMap));
     localStorage.setItem('qcab_active_nested_folder', activeFolderId);
   }
-
-  function getActiveFolder() {
-    return folderMap[activeFolderId] || folderMap['root'];
-  }
+  function getActiveFolder() { return folderMap[activeFolderId] || folderMap['root']; }
 
   // --- DOM REFS ---
   const qPaper = document.getElementById('q-paper');
@@ -426,7 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let selectedMarks = 10;
   if (marksButtons.length > 0) marksButtons[0].setAttribute('aria-pressed', 'true');
-
   marksButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       selectedMarks = parseInt(btn.dataset.marks, 10);
@@ -487,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
     listContainer.innerHTML = html;
   }
 
-  // --- POPULATE FILTERS ---
+  // --- POPULATE FILTER TOPICS (based on paper selection) ---
   function populateFilterTopics() {
     if (!filterTopic || !filterPaper) return;
     filterTopic.innerHTML = '<option value="ALL">All Subtopics</option>';
@@ -507,6 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // --- POPULATE FILTER YEARS (from loaded questions) ---
   function populateFilterYears() {
     if (!filterYear) return;
     const prevSelected = filterYear.value;
@@ -541,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- LOAD JSON ---
+  // --- LOAD QUESTIONS FROM JSON ---
   async function fetchJSONFile(url) {
     try {
       const response = await fetch(url + '?t=' + Date.now());
@@ -650,15 +630,26 @@ document.addEventListener('DOMContentLoaded', function() {
     let filtered = presetBank.filter(q => {
       const qText = `${q.question || ''} ${q.topic || ''} ${q.paper || ''} ${q.year || ''}`.toLowerCase();
 
+      // Search
       if (query && !qText.includes(query)) return false;
+
+      // Paper
       if (selectedP !== 'ALL' && q.paper !== selectedP) return false;
-      if (selectedY !== 'ALL' && getYearGroup(q) !== String(selectedY).trim()) return false;
+
+      // Year (always applied)
+      if (selectedY !== 'ALL') {
+        const qYear = getYearGroup(q);
+        if (qYear !== selectedY) return false;
+      }
+
+      // Subtopic (always applied)
       if (selectedT !== 'ALL') {
         const qTopicClean = String(q.topic || '').trim().toLowerCase();
         const selectedTClean = String(selectedT).trim().toLowerCase();
         const matchesTopic = qTopicClean.includes(selectedTClean) || selectedTClean.includes(qTopicClean);
         if (!matchesTopic) return false;
       }
+
       return true;
     });
 
@@ -871,7 +862,7 @@ document.addEventListener('DOMContentLoaded', function() {
           } else {
             showToast('Invalid file format.', '❌');
           }
-        } catch (err) { showToast('Error reading file.', '❌'); }
+        } catch(err) { showToast('Error reading file.', '❌'); }
       };
       reader.readAsText(file);
     };
@@ -883,7 +874,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!qList) return;
     const questions = getActiveFolder().questions;
     qList.innerHTML = '';
-
     if (questions.length === 0) {
       if (emptyState) emptyState.style.display = 'block';
       if (summaryBar) summaryBar.style.display = 'none';
@@ -892,7 +882,6 @@ document.addEventListener('DOMContentLoaded', function() {
       syncDashboard();
       return;
     }
-
     if (emptyState) emptyState.style.display = 'none';
     if (summaryBar) summaryBar.style.display = 'grid';
     if (generateBtn) generateBtn.disabled = false;
@@ -908,7 +897,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const paperClass = getPaperTagClass(q.paper);
 
       li.innerHTML = `
-        <div class="q-num">${i + 1}.</div>
+        <div class="q-num">${i+1}.</div>
         <div>
           <div class="q-text">${escapeHtml(q.question)}</div>
           <div class="q-meta">
@@ -941,9 +930,9 @@ document.addEventListener('DOMContentLoaded', function() {
           populateFormSubtopics();
           if (qTopic) qTopic.value = q.topic || '';
           selectedMarks = q.marks;
-          marksButtons.forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.marks, 10) === q.marks ? 'true' : 'false'));
+          marksButtons.forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.marks,10) === q.marks ? 'true' : 'false'));
           const headingEl = document.getElementById('add-heading');
-          if (headingEl) headingEl.textContent = 'Edit Question #' + (i + 1);
+          if (headingEl) headingEl.textContent = 'Edit Question #' + (i+1);
           if (addBtn) addBtn.textContent = 'Update Question';
           if (cancelEditBtn) cancelEditBtn.style.display = 'block';
         } else if (btn.dataset.action === 'remove') {
@@ -957,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function() {
     syncDashboard();
   }
 
-  // --- ADD/EDIT ---
+  // --- ADD/EDIT QUESTION ---
   function resetForm() {
     editingIndex = null;
     if (qText) qText.value = '';
@@ -1016,14 +1005,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const breadcrumbs = document.getElementById('breadcrumbs');
     if (!breadcrumbs) return;
     breadcrumbs.innerHTML = '';
-
     const path = [];
     let curr = getActiveFolder();
     while (curr) {
       path.unshift(curr);
       curr = curr.parentId ? folderMap[curr.parentId] : null;
     }
-
     path.forEach((f, idx) => {
       if (idx > 0) breadcrumbs.appendChild(document.createTextNode(' / '));
       const crumb = document.createElement('span');
@@ -1042,7 +1029,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const folderBar = document.getElementById('folder-bar');
     if (!folderBar) return;
     folderBar.innerHTML = '';
-
     const current = getActiveFolder();
     current.subfolders.forEach(subId => {
       const sub = folderMap[subId];
@@ -1057,7 +1043,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       folderBar.appendChild(tab);
     });
-
     const newBtn = document.createElement('button');
     newBtn.className = 'btn-new-folder';
     newBtn.textContent = '+ New Folder';
@@ -1121,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // --- PDF ---
+  // --- PDF GENERATOR ---
   function generatePDF() {
     const questions = getActiveFolder().questions;
     if (questions.length === 0) return;
@@ -1129,7 +1114,6 @@ document.addEventListener('DOMContentLoaded', function() {
       showToast('jsPDF library not loaded.', '❌');
       return;
     }
-
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const PAGE_W = 210, PAGE_H = 297, TOP = 15, BOTTOM = PAGE_H - 13, LEFT_DIV = 25, RIGHT_DIV = PAGE_W - 28;
@@ -1148,10 +1132,10 @@ document.addEventListener('DOMContentLoaded', function() {
       dividers();
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W / 2, 25, { align: 'center' });
+      doc.text('QUESTION-CUM-ANSWER BOOKLET INDEX', PAGE_W/2, 25, { align: 'center' });
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W / 2, 32, { align: 'center' });
+      doc.text(`Folder: ${getActiveFolder().name}`, PAGE_W/2, 32, { align: 'center' });
 
       let y = 45;
       doc.setFont('helvetica', 'bold');
@@ -1170,7 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
           dividers();
           y = 25;
         }
-        doc.text(`${idx + 1}`, 28, y);
+        doc.text(`${idx+1}`, 28, y);
         const textLines = doc.splitTextToSize(q.question, 125);
         doc.text(textLines, 40, y);
         doc.text(`${q.marks}M`, 170, y);
@@ -1187,7 +1171,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (p === 1) {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(11);
-          doc.text(`Q${idx + 1}.`, 28, 22);
+          doc.text(`Q${idx+1}.`, 28, 22);
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(10.5);
           const lines = doc.splitTextToSize(q.question, 138);
@@ -1203,7 +1187,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8);
-        doc.text(`Page ${currentPg}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
+        doc.text(`Page ${currentPg}`, PAGE_W/2, PAGE_H - 8, { align: 'center' });
 
         if (!(idx === questions.length - 1 && p === pageCount)) {
           doc.addPage();
@@ -1258,7 +1242,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // --- LOGIN ---
+  // --- LOGIN BUTTONS ---
   document.getElementById('topbar-login-btn')?.addEventListener('click', async () => {
     const user = getUser();
     if (user) {
@@ -1320,6 +1304,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const year = pendingQuestion.year || '';
       const marks = pendingQuestion.marks || '';
 
+      // --- Direct (Secret) ---
       if (model === 'secret') {
         const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
         window.open(`answer.html?${params.toString()}`, '_blank');
@@ -1327,6 +1312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
+      // --- Perplexity ---
       if (model === 'perplexity') {
         const query = generatePerplexityQuery(question);
         window.open(`https://www.perplexity.ai/search?q=${encodeURIComponent(query)}`, '_blank');
@@ -1335,6 +1321,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
+      // --- ChatGPT & DeepSeek ---
       const fullPrompt = generateFullPrompt(question);
       const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
       const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
@@ -1358,7 +1345,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // --- FETCH AI ---
+  // --- FETCH AI ANSWER ---
   window.fetchAIAnswer = function(buttonElement) {
     const card = buttonElement.closest('.bank-item');
     if (!card) return;
@@ -1394,4 +1381,5 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('✅ QCAB Generator loaded successfully!');
   console.log('📋 Subtopics count:', Object.keys(SYLLABUS).length);
   console.log('📚 Bank size:', presetBank.length);
+
 });
