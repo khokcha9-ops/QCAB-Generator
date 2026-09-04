@@ -1,5 +1,5 @@
 // ============================================================
-// js/auth.js – Authentication (corrected endpoints)
+// js/auth.js – Authentication (with correct endpoints)
 // ============================================================
 
 function getUser() {
