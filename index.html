@@ -12,7 +12,7 @@
 <body>
 <div class="app">
 
-  <!-- SIDEBAR -->
+  <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar" id="main-sidebar">
     <div class="sidebar-header-mobile">
       <span style="font-weight:750; font-size:13px; color:var(--muted);">Navigation Menu</span>
@@ -39,14 +39,12 @@
     </div>
   </aside>
 
+  <!-- ===== CONTENT ===== -->
   <div class="content">
 
-    <!-- MOBILE NAV -->
+    <!-- Mobile Bar -->
     <div class="mobile-nav">
-      <div class="mobile-brand">
-        <div class="brand-mark">Q</div>
-        UPSC QCAB
-      </div>
+      <div class="mobile-brand"><div class="brand-mark">Q</div>UPSC QCAB</div>
       <div class="mobile-actions-right">
         <button class="mobile-theme-toggle" id="mobile-theme-toggle">🌙</button>
         <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
@@ -54,24 +52,21 @@
     </div>
     <div class="mobile-menu-backdrop" id="mobile-backdrop"></div>
 
-    <!-- TOPBAR -->
+    <!-- Top Bar -->
     <header class="topbar">
       <div>
         <div class="topbar-title">UPSC Mains Answer Writing Workspace</div>
         <div class="topbar-sub">Build, organize and print your question-cum-answer booklet</div>
       </div>
       <div class="topbar-actions">
-        <button class="theme-toggle" id="theme-toggle">
-          <span id="theme-icon">🌙</span>
-          <span id="theme-text">Dark Mode</span>
-        </button>
+        <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
         <button class="theme-toggle" id="topbar-login-btn">🔑 <span id="topbar-login-text">Login</span></button>
       </div>
     </header>
 
     <main class="page">
 
-      <!-- HERO -->
+      <!-- Hero -->
       <section class="hero" id="dashboard">
         <div>
           <p class="eyebrow">Question-cum-Answer Booklet</p>
@@ -84,110 +79,54 @@
         </div>
       </section>
 
-      <!-- STATS -->
+      <!-- Stats -->
       <section class="stats">
-        <div class="stat">
-          <div class="stat-label">QUESTION BANK</div>
-          <div class="stat-value" id="dashboard-bank-count">—</div>
-          <div class="stat-note">PYQs currently loaded</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">ACTIVE QCAB</div>
-          <div class="stat-value" id="dashboard-q-count">0</div>
-          <div class="stat-note">Questions selected</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">ANSWER PAGES</div>
-          <div class="stat-value" id="dashboard-pages">0</div>
-          <div class="stat-note">Based on marks selected</div>
-        </div>
+        <div class="stat"><div class="stat-label">QUESTION BANK</div><div class="stat-value" id="dashboard-bank-count">—</div><div class="stat-note">PYQs currently loaded</div></div>
+        <div class="stat"><div class="stat-label">ACTIVE QCAB</div><div class="stat-value" id="dashboard-q-count">0</div><div class="stat-note">Questions selected</div></div>
+        <div class="stat"><div class="stat-label">ANSWER PAGES</div><div class="stat-value" id="dashboard-pages">0</div><div class="stat-note">Based on marks selected</div></div>
       </section>
 
-      <!-- FOLDERS -->
+      <!-- Folders -->
       <div class="folder-wrap">
         <div class="breadcrumbs" id="breadcrumbs"></div>
         <div class="folder-bar" id="folder-bar"></div>
       </div>
 
-      <!-- WORKSPACE -->
+      <!-- Workspace -->
       <div class="workspace">
 
-        <!-- LEFT COLUMN -->
+        <!-- Left Column -->
         <section>
 
-          <!-- CREATE QUESTION -->
+          <!-- Create Question -->
           <div class="card" id="create-question">
             <div class="card-header">
-              <div>
-                <h2 class="card-title" id="add-heading">Create Custom Question</h2>
-                <p class="card-sub">Add your own question directly to the active booklet.</p>
-              </div>
+              <div><h2 class="card-title" id="add-heading">Create Custom Question</h2><p class="card-sub">Add your own question directly to the active booklet.</p></div>
               <button class="btn btn-secondary-sm" id="toggle-create-section-btn">Hide Form ▾</button>
             </div>
             <div id="create-form-body">
-              <div class="field">
-                <label for="q-paper">Paper</label>
-                <select id="q-paper">
-                  <option value="GS1">GS Paper 1</option>
-                  <option value="GS2">GS Paper 2</option>
-                  <option value="GS3">GS Paper 3</option>
-                  <option value="GS4">GS Paper 4</option>
-                  <option value="OPT1">Anthropology Optional Paper 1</option>
-                  <option value="OPT2">Anthropology Optional Paper 2</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="q-topic">Subtopic</label>
-                <select id="q-topic"></select>
-              </div>
-              <div class="field">
-                <label for="q-text">Question Text</label>
-                <textarea id="q-text" placeholder="Paste or type your question here..."></textarea>
-              </div>
-              <div class="field">
-                <label>Marks</label>
-                <div class="marks-row">
-                  <button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button>
-                  <button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button>
-                  <button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button>
-                </div>
-              </div>
-              <div class="field">
-                <label for="q-year">Year <span style="font-weight:500">(optional)</span></label>
-                <input type="text" id="q-year" placeholder="e.g. 2025">
-              </div>
-              <div class="field checkbox-row">
-                <input type="checkbox" id="include-index" checked>
-                <label for="include-index">Include index page in PDF</label>
-              </div>
-              <div class="form-actions">
-                <button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button>
-                <button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button>
-                <button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button>
-              </div>
+              <div class="field"><label for="q-paper">Paper</label><select id="q-paper"><option value="GS1">GS Paper 1</option><option value="GS2">GS Paper 2</option><option value="GS3">GS Paper 3</option><option value="GS4">GS Paper 4</option><option value="OPT1">Anthropology Optional Paper 1</option><option value="OPT2">Anthropology Optional Paper 2</option></select></div>
+              <div class="field"><label for="q-topic">Subtopic</label><select id="q-topic"></select></div>
+              <div class="field"><label for="q-text">Question Text</label><textarea id="q-text" placeholder="Paste or type your question here..."></textarea></div>
+              <div class="field"><label>Marks</label><div class="marks-row"><button type="button" class="marks-btn" data-marks="10" aria-pressed="true">10 Marks</button><button type="button" class="marks-btn" data-marks="15" aria-pressed="false">15 Marks</button><button type="button" class="marks-btn" data-marks="20" aria-pressed="false">20 Marks</button></div></div>
+              <div class="field"><label for="q-year">Year <span style="font-weight:500">(optional)</span></label><input type="text" id="q-year" placeholder="e.g. 2025"></div>
+              <div class="field checkbox-row"><input type="checkbox" id="include-index" checked><label for="include-index">Include index page in PDF</label></div>
+              <div class="form-actions"><button class="btn btn-primary btn-wide" id="add-btn">Add to Active Folder</button><button class="btn btn-wide" id="add-preset-btn">Save as Preset Bank Question</button><button class="btn btn-wide btn-danger" id="cancel-edit-btn" style="display:none;">Cancel Edit</button></div>
             </div>
           </div>
 
-          <!-- PYQ BANK -->
+          <!-- PYQ BANK (with both filters) -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
-              <div>
-                <h2 class="card-title">PYQ Bank</h2>
-                <p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p>
-              </div>
+              <div><h2 class="card-title">PYQ Bank</h2><p class="card-sub">Search by question, topic, paper or year. Results update as you type.</p></div>
               <div style="display:flex; gap:8px;">
-                <button class="btn" id="toggle-bank-btn">
-                  <span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span>
-                </button>
+                <button class="btn" id="toggle-bank-btn"><span id="toggle-bank-icon">▾</span> <span id="toggle-bank-text">Hide Bank</span></button>
                 <button class="btn btn-danger" id="clear-bank-btn">Reset Bank</button>
               </div>
             </div>
             <div id="pyq-bank-body">
-              <!-- NO MODE SWITCH – both filters always visible -->
-              <div class="search-main">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024...">
-              </div>
+              <!-- No mode switch – both filters always visible -->
+              <div class="search-main"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..."></div>
               <div class="filter-box">
                 <div class="filters">
                   <select id="filter-paper">
@@ -199,177 +138,67 @@
                     <option value="OPT1">Anthropology Optional Paper 1</option>
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
-                  <select id="filter-year">
-                    <option value="ALL">All Years</option>
-                  </select>
-                  <select id="filter-topic">
-                    <option value="ALL">All Subtopics</option>
-                  </select>
+                  <select id="filter-year"><option value="ALL">All Years</option></select>
+                  <select id="filter-topic"><option value="ALL">All Subtopics</option></select>
                   <button class="btn btn-primary" id="search-bank-btn">Search</button>
                   <button class="btn" id="clear-results-btn">Clear</button>
                 </div>
               </div>
               <div id="bank-status-text">Loading question bank...</div>
-              <div id="bank-results-container">
-                <p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p>
-              </div>
+              <div id="bank-results-container"><p style="font-size:13px;color:var(--muted);font-style:italic;">Loading repository questions...</p></div>
             </div>
           </div>
 
         </section>
 
-        <!-- RIGHT: QCAB -->
+        <!-- Right: QCAB -->
         <aside class="card sticky-card" id="my-qcab">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">My QCAB</h2>
-              <p class="card-sub">Questions in your active booklet.</p>
-            </div>
-            <span class="tag" id="count-tag">0 questions</span>
-          </div>
-          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;">
-            <button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button>
-            <button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button>
-            <button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button>
-          </div>
-          <div id="empty-state" class="empty-state">
-            <div style="font-size:28px;margin-bottom:8px;">▣</div>
-            <strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>
-            Add questions from the PYQ Bank or create a custom question.
-          </div>
+          <div class="card-header"><div><h2 class="card-title">My QCAB</h2><p class="card-sub">Questions in your active booklet.</p></div><span class="tag" id="count-tag">0 questions</span></div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px;"><button class="btn btn-secondary-sm" id="rename-folder-btn">Rename</button><button class="btn btn-secondary-sm btn-danger" id="delete-folder-btn">Delete</button><button class="btn btn-secondary-sm" id="clear-q-btn">Clear</button></div>
+          <div id="empty-state" class="empty-state"><div style="font-size:28px;margin-bottom:8px;">▣</div><strong style="display:block;color:var(--text);margin-bottom:4px;font-weight:700;">Your booklet is empty</strong>Add questions from the PYQ Bank or create a custom question.</div>
           <ol class="q-list" id="q-list"></ol>
-          <div class="summary-bar" id="summary-bar" style="display:none;">
-            <div class="summary-stat">
-              <span>TOTAL MARKS</span>
-              <strong id="total-marks">0</strong>
-            </div>
-            <div class="summary-stat">
-              <span>ANSWER PAGES</span>
-              <strong id="total-pages">0</strong>
-            </div>
-          </div>
+          <div class="summary-bar" id="summary-bar" style="display:none;"><div class="summary-stat"><span>TOTAL MARKS</span><strong id="total-marks">0</strong></div><div class="summary-stat"><span>ANSWER PAGES</span><strong id="total-pages">0</strong></div></div>
           <button class="btn-generate" id="generate-btn" disabled>⇩ Generate &amp; Download PDF</button>
         </aside>
 
       </div>
 
-      <!-- MY STUDY -->
+      <!-- My Study -->
       <section id="my-study" style="margin-top:30px;">
         <div class="card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">📘 My Study</h2>
-              <p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p>
-            </div>
-            <div style="display:flex;gap:8px;">
-              <button class="btn btn-secondary-sm" id="export-study-btn">⬇ Export</button>
-              <button class="btn btn-secondary-sm" id="import-study-btn">⬆ Import</button>
-            </div>
-          </div>
+          <div class="card-header"><div><h2 class="card-title">📘 My Study</h2><p class="card-sub">Bookmark questions, mark as revised, add notes, and track your progress.</p></div><div style="display:flex;gap:8px;"><button class="btn btn-secondary-sm" id="export-study-btn">⬇ Export</button><button class="btn btn-secondary-sm" id="import-study-btn">⬆ Import</button></div></div>
           <div id="study-dashboard">
             <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;">
               <div class="stat" style="padding:14px;"><div class="stat-label">📌 Bookmarked</div><div class="stat-value" id="study-bookmarked">0</div></div>
               <div class="stat" style="padding:14px;"><div class="stat-label">✅ Revised</div><div class="stat-value" id="study-revised">0</div></div>
               <div class="stat" style="padding:14px;"><div class="stat-label">📝 With Notes</div><div class="stat-value" id="study-notes">0</div></div>
             </div>
-            <div id="study-list-container">
-              <p style="color:var(--muted);font-style:italic;">Your bookmarked questions will appear here.</p>
-            </div>
+            <div id="study-list-container"><p style="color:var(--muted);font-style:italic;">Your bookmarked questions will appear here.</p></div>
           </div>
         </div>
       </section>
 
-      <footer>
-        QCAB Generator · Project by Biswajit Nahak
-      </footer>
+      <footer>QCAB Generator · Project by Biswajit Nahak</footer>
 
     </main>
   </div>
 </div>
 
-<!-- BACK TO TOP -->
+<!-- Back to top -->
 <button class="back-to-top" id="back-to-top">↑</button>
 
-<!-- NOTE MODAL -->
-<div class="study-modal" id="note-modal">
-  <div class="study-modal-content">
-    <h3>📝 Add Note</h3>
-    <textarea id="note-textarea" placeholder="Write your note here..."></textarea>
-    <div class="btn-row">
-      <button class="btn btn-secondary-sm" id="note-save-btn">Save</button>
-      <button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button>
-    </div>
-  </div>
-</div>
+<!-- Modals (note, login, AI, custom, toast) -->
+<div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button class="btn btn-secondary-sm" id="note-save-btn">Save</button><button class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
 
-<!-- LOGIN MODAL -->
-<div class="login-modal" id="login-modal">
-  <div class="login-modal-content">
-    <button class="login-modal-close" id="login-modal-close">&times;</button>
-    <div class="login-brand-icon">Q</div>
-    <h2 id="login-modal-title">Welcome Back</h2>
-    <p class="login-sub" id="login-modal-sub">Sign in to access AI answers and sync your study data.</p>
-    <div id="login-error" style="display:none; color:var(--danger); margin-bottom:10px; padding:8px; background:var(--danger-soft); border-radius:8px;"></div>
-    <div class="field"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
-    <div class="field" id="login-name-field" style="display:none;"><label for="login-name">Full Name</label><input type="text" id="login-name" placeholder="Your full name"></div>
-    <div class="field"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
-    <button class="btn btn-primary" id="login-submit-btn" style="width:100%;">Sign In</button>
-    <div class="divider">or</div>
-    <button class="btn btn-google" id="google-login-btn"><span style="font-size:18px; margin-right:8px;">G</span> Continue with Google</button>
-    <div class="switch-link"><span id="login-switch-text">Don't have an account?</span> <a id="login-switch-link">Sign up</a></div>
-  </div>
-</div>
+<div class="login-modal" id="login-modal"><div class="login-modal-content"><button class="login-modal-close" id="login-modal-close">&times;</button><div class="login-brand-icon">Q</div><h2 id="login-modal-title">Welcome Back</h2><p class="login-sub" id="login-modal-sub">Sign in to access AI answers and sync your study data.</p><div id="login-error" style="display:none; color:var(--danger); margin-bottom:10px; padding:8px; background:var(--danger-soft); border-radius:8px;"></div><div class="field"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="your@email.com"></div><div class="field" id="login-name-field" style="display:none;"><label for="login-name">Full Name</label><input type="text" id="login-name" placeholder="Your full name"></div><div class="field"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="••••••••"></div><button class="btn btn-primary" id="login-submit-btn" style="width:100%;">Sign In</button><div class="divider">or</div><button class="btn btn-google" id="google-login-btn"><span style="font-size:18px; margin-right:8px;">G</span> Continue with Google</button><div class="switch-link"><span id="login-switch-text">Don't have an account?</span> <a id="login-switch-link">Sign up</a></div></div></div>
 
-<!-- AI MODAL -->
-<div class="ai-model-modal" id="ai-model-modal">
-  <div class="ai-model-modal-content">
-    <button class="ai-model-close" id="ai-model-close">&times;</button>
-    <h3>⚡ Choose AI Model</h3>
-    <p>Select which AI should generate your UPSC answer.</p>
-    <div class="model-options">
-      <button class="model-option" data-model="secret">
-        <span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span>
-        Direct <span class="badge">Groq</span>
-      </button>
-      <button class="model-option" data-model="perplexity">
-        <span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span>
-        Perplexity AI
-      </button>
-      <button class="model-option" data-model="chatgpt">
-        <span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span>
-        ChatGPT
-      </button>
-      <button class="model-option" data-model="deepseek">
-        <span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span>
-        DeepSeek
-      </button>
-    </div>
-    <button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button>
-  </div>
-</div>
+<div class="ai-model-modal" id="ai-model-modal"><div class="ai-model-modal-content"><button class="ai-model-close" id="ai-model-close">&times;</button><h3>⚡ Choose AI Model</h3><p>Select which AI should generate your UPSC answer.</p><div class="model-options"><button class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button><button class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button><button class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button><button class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button></div><button class="btn-cancel-model" id="cancel-ai-modal">Cancel</button></div></div>
 
-<!-- CUSTOM MODAL -->
-<div class="custom-modal-overlay" id="customModal">
-  <div class="custom-modal">
-    <h3 id="modalTitle">Title</h3>
-    <p id="modalMessage">Message</p>
-    <div id="modalInputContainer" style="display:none;">
-      <input type="text" class="modal-input" id="modalInput" placeholder="Enter value...">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
-      <button class="btn btn-primary" id="modalConfirmBtn">OK</button>
-    </div>
-  </div>
-</div>
+<div class="custom-modal-overlay" id="customModal"><div class="custom-modal"><h3 id="modalTitle">Title</h3><p id="modalMessage">Message</p><div id="modalInputContainer" style="display:none;"><input type="text" class="modal-input" id="modalInput" placeholder="Enter value..."></div><div class="modal-actions"><button class="btn btn-secondary" id="modalCancelBtn">Cancel</button><button class="btn btn-primary" id="modalConfirmBtn">OK</button></div></div></div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span class="toast-icon" id="toastIcon">✅</span>
-  <span id="toastMessage">Copied!</span>
-</div>
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
-<!-- SCRIPTS -->
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 <script src="js/config.js"></script>
