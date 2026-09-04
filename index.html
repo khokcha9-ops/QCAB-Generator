@@ -193,6 +193,18 @@
             </div>
 
             <div id="pyq-bank-body">
+              <!-- MODE SWITCH (RESTORED) -->
+              <div class="mode-switch">
+                <label>
+                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
+                  <span>Filter by Year</span>
+                </label>
+                <label>
+                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
+                  <span>Filter by Subtopic</span>
+                </label>
+              </div>
+
               <div class="search-main" style="position: relative;">
                 <span class="search-icon">🔍</span>
                 <input type="text" id="search-input" placeholder="Search Constitution, Monsoon, Federalism, 2024..." style="padding-right: 45px;">
@@ -324,7 +336,7 @@
   </div>
 </div>
 
-<!-- ==================== LOGIN MODAL (ONLY ONE) ==================== -->
+<!-- ==================== LOGIN MODAL ==================== -->
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
     <button class="login-modal-close" id="login-modal-close">&times;</button>
