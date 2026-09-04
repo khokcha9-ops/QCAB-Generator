@@ -177,7 +177,7 @@
             </div>
           </div>
 
-          <!-- PYQ BANK -->
+          <!-- PYQ BANK (UPDATED: both filters visible) -->
           <div class="card" id="pyq-bank">
             <div class="card-header">
               <div>
@@ -193,17 +193,7 @@
             </div>
 
             <div id="pyq-bank-body">
-              <!-- MODE SWITCH -->
-              <div class="mode-switch">
-                <label>
-                  <input type="radio" name="bankMode" value="year" checked id="mode-year">
-                  <span>Filter by Year</span>
-                </label>
-                <label>
-                  <input type="radio" name="bankMode" value="topic" id="mode-topic">
-                  <span>Filter by Subtopic</span>
-                </label>
-              </div>
+              <!-- MODE SWITCH REMOVED – both filters always visible -->
 
               <div class="search-main" style="position: relative;">
                 <span class="search-icon">🔍</span>
@@ -222,12 +212,14 @@
                     <option value="OPT2">Anthropology Optional Paper 2</option>
                   </select>
 
-                  <select id="filter-topic">
-                    <option value="ALL">All Subtopics</option>
-                  </select>
-
+                  <!-- Year filter – ALWAYS VISIBLE -->
                   <select id="filter-year">
                     <option value="ALL">All Years</option>
+                  </select>
+
+                  <!-- Subtopic filter – ALWAYS VISIBLE -->
+                  <select id="filter-topic">
+                    <option value="ALL">All Subtopics</option>
                   </select>
 
                   <button class="btn btn-primary" id="search-bank-btn">Search</button>
