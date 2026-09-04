@@ -1378,81 +1378,100 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // ============================================================
-  // 27. AI MODEL SELECTION MODAL (DIRECT REDIRECT FOR EXTERNAL)
-  // ============================================================
-  const aiModal = document.getElementById('ai-model-modal');
-  const aiModalClose = document.getElementById('ai-model-close');
-  const cancelAiModal = document.getElementById('cancel-ai-modal');
-  let pendingQuestion = null;
+ // ============================================================
+// 27. AI MODEL SELECTION MODAL (DIRECT REDIRECT WITH FULL PROMPT)
+// ============================================================
+const aiModal = document.getElementById('ai-model-modal');
+const aiModalClose = document.getElementById('ai-model-close');
+const cancelAiModal = document.getElementById('cancel-ai-modal');
+let pendingQuestion = null;
 
-  function openAIModal(questionItem) {
-    pendingQuestion = questionItem;
-    if (aiModal) aiModal.classList.add('open');
-  }
+function openAIModal(questionItem) {
+  pendingQuestion = questionItem;
+  if (aiModal) aiModal.classList.add('open');
+}
 
-  function closeAIModal() {
-    if (aiModal) aiModal.classList.remove('open');
-    pendingQuestion = null;
-  }
+function closeAIModal() {
+  if (aiModal) aiModal.classList.remove('open');
+  pendingQuestion = null;
+}
 
-  aiModalClose?.addEventListener('click', closeAIModal);
-  cancelAiModal?.addEventListener('click', closeAIModal);
-  aiModal?.addEventListener('click', function(e) {
-    if (e.target === this) closeAIModal();
-  });
+aiModalClose?.addEventListener('click', closeAIModal);
+cancelAiModal?.addEventListener('click', closeAIModal);
+aiModal?.addEventListener('click', function(e) {
+  if (e.target === this) closeAIModal();
+});
 
-  // Handle model selection – DIRECT REDIRECT + PROMPT COPY
-  document.querySelectorAll('.model-option').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const model = this.dataset.model;
-      if (!pendingQuestion) return;
+// --- Helper: Generate full UPSC prompt ---
+function generateUPSCPrompt(question) {
+  return `You are an expert UPSC Civil Services model answer writer. Generate a high-quality, comprehensive answer of approximately 500–600 words for the following question:
 
-      const question = pendingQuestion.question;
-      const year = pendingQuestion.year || '';
-      const marks = pendingQuestion.marks || '';
+"${question}"
 
-      // --- Direct (Secret) → answer.html ---
-      if (model === 'secret') {
-        const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
-        window.open(`answer.html?${params.toString()}`, '_blank');
-        closeAIModal();
-        return;
-      }
+Instructions:
+- Provide a well-structured answer with introduction, main body (with subheadings if needed), and conclusion.
+- Use relevant facts, examples, and recent developments (up to ${new Date().toLocaleDateString()}).
+- Write in a formal, academic style suitable for the UPSC Mains examination.
+- Ensure the answer is balanced and covers all dimensions of the question.
 
-      // --- Perplexity → Direct search (auto-generates) ---
-      if (model === 'perplexity') {
-        const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(question)}`;
-        window.open(searchUrl, '_blank');
-        showToast('🌀 Opening Perplexity with your question...', '🌀');
-        closeAIModal();
-        return;
-      }
+Please generate the answer now.`;
+}
 
-      // --- ChatGPT & DeepSeek → Copy prompt + open website ---
-      const prompt = generatePrompt(question);
-      const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
-      const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
-      const icon = model === 'chatgpt' ? '💬' : '🔬';
+// --- Handle model selection ---
+document.querySelectorAll('.model-option').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const model = this.dataset.model;
+    if (!pendingQuestion) return;
 
-      copyText(prompt).then(() => {
-        window.open(siteUrl, '_blank');
-        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
-      }).catch(() => {
-        // Fallback
-        const textarea = document.createElement('textarea');
-        textarea.value = prompt;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-        window.open(siteUrl, '_blank');
-        showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
-      });
+    const question = pendingQuestion.question;
+    const year = pendingQuestion.year || '';
+    const marks = pendingQuestion.marks || '';
 
+    // --- Direct (Secret) → answer.html ---
+    if (model === 'secret') {
+      const params = new URLSearchParams({ q: question, y: year, m: marks, model: 'secret' });
+      window.open(`answer.html?${params.toString()}`, '_blank');
       closeAIModal();
+      return;
+    }
+
+    // --- FULL PROMPT for all external models ---
+    const fullPrompt = generateUPSCPrompt(question);
+
+    // --- Perplexity: Direct search with FULL PROMPT ---
+    if (model === 'perplexity') {
+      // Perplexity accepts 'q' parameter for search queries
+      // We send the FULL PROMPT so it generates a model answer
+      const searchUrl = `https://www.perplexity.ai/search?q=${encodeURIComponent(fullPrompt)}`;
+      window.open(searchUrl, '_blank');
+      showToast('🌀 Opening Perplexity with UPSC prompt...', '🌀');
+      closeAIModal();
+      return;
+    }
+
+    // --- ChatGPT & DeepSeek: Copy prompt + open website ---
+    const siteUrl = model === 'chatgpt' ? 'https://chat.openai.com/' : 'https://chat.deepseek.com/';
+    const modelName = model === 'chatgpt' ? 'ChatGPT' : 'DeepSeek';
+    const icon = model === 'chatgpt' ? '💬' : '🔬';
+
+    copyText(fullPrompt).then(() => {
+      window.open(siteUrl, '_blank');
+      showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
+    }).catch(() => {
+      // Fallback copy
+      const textarea = document.createElement('textarea');
+      textarea.value = fullPrompt;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+      window.open(siteUrl, '_blank');
+      showToast(`✅ Prompt copied! Paste in ${modelName} and press Enter.`, icon);
     });
+
+    closeAIModal();
   });
+});
 
   // ============================================================
   // 28. FETCH AI ANSWER (global)
