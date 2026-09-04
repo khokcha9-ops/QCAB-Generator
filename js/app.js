@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 10. STORAGE & STATE
   const PRESET_STORAGE_KEY = 'qcab_preset_bank';
   const VERSION_KEY = 'qcab_data_version';
-  const CURRENT_VERSION = '2';
+  const CURRENT_VERSION = '3';
 
   let presetBank = [];
   if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
