@@ -66,9 +66,7 @@
   }
 </script>
 
-<!-- ============================================ -->
 <!-- INSTANT GUEST BYPASS FOR TESTING (REMOVE LATER) -->
-<!-- ============================================ -->
 <script>
   if (!localStorage.getItem('qcab_user')) {
     localStorage.setItem('qcab_user', JSON.stringify({ email: 'guest@test.com', name: 'Guest', token: 'guest-token' }));
@@ -87,13 +85,11 @@
     <!-- TOP SECTION (Brand + Strong Sidebar) -->
     <div class="sidebar-top-section">
       <div class="brand">
-        <!-- REPLACED "Q" WITH YOUR LOGO -->
         <img src="logo.png" alt="UPSC Craft Logo" class="brand-logo">
       </div>
       <!-- LOGIN BUTTONS REMOVED FOR TESTING -->
 
-      
-      <!-- SIDEBAR PROGRESS TRACKER (Shows only when logged in) -->
+      <!-- SIDEBAR PROGRESS TRACKER -->
       <div class="sidebar-progress" id="sidebar-progress" style="display:block; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid var(--border);">
           <div style="font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 8px;">MY PROGRESS</div>
           <div style="display: flex; gap: 10px; justify-content: space-between; font-size: 12px; color: var(--text);">
@@ -101,11 +97,6 @@
               <span>✅ <strong id="sidebar-revised">0</strong> Revised</span>
               <span>📝 <strong id="sidebar-notes">0</strong> Notes</span>
           </div>
-      </div>
-
-            <!-- SIDEBAR PROGRESS TRACKER -->
-      <div class="sidebar-progress" id="sidebar-progress" style="display:block; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid var(--border);">
-          ...
       </div>
 
       <!-- ===== SYLLABUS ACCORDION ===== -->
@@ -118,7 +109,7 @@
           <!-- Syllabus content loaded from js/syllabus-data.js -->
         </div>
       </div>
-    </div>
+
       <!-- ===== NEW: GAMIFICATION HUB ===== -->
       <div id="gamification-hub" class="sidebar-widget">
         <div class="widget-header">MY PROGRESS</div>
@@ -261,7 +252,6 @@
                   <button type="button" class="pill-btn" id="btn-filter-subtopic" data-mode="deep" onclick="switchFilterMode('subtopic', this)">Filter by Subtopic</button>
                 </div>
               </div>
-              
 
               <div class="search-main">
                 <span class="search-icon">🔍</span>
@@ -352,10 +342,10 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=6"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=6"></script>
-<script src="js/config.js?v=6"></script>
-<script src="js/syllabus-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=10"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=10"></script>
+<script src="js/config.js?v=10"></script>
+<script src="js/syllabus-data.js?v=10"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var content = document.getElementById('syllabus-content');
@@ -364,23 +354,17 @@
     }
   });
 </script>
-<script src="js/app.js?v=6"></script>
-<script src="js/features.js?v=6"></script>
+<script src="js/app.js?v=10"></script>
+<script src="js/features.js?v=10"></script>
 
-<!-- ================================================== -->
-<!-- PREMIUM FEATURES SCRIPT (Integrated Directly)     -->
-<!-- ================================================== -->
+<!-- PREMIUM FEATURES SCRIPT -->
 <script>
-  // Initialize Lucide Icons
   document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
   });
 
-
-    // 2. SEMANTIC SEARCH (Fuzzy matching + Topic Mapping)
   window.semanticSearch = function(query) {
       const input = query.toLowerCase().trim();
-      
       const topicMap = {
         'sarkaria': 'federalism', 'punchhi': 'federalism', 'bommai': 'federalism',
         'wheare': 'federalism', 'governor': 'federalism', 
@@ -391,41 +375,30 @@
 
       let mappedTopic = '';
       for (let key in topicMap) {
-        if (input.includes(key)) {
-          mappedTopic = topicMap[key];
-          break;
-        }
+        if (input.includes(key)) { mappedTopic = topicMap[key]; break; }
       }
 
       const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
       const results = bank.filter(q => {
         const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
-        
-        if (mappedTopic) {
-           return q.topic.toLowerCase().includes(mappedTopic) || q.topic.toLowerCase().includes(input);
-        }
+        if (mappedTopic) { return q.topic.toLowerCase().includes(mappedTopic) || q.topic.toLowerCase().includes(input); }
         return text.includes(input);
       });
-      
       return results;
   };
 
-  // 3. ADVANCED SUGGESTIONS (Now connected to Cloudflare Worker with fallback)
   async function fetchSuggestions(topic) {
       try {
           const WORKER_URL = window.WORKER_URL || '';
           const res = await fetch(`${WORKER_URL}/api/syllabus?topic=${encodeURIComponent(topic)}`);
           const data = await res.json();
-          
           if (res.ok && data.length > 0) {
               const row = data[0];
               document.getElementById('sugg-articles').textContent = JSON.parse(row.articles).join(', ');
               document.getElementById('sugg-committees').textContent = JSON.parse(row.committees).join(', ');
               document.getElementById('sugg-thinkers').textContent = JSON.parse(row.thinkers).join(', ');
               document.getElementById('sugg-cases').textContent = JSON.parse(row.case_studies).join(', ');
-          } else {
-              throw new Error('Not found or backend down');
-          }
+          } else { throw new Error('Not found or backend down'); }
       } catch (e) {
           const map = {
               'Federalism': { articles: '245, 246, 356', committees: 'Sarkaria, Punchhi', thinkers: 'K.C. Wheare', cases: 'S.R. Bommai' },
@@ -433,7 +406,6 @@
               'Parliament': { articles: '79, 83, 105', committees: 'Public Accounts', thinkers: 'Bagehot', cases: 'Kesavananda' }
           };
           const data = map[topic] || { articles: 'General', committees: 'N/A', thinkers: 'N/A', cases: 'N/A' };
-          
           document.getElementById('sugg-articles').textContent = data.articles;
           document.getElementById('sugg-committees').textContent = data.committees;
           document.getElementById('sugg-thinkers').textContent = data.thinkers;
@@ -442,26 +414,20 @@
       document.getElementById('suggestions-panel').style.display = 'block';
   }
 
-  // 4. SIMILAR PYQs & RECENTLY VIEWED
   window.showSimilar = function(questionId) {
       const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
       const orig = bank.find(q => q.id === questionId);
       if (!orig) return;
       const similar = bank.filter(q => q.topic === orig.topic && q.id !== orig.id).slice(0, 3);
       console.log('Similar Questions:', similar);
-      
       let recent = JSON.parse(localStorage.getItem('recent_qs') || '[]');
       recent = [orig, ...recent.filter(q => q.id !== orig.id)].slice(0, 10);
       localStorage.setItem('recent_qs', JSON.stringify(recent));
       if (typeof showToast === 'function') showToast('Question added to Recently Viewed!');
   };
 
-  // Bind Events
   document.getElementById('search-input').addEventListener('input', (e) => {
-      if (e.target.value.length > 3) {
-          const results = window.semanticSearch(e.target.value);
-          console.log('Semantic Results:', results);
-      }
+      if (e.target.value.length > 3) { console.log('Semantic Results:', window.semanticSearch(e.target.value)); }
   });
 
   document.getElementById('filter-topic').addEventListener('change', (e) => {
@@ -481,15 +447,12 @@
         const userAvatar = document.getElementById('user-avatar');
         const userName = document.getElementById('user-name');
         const userEmail = document.getElementById('user-email');
-
         if(userEmail) userEmail.textContent = user.email || '';
         if(userName) userName.textContent = user.name || 'User';
         if(userAvatar) userAvatar.textContent = (user.name || 'U')[0].toUpperCase();
-        
         if (sidebarText) sidebarText.textContent = user.email || 'Profile';
         if (topbarText) topbarText.textContent = user.email || 'Profile';
         if (profileDiv) profileDiv.style.display = 'block';
-        
         const sbProgress = document.getElementById('sidebar-progress');
         if (sbProgress) sbProgress.style.display = 'block';
       } catch (e) {}
@@ -521,6 +484,7 @@
     document.getElementById('search-bank-btn').click();
   }
 </script>
+
 <script>
   function toggleSyllabus(btn) {
     var accordion = btn.closest('.syllabus-accordion');
