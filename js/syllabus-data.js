@@ -1,9 +1,9 @@
 // ============================================================
-// UPSC SYLLABUS DATA
+// UPSC SYLLABUS DATA (For Main Page Modal)
 // ============================================================
 const SYLLABUS_HTML = `
-    <div class="syllabus-subsection">
-        <div class="sub-title">PRELIMS (PART-A)</div>
+    <div class="syllabus-card prelims-card">
+        <div class="syllabus-card-title">PRELIMS (PART-A)</div>
         <ul>
             <li><strong>Paper I - (200 marks) Duration: Two hours</strong>
                 <ul>
@@ -30,15 +30,15 @@ const SYLLABUS_HTML = `
         </ul>
     </div>
 
-    <div class="syllabus-subsection">
-        <div class="sub-title">MAINS (PART-B)</div>
+    <div class="syllabus-card gs1-card">
+        <div class="syllabus-card-title">MAINS (GS-I)</div>
         <ul>
             <li><strong>PAPER-I: Essay</strong>
                 <ul>
                     <li>Candidates will be required to write an essay on a specific topic. The choice of subjects will be given. They will be expected to keep closely to the subject of the essay to arrange their ideas in orderly fashion, and to write concisely. Credit will be given for effective and exact expression.</li>
                 </ul>
             </li>
-            <li><strong>PAPER-II: General Studies- I: Indian Heritage and Culture, History and Geography of the World and Society.</strong>
+            <li><strong>General Studies- I: Indian Heritage and Culture, History and Geography of the World and Society.</strong>
                 <ul>
                     <li>Indian culture will cover the salient aspects of Art Forms, Literature and Architecture from ancient to modern times.</li>
                     <li>Modern Indian history from about the middle of the eighteenth century until the present- significant events, personalities, issues</li>
@@ -54,7 +54,13 @@ const SYLLABUS_HTML = `
                     <li>Important Geophysical phenomena such as earthquakes, Tsunami, Volcanic activity, cyclone etc., geographical features and their location- changes in critical geographical features (including water-bodies and ice-caps) and in flora and fauna and the effects of such changes.</li>
                 </ul>
             </li>
-            <li><strong>PAPER-III: General Studies- II: Governance, Constitution, Polity, Social Justice and International relations.</strong>
+        </ul>
+    </div>
+
+    <div class="syllabus-card gs2-card">
+        <div class="syllabus-card-title">MAINS (GS-II)</div>
+        <ul>
+            <li><strong>General Studies- II: Governance, Constitution, Polity, Social Justice and International relations.</strong>
                 <ul>
                     <li>Indian Constitution- historical underpinnings, evolution, features, amendments, significant provisions and basic structure.</li>
                     <li>Functions and responsibilities of the Union and the States, issues and challenges pertaining to the federal structure, devolution of powers and finances up to local levels and challenges therein.</li>
@@ -78,7 +84,13 @@ const SYLLABUS_HTML = `
                     <li>Important International institutions, agencies and fora- their structure, mandate.</li>
                 </ul>
             </li>
-            <li><strong>PAPER-IV: General Studies-III: Technology, Economic Development, Bio diversity, Environment, Security and Disaster Management.</strong>
+        </ul>
+    </div>
+
+    <div class="syllabus-card gs3-card">
+        <div class="syllabus-card-title">MAINS (GS-III)</div>
+        <ul>
+            <li><strong>General Studies-III: Technology, Economic Development, Bio diversity, Environment, Security and Disaster Management.</strong>
                 <ul>
                     <li>Indian Economy and issues relating to planning, mobilization of resources, growth, development and employment.</li>
                     <li>Inclusive growth and issues arising from it.</li>
@@ -102,7 +114,13 @@ const SYLLABUS_HTML = `
                     <li>Various Security forces and agencies and their mandate</li>
                 </ul>
             </li>
-            <li><strong>PAPER-V: General Studies- IV: Ethics, Integrity, and Aptitude</strong>
+        </ul>
+    </div>
+
+    <div class="syllabus-card gs4-card">
+        <div class="syllabus-card-title">MAINS (GS-IV)</div>
+        <ul>
+            <li><strong>General Studies- IV: Ethics, Integrity, and Aptitude</strong>
                 <ul>
                     <li>Ethics and Human Interface: Essence, determinants and consequences of Ethics in human actions; dimensions of ethics; ethics in private and public relationships. Human Values – lessons from the lives and teachings of great leaders, reformers and administrators; role of family, society and educational institutions in inculcating values.</li>
                     <li>Attitude: content, structure, function; its influence and relation with thought and behaviour; moral and political attitudes; social influence and persuasion.</li>
@@ -117,8 +135,8 @@ const SYLLABUS_HTML = `
         </ul>
     </div>
 
-    <div class="syllabus-subsection">
-        <div class="sub-title">ANTHRO PAPER - I</div>
+    <div class="syllabus-card anthro1-card">
+        <div class="syllabus-card-title">ANTHRO PAPER - I</div>
         <ul>
             <li>1.1 Meaning, scope and development of Anthropology.</li>
             <li>1.2 Relationships with other disciplines: Social Sciences, Behavioural Sciences, Life Sciences, Medical Sciences, Earth Sciences and Humanities.</li>
@@ -176,8 +194,8 @@ const SYLLABUS_HTML = `
         </ul>
     </div>
 
-    <div class="syllabus-subsection">
-        <div class="sub-title">ANTHRO PAPER - II</div>
+    <div class="syllabus-card anthro2-card">
+        <div class="syllabus-card-title">ANTHRO PAPER - II</div>
         <ul>
             <li>1.1 Evolution of the Indian Culture and Civilization — Prehistoric (Palaeolithic, Mesolithic, Neolithic and Neolithic Chalcolithic). Protohistoric (Indus Civilization): Pre- Harappan, Harappan and postHarappan cultures. Contributions of tribal cultures to Indian civilization.</li>
             <li>1.2 Palaeo – anthropological evidences from India with special reference to Siwaliks and Narmada basin (Ramapithecus, Sivapithecus and Narmada Man).</li>
