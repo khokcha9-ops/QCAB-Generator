@@ -45,6 +45,21 @@
     .syllabus-modal-close { background: var(--surface-2); border: none; color: var(--muted); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.2s; }
     .syllabus-modal-close:hover { background: var(--danger-soft); color: var(--danger); }
     .syllabus-modal-body { padding: 24px; overflow-y: auto; }
+        /* UNIQUE LAYOUTS FOR EACH PAPER */
+    .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    @media(max-width: 600px) { .grid-layout { grid-template-columns: 1fr; } }
+    .layout-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .layout-card h4 { margin-top: 0; font-size: 16px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 800; }
+    .layout-card ul { padding-left: 20px; margin-bottom: 0; line-height: 1.8; }
+
+    /* ESSAY LAYOUT */
+    .essay-layout { text-align: center; padding: 40px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); font-style: italic; font-size: 18px; line-height: 1.8; color: var(--text); }
+
+    /* ANTHROPOLOGY INDEX LAYOUT */
+    .anthro-index { list-style: none; padding: 0; margin: 0; }
+    .anthro-index li { border-bottom: 1px solid var(--border); padding: 15px 0; }
+    .anthro-index li strong { color: var(--primary); display: block; margin-bottom: 5px; font-size: 15px; }
+    .anthro-index li p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
     /* Menu Grid (Initial View) */
     .syllabus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
