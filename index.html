@@ -102,9 +102,23 @@
               <span>📝 <strong id="sidebar-notes">0</strong> Notes</span>
           </div>
       </div>
-      
-    <!-- Syllabus content loaded from js/syllabus-data.js -->
-</div>
+
+            <!-- SIDEBAR PROGRESS TRACKER -->
+      <div class="sidebar-progress" id="sidebar-progress" style="display:block; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid var(--border);">
+          ...
+      </div>
+
+      <!-- ===== SYLLABUS ACCORDION ===== -->
+      <div class="syllabus-accordion" id="syllabus-accordion">
+        <button type="button" class="syllabus-toggle" onclick="toggleSyllabus(this)">
+          <span>📚 Full Syllabus</span>
+          <span class="syllabus-icon">▾</span>
+        </button>
+        <div class="syllabus-content" id="syllabus-content">
+          <!-- Syllabus content loaded from js/syllabus-data.js -->
+        </div>
+      </div>
+    </div>
       <!-- ===== NEW: GAMIFICATION HUB ===== -->
       <div id="gamification-hub" class="sidebar-widget">
         <div class="widget-header">MY PROGRESS</div>
@@ -505,6 +519,18 @@
     }
     
     document.getElementById('search-bank-btn').click();
+  }
+</script>
+<script>
+  function toggleSyllabus(btn) {
+    var accordion = btn.closest('.syllabus-accordion');
+    var content = document.getElementById('syllabus-content');
+    accordion.classList.toggle('active');
+    if (accordion.classList.contains('active')) {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+      content.style.maxHeight = null;
+    }
   }
 </script>
 </body>
