@@ -314,15 +314,27 @@ document.addEventListener('DOMContentLoaded', function() {
   backToTopBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
   // 9. HELPER FUNCTIONS
-  function normalizePaperCode(paperVal) {
+    function normalizePaperCode(paperVal) {
     if (!paperVal) return 'GS1';
-    const str = String(paperVal).toUpperCase().trim();
-    if (str === 'GS1' || str === 'GS PAPER 1') return 'GS1';
-    if (str === 'GS2' || str === 'GS PAPER 2') return 'GS2';
-    if (str === 'GS3' || str === 'GS PAPER 3') return 'GS3';
-    if (str === 'GS4' || str === 'GS PAPER 4') return 'GS4';
-    if (str.includes('OPT1') || str.includes('ANTHROPOLOGY OPTIONAL PAPER 1')) return 'OPT1';
-    if (str.includes('OPT2') || str.includes('ANTHROPOLOGY OPTIONAL PAPER 2')) return 'OPT2';
+    
+    // 1. Convert to uppercase, remove spaces, hyphens, and dots.
+    // "OPT 1" becomes "OPT1", "GS Paper 2" becomes "GSPAPER2"
+    let cleaned = String(paperVal).toUpperCase().replace(/[\s\-\.]/g, ''); 
+    
+    // 2. Check for Optional Papers FIRST (doesn't matter if it says "OPT1", "OPT 1", "OPTIONAL 1")
+    if (cleaned.includes('OPT')) {
+      return cleaned.includes('2') ? 'OPT2' : 'OPT1';
+    }
+    
+    // 3. Check for General Studies Papers
+    if (cleaned.includes('GS')) {
+      if (cleaned.includes('2')) return 'GS2';
+      if (cleaned.includes('3')) return 'GS3';
+      if (cleaned.includes('4')) return 'GS4';
+      return 'GS1';
+    }
+    
+    // 4. Fallback if no paper is found
     return 'GS1';
   }
 
