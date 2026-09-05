@@ -1687,3 +1687,93 @@ body.dark-mode .brand-logo {
     margin-bottom: 10px;
     object-fit: contain;
 }
+/* ==========================================================
+   SYLLABUS ACCORDION (Sidebar)
+   ========================================================== */
+.syllabus-accordion {
+  margin-top: 15px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.syllabus-toggle {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-weight: 750;
+  font-size: 14px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.syllabus-toggle:hover { background: var(--surface-2); }
+
+.syllabus-icon { transition: transform 0.3s ease; }
+.syllabus-accordion.active .syllabus-icon { transform: rotate(180deg); }
+
+.syllabus-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+  padding-left: 10px;
+}
+
+.syllabus-subsection { margin-top: 12px; }
+
+.sub-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.syllabus-content ul {
+  list-style: none;
+  padding-left: 10px;
+  margin: 0;
+}
+
+.syllabus-content li { margin-bottom: 6px; }
+
+/* --- For the Full Syllabus Text --- */
+.syllabus-content li strong {
+  color: var(--primary); /* Highlights the Paper titles */
+  font-size: 13px;
+}
+
+.syllabus-content ul ul {
+  padding-left: 15px; /* Indents sub-topics */
+  margin-top: 5px;
+}
+
+.syllabus-content ul ul li {
+  font-size: 12px; /* Makes sub-topics smaller */
+  padding: 4px 6px;
+  color: var(--muted);
+}
+
+.syllabus-content li, .syllabus-content a {
+  text-decoration: none;
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 500;
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.syllabus-content li:hover {
+  background: var(--accent-soft);
+  color: var(--primary);
+  padding-left: 14px;
+  cursor: pointer;
+}
