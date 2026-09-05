@@ -1876,3 +1876,84 @@ body.dark-mode .brand-logo {
 body.modal-open {
     overflow: hidden;
 }
+/* ==========================================================
+   MOBILE RESPONSIVE FIX (PASTE AT VERY BOTTOM)
+   ========================================================== */
+@media(max-width: 820px) {
+  /* Force main app to be single column */
+  .app { grid-template-columns: 1fr; }
+
+  /* Hide the sidebar and make it slide in from left */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 10px 0 35px rgba(0,0,0,0.25);
+    overflow-y: auto;
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  
+  .sidebar-header-mobile { display: flex; }
+  .mobile-menu-close { display: block; background: none; border: none; font-size: 22px; color: var(--muted); }
+  
+  .mobile-menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 999;
+  }
+  .mobile-menu-backdrop.active { opacity: 1; pointer-events: auto; }
+
+  /* Fix the top mobile bar (Don't let it push content) */
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  /* Push content below the mobile top bar */
+  .content { padding-top: 60px; min-width: 0; }
+  
+  .mobile-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; color: var(--text); }
+  .mobile-brand .brand-logo-mobile { width: 30px; height: auto; margin-right: 0; }
+  
+  .mobile-actions-right { display: flex; align-items: center; gap: 8px; }
+  .mobile-theme-toggle { border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); color: var(--text); width: 38px; height: 38px; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; }
+  .mobile-menu-toggle { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: none; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+  /* Hide the desktop topbar on mobile */
+  .topbar { display: none; }
+  
+  /* Fix the main page content area */
+  .page { padding: 24px 16px 40px; }
+  .hero { display: block; }
+  .hero-actions { margin-top: 18px; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stats .stat:last-child { grid-column: 1 / -1; }
+  .workspace { grid-template-columns: 1fr; gap: 15px; }
+  .sticky-card { position: static; }
+  .filters { grid-template-columns: 1fr; }
+  .filters .btn { width: 100%; }
+  .form-actions { grid-template-columns: 1fr; }
+}
