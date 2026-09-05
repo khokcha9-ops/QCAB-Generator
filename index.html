@@ -26,11 +26,7 @@
     .premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); }
     .premium-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .premium-header h3 { margin: 0; font-weight: 800; font-size: 18px; }
-    .pill-status { 
-        display: inline-flex; align-items: center; gap: 8px; 
-        background: var(--accent-soft); color: var(--accent);
-        border-radius: 999px; padding: 5px 12px; font-weight: 800; font-size: 12px;
-    }
+    .pill-status { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 5px 12px; font-weight: 800; font-size: 12px; }
     .suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
     .suggestion-item { display: flex; align-items: center; gap: 8px; }
     .suggestion-item strong { color: var(--text); }
@@ -40,57 +36,30 @@
     .brand-logo { width: 160px; height: auto; object-fit: contain; margin-bottom: 8px; display: block; }
     .brand-logo-mobile { width: 30px; height: auto; vertical-align: middle; margin-right: 8px; }
 
-    /* ==========================================================
-       SYLLABUS MODAL (MAIN PAGE)
-       ========================================================== */
-    .syllabus-modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
-      z-index: 10000; display: none; justify-content: center; align-items: center;
-    }
+    /* Modern Syllabus Modal UI */
+    .syllabus-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: center; align-items: center; }
     .syllabus-modal-overlay.active { display: flex; }
-    .syllabus-modal-content {
-      background: var(--surface); width: 90%; max-width: 900px; max-height: 85vh;
-      border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      display: flex; flex-direction: column; overflow: hidden;
-    }
-    .syllabus-modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 20px 24px; background: var(--bg); border-bottom: 1px solid var(--border);
-    }
-    .syllabus-modal-header h2 { margin: 0; font-size: 20px; color: var(--text); }
-    .syllabus-modal-close {
-      background: var(--surface-2); border: none; color: var(--muted);
-      width: 35px; height: 35px; border-radius: 50%; font-size: 18px; cursor: pointer;
-    }
+    .syllabus-modal-content { background: var(--surface); width: 90%; max-width: 800px; max-height: 85vh; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
+    .syllabus-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: var(--bg); border-bottom: 1px solid var(--border); }
+    .syllabus-modal-header h2 { margin: 0; font-size: 22px; color: var(--text); font-weight: 800; }
+    .syllabus-modal-close { background: var(--surface-2); border: none; color: var(--muted); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.2s; }
     .syllabus-modal-close:hover { background: var(--danger-soft); color: var(--danger); }
     .syllabus-modal-body { padding: 24px; overflow-y: auto; }
 
-    .syllabus-card {
-      border-radius: 12px; padding: 20px; margin-bottom: 20px;
-      border: 1px solid var(--border); background: var(--surface);
-    }
-    .syllabus-card-title {
-      font-size: 18px; font-weight: 800; margin-bottom: 15px;
-      padding-bottom: 8px; border-bottom: 2px solid;
-    }
-    .syllabus-card ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+    /* Menu Grid (Initial View) */
+    .syllabus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .syllabus-menu-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; cursor: pointer; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .syllabus-menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: var(--primary); }
+    .syllabus-menu-card-icon { font-size: 38px; margin-bottom: 12px; display: block; }
+    .syllabus-menu-card-title { font-weight: 800; font-size: 16px; color: var(--text); }
 
-    /* DIFFERENT STYLES FOR DIFFERENT PAPERS */
-    .prelims-card { border-top: 5px solid #64748b; background: var(--surface); }
-    .prelims-card .syllabus-card-title { color: #64748b; border-bottom-color: #64748b; }
-    .gs1-card { border-top: 5px solid #2563eb; }
-    .gs1-card .syllabus-card-title { color: #2563eb; border-bottom-color: #2563eb; }
-    .gs2-card { border-top: 5px solid #059669; }
-    .gs2-card .syllabus-card-title { color: #059669; border-bottom-color: #059669; }
-    .gs3-card { border-top: 5px solid #d97706; }
-    .gs3-card .syllabus-card-title { color: #d97706; border-bottom-color: #d97706; }
-    .gs4-card { border-top: 5px solid #7c3aed; }
-    .gs4-card .syllabus-card-title { color: #7c3aed; border-bottom-color: #7c3aed; }
-    .anthro1-card { border-top: 5px solid #db2777; }
-    .anthro1-card .syllabus-card-title { color: #db2777; border-bottom-color: #db2777; }
-    .anthro2-card { border-top: 5px solid #ea580c; }
-    .anthro2-card .syllabus-card-title { color: #ea580c; border-bottom-color: #ea580c; }
+    /* Detail View */
+    #syllabus-detail-view { display: none; }
+    .back-btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 999px; cursor: pointer; font-weight: 600; margin-bottom: 20px; transition: 0.2s; }
+    .back-btn:hover { background: var(--surface-2); border-color: var(--primary); color: var(--primary); }
+    .detail-card-content { border-top: 5px solid var(--primary); padding: 20px; background: var(--surface); border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .detail-card-content ul { margin: 0; padding-left: 20px; line-height: 1.8; color: var(--text-soft); }
+    .detail-card-content strong { color: var(--text); }
   </style>
 </head>
 <body>
@@ -365,11 +334,19 @@
 <div class="syllabus-modal-overlay" id="syllabus-modal-overlay">
   <div class="syllabus-modal-content">
     <div class="syllabus-modal-header">
-      <h2>UPSC Complete Syllabus</h2>
+      <h2>UPSC Syllabus</h2>
       <button class="syllabus-modal-close" onclick="closeSyllabusModal()">✕</button>
     </div>
-    <div class="syllabus-modal-body" id="syllabus-modal-body">
-      <!-- Data is injected here from syllabus-data.js -->
+    <div class="syllabus-modal-body">
+      <div id="syllabus-main-menu">
+        <div class="syllabus-grid" id="syllabus-cards-holder">
+          <!-- Cards will be injected by JavaScript -->
+        </div>
+      </div>
+      <div id="syllabus-detail-view">
+        <button class="back-btn" onclick="backToSyllabusMenu()">← Back to Papers</button>
+        <div id="syllabus-detail-content"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -384,12 +361,12 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=11"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=11"></script>
-<script src="js/config.js?v=11"></script>
-<script src="js/syllabus-data.js?v=11"></script>
-<script src="js/app.js?v=11"></script>
-<script src="js/features.js?v=11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=13"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=13"></script>
+<script src="js/config.js?v=13"></script>
+<script src="js/syllabus-data.js?v=13"></script>
+<script src="js/app.js?v=13"></script>
+<script src="js/features.js?v=13"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -397,14 +374,48 @@
   });
 
   /* ============================================
-     SYLLABUS MODAL FUNCTIONS
+     SYLLABUS DRILL-DOWN LOGIC
      ============================================ */
   function openSyllabusModal() {
-    var body = document.getElementById('syllabus-modal-body');
-    if (typeof SYLLABUS_HTML !== 'undefined') {
-      body.innerHTML = SYLLABUS_HTML;
+    var cardsHolder = document.getElementById('syllabus-cards-holder');
+    var menu = document.getElementById('syllabus-main-menu');
+    var detail = document.getElementById('syllabus-detail-view');
+
+    menu.style.display = 'block';
+    detail.style.display = 'none';
+
+    if (cardsHolder.children.length === 0) {
+      cardsHolder.innerHTML = '';
+      for (var key in SYLLABUS_DATA) {
+        var item = SYLLABUS_DATA[key];
+        var card = document.createElement('div');
+        card.className = 'syllabus-menu-card';
+        card.style.borderTop = '5px solid ' + item.color;
+        card.innerHTML = '<span class="syllabus-menu-card-icon">' + item.icon + '</span><div class="syllabus-menu-card-title" style="color:' + item.color + ';">' + item.title + '</div>';
+        card.setAttribute('data-key', key);
+        card.onclick = function() { openSyllabusTopic(this.getAttribute('data-key')); };
+        cardsHolder.appendChild(card);
+      }
     }
+
     document.getElementById('syllabus-modal-overlay').classList.add('active');
+  }
+
+  function openSyllabusTopic(key) {
+    var item = SYLLABUS_DATA[key];
+    if (!item) return;
+
+    document.getElementById('syllabus-main-menu').style.display = 'none';
+    document.getElementById('syllabus-detail-view').style.display = 'block';
+
+    var detailContent = document.getElementById('syllabus-detail-content');
+    detailContent.style.borderTop = '5px solid ' + item.color;
+    detailContent.innerHTML = '<h3 style="color:' + item.color + '; margin-bottom: 15px;">' + item.title + '</h3>' + item.html;
+  }
+
+  function backToSyllabusMenu() {
+    document.getElementById('syllabus-detail-view').style.display = 'none';
+    document.getElementById('syllabus-main-menu').style.display = 'block';
   }
 
   function closeSyllabusModal() {
@@ -416,35 +427,6 @@
   });
 
   /* ============================================
-     SEARCH & ANALYSIS
-     ============================================ */
-  window.semanticSearch = function(query) {
-      const input = query.toLowerCase().trim();
-      const topicMap = {
-        'sarkaria': 'federalism', 'punchhi': 'federalism', 'bommai': 'federalism',
-        'wheare': 'federalism', 'governor': 'federalism', 
-        'ambedkar': 'governor', 'rajamannar': 'governor',
-        'budget': 'economic', 'money': 'economic', 'finance': 'economic',
-        'panchayat': 'local government', 'rural': 'local government'
-      };
-      let mappedTopic = '';
-      for (let key in topicMap) {
-        if (input.includes(key)) { mappedTopic = topicMap[key]; break; }
-      }
-      const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
-      const results = bank.filter(q => {
-        const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
-        if (mappedTopic) { return q.topic.toLowerCase().includes(mappedTopic) || q.topic.toLowerCase().includes(input); }
-        return text.includes(input);
-      });
-      return results;
-  };
-
-  document.getElementById('search-input').addEventListener('input', (e) => {
-      if (e.target.value.length > 3) { console.log('Semantic Results:', window.semanticSearch(e.target.value)); }
-  });
-
-  /* ============================================
      FILTER MODE SWITCHER
      ============================================ */
   function switchFilterMode(mode, btn) {
@@ -452,11 +434,11 @@
     var subBtn = document.getElementById('btn-filter-subtopic');
     var yearSel = document.getElementById('filter-year');
     var topicSel = document.getElementById('filter-topic');
-    
+
     yearBtn.classList.remove('active');
     subBtn.classList.remove('active');
     btn.classList.add('active');
-    
+
     if (mode === 'year') {
       yearSel.style.display = 'block';
       topicSel.style.display = 'none';
@@ -466,7 +448,7 @@
       yearSel.style.display = 'none';
       yearSel.value = 'ALL';
     }
-    
+
     document.getElementById('search-bank-btn').click();
   }
 </script>
