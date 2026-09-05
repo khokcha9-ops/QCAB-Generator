@@ -30,14 +30,20 @@ const SYLLABUS_HTML = `
         </ul>
     </div>
 
-    <div class="syllabus-card gs1-card">
-        <div class="syllabus-card-title">MAINS (GS-I)</div>
+    <div class="syllabus-card essay-card">
+        <div class="syllabus-card-title">MAINS (ESSAY)</div>
         <ul>
             <li><strong>PAPER-I: Essay</strong>
                 <ul>
                     <li>Candidates will be required to write an essay on a specific topic. The choice of subjects will be given. They will be expected to keep closely to the subject of the essay to arrange their ideas in orderly fashion, and to write concisely. Credit will be given for effective and exact expression.</li>
                 </ul>
             </li>
+        </ul>
+    </div>
+
+    <div class="syllabus-card gs1-card">
+        <div class="syllabus-card-title">MAINS (GS-I)</div>
+        <ul>
             <li><strong>General Studies- I: Indian Heritage and Culture, History and Geography of the World and Society.</strong>
                 <ul>
                     <li>Indian culture will cover the salient aspects of Art Forms, Literature and Architecture from ancient to modern times.</li>
