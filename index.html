@@ -36,20 +36,61 @@
     .suggestion-item strong { color: var(--text); }
     .suggestion-item span { color: var(--muted); }
 
-    /* NEW: Professional Logo Styling */
-    .brand-logo {
-        width: 160px;
-        height: auto;
-        object-fit: contain;
-        margin-bottom: 8px;
-        display: block;
+    /* Professional Logo Styling */
+    .brand-logo { width: 160px; height: auto; object-fit: contain; margin-bottom: 8px; display: block; }
+    .brand-logo-mobile { width: 30px; height: auto; vertical-align: middle; margin-right: 8px; }
+
+    /* ==========================================================
+       SYLLABUS MODAL (MAIN PAGE)
+       ========================================================== */
+    .syllabus-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+      z-index: 10000; display: none; justify-content: center; align-items: center;
     }
-    .brand-logo-mobile {
-        width: 30px;
-        height: auto;
-        vertical-align: middle;
-        margin-right: 8px;
+    .syllabus-modal-overlay.active { display: flex; }
+    .syllabus-modal-content {
+      background: var(--surface); width: 90%; max-width: 900px; max-height: 85vh;
+      border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      display: flex; flex-direction: column; overflow: hidden;
     }
+    .syllabus-modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 24px; background: var(--bg); border-bottom: 1px solid var(--border);
+    }
+    .syllabus-modal-header h2 { margin: 0; font-size: 20px; color: var(--text); }
+    .syllabus-modal-close {
+      background: var(--surface-2); border: none; color: var(--muted);
+      width: 35px; height: 35px; border-radius: 50%; font-size: 18px; cursor: pointer;
+    }
+    .syllabus-modal-close:hover { background: var(--danger-soft); color: var(--danger); }
+    .syllabus-modal-body { padding: 24px; overflow-y: auto; }
+
+    .syllabus-card {
+      border-radius: 12px; padding: 20px; margin-bottom: 20px;
+      border: 1px solid var(--border); background: var(--surface);
+    }
+    .syllabus-card-title {
+      font-size: 18px; font-weight: 800; margin-bottom: 15px;
+      padding-bottom: 8px; border-bottom: 2px solid;
+    }
+    .syllabus-card ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+
+    /* DIFFERENT STYLES FOR DIFFERENT PAPERS */
+    .prelims-card { border-top: 5px solid #64748b; background: var(--surface); }
+    .prelims-card .syllabus-card-title { color: #64748b; border-bottom-color: #64748b; }
+    .gs1-card { border-top: 5px solid #2563eb; }
+    .gs1-card .syllabus-card-title { color: #2563eb; border-bottom-color: #2563eb; }
+    .gs2-card { border-top: 5px solid #059669; }
+    .gs2-card .syllabus-card-title { color: #059669; border-bottom-color: #059669; }
+    .gs3-card { border-top: 5px solid #d97706; }
+    .gs3-card .syllabus-card-title { color: #d97706; border-bottom-color: #d97706; }
+    .gs4-card { border-top: 5px solid #7c3aed; }
+    .gs4-card .syllabus-card-title { color: #7c3aed; border-bottom-color: #7c3aed; }
+    .anthro1-card { border-top: 5px solid #db2777; }
+    .anthro1-card .syllabus-card-title { color: #db2777; border-bottom-color: #db2777; }
+    .anthro2-card { border-top: 5px solid #ea580c; }
+    .anthro2-card .syllabus-card-title { color: #ea580c; border-bottom-color: #ea580c; }
   </style>
 </head>
 <body>
@@ -57,17 +98,13 @@
   // Force clear old data if version mismatches
   var APP_VERSION = '7.0'; 
   if (localStorage.getItem('qcab_app_version') !== APP_VERSION) {
-    localStorage.removeItem('qcab_user');
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('qcab_nested_folders');
-    localStorage.removeItem('qcab_preset_bank'); 
-    localStorage.removeItem('user_progress');
-    localStorage.setItem('qcab_app_version', APP_VERSION);
+    localStorage.removeItem('qcab_user'); localStorage.removeItem('userToken');
+    localStorage.removeItem('qcab_nested_folders'); localStorage.removeItem('qcab_preset_bank'); 
+    localStorage.removeItem('user_progress'); localStorage.setItem('qcab_app_version', APP_VERSION);
   }
 </script>
-
-<!-- INSTANT GUEST BYPASS FOR TESTING (REMOVE LATER) -->
 <script>
+  // INSTANT GUEST BYPASS FOR TESTING
   if (!localStorage.getItem('qcab_user')) {
     localStorage.setItem('qcab_user', JSON.stringify({ email: 'guest@test.com', name: 'Guest', token: 'guest-token' }));
   }
@@ -82,12 +119,11 @@
       <button type="button" class="mobile-menu-close" id="mobile-menu-close">✕</button>
     </div>
     
-    <!-- TOP SECTION (Brand + Strong Sidebar) -->
+    <!-- TOP SECTION -->
     <div class="sidebar-top-section">
       <div class="brand">
         <img src="logo.png" alt="UPSC Craft Logo" class="brand-logo">
       </div>
-      <!-- LOGIN BUTTONS REMOVED FOR TESTING -->
 
       <!-- SIDEBAR PROGRESS TRACKER -->
       <div class="sidebar-progress" id="sidebar-progress" style="display:block; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid var(--border);">
@@ -99,18 +135,13 @@
           </div>
       </div>
 
-      <!-- ===== SYLLABUS ACCORDION ===== -->
-      <div class="syllabus-accordion" id="syllabus-accordion">
-        <button type="button" class="syllabus-toggle" onclick="toggleSyllabus(this)">
-          <span>📚 Full Syllabus</span>
-          <span class="syllabus-icon">▾</span>
-        </button>
-        <div class="syllabus-content" id="syllabus-content">
-          <!-- Syllabus content loaded from js/syllabus-data.js -->
-        </div>
-      </div>
+      <!-- ===== VIEW SYLLABUS BUTTON (MAIN PAGE) ===== -->
+      <button type="button" class="nav-btn" onclick="openSyllabusModal()">
+        <span class="nav-icon">📚</span>
+        <span>View Syllabus</span>
+      </button>
 
-      <!-- ===== NEW: GAMIFICATION HUB ===== -->
+      <!-- ===== GAMIFICATION HUB ===== -->
       <div id="gamification-hub" class="sidebar-widget">
         <div class="widget-header">MY PROGRESS</div>
         <div class="streak-grid">
@@ -127,7 +158,7 @@
         </div>
       </div>
 
-      <!-- ===== NEW: SYLLABUS COVERAGE ===== -->
+      <!-- ===== SYLLABUS COVERAGE ===== -->
       <div id="coverage-hub" class="sidebar-widget">
         <div class="widget-header">SYLLABUS COVERAGE</div>
         <div class="coverage-bar">
@@ -174,7 +205,6 @@
       </div>
       <div class="topbar-actions">
         <button type="button" class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-text">Dark Mode</span></button>
-        <!-- TOPBAR LOGIN BUTTON REMOVED FOR TESTING -->
       </div>
     </header>
 
@@ -189,11 +219,10 @@
         <div class="hero-actions">
           <button type="button" class="btn btn-primary" data-scroll="pyq-bank">Browse PYQs</button>
           <button type="button" class="btn" data-scroll="create-question">＋ Create Question</button>
-        
         </div>
       </section>
       
-      <!-- Stats, Folders, Workspace, etc. -->
+      <!-- Stats -->
       <section class="stats">
         <div class="stat"><div class="stat-label">QUESTION BANK</div><div class="stat-value" id="dashboard-bank-count">—</div><div class="stat-note">PYQs currently loaded</div></div>
         <div class="stat"><div class="stat-label">ACTIVE QCAB</div><div class="stat-value" id="dashboard-q-count">0</div><div class="stat-note">Questions selected</div></div>
@@ -330,10 +359,23 @@
 <!-- Back to top -->
 <button type="button" class="back-to-top" id="back-to-top">↑</button>
 
+<!-- ================================================== -->
+<!-- SYLLABUS MODAL (MAIN PAGE)                         -->
+<!-- ================================================== -->
+<div class="syllabus-modal-overlay" id="syllabus-modal-overlay">
+  <div class="syllabus-modal-content">
+    <div class="syllabus-modal-header">
+      <h2>UPSC Complete Syllabus</h2>
+      <button class="syllabus-modal-close" onclick="closeSyllabusModal()">✕</button>
+    </div>
+    <div class="syllabus-modal-body" id="syllabus-modal-body">
+      <!-- Data is injected here from syllabus-data.js -->
+    </div>
+  </div>
+</div>
+
 <!-- Modals -->
 <div class="study-modal" id="note-modal"><div class="study-modal-content"><h3>📝 Add Note</h3><textarea id="note-textarea" placeholder="Write your note here..."></textarea><div class="btn-row"><button type="button" class="btn btn-secondary-sm" id="note-save-btn">Save</button><button type="button" class="btn btn-secondary-sm btn-danger" id="note-cancel-btn">Cancel</button></div></div></div>
-
-<!-- LOGOUT MODAL REMOVED FOR TESTING -->
 
 <div class="ai-model-modal" id="ai-model-modal"><div class="ai-model-modal-content"><button type="button" class="ai-model-close" id="ai-model-close">&times;</button><h3>⚡ Choose AI Model</h3><p>Select which AI should generate your UPSC answer.</p><div class="model-options"><button type="button" class="model-option" data-model="secret"><span class="option-icon" style="background:linear-gradient(135deg,#7c3aed,#0891b2); color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,0.3);">⚡</span> Direct <span class="badge">Groq</span></button><button type="button" class="model-option" data-model="perplexity"><span class="option-icon" style="background:#8B5CF6; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(139,92,246,0.3);">P</span> Perplexity AI</button><button type="button" class="model-option" data-model="chatgpt"><span class="option-icon" style="background:#10A37F; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(16,163,127,0.3);">C</span> ChatGPT</button><button type="button" class="model-option" data-model="deepseek"><span class="option-icon" style="background:#2563EB; color:#fff; border-radius:50%; width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);">D</span> DeepSeek</button></div><button type="button" class="btn-cancel-model" id="cancel-ai-modal">Cancel</button></div></div>
 
@@ -342,27 +384,40 @@
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMessage">Copied!</span></div>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=10"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=10"></script>
-<script src="js/config.js?v=10"></script>
-<script src="js/syllabus-data.js?v=10"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var content = document.getElementById('syllabus-content');
-    if (content && typeof SYLLABUS_HTML !== 'undefined') {
-      content.innerHTML = SYLLABUS_HTML;
-    }
-  });
-</script>
-<script src="js/app.js?v=10"></script>
-<script src="js/features.js?v=10"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=11"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=11"></script>
+<script src="js/config.js?v=11"></script>
+<script src="js/syllabus-data.js?v=11"></script>
+<script src="js/app.js?v=11"></script>
+<script src="js/features.js?v=11"></script>
 
-<!-- PREMIUM FEATURES SCRIPT -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
   });
 
+  /* ============================================
+     SYLLABUS MODAL FUNCTIONS
+     ============================================ */
+  function openSyllabusModal() {
+    var body = document.getElementById('syllabus-modal-body');
+    if (typeof SYLLABUS_HTML !== 'undefined') {
+      body.innerHTML = SYLLABUS_HTML;
+    }
+    document.getElementById('syllabus-modal-overlay').classList.add('active');
+  }
+
+  function closeSyllabusModal() {
+    document.getElementById('syllabus-modal-overlay').classList.remove('active');
+  }
+
+  document.getElementById('syllabus-modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeSyllabusModal();
+  });
+
+  /* ============================================
+     SEARCH & ANALYSIS
+     ============================================ */
   window.semanticSearch = function(query) {
       const input = query.toLowerCase().trim();
       const topicMap = {
@@ -372,12 +427,10 @@
         'budget': 'economic', 'money': 'economic', 'finance': 'economic',
         'panchayat': 'local government', 'rural': 'local government'
       };
-
       let mappedTopic = '';
       for (let key in topicMap) {
         if (input.includes(key)) { mappedTopic = topicMap[key]; break; }
       }
-
       const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
       const results = bank.filter(q => {
         const text = `${q.question} ${q.topic} ${q.paper}`.toLowerCase();
@@ -387,80 +440,13 @@
       return results;
   };
 
-  async function fetchSuggestions(topic) {
-      try {
-          const WORKER_URL = window.WORKER_URL || '';
-          const res = await fetch(`${WORKER_URL}/api/syllabus?topic=${encodeURIComponent(topic)}`);
-          const data = await res.json();
-          if (res.ok && data.length > 0) {
-              const row = data[0];
-              document.getElementById('sugg-articles').textContent = JSON.parse(row.articles).join(', ');
-              document.getElementById('sugg-committees').textContent = JSON.parse(row.committees).join(', ');
-              document.getElementById('sugg-thinkers').textContent = JSON.parse(row.thinkers).join(', ');
-              document.getElementById('sugg-cases').textContent = JSON.parse(row.case_studies).join(', ');
-          } else { throw new Error('Not found or backend down'); }
-      } catch (e) {
-          const map = {
-              'Federalism': { articles: '245, 246, 356', committees: 'Sarkaria, Punchhi', thinkers: 'K.C. Wheare', cases: 'S.R. Bommai' },
-              'Governor': { articles: '153, 161, 163', committees: 'Rajamannar', thinkers: 'Ambedkar', cases: 'Nabam Rebia' },
-              'Parliament': { articles: '79, 83, 105', committees: 'Public Accounts', thinkers: 'Bagehot', cases: 'Kesavananda' }
-          };
-          const data = map[topic] || { articles: 'General', committees: 'N/A', thinkers: 'N/A', cases: 'N/A' };
-          document.getElementById('sugg-articles').textContent = data.articles;
-          document.getElementById('sugg-committees').textContent = data.committees;
-          document.getElementById('sugg-thinkers').textContent = data.thinkers;
-          document.getElementById('sugg-cases').textContent = data.cases;
-      }
-      document.getElementById('suggestions-panel').style.display = 'block';
-  }
-
-  window.showSimilar = function(questionId) {
-      const bank = JSON.parse(localStorage.getItem('qcab_preset_bank') || '[]');
-      const orig = bank.find(q => q.id === questionId);
-      if (!orig) return;
-      const similar = bank.filter(q => q.topic === orig.topic && q.id !== orig.id).slice(0, 3);
-      console.log('Similar Questions:', similar);
-      let recent = JSON.parse(localStorage.getItem('recent_qs') || '[]');
-      recent = [orig, ...recent.filter(q => q.id !== orig.id)].slice(0, 10);
-      localStorage.setItem('recent_qs', JSON.stringify(recent));
-      if (typeof showToast === 'function') showToast('Question added to Recently Viewed!');
-  };
-
   document.getElementById('search-input').addEventListener('input', (e) => {
       if (e.target.value.length > 3) { console.log('Semantic Results:', window.semanticSearch(e.target.value)); }
   });
 
-  document.getElementById('filter-topic').addEventListener('change', (e) => {
-      if (e.target.value !== 'ALL') window.analyzeTopic(e.target.value);
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const storedUser = localStorage.getItem('qcab_user');
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        const sidebarText = document.getElementById('sidebar-login-text');
-        const topbarText = document.getElementById('topbar-login-text');
-        const profileDiv = document.getElementById('user-profile');
-        const userAvatar = document.getElementById('user-avatar');
-        const userName = document.getElementById('user-name');
-        const userEmail = document.getElementById('user-email');
-        if(userEmail) userEmail.textContent = user.email || '';
-        if(userName) userName.textContent = user.name || 'User';
-        if(userAvatar) userAvatar.textContent = (user.name || 'U')[0].toUpperCase();
-        if (sidebarText) sidebarText.textContent = user.email || 'Profile';
-        if (topbarText) topbarText.textContent = user.email || 'Profile';
-        if (profileDiv) profileDiv.style.display = 'block';
-        const sbProgress = document.getElementById('sidebar-progress');
-        if (sbProgress) sbProgress.style.display = 'block';
-      } catch (e) {}
-    }
-  });
-</script>
-
-<script>
+  /* ============================================
+     FILTER MODE SWITCHER
+     ============================================ */
   function switchFilterMode(mode, btn) {
     var yearBtn = document.getElementById('btn-filter-year');
     var subBtn = document.getElementById('btn-filter-subtopic');
@@ -485,17 +471,5 @@
   }
 </script>
 
-<script>
-  function toggleSyllabus(btn) {
-    var accordion = btn.closest('.syllabus-accordion');
-    var content = document.getElementById('syllabus-content');
-    accordion.classList.toggle('active');
-    if (accordion.classList.contains('active')) {
-      content.style.maxHeight = content.scrollHeight + "px";
-    } else {
-      content.style.maxHeight = null;
-    }
-  }
-</script>
 </body>
 </html>
