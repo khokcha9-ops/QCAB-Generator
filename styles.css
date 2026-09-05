@@ -222,3 +222,34 @@ body.modal-open { overflow: hidden; }
   .filters { grid-template-columns: 1fr; }
   .form-actions { grid-template-columns: 1fr; }
 }
+/* ==========================================================
+   MISSING PYQ BANK BUTTON STYLES
+   ========================================================== */
+.bank-top-actions { display: flex; align-items: center; gap: 8px; }
+.btn-bank-action {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 14px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text-soft); font-size: 11px; font-weight: 750;
+    text-align: center; line-height: 1.25; cursor: pointer; transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+.btn-bank-action:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); transform: translateY(-1px); }
+.btn-bank-action.reset-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); }
+.btn-bank-action .action-arrow { font-size: 10px; transition: transform 0.2s ease; }
+
+.pill-switcher-container { margin-bottom: 16px; }
+.pill-switcher {
+    display: flex; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px; gap: 4px; width: 100%;
+}
+.pill-btn {
+    flex: 1; border: none; background: transparent; color: var(--muted);
+    padding: 9px 16px; border-radius: 999px; font-size: 12px; font-weight: 750;
+    cursor: pointer; transition: all 0.2s ease; text-align: center;
+}
+.pill-btn:hover { color: var(--text); }
+.pill-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--accent)); color: #ffffff;
+    font-weight: 800; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+body.dark-mode .pill-btn.active { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #ffffff; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35); }
