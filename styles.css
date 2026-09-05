@@ -1777,3 +1777,90 @@ body.dark-mode .brand-logo {
   padding-left: 14px;
   cursor: pointer;
 }
+/* ==========================================================
+   SYLLABUS MODAL (MAIN PAGE)
+   ========================================================== */
+.syllabus-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.syllabus-modal-overlay.active { display: flex; }
+
+.syllabus-modal-content {
+  background: var(--surface);
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.syllabus-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.syllabus-modal-header h2 { margin: 0; font-size: 20px; color: var(--text); }
+.syllabus-modal-close {
+  background: var(--surface-2); border: none; color: var(--muted);
+  width: 35px; height: 35px; border-radius: 50%; font-size: 18px; cursor: pointer;
+}
+.syllabus-modal-close:hover { background: var(--danger-soft); color: var(--danger); }
+
+.syllabus-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Card Styles for Different Papers */
+.syllabus-card {
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.syllabus-card-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid;
+}
+.syllabus-card ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+
+/* DIFFERENT STYLES FOR DIFFERENT PAPERS */
+.prelims-card { border-top: 5px solid #64748b; background: var(--surface); }
+.prelims-card .syllabus-card-title { color: #64748b; border-bottom-color: #64748b; }
+
+.essay-card { border-top: 5px solid #0f766e; }
+.essay-card .syllabus-card-title { color: #0f766e; border-bottom-color: #0f766e; }
+
+.gs1-card { border-top: 5px solid #2563eb; }
+.gs1-card .syllabus-card-title { color: #2563eb; border-bottom-color: #2563eb; }
+
+.gs2-card { border-top: 5px solid #059669; }
+.gs2-card .syllabus-card-title { color: #059669; border-bottom-color: #059669; }
+
+.gs3-card { border-top: 5px solid #d97706; }
+.gs3-card .syllabus-card-title { color: #d97706; border-bottom-color: #d97706; }
+
+.gs4-card { border-top: 5px solid #7c3aed; }
+.gs4-card .syllabus-card-title { color: #7c3aed; border-bottom-color: #7c3aed; }
+
+.anthro1-card { border-top: 5px solid #db2777; }
+.anthro1-card .syllabus-card-title { color: #db2777; border-bottom-color: #db2777; }
+
+.anthro2-card { border-top: 5px solid #ea580c; }
+.anthro2-card .syllabus-card-title { color: #ea580c; border-bottom-color: #ea580c; }
