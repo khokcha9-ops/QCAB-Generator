@@ -1864,3 +1864,15 @@ body.dark-mode .brand-logo {
 
 .anthro2-card { border-top: 5px solid #ea580c; }
 .anthro2-card .syllabus-card-title { color: #ea580c; border-bottom-color: #ea580c; }
+/* PREVENT SCROLL CHAINING (When sidebar or modal scrolls, main page stops) */
+.sidebar,
+.syllabus-modal-body,
+.syllabus-modal-content {
+    overscroll-behavior: contain;
+    scrollbar-width: thin; /* Makes the scrollbar look slimmer and more professional */
+}
+
+/* Lock the body from scrolling when a modal is open */
+body.modal-open {
+    overflow: hidden;
+}
