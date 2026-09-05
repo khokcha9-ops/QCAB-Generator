@@ -102,7 +102,7 @@
               <span>📝 <strong id="sidebar-notes">0</strong> Notes</span>
           </div>
       </div>
-      <div class="syllabus-content" id="syllabus-content">
+      
     <!-- Syllabus content loaded from js/syllabus-data.js -->
 </div>
       <!-- ===== NEW: GAMIFICATION HUB ===== -->
@@ -341,7 +341,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=6"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2?v=6"></script>
 <script src="js/config.js?v=6"></script>
-<!-- AUTH.JS REMOVED FOR TESTING -->
+<script src="js/syllabus-data.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var content = document.getElementById('syllabus-content');
+    if (content && typeof SYLLABUS_HTML !== 'undefined') {
+      content.innerHTML = SYLLABUS_HTML;
+    }
+  });
+</script>
 <script src="js/app.js?v=6"></script>
 <script src="js/features.js?v=6"></script>
 
