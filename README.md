@@ -1,3 +1,3 @@
 # UPSC QCAB-Generator cum PYQ Bank
 UPSC QCAB Generator
-https://github.com/khokcha9-ops/UPSC-Craft
+https://khokcha9-ops.github.io/UPSC-Craft/
