@@ -483,27 +483,16 @@
     subBtn.classList.remove('active');
     btn.classList.add('active');
     
-    yearSel.style.display = 'block';
-    yearSel.style.visibility = 'visible';
-    topicSel.style.display = 'block';
-
-    if (topicSel.options.length <= 1) {
-      var allTopics = [
-        'Indian Heritage and Culture', 'Modern Indian History', 'Freedom Struggle', 'Post-Independence', 'World History', 
-        'Indian Society', 'Social Issues', 'Globalization', 'Social Empowerment', 'Geography', 'Indian Geography', 
-        'World Geography', 'Economic Development', 'Agriculture', 'Food Processing', 'Science and Technology', 
-        'Environment', 'Biodiversity', 'Disaster Management', 'Internal Security', 'Ethics', 'Case Studies', 
-        'General', 'Anthropology Optional'
-      ];
-      topicSel.innerHTML = '<option value="ALL">All Subtopics</option>';
-      allTopics.forEach(topic => {
-        var opt = document.createElement('option');
-        opt.value = topic;
-        opt.textContent = topic;
-        topicSel.appendChild(opt);
-      });
+    if (mode === 'year') {
+      yearSel.style.display = 'block';
+      topicSel.style.display = 'none';
+      topicSel.value = 'ALL';
+    } else {
+      topicSel.style.display = 'block';
+      yearSel.style.display = 'none';
+      yearSel.value = 'ALL';
     }
-
+    
     document.getElementById('search-bank-btn').click();
   }
 </script>
