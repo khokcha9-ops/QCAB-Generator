@@ -1,33 +1,30 @@
 // ============================================================
-// UPSC SYLLABUS DATA (Modular - FULL ORIGINAL TEXT + UNIQUE UI)
+// UPSC SYLLABUS DATA (Single-Column Full Text + Unique Styles)
 // ============================================================
 
 const PRELIMS_TEXT = `
-    <div class="grid-layout">
-        <div class="layout-card">
-            <h4>Paper I (200 marks)</h4>
-            <ul>
-                <li>Current events of national and international importance.</li>
-                <li>History of India and Indian National Movement.</li>
-                <li>Indian and World Geography - Physical, Social, Economic Geography of India and the World.</li>
-                <li>Indian Polity and Governance - Constitution, Political System, Panchayati Raj, Public Policy, Rights Issues, etc.</li>
-                <li>Economic and Social Development Sustainable Development, Poverty, Inclusion, Demographics, Social Sector initiatives, etc.</li>
-                <li>General issues on Environmental Ecology, Bio-diversity and Climate Change - that do not require subject specialization.</li>
-                <li>General Science.</li>
-            </ul>
-        </div>
-        <div class="layout-card">
-            <h4>Paper II (200 marks) - CSAT</h4>
-            <ul>
-                <li>Comprehension</li>
-                <li>Interpersonal skills including communication skills;</li>
-                <li>Logical reasoning and analytical ability</li>
-                <li>Decision-making and problem-solving</li>
-                <li>General mental ability</li>
-                <li>Basic numeracy (numbers and their relations, orders of magnitude, etc.) (Class X level), Data interpretation (charts, graphs, tables, data sufficiency etc. - Class X level)</li>
-                <li>English Language Comprehension skills (Class X level)</li>
-            </ul>
-        </div>
+    <div class="detail-card-content prelims-card">
+        <strong>Paper I - (200 marks) Duration : Two hours</strong>
+        <ul>
+            <li>Current events of national and international importance.</li>
+            <li>History of India and Indian National Movement.</li>
+            <li>Indian and World Geography - Physical, Social, Economic Geography of India and the World.</li>
+            <li>Indian Polity and Governance - Constitution, Political System, Panchayati Raj, Public Policy, Rights Issues, etc.</li>
+            <li>Economic and Social Development Sustainable Development, Poverty, Inclusion, Demographics, Social Sector initiatives, etc.</li>
+            <li>General issues on Environmental Ecology, Bio-diversity and Climate Change - that do not require subject specialization.</li>
+            <li>General Science.</li>
+        </ul>
+        <br>
+        <strong>Paper II- (200 marks) Duration: Two hours</strong>
+        <ul>
+            <li>Comprehension</li>
+            <li>Interpersonal skills including communication skills;</li>
+            <li>Logical reasoning and analytical ability</li>
+            <li>Decision-making and problem-solving</li>
+            <li>General mental ability</li>
+            <li>Basic numeracy (numbers and their relations, orders of magnitude, etc.) (Class X level), Data interpretation (charts, graphs, tables, data sufficiency etc. - Class X level)</li>
+            <li>English Language Comprehension skills (Class X level)</li>
+        </ul>
     </div>`;
 
 const ESSAY_TEXT = `
@@ -36,119 +33,91 @@ const ESSAY_TEXT = `
     </div>`;
 
 const GS1_TEXT = `
-    <div class="grid-layout">
-        <div class="layout-card">
-            <h4>Heritage, History & Society</h4>
-            <ul>
-                <li>Indian culture will cover the salient aspects of Art Forms, Literature and Architecture from ancient to modern times.</li>
-                <li>Modern Indian history from about the middle of the eighteenth century until the present- significant events, personalities, issues</li>
-                <li>The Freedom Struggle - its various stages and important contributors /contributions from different parts of the country.</li>
-                <li>Post-independence consolidation and reorganization within the country.</li>
-                <li>History of the world will include events from 18th century such as industrial revolution, world wars, redrawal of national boundaries, colonization, decolonization, political philosophies like communism, capitalism, socialism etc.- their forms and effect on the society.</li>
-                <li>Salient features of Indian Society, Diversity of India.</li>
-                <li>Role of women and women's organization, population and associated issues, poverty and developmental issues, urbanization, their problems and their remedies.</li>
-                <li>Effects of globalization on Indian society</li>
-                <li>Social empowerment, communalism, regionalism & secularism.</li>
-            </ul>
-        </div>
-        <div class="layout-card">
-            <h4>Geography & Environment</h4>
-            <ul>
-                <li>Salient features of world's physical geography.</li>
-                <li>Distribution of key natural resources across the world (including South Asia and the Indian subcontinent); factors responsible for the location of primary, secondary, and tertiary sector industries in various parts of the world (including India)</li>
-                <li>Important Geophysical phenomena such as earthquakes, Tsunami, Volcanic activity, cyclone etc., geographical features and their location- changes in critical geographical features (including water-bodies and ice-caps) and in flora and fauna and the effects of such changes.</li>
-            </ul>
-        </div>
+    <div class="detail-card-content gs1-card">
+        <strong>General Studies- I: Indian Heritage and Culture, History and Geography of the World and Society.</strong>
+        <ul>
+            <li>Indian culture will cover the salient aspects of Art Forms, Literature and Architecture from ancient to modern times.</li>
+            <li>Modern Indian history from about the middle of the eighteenth century until the present- significant events, personalities, issues</li>
+            <li>The Freedom Struggle - its various stages and important contributors /contributions from different parts of the country.</li>
+            <li>Post-independence consolidation and reorganization within the country.</li>
+            <li>History of the world will include events from 18th century such as industrial revolution, world wars, redrawal of national boundaries, colonization, decolonization, political philosophies like communism, capitalism, socialism etc.- their forms and effect on the society.</li>
+            <li>Salient features of Indian Society, Diversity of India.</li>
+            <li>Role of women and women's organization, population and associated issues, poverty and developmental issues, urbanization, their problems and their remedies.</li>
+            <li>Effects of globalization on Indian society</li>
+            <li>Social empowerment, communalism, regionalism & secularism.</li>
+            <li>Salient features of world's physical geography.</li>
+            <li>Distribution of key natural resources across the world (including South Asia and the Indian subcontinent); factors responsible for the location of primary, secondary, and tertiary sector industries in various parts of the world (including India)</li>
+            <li>Important Geophysical phenomena such as earthquakes, Tsunami, Volcanic activity, cyclone etc., geographical features and their location- changes in critical geographical features (including water-bodies and ice-caps) and in flora and fauna and the effects of such changes.</li>
+        </ul>
     </div>`;
 
 const GS2_TEXT = `
-    <div class="grid-layout">
-        <div class="layout-card">
-            <h4>Polity, Governance & Social Justice</h4>
-            <ul>
-                <li>Indian Constitution- historical underpinnings, evolution, features, amendments, significant provisions and basic structure.</li>
-                <li>Functions and responsibilities of the Union and the States, issues and challenges pertaining to the federal structure, devolution of powers and finances up to local levels and challenges therein.</li>
-                <li>Separation of powers between various organs dispute redressal mechanisms and institutions.</li>
-                <li>Comparison of the Indian constitutional scheme with that of other countries</li>
-                <li>Parliament and State Legislatures - structure, functioning, conduct of business, powers & privileges and issues arising out of these.</li>
-                <li>Structure, organization and functioning of the Executive and the Judiciary Ministries and Departments of the Government; pressure groups and formal/informal associations and their role in the Polity.</li>
-                <li>Salient features of the Representation of People's Act.</li>
-                <li>Appointment to various Constitutional posts, powers, functions and responsibilities of various Constitutional Bodies.</li>
-                <li>Statutory, regulatory and various quasi-judicial bodies</li>
-                <li>Government policies and interventions for development in various sectors and issues arising out of their design and implementation.</li>
-                <li>Development processes and the development industry- the role of NGOs, SHGs, various groups and associations, donors, charities, institutional and other stakeholders</li>
-                <li>Welfare schemes for vulnerable sections of the population by the Centre and States and the performance of these schemes; mechanisms, laws, institutions and Bodies constituted for the protection and betterment of these vulnerable sections.</li>
-                <li>Issues relating to development and management of Social Sector/Services relating to Health, Education, Human Resources.</li>
-                <li>Issues relating to poverty and hunger.</li>
-                <li>Important aspects of governance, transparency and accountability, e-governance- applications, models, successes, limitations, and potential; citizens charters, transparency & accountability and institutional and other measures.</li>
-                <li>Role of civil services in a democracy.</li>
-            </ul>
-        </div>
-        <div class="layout-card">
-            <h4>International Relations</h4>
-            <ul>
-                <li>India and its neighborhood- relations.</li>
-                <li>Bilateral, regional and global groupings and agreements involving India and/or affecting India's interests</li>
-                <li>Effect of policies and politics of developed and developing countries on India's interests, Indian diaspora.</li>
-                <li>Important International institutions, agencies and fora- their structure, mandate.</li>
-            </ul>
-        </div>
+    <div class="detail-card-content gs2-card">
+        <strong>General Studies- II: Governance, Constitution, Polity, Social Justice and International relations.</strong>
+        <ul>
+            <li>Indian Constitution- historical underpinnings, evolution, features, amendments, significant provisions and basic structure.</li>
+            <li>Functions and responsibilities of the Union and the States, issues and challenges pertaining to the federal structure, devolution of powers and finances up to local levels and challenges therein.</li>
+            <li>Separation of powers between various organs dispute redressal mechanisms and institutions.</li>
+            <li>Comparison of the Indian constitutional scheme with that of other countries</li>
+            <li>Parliament and State Legislatures - structure, functioning, conduct of business, powers & privileges and issues arising out of these.</li>
+            <li>Structure, organization and functioning of the Executive and the Judiciary Ministries and Departments of the Government; pressure groups and formal/informal associations and their role in the Polity.</li>
+            <li>Salient features of the Representation of People's Act.</li>
+            <li>Appointment to various Constitutional posts, powers, functions and responsibilities of various Constitutional Bodies.</li>
+            <li>Statutory, regulatory and various quasi-judicial bodies</li>
+            <li>Government policies and interventions for development in various sectors and issues arising out of their design and implementation.</li>
+            <li>Development processes and the development industry- the role of NGOs, SHGs, various groups and associations, donors, charities, institutional and other stakeholders</li>
+            <li>Welfare schemes for vulnerable sections of the population by the Centre and States and the performance of these schemes; mechanisms, laws, institutions and Bodies constituted for the protection and betterment of these vulnerable sections.</li>
+            <li>Issues relating to development and management of Social Sector/Services relating to Health, Education, Human Resources.</li>
+            <li>Issues relating to poverty and hunger.</li>
+            <li>Important aspects of governance, transparency and accountability, e-governance- applications, models, successes, limitations, and potential; citizens charters, transparency & accountability and institutional and other measures.</li>
+            <li>Role of civil services in a democracy.</li>
+            <li>India and its neighborhood- relations.</li>
+            <li>Bilateral, regional and global groupings and agreements involving India and/or affecting India's interests</li>
+            <li>Effect of policies and politics of developed and developing countries on India's interests, Indian diaspora.</li>
+            <li>Important International institutions, agencies and fora- their structure, mandate.</li>
+        </ul>
     </div>`;
 
 const GS3_TEXT = `
-    <div class="grid-layout">
-        <div class="layout-card">
-            <h4>Economy, Agriculture & Infrastructure</h4>
-            <ul>
-                <li>Indian Economy and issues relating to planning, mobilization of resources, growth, development and employment.</li>
-                <li>Inclusive growth and issues arising from it.</li>
-                <li>Government Budgeting.</li>
-                <li>Major crops cropping patterns in various parts of the country, different types of irrigation and irrigation systems storage, transport and marketing of agricultural produce and issues and related constraints; e-technology in the aid of farmers</li>
-                <li>Issues related to direct and indirect farm subsidies and minimum support prices; Public Distribution System- objectives, functioning, limitations, revamping; issues of buffer stocks and food security; Technology missions; economics of animal-rearing.</li>
-                <li>Food processing and related industries in India- scope and significance, location, upstream and downstream requirements, supply chain management.</li>
-                <li>Land reforms in India.</li>
-                <li>Effects of liberalization on the economy, changes in industrial policy and their effects on industrial growth.</li>
-                <li>Infrastructure: Energy, Ports, Roads, Airports, Railways etc.</li>
-                <li>Investment models.</li>
-            </ul>
-        </div>
-        <div class="layout-card">
-            <h4>Science, Security & Environment</h4>
-            <ul>
-                <li>Science and Technology- developments and their applications and effects in everyday life</li>
-                <li>Achievements of Indians in science & technology; indigenization of technology and developing new technology.</li>
-                <li>Awareness in the fields of IT, Space, Computers, robotics, nano-technology, bio-technology and issues relating to intellectual property rights.</li>
-                <li>Conservation, environmental pollution and degradation, environmental impact assessment</li>
-                <li>Disaster and disaster management.</li>
-                <li>Linkages between development and spread of extremism.</li>
-                <li>Role of external state and non-state actors in creating challenges to internal security.</li>
-                <li>Challenges to internal security through communication networks, role of media and social networking sites in internal security challenges, basics of cyber security; money-laundering and its prevention</li>
-                <li>Security challenges and their management in border areas; linkages of organized crime with terrorism</li>
-                <li>Various Security forces and agencies and their mandate</li>
-            </ul>
-        </div>
+    <div class="detail-card-content gs3-card">
+        <strong>General Studies-III: Technology, Economic Development, Bio diversity, Environment, Security and Disaster Management.</strong>
+        <ul>
+            <li>Indian Economy and issues relating to planning, mobilization of resources, growth, development and employment.</li>
+            <li>Inclusive growth and issues arising from it.</li>
+            <li>Government Budgeting.</li>
+            <li>Major crops cropping patterns in various parts of the country, different types of irrigation and irrigation systems storage, transport and marketing of agricultural produce and issues and related constraints; e-technology in the aid of farmers</li>
+            <li>Issues related to direct and indirect farm subsidies and minimum support prices; Public Distribution System- objectives, functioning, limitations, revamping; issues of buffer stocks and food security; Technology missions; economics of animal-rearing.</li>
+            <li>Food processing and related industries in India- scope and significance, location, upstream and downstream requirements, supply chain management.</li>
+            <li>Land reforms in India.</li>
+            <li>Effects of liberalization on the economy, changes in industrial policy and their effects on industrial growth.</li>
+            <li>Infrastructure: Energy, Ports, Roads, Airports, Railways etc.</li>
+            <li>Investment models.</li>
+            <li>Science and Technology- developments and their applications and effects in everyday life</li>
+            <li>Achievements of Indians in science & technology; indigenization of technology and developing new technology.</li>
+            <li>Awareness in the fields of IT, Space, Computers, robotics, nano-technology, bio-technology and issues relating to intellectual property rights.</li>
+            <li>Conservation, environmental pollution and degradation, environmental impact assessment</li>
+            <li>Disaster and disaster management.</li>
+            <li>Linkages between development and spread of extremism.</li>
+            <li>Role of external state and non-state actors in creating challenges to internal security.</li>
+            <li>Challenges to internal security through communication networks, role of media and social networking sites in internal security challenges, basics of cyber security; money-laundering and its prevention</li>
+            <li>Security challenges and their management in border areas; linkages of organized crime with terrorism</li>
+            <li>Various Security forces and agencies and their mandate</li>
+        </ul>
     </div>`;
 
 const GS4_TEXT = `
-    <div class="grid-layout">
-        <div class="layout-card">
-            <h4>Ethics & Integrity</h4>
-            <ul>
-                <li>Ethics and Human Interface: Essence, determinants and consequences of Ethics in human actions; dimensions of ethics; ethics in private and public relationships. Human Values – lessons from the lives and teachings of great leaders, reformers and administrators; role of family, society and educational institutions in inculcating values.</li>
-                <li>Attitude: content, structure, function; its influence and relation with thought and behaviour; moral and political attitudes; social influence and persuasion.</li>
-                <li>Aptitude and foundational values for Civil Service , integrity, impartiality and non-partisanship, objectivity, dedication to public service, empathy, tolerance and compassion towards the weaker sections.</li>
-                <li>Emotional intelligence-concepts, and their utilities and application in administration and governance.</li>
-                <li>Contributions of moral thinkers and philosophers from India and world.</li>
-            </ul>
-        </div>
-        <div class="layout-card">
-            <h4>Governance & Case Studies</h4>
-            <ul>
-                <li>Public/Civil service values and Ethics in Public administration: Status and problems; ethical concerns and dilemmas in government and private institutions; laws, rules, regulations and conscience as sources of ethical guidance; accountability and ethical governance; strengthening of ethical and moral values in governance; ethical issues in international relations and funding; corporate governance.</li>
-                <li>Probity in Governance: Concept of public service; Philosophical basis of governance and probity; Information sharing and transparency in government, Right to Information, Codes of Ethics, Codes of Conduct, Citizen's Charters, Work culture, Quality of service delivery, Utilization of public funds, challenges of corruption.</li>
-                <li>Case Studies on above issues.</li>
-            </ul>
-        </div>
+    <div class="detail-card-content gs4-card">
+        <strong>General Studies- IV: Ethics, Integrity, and Aptitude</strong>
+        <ul>
+            <li>Ethics and Human Interface: Essence, determinants and consequences of Ethics in human actions; dimensions of ethics; ethics in private and public relationships. Human Values – lessons from the lives and teachings of great leaders, reformers and administrators; role of family, society and educational institutions in inculcating values.</li>
+            <li>Attitude: content, structure, function; its influence and relation with thought and behaviour; moral and political attitudes; social influence and persuasion.</li>
+            <li>Aptitude and foundational values for Civil Service , integrity, impartiality and non-partisanship, objectivity, dedication to public service, empathy, tolerance and compassion towards the weaker sections.</li>
+            <li>Emotional intelligence-concepts, and their utilities and application in administration and governance.</li>
+            <li>Contributions of moral thinkers and philosophers from India and world.</li>
+            <li>Public/Civil service values and Ethics in Public administration: Status and problems; ethical concerns and dilemmas in government and private institutions; laws, rules, regulations and conscience as sources of ethical guidance; accountability and ethical governance; strengthening of ethical and moral values in governance; ethical issues in international relations and funding; corporate governance.</li>
+            <li>Probity in Governance: Concept of public service; Philosophical basis of governance and probity; Information sharing and transparency in government, Right to Information, Codes of Ethics, Codes of Conduct, Citizen's Charters, Work culture, Quality of service delivery, Utilization of public funds, challenges of corruption.</li>
+            <li>Case Studies on above issues.</li>
+        </ul>
     </div>`;
 
 const ANTHRO1_TEXT = `
