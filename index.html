@@ -13,16 +13,7 @@
   
   <!-- Premium UI CSS (Integrated Directly) -->
   <style>
-    .premium-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
-        padding: 20px;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        margin-bottom: 20px;
-    }
+    .premium-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); padding: 20px; backdrop-filter: blur(10px); transition: all 0.3s ease; margin-bottom: 20px; }
     .premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); }
     .premium-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .premium-header h3 { margin: 0; font-weight: 800; font-size: 18px; }
@@ -32,7 +23,6 @@
     .suggestion-item strong { color: var(--text); }
     .suggestion-item span { color: var(--muted); }
 
-    /* Professional Logo Styling */
     .brand-logo { width: 160px; height: auto; object-fit: contain; margin-bottom: 8px; display: block; }
     .brand-logo-mobile { width: 30px; height: auto; vertical-align: middle; margin-right: 8px; }
 
@@ -45,36 +35,35 @@
     .syllabus-modal-close { background: var(--surface-2); border: none; color: var(--muted); width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.2s; }
     .syllabus-modal-close:hover { background: var(--danger-soft); color: var(--danger); }
     .syllabus-modal-body { padding: 24px; overflow-y: auto; }
-        /* UNIQUE LAYOUTS FOR EACH PAPER */
+
+    /* UNIQUE LAYOUTS FOR EACH PAPER */
     .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     @media(max-width: 600px) { .grid-layout { grid-template-columns: 1fr; } }
     .layout-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
     .layout-card h4 { margin-top: 0; font-size: 16px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 800; }
     .layout-card ul { padding-left: 20px; margin-bottom: 0; line-height: 1.8; }
 
-    /* ESSAY LAYOUT */
     .essay-layout { text-align: center; padding: 40px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); font-style: italic; font-size: 18px; line-height: 1.8; color: var(--text); }
-
-    /* ANTHROPOLOGY INDEX LAYOUT */
     .anthro-index { list-style: none; padding: 0; margin: 0; }
     .anthro-index li { border-bottom: 1px solid var(--border); padding: 15px 0; }
     .anthro-index li strong { color: var(--primary); display: block; margin-bottom: 5px; font-size: 15px; }
     .anthro-index li p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
-    /* Menu Grid (Initial View) */
     .syllabus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
     .syllabus-menu-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; cursor: pointer; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
     .syllabus-menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: var(--primary); }
     .syllabus-menu-card-icon { font-size: 38px; margin-bottom: 12px; display: block; }
     .syllabus-menu-card-title { font-weight: 800; font-size: 16px; color: var(--text); }
 
-    /* Detail View */
     #syllabus-detail-view { display: none; }
     .back-btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 999px; cursor: pointer; font-weight: 600; margin-bottom: 20px; transition: 0.2s; }
     .back-btn:hover { background: var(--surface-2); border-color: var(--primary); color: var(--primary); }
     .detail-card-content { border-top: 5px solid var(--primary); padding: 20px; background: var(--surface); border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
     .detail-card-content ul { margin: 0; padding-left: 20px; line-height: 1.8; color: var(--text-soft); }
     .detail-card-content strong { color: var(--text); }
+
+    /* Lock the body from scrolling when a modal is open */
+    body.modal-open { overflow: hidden; }
   </style>
 </head>
 <body>
@@ -391,7 +380,7 @@
   /* ============================================
      SYLLABUS DRILL-DOWN LOGIC
      ============================================ */
-    function openSyllabusModal() {
+  function openSyllabusModal() {
     var cardsHolder = document.getElementById('syllabus-cards-holder');
     var menu = document.getElementById('syllabus-main-menu');
     var detail = document.getElementById('syllabus-detail-view');
@@ -424,6 +413,26 @@
     
     // ✅ ADD THIS LINE TO UNLOCK MAIN PAGE
     document.body.classList.remove('modal-open');
+  }
+
+  /* ============================================
+     ADDED: SYLLABUS DETAIL & BACK FUNCTIONS
+     ============================================ */
+  function openSyllabusTopic(key) {
+    var item = SYLLABUS_DATA[key];
+    if (!item) return;
+
+    document.getElementById('syllabus-main-menu').style.display = 'none';
+    document.getElementById('syllabus-detail-view').style.display = 'block';
+
+    var detailContent = document.getElementById('syllabus-detail-content');
+    detailContent.style.borderTop = '5px solid ' + item.color;
+    detailContent.innerHTML = '<h3 style="color:' + item.color + '; margin-bottom: 15px;">' + item.title + '</h3>' + item.html;
+  }
+
+  function backToSyllabusMenu() {
+    document.getElementById('syllabus-detail-view').style.display = 'none';
+    document.getElementById('syllabus-main-menu').style.display = 'block';
   }
 
   /* ============================================
