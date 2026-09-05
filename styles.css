@@ -270,3 +270,53 @@ body.modal-open { overflow: hidden; }
   .filters { grid-template-columns: 1fr; }
   .form-actions { grid-template-columns: 1fr; }
 }
+/* ==========================================================
+   PREMIUM GRADIENT BUTTONS & FOLDERS (Add at bottom)
+   ========================================================== */
+
+/* General Booklet / New Folder */
+.folder-tab, .btn-new-folder {
+    background: linear-gradient(135deg, var(--surface-2), var(--primary-soft));
+    border: 1px solid var(--primary-soft);
+    color: var(--primary-dark);
+    font-weight: 800;
+    box-shadow: 0 2px 5px rgba(99, 102, 241, 0.1);
+}
+.folder-tab:hover, .btn-new-folder:hover {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+/* Rename / Delete / Clear buttons */
+.btn-secondary-sm {
+    background: linear-gradient(135deg, var(--surface-2), #FFFFFF);
+    border: 1px solid var(--border-strong);
+    color: var(--text-soft);
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+}
+.btn-secondary-sm:hover {
+    background: linear-gradient(135deg, var(--primary-soft), var(--accent-soft));
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+/* Generate & Download PDF button */
+.btn-generate {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.3);
+}
+.btn-generate:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(99, 102, 241, 0.4);
+}
+.btn-generate:disabled {
+    background: var(--border);
+    color: var(--muted);
+    box-shadow: none;
+}
