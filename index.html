@@ -391,7 +391,7 @@
   /* ============================================
      SYLLABUS DRILL-DOWN LOGIC
      ============================================ */
-  function openSyllabusModal() {
+    function openSyllabusModal() {
     var cardsHolder = document.getElementById('syllabus-cards-holder');
     var menu = document.getElementById('syllabus-main-menu');
     var detail = document.getElementById('syllabus-detail-view');
@@ -414,32 +414,17 @@
     }
 
     document.getElementById('syllabus-modal-overlay').classList.add('active');
-  }
-
-  function openSyllabusTopic(key) {
-    var item = SYLLABUS_DATA[key];
-    if (!item) return;
-
-    document.getElementById('syllabus-main-menu').style.display = 'none';
-    document.getElementById('syllabus-detail-view').style.display = 'block';
-
-    var detailContent = document.getElementById('syllabus-detail-content');
-    detailContent.style.borderTop = '5px solid ' + item.color;
-    detailContent.innerHTML = '<h3 style="color:' + item.color + '; margin-bottom: 15px;">' + item.title + '</h3>' + item.html;
-  }
-
-  function backToSyllabusMenu() {
-    document.getElementById('syllabus-detail-view').style.display = 'none';
-    document.getElementById('syllabus-main-menu').style.display = 'block';
+    
+    // ✅ ADD THIS LINE TO LOCK MAIN PAGE
+    document.body.classList.add('modal-open');
   }
 
   function closeSyllabusModal() {
     document.getElementById('syllabus-modal-overlay').classList.remove('active');
+    
+    // ✅ ADD THIS LINE TO UNLOCK MAIN PAGE
+    document.body.classList.remove('modal-open');
   }
-
-  document.getElementById('syllabus-modal-overlay').addEventListener('click', function(e) {
-    if (e.target === this) closeSyllabusModal();
-  });
 
   /* ============================================
      FILTER MODE SWITCHER
